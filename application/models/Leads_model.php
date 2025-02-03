@@ -108,7 +108,8 @@ class Leads_model extends App_Model
 
         $data['address'] = trim($data['address']);
         $data['address'] = nl2br($data['address']);
-
+        $data['phonenumber'] = $data['country_code'] . $data['phonenumber'];
+        unset($data['country_code']);
         $data['email'] = trim($data['email']);
         $this->db->insert(db_prefix() . 'leads', $data);
         $insert_id = $this->db->insert_id();
