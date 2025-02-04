@@ -15,7 +15,7 @@ $rules = [
     App_table_filter::new('name', 'TextRule')->label(_l('leads_dt_name')),
     App_table_filter::new('phonenumber', 'TextRule')->label(_l('leads_dt_phonenumber')),
     App_table_filter::new('country', 'SelectRule')->label(_l('lead_country'))->options(function ($ci) {
-        return collect(get_all_countries())->map(fn ($country) => [
+        return collect(get_all_countries())->map(fn($country) => [
             'value' => $country['country_id'],
             'label' => $country['short_name'],
         ]);
@@ -31,14 +31,14 @@ $rules = [
     App_table_filter::new('dateassigned', 'DateRule')->label(_l('customer_admin_date_assigned')),
     App_table_filter::new('lead_value', 'NumberRule')->label(_l('lead_add_edit_lead_value')),
     App_table_filter::new('status', 'MultiSelectRule')->label(_l('lead_status'))->options(function () use ($statuses) {
-        return collect($statuses)->map(fn ($status) => [
+        return collect($statuses)->map(fn($status) => [
             'value' => $status['id'],
             'label' => $status['name'],
             'subtext' => $status['isdefault'] == 1 ? _l('leads_converted_to_client') : null,
         ]);
     }),
     App_table_filter::new('source', 'MultiSelectRule')->label(_l('lead_source'))->options(function ($ci) {
-        return collect($ci->leads_model->get_source())->map(fn ($source) => [
+        return collect($ci->leads_model->get_source())->map(fn($source) => [
             'value' => $source['id'],
             'label' => $source['name'],
         ]);
@@ -48,7 +48,7 @@ $rules = [
 $rules[] = App_table_filter::new('assigned', 'SelectRule')->label(_l('leads_dt_assigned'))
     ->withEmptyOperators()
     ->emptyOperatorValue(0)
-    ->isVisible(fn () => staff_can('view', 'leads'))
+    ->isVisible(fn() => staff_can('view', 'leads'))
     ->options(function ($ci) {
         $staff = $ci->staff_model->get('', ['active' => 1]);
 
@@ -65,7 +65,7 @@ if (isset($consent_purposes)) {
     $rules[] = App_table_filter::new('gdpr_content', 'SelectRule')
         ->label(_l('gdpr_consent'))
         ->options(function () use ($consent_purposes) {
-            return collect($consent_purposes)->map(fn ($purpose) => [
+            return collect($consent_purposes)->map(fn($purpose) => [
                 'value' => $purpose['id'],
                 'label' => $purpose['name']
             ]);
@@ -156,13 +156,18 @@ return App_table::find('leads')
 
         foreach ($rResult as $aRow) {
             $row = [];
+            $name = $aRow['name'];
 
+            // Check if the name contains at least one English letter or number
+            if (!preg_match('/[a-zA-Z0-9]/', $name)) {
+                $name = "No Name";
+            }
             $row[] = '<div class="checkbox"><input type="checkbox" value="' . $aRow['id'] . '"><label></label></div>';
 
             $hrefAttr = 'href="' . admin_url('leads/index/' . $aRow['id']) . '" onclick="init_lead(' . $aRow['id'] . ');return false;"';
             $row[]    = '<a ' . $hrefAttr . '>' . $aRow['id'] . '</a>';
 
-            $nameRow = '<a ' . $hrefAttr . '>' . e($aRow['name']) . '</a>';
+            $nameRow = '<a ' . $hrefAttr . '>' . e($name) . '</a>';
 
             $nameRow .= '<div class="row-options">';
             $nameRow .= '<a ' . $hrefAttr . '>' . _l('view') . '</a>';
