@@ -153,7 +153,9 @@ return App_table::find('leads')
 
         $output  = $result['output'];
         $rResult = $result['rResult'];
-
+        $start = (int) $this->ci->input->post('start'); // Get pagination offset
+        $sr = $start + 1; // Start serial numbering from correct position
+       
         foreach ($rResult as $aRow) {
             $row = [];
             $name = $aRow['name'];
@@ -165,7 +167,7 @@ return App_table::find('leads')
             $row[] = '<div class="checkbox"><input type="checkbox" value="' . $aRow['id'] . '"><label></label></div>';
 
             $hrefAttr = 'href="' . admin_url('leads/index/' . $aRow['id']) . '" onclick="init_lead(' . $aRow['id'] . ');return false;"';
-            $row[]    = '<a ' . $hrefAttr . '>' . $aRow['id'] . '</a>';
+            $row[]    = '<a ' . $hrefAttr . '>' . $sr . '</a>';
 
             $nameRow = '<a ' . $hrefAttr . '>' . e($name) . '</a>';
 
@@ -283,6 +285,7 @@ return App_table::find('leads')
             $row = hooks()->apply_filters('leads_table_row_data', $row, $aRow);
 
             $output['aaData'][] = $row;
+            $sr++;
         }
         return $output;
     })->setRules($rules);
