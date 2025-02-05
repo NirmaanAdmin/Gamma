@@ -12,10 +12,9 @@ require __DIR__.'/REST_Controller.php';
  *
  * @package         CodeIgniter
  * @subpackage      Rest Server
- * @category        Controller 
+ * @category        Controller
  */
 class Projects extends REST_Controller {
-
     function __construct()
     {
         // Construct the parent class
@@ -26,7 +25,7 @@ class Projects extends REST_Controller {
     /**
      * @api {get} api/projects/:id Request project information
      * @apiName GetProject
-     * @apiGroup Project
+     * @apiGroup Projects
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -78,7 +77,7 @@ class Projects extends REST_Controller {
         // Check if the data store contains
         if ($data)
         {
-            $data = $this->Api_model->get_api_custom_data($data,"projects", $id);
+            $data = $this->Api_model->get_api_custom_data($data, "projects", $id);
 
             // Set the response and exit
             $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
@@ -96,7 +95,7 @@ class Projects extends REST_Controller {
     /**
      * @api {get} api/projects/search/:keysearch Search Project Information
      * @apiName GetProjectSearch
-     * @apiGroup Project
+     * @apiGroup Projects
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -161,10 +160,11 @@ class Projects extends REST_Controller {
             ], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
         }
     }
+
     /**
      * @api {post} api/projects Add New Project
      * @apiName PostProject
-     * @apiGroup Project
+     * @apiGroup Projects
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -196,7 +196,7 @@ class Projects extends REST_Controller {
      *        'project_cost' => string '' (length=0)
      *        'project_rate_per_hour' => string '' (length=0)
      *        'estimated_hours' => string '' (length=0)
-     *        'project_members' => 
+     *        'project_members' =>
      *          array (size=1)
      *            0 => string '1' (length=1)
      *        'start_date' => string '25/07/2019' (length=10)
@@ -224,83 +224,85 @@ class Projects extends REST_Controller {
      *       "status": false,
      *       "message": "Project add fail."
      *     }
-     * 
+     *
      */
     public function data_post()
     {
-            \modules\api\core\Apiinit::the_da_vinci_code('api');
+        //
 
-            // form validation
-            $this->form_validation->set_rules('name', 'Project Name', 'trim|required|max_length[600]', array('is_unique' => 'This %s already exists please enter another Project Name'));
-            //$this->form_validation->set_rules('rel_type', 'Related', 'trim|required', array('is_unique' => 'This %s already exists please enter another Project Related'));
-            $this->form_validation->set_rules('billing_type', 'Billing Type', 'trim|required', array('is_unique' => 'This %s already exists please enter another Project Billing Type'));
-            $this->form_validation->set_rules('start_date', 'Project Start Date', 'trim|required', array('is_unique' => 'This %s already exists please enter another Project Start Date'));
-            $this->form_validation->set_rules('status', 'Project Status', 'trim|required', array('is_unique' => 'This %s already exists please enter another Project Status'));
-            $related = $this->input->post('rel_type', TRUE);
-            $this->form_validation->set_rules('clientid', ucwords($related), 'trim|required|max_length[11]', array('is_unique' => 'This %s already exists please enter another Project Name'));
-            if ($this->form_validation->run() == FALSE)
-            {
-                // form validation error
+        // form validation
+        $this->form_validation->set_rules('name', 'Project Name', 'trim|required|max_length[600]', array('is_unique' => 'This %s already exists please enter another Project Name'));
+        //$this->form_validation->set_rules('rel_type', 'Related', 'trim|required', array('is_unique' => 'This %s already exists please enter another Project Related'));
+        $this->form_validation->set_rules('billing_type', 'Billing Type', 'trim|required', array('is_unique' => 'This %s already exists please enter another Project Billing Type'));
+        $this->form_validation->set_rules('start_date', 'Project Start Date', 'trim|required', array('is_unique' => 'This %s already exists please enter another Project Start Date'));
+        $this->form_validation->set_rules('status', 'Project Status', 'trim|required', array('is_unique' => 'This %s already exists please enter another Project Status'));
+        $related = $this->input->post('rel_type', TRUE);
+        $this->form_validation->set_rules('clientid', ucwords($related), 'trim|required|max_length[11]', array('is_unique' => 'This %s already exists please enter another Project Name'));
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            // form validation error
+            $message = array(
+                'status' => FALSE,
+                'error' => $this->form_validation->error_array(),
+                'message' => validation_errors()
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+        }
+        else
+        {
+            $project_members = $this->Api_model->value($this->input->post('project_members', TRUE));
+            $insert_data = [
+                'name' => $this->input->post('name', TRUE),
+                //'rel_type' => $this->input->post('rel_type', TRUE),
+                'clientid' => $this->input->post('clientid', TRUE),
+                'billing_type' => $this->input->post('billing_type', TRUE),
+                'start_date' => $this->input->post('start_date', TRUE),
+                'status' => $this->input->post('status', TRUE),
+                'project_cost' => $this->Api_model->value($this->input->post('project_cost', TRUE)),
+                'estimated_hours' => $this->Api_model->value($this->input->post('estimated_hours', TRUE)),
+                'progress_from_tasks' => $this->Api_model->value($this->input->post('progress_from_tasks', TRUE)),
+                'progress' => $this->Api_model->value($this->input->post('progress', TRUE)),
+                'project_rate_per_hour' => $this->Api_model->value($this->input->post('project_rate_per_hour', TRUE)),
+                'deadline' => $this->Api_model->value($this->input->post('deadline', TRUE)),
+                'description' => $this->Api_model->value($this->input->post('description', TRUE)),
+                'tags' => $this->Api_model->value($this->input->post('tags', TRUE)),
+
+                'settings' => array( 'available_features' => array( 'project_overview', 'project_milestones', 'project_gantt', 'project_tasks', 'project_estimates', 'project_subscriptions', 'project_invoices', 'project_expenses', 'project_credit_notes', 'project_tickets', 'project_timesheets', 'project_files', 'project_discussions', 'project_notes', 'project_activity'))
+            ];
+            if ($project_members != '') {
+                $insert_data['project_members'] = $project_members;
+            }
+            if (!empty($this->input->post('custom_fields', TRUE))) {
+                $insert_data['custom_fields'] = $this->Api_model->value($this->input->post('custom_fields', TRUE));
+            }
+
+            // insert data
+            $this->load->model('projects_model');
+            $output = $this->projects_model->add($insert_data);
+            if ($output > 0 && !empty($output)) {
+                handle_project_file_uploads($output);
+                // success
+                $message = array(
+                    'status' => TRUE,
+                    'message' => 'Project add successful.'
+                );
+                $this->response($message, REST_Controller::HTTP_OK);
+             } else {
+                // error
                 $message = array(
                     'status' => FALSE,
-                    'error' => $this->form_validation->error_array(),
-                    'message' => validation_errors() 
+                    'message' => 'Project add failed.'
                 );
                 $this->response($message, REST_Controller::HTTP_NOT_FOUND);
             }
-            else
-            {
-                $project_members = $this->Api_model->value($this->input->post('project_members', TRUE));
-                $insert_data = [
-                    'name' => $this->input->post('name', TRUE),
-                    //'rel_type' => $this->input->post('rel_type', TRUE),
-                    'clientid' => $this->input->post('clientid', TRUE),
-                    'billing_type' => $this->input->post('billing_type', TRUE),
-                    'start_date' => $this->input->post('start_date', TRUE),
-                    'status' => $this->input->post('status', TRUE),
-                    'project_cost' => $this->Api_model->value($this->input->post('project_cost', TRUE)),
-                    'estimated_hours' => $this->Api_model->value($this->input->post('estimated_hours', TRUE)),
-                    'progress_from_tasks' => $this->Api_model->value($this->input->post('progress_from_tasks', TRUE)),
-                    'progress' => $this->Api_model->value($this->input->post('progress', TRUE)),
-                    'project_rate_per_hour' => $this->Api_model->value($this->input->post('project_rate_per_hour', TRUE)),
-                    'deadline' => $this->Api_model->value($this->input->post('deadline', TRUE)),
-                    'description' => $this->Api_model->value($this->input->post('description', TRUE)),
-                    'tags' => $this->Api_model->value($this->input->post('tags', TRUE)),
-                    
-                    'settings' => array( 'available_features' => array( 'project_overview', 'project_milestones', 'project_gantt', 'project_tasks', 'project_estimates', 'project_subscriptions', 'project_invoices', 'project_expenses', 'project_credit_notes', 'project_tickets', 'project_timesheets', 'project_files', 'project_discussions', 'project_notes', 'project_activity')) ];
-                    if($project_members != ''){
-                        $insert_data['project_members'] = $project_members;
-                    }
-                    if (!empty($this->input->post('custom_fields', TRUE))) {
-                        $insert_data['custom_fields'] = $this->Api_model->value($this->input->post('custom_fields', TRUE));
-                    }
-                // insert data                    
-                $this->load->model('projects_model');                
-                $output = $this->projects_model->add($insert_data);                
-                if($output > 0 && !empty($output)){
-                    handle_project_file_uploads($output);
-                    // success
-                    $message = array(
-                    'status' => TRUE,
-                    'message' => 'Project add successful.'
-                    );
-                    $this->response($message, REST_Controller::HTTP_OK);
-                }else{
-                    // error
-                    $message = array(
-                    'status' => FALSE,
-                    'message' => 'Project add failed.'
-                    );
-                    $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-                }
-            }
+        }
     }
-
 
     /**
      * @api {delete} api/delete/projects/:id Delete a Project
      * @apiName DeleteProject
-     * @apiGroup Project
+     * @apiGroup Projects
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -329,42 +331,41 @@ class Projects extends REST_Controller {
     public function data_delete($id = '')
     {
         $id = $this->security->xss_clean($id);
-        if(empty($id) && !is_numeric($id))
+        if (empty($id) && !is_numeric($id))
         {
             $message = array(
-            'status' => FALSE,
-            'message' => 'Invalid Project ID'
-        );
-        $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+                'status' => FALSE,
+                'message' => 'Invalid Project ID'
+            );
+            $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
         else
         {
             // delete data
             $this->load->model('projects_model');
             $output = $this->projects_model->delete($id);
-            if($output === TRUE){
+            if ($output === TRUE) {
                 // success
                 $message = array(
-                'status' => TRUE,
-                'message' => 'Project Delete Successful.'
+                    'status' => TRUE,
+                    'message' => 'Project Delete Successful.'
                 );
                 $this->response($message, REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // error
                 $message = array(
-                'status' => FALSE,
-                'message' => 'Project Delete Fail.'
+                    'status' => FALSE,
+                    'message' => 'Project Delete Fail.'
                 );
                 $this->response($message, REST_Controller::HTTP_NOT_FOUND);
             }
         }
     }
 
-
     /**
      * @api {put} api/projects/:id Update a project
      * @apiName PutProject
-     * @apiGroup Project
+     * @apiGroup Projects
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -392,7 +393,7 @@ class Projects extends REST_Controller {
      *     "clientid": "9",
      *     "status": "2",
      *     "progress_from_tasks": "on",
-     *     "progress": "0.00", 
+     *     "progress": "0.00",
      *     "billing_type": "3",
      *     "project_cost": "0",
      *     "project_rate_per_hour": "0",
@@ -405,7 +406,7 @@ class Projects extends REST_Controller {
      *     "deadline": "30/08/2019",
      *     "tags": "",
      *     "description": "",
-     *     "settings": 
+     *     "settings":
      *       {
      *         "available_features":
      *           {
@@ -423,7 +424,7 @@ class Projects extends REST_Controller {
      *             "11": "project_timesheets",
      *             "12": "project_files" ,
      *             "13": "project_discussions" ,
-     *             "14": "project_notes" 
+     *             "14": "project_notes"
      *          }
      *      }
      *  }
@@ -451,47 +452,171 @@ class Projects extends REST_Controller {
     public function data_put($id = '')
     {
         $_POST = json_decode($this->security->xss_clean(file_get_contents("php://input")), true);
-        if(empty($_POST ) || !isset($_POST ))
-        {
-            $message = array(
-            'status' => FALSE,
-            'message' => 'Data Not Acceptable OR Not Provided'
-            );
-            $this->response($message, REST_Controller::HTTP_NOT_ACCEPTABLE);
+        if (empty($_POST) || !isset($_POST)) {
+            $this->load->library('parse_input_stream');
+            $_POST = $this->parse_input_stream->parse_parameters();
+            $_FILES = $this->parse_input_stream->parse_files();
+            if (empty($_POST) || !isset($_POST)) {
+                $message = array('status' => FALSE, 'message' => 'Data Not Acceptable OR Not Provided');
+                $this->response($message, REST_Controller::HTTP_NOT_ACCEPTABLE);
+            }
         }
         $this->form_validation->set_data($_POST);
-        
-        if(empty($id) && !is_numeric($id))
-        {
-            $message = array(
-            'status' => FALSE,
-            'message' => 'Invalid Project ID'
-            );
+        if (empty($id) && !is_numeric($id)) {
+            $message = array('status' => FALSE, 'message' => 'Invalid Lead ID');
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
-        }
-        else
-        {
-
+        } else {
             $update_data = $this->input->post();
+            $update_file = isset($update_data['file']) ? $update_data['file'] : null;
+            unset($update_data['file']);
             // update data
             $this->load->model('projects_model');
             $output = $this->projects_model->update($update_data, $id);
-            if($output == true && !empty($output)){
+            if (!empty($update_file) && count($update_file)) {
+                if ($output <= 0 || empty($output)) {
+                    $output = $id;
+                }
+            }
+
+            if ($output == true && !empty($output)) {
                 // success
+                $attachments = $this->projects_model->get_files($output);
+                foreach ($attachments as $attachment) {
+                    $this->projects_model->remove_file($attachment['id']);
+                }
+                $this->handle_project_attachments_array($output);
                 $message = array(
-                'status' => TRUE,
-                'message' => 'Project Update Successful.'
+                    'status' => TRUE,
+                    'message' => 'Project Update Successful.'
                 );
                 $this->response($message, REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // error
                 $message = array(
-                'status' => FALSE,
-                'message' => 'Project Update Fail.'
+                    'status' => FALSE,
+                    'message' => 'Project Update Fail.'
                 );
                 $this->response($message, REST_Controller::HTTP_NOT_FOUND);
             }
         }
     }
 
+    function handle_project_attachments_array($project_id)
+    {
+        $hookData = hooks()->apply_filters('before_handle_project_file_uploads', [
+            'project_id' => $project_id,
+            'index_name' => 'file',
+            'handled_externally' => false, // e.g. module upload to s3
+            'handled_externally_successfully' => false,
+            'files' => $_FILES
+        ]);
+
+        if ($hookData['handled_externally']) {
+            return $hookData['handled_externally_successfully'];
+        }
+
+        $filesIDS = [];
+        $errors   = [];
+
+        if (isset($_FILES['file']['name'])
+            && ($_FILES['file']['name'] != '' || is_array($_FILES['file']['name']) && count($_FILES['file']['name']) > 0)) {
+            hooks()->do_action('before_upload_project_attachment', $project_id);
+
+            if (!is_array($_FILES['file']['name'])) {
+                $_FILES['file']['name']     = [$_FILES['file']['name']];
+                $_FILES['file']['type']     = [$_FILES['file']['type']];
+                $_FILES['file']['tmp_name'] = [$_FILES['file']['tmp_name']];
+                $_FILES['file']['error']    = [$_FILES['file']['error']];
+                $_FILES['file']['size']     = [$_FILES['file']['size']];
+            }
+
+            $path = get_upload_path_by_type('project') . $project_id . '/';
+
+            for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
+                if (_perfex_upload_error($_FILES['file']['error'][$i])) {
+                    $errors[$_FILES['file']['name'][$i]] = _perfex_upload_error($_FILES['file']['error'][$i]);
+
+                    continue;
+                }
+
+                // Get the temp file path
+                $tmpFilePath = $_FILES['file']['tmp_name'][$i];
+                // Make sure we have a filepath
+                if (!empty($tmpFilePath) && $tmpFilePath != '') {
+                    _maybe_create_upload_path($path);
+                    $originalFilename = unique_filename($path, $_FILES['file']['name'][$i]);
+                    $filename = app_generate_hash() . '.' . get_file_extension($originalFilename);
+
+                    // In case client side validation is bypassed
+                    if (!_upload_extension_allowed($filename)) {
+                        continue;
+                    }
+
+                    $newFilePath = $path . $filename;
+                    // Upload the file into the company uploads dir
+                    if (copy($tmpFilePath, $newFilePath)) {
+                        unlink($tmpFilePath);
+                        if (is_client_logged_in()) {
+                            $contact_id = get_contact_user_id();
+                            $staffid    = 0;
+                        } else {
+                            $staffid    = get_staff_user_id();
+                            $contact_id = 0;
+                        }
+                        $data = [
+                            'project_id' => $project_id,
+                            'file_name'  => $filename,
+                            'original_file_name'  => $originalFilename,
+                            'filetype'   => $_FILES['file']['type'][$i],
+                            'dateadded'  => date('Y-m-d H:i:s'),
+                            'staffid'    => $staffid,
+                            'contact_id' => $contact_id,
+                            'subject'    => $originalFilename,
+                        ];
+                        if (is_client_logged_in()) {
+                            $data['visible_to_customer'] = 1;
+                        } else {
+                            $data['visible_to_customer'] = ($this->input->post('visible_to_customer') == 'true' ? 1 : 0);
+                        }
+                        $this->db->insert(db_prefix() . 'project_files', $data);
+
+                        $insert_id = $this->db->insert_id();
+                        if ($insert_id) {
+                            if (is_image($newFilePath)) {
+                                create_img_thumb($path, $filename);
+                            }
+                            array_push($filesIDS, $insert_id);
+                        } else {
+                            unlink($newFilePath);
+
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (count($filesIDS) > 0) {
+            $this->load->model('projects_model');
+            end($filesIDS);
+            $lastFileID = key($filesIDS);
+            $this->projects_model->new_project_file_notification($filesIDS[$lastFileID], $project_id);
+        }
+
+        if (count($errors) > 0) {
+            $message = '';
+            foreach ($errors as $filename => $error_message) {
+                $message .= $filename . ' - ' . $error_message . '<br />';
+            }
+            header('HTTP/1.0 400 Bad error');
+            echo $message;
+            die;
+        }
+
+        if (count($filesIDS) > 0) {
+            return true;
+        }
+
+        return false;
+    }
 }

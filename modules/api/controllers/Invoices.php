@@ -28,7 +28,7 @@ class Invoices extends REST_Controller {
      * @api {get} api/invoices/:id Request invoice information
      * @apiVersion 0.1.0
      * @apiName GetInvoice
-     * @apiGroup Invoice
+     * @apiGroup Invoices
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -162,27 +162,36 @@ class Invoices extends REST_Controller {
      *       "message": "No data were found"
      *     }
      */
-    public function data_get($id = '') {
-        // If the id parameter doesn't exist return all the
-        $data = $this->Api_model->get_table('invoices', $id);
-        // Check if the data store contains
-        if ($data) {
-            $data = $this->Api_model->get_api_custom_data($data, "invoice", $id);
-            // Set the response and exit
-            $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
-            
-        } else {
-            // Set the response and exit
-            $this->response(['status' => FALSE, 'message' => 'No data were found'], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
-            
-        }
-    }
+	public function data_get($id = '') {
+		// Fetch invoices without specifying order
+		$data = $this->Api_model->get_table('invoices', $id);
+
+		// Check if the data store contains any invoices
+		if ($data) {
+			// Sort $data array by 'id' in ascending order
+			usort($data, function($a, $b) {
+				return $a['id'] - $b['id'];
+			});
+
+			// Optionally, apply additional custom data formatting if needed
+			$data = $this->Api_model->get_api_custom_data($data, "invoice", $id);
+
+			// Set the response and exit
+			$this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+
+		} else {
+			// Set the response and exit with a not found message
+			$this->response(['status' => FALSE, 'message' => 'No data were found'], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
+
+		}
+	}
+
 
     /**
      * @api {get} api/invoices/search/:keysearch Search invoice information
      * @apiVersion 0.1.0
      * @apiName GetInvoiceSearch
-     * @apiGroup Invoice
+     * @apiGroup Invoices
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -284,11 +293,11 @@ class Invoices extends REST_Controller {
             $data = $this->Api_model->get_api_custom_data($data, "invoice");
             // Set the response and exit
             $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
-            
+
         } else {
             // Set the response and exit
             $this->response(['status' => FALSE, 'message' => 'No data were found'], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
-            
+
         }
     }
 
@@ -296,7 +305,7 @@ class Invoices extends REST_Controller {
      * @api {post} api/invoices Add New invoice
      * @apiVersion 0.1.0
      * @apiName PostInvoice
-     * @apiGroup Invoice
+     * @apiGroup Invoices
      *
      *  @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -453,7 +462,9 @@ class Invoices extends REST_Controller {
      *
      */
     public function data_post() {
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+        //
+
+		error_reporting(0);
         $data = $this->input->post();
         $this->form_validation->set_rules('clientid', 'Customer', 'trim|required|max_length[255]');
         $this->form_validation->set_rules('number', 'Invoice number', 'trim|required|max_length[255]|callback_validate_invoice_number[0]');
@@ -471,6 +482,7 @@ class Invoices extends REST_Controller {
             $this->load->model('invoices_model');
             $id = $this->invoices_model->add($data);
             if ($id > 0 && !empty($id)) {
+
                 // success
                 $message = array('status' => TRUE, 'message' => 'Invoice Added Successfully');
                 $this->response($message, REST_Controller::HTTP_OK);
@@ -486,7 +498,7 @@ class Invoices extends REST_Controller {
      * @api {delete} api/invoices/:id Delete invoice
      * @apiVersion 0.1.0
      * @apiName DeleteInvoice
-     * @apiGroup Invoice
+     * @apiGroup Invoices
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      * @apiSuccess {Boolean} status Request status.
@@ -534,12 +546,12 @@ class Invoices extends REST_Controller {
             }
         }
     }
-	
+
     /**
      * @api {put} api/invoices/:id Update invoice
      * @apiVersion 0.1.0
      * @apiName PutInvoice
-     * @apiGroup Invoice
+     * @apiGroup Invoices
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *

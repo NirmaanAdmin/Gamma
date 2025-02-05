@@ -13,16 +13,35 @@ class Api_model extends App_Model
 
     public function get_table($name, $id)
     {
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+        //
+
         switch ($name) {
             case 'projects':
                 $this->load->model('Projects_model');
-                return $this->Projects_model->get($id);
+                if (is_numeric($id)) {
+                    return $this->Projects_model->get($id);
+                } else {
+                    $result = [];
+                    $projects = $this->db->get(db_prefix() . 'projects')->result_array();
+                    foreach ($projects as $project) {
+                        $result[] = (array)$this->Projects_model->get($project['id']);
+                    }
+                    return $result;
+                }
                 break;
 
             case 'tasks':
                 $this->load->model('Tasks_model');
-                return $this->Tasks_model->get($id);
+                if (is_numeric($id)) {
+                    return $this->Tasks_model->get($id);
+                } else {
+                    $result = [];
+                    $tasks = $this->db->get(db_prefix() . 'tasks')->result_array();
+                    foreach ($tasks as $task) {
+                        $result[] = (array)$this->Tasks_model->get($task['id']);
+                    }
+                    return $result;
+                }
                 break;
 
             case 'staffs':
@@ -149,6 +168,18 @@ class Api_model extends App_Model
                 return $data;
                 break;
 
+            case 'events':
+                return $this->get_calendar_events($id);
+                break;
+
+            case 'subscriptions':
+                return $this->get_subscription_events($id);
+                break;
+
+            case 'taskstimers':
+                    return $this->get_timesheets_events($id);
+                    break;
+
             default:
                 return '';
                 break;
@@ -166,7 +197,7 @@ class Api_model extends App_Model
 
     public function search($type, $key)
     {
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+        //
 
         return $this->get_relation_data_api($type, $key);
     }
@@ -570,7 +601,7 @@ class Api_model extends App_Model
             log_activity('Ticket User Updated [ID: '.$id.' Name: '.$data['name'].']');
             $result = true;
         }
-        
+
         $this->set_permissions($id, $permissions);
 
         return $result;
@@ -612,7 +643,7 @@ class Api_model extends App_Model
                 $this->db->where('feature', $feature);
                 $this->db->where('capability', $capability);
                 $permission = $this->db->get(db_prefix() . 'user_api_permissions')->row();
-    
+
                 if (isset($permission)) {
                     return true;
                 }
@@ -679,7 +710,8 @@ class Api_model extends App_Model
 
     public function get_relation_data_api($type, $search = '')
     {
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+        //
+
         $q  = '';
         if ('' != $search) {
             $q = $search;
@@ -722,7 +754,7 @@ class Api_model extends App_Model
 
             $this->load->model('clients_model');
             $data = $this->clients_model->get_contacts('', $where_clients);
-        // echo $this->db->last_query();
+            // echo $this->db->last_query();
         } elseif ('ticket' == $type) {
             $search = $this->_search_tickets($q, 0, true);
             $data   = $search['result'];
@@ -866,7 +898,7 @@ class Api_model extends App_Model
         $this->db->where('fieldto', $custom_field_type);
 
         $this->db->order_by('field_order', 'asc');
-        $fields       = $this->db->get(db_prefix().'customfields')->result_array();
+        $fields       = $this->db->get(db_prefix() . 'customfields')->result_array();
         $customfields = [];
         if ('' === $id) {
             foreach ($data as $data_key => $value) {
@@ -935,50 +967,58 @@ class Api_model extends App_Model
         return $result;
     }
 
-    public function payment_get($id='')
-    {
-        $this->db->select('*,'.db_prefix().'invoicepaymentrecords.id as paymentid');
-        $this->db->join(db_prefix().'payment_modes', db_prefix().'payment_modes.id = '.db_prefix().'invoicepaymentrecords.paymentmode', 'left');
-        $this->db->order_by(db_prefix().'invoicepaymentrecords.id', 'asc');
+	public function payment_get($id = '')
+	{
+		// Select all fields from the invoicepaymentrecords table, and alias the id field
+		$this->db->select(db_prefix() . 'invoicepaymentrecords.*, ' . db_prefix() . 'invoicepaymentrecords.id as paymentid');
+		// Join the payment_modes table
+		$this->db->join(db_prefix() . 'payment_modes', db_prefix() . 'payment_modes.id = ' . db_prefix() . 'invoicepaymentrecords.paymentmode', 'left');
+		// Order by the id of invoicepaymentrecords in ascending order
+		$this->db->order_by(db_prefix() . 'invoicepaymentrecords.id', 'asc');
 
-        if (!empty($id)) {
-            $this->db->where(db_prefix().'invoicepaymentrecords.id', $id);
-            $payment = $this->db->get(db_prefix().'invoicepaymentrecords')->row();
-        } else {
-            $payment = $this->db->get(db_prefix().'invoicepaymentrecords')->result();
-        }
+		// Check if a specific id was provided
+		if (!empty($id)) {
+			// If an id was provided, add a where condition to the query
+			$this->db->where(db_prefix() . 'invoicepaymentrecords.id', $id);
+			// Execute the query and get the single row result
+			$payment = $this->db->get(db_prefix() . 'invoicepaymentrecords')->row();
+		} else {
+			// If no specific id was provided, execute the query and get all results
+			$payment = $this->db->get(db_prefix() . 'invoicepaymentrecords')->result();
+		}
 
-        if (!$payment) {
-            return false;
-        }
+		// If no payment records were found, return false
+		if (!$payment) {
+			return false;
+		}
 
-        $this->load->model('payment_modes_model');
-        $payment_gateways = $this->payment_modes_model->get_payment_gateways(true);
+		// Load the payment_modes_model to access payment gateway data
+		$this->load->model('payment_modes_model');
+		// Get all available payment gateways
+		$payment_gateways = $this->payment_modes_model->get_payment_gateways(true);
 
-        if (!empty($id)) {
-            if (null === $payment->id) {
-                foreach ($payment_gateways as $gateway) {
-                    if ($payment->paymentmode == $gateway['id']) {
-                        $payment->name = $gateway['name'];
-                    }
-                }
-            }
-        }
+		// If a specific id was provided, process the single payment record
+		if (!empty($id)) {
+			// Check if the payment mode is from a payment gateway
+			foreach ($payment_gateways as $gateway) {
+				if ($payment->paymentmode == $gateway['id']) {
+					$payment->name = $gateway['name'];
+				}
+			}
+		} else {
+			// If no specific id was provided, process each payment record
+			foreach ($payment as $key => $pay) {
+				foreach ($payment_gateways as $gateway) {
+					if ($pay->paymentmode == $gateway['id']) {
+						$payment[$key]->name = $gateway['name'];
+					}
+				}
+			}
+		}
 
-        if (empty($id)) {
-            foreach ($payment as $key => $pay) {
-                if (null === $pay->id) {
-                    foreach ($payment_gateways as $gateway) {
-                        if ($pay->paymentmode == $gateway['id']) {
-                            $payment[$key]->name = $gateway['name'];
-                        }
-                    }
-                }
-            }
-        }
-
-        return $payment;
-    }
+		// Return the payment record(s)
+		return $payment;
+	}
 
     public function _search_proposals($q, $limit = 0, $api = false)
     {
@@ -1244,7 +1284,7 @@ class Api_model extends App_Model
         }
         return $result;
     }
- 
+
     private function total_refunds_by_credit_note($id)
     {
         return sum_from_table(db_prefix().'creditnote_refunds', [
@@ -1272,7 +1312,7 @@ class Api_model extends App_Model
             if ('' != $capability) {
                 $this->db->where('capability', $capability);
             }
-    
+
             return $this->db->get(db_prefix() . 'user_api_permissions')->result_array();
         }
 
@@ -1365,13 +1405,226 @@ class Api_model extends App_Model
             if ('' != $capability) {
                 $this->db->where('capability', $capability);
             }
-    
+
             $this->db->delete(db_prefix() . 'user_api_permissions');
             if ($this->db->affected_rows() > 0) {
                 log_activity('API Permssion Deleted [API ID: ' . $id . ', Feature: ' . $feature . ', Capability: ' . $capability . ']');
-    
+
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    public function get_calendar_events($id ='')
+    {
+        $this->db->select('*');
+        $this->db->from(db_prefix().'events');
+        if($id >0){
+            $this->db->where('eventid', $id);
+        }
+        return $this->db->get()->result_array();
+    }
+
+    /**
+     * Add new event
+     * @param array $data event $_POST data
+     */
+    public function event($data)
+    {
+        $data['start']  = to_sql_date($data['start'], true);
+        if ($data['end'] == '') {
+            unset($data['end']);
+        } else {
+            $data['end'] = to_sql_date($data['end'], true);
+        }
+
+        $data['description'] = nl2br($data['description']);
+        if (isset($data['eventid'])) {
+            $this->db->where('eventid', $data['eventid']);
+            $event = $this->db->get(db_prefix() . 'events')->row();
+            if (!$event) {
+                return false;
+            }
+            if ($event->isstartnotified == 1) {
+                if ($data['start'] > $event->start) {
+                    $data['isstartnotified'] = 0;
+                }
+            }
+
+            $data = hooks()->apply_filters('event_update_data', $data, $data['eventid']);
+
+            $this->db->where('eventid', $data['eventid']);
+            $this->db->update(db_prefix() . 'events', $data);
+            if ($this->db->affected_rows() > 0) {
+                return true;
+            }
+
+            return false;
+        }
+
+        $data = hooks()->apply_filters('event_create_data', $data);
+
+        $this->db->insert(db_prefix() . 'events', $data);
+        $insert_id = $this->db->insert_id();
+
+        if ($insert_id) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // get subscription table data
+    public function get_subscription_events($id ='')
+    {
+        $this->db->select('*');
+        $this->db->from(db_prefix().'subscriptions');
+        if($id >0){
+            $this->db->where('id', $id);
+        }
+        return $this->db->get()->result_array();
+    }
+
+    // insert subscription data
+    public function subscription($data) {
+        $data = [
+            'name' =>  $this->input->post('name'),
+            'description' =>  $this->input->post('description'),
+            'description_in_item' =>  $this->input->post('description_in_item'),
+            'clientid ' => $this->input->post('clientid'),
+            'date' =>  $this->input->post('date'),
+            'terms' => $this->input->post('terms'),
+            'currency' =>  $this->input->post('currency'),
+            'tax_id' => $this->input->post('tax_id'),
+            'stripe_tax_id' =>  $this->input->post('stripe_tax_id'),
+            'tax_id_2' => $this->input->post('tax_id_2'),
+            'stripe_tax_id_2' =>  $this->input->post('stripe_tax_id_2'),
+            'stripe_plan_id' =>  $this->input->post('stripe_plan_id'),
+            'next_billing_cycle' => $this->input->post('next_billing_cycle'),
+            'ends_at' =>  $this->input->post('ends_at'),
+            'status' =>  $this->input->post('status'),
+            'quantity' =>  $this->input->post('quantity'),
+            'project_id' =>  $this->input->post('project_id'),
+            'hash' =>  $this->input->post('hash'),
+            'created' =>  $this->input->post('created'),
+            'created_from' =>  $this->input->post('created_from'),
+            'date_subscribed' =>  $this->input->post('date_subscribed'),
+            'in_test_environment' =>  $this->input->post('in_test_environment'),
+            'last_sent_at' =>  $this->input->post('last_sent_at'),
+        ];
+
+        $this->db->insert(db_prefix() . 'subscriptions', $data);
+        $insert_id = $this->db->insert_id();
+
+        if ($insert_id) {
+            return true;
+        }
+
+        return false;
+    }
+
+   //  update subscriptions data
+    public function subscriptions($data)
+    {
+        if (isset($data['id'])){
+            $this->db->where('id', $data['id']);
+            $event = $this->db->get(db_prefix() . 'subscriptions')->row();
+            if (!$event){
+                return false;
+            }
+            $data = hooks()->apply_filters('event_update_data', $data, $data['id']);
+            $this->db->where('id', $data['id']);
+            $this->db->update(db_prefix() . 'subscriptions', $data);
+            if ($this->db->affected_rows() > 0){
+                return true;
+            }
+            return false;
+        }
+    }
+
+     /**
+     * Delete Subscriptions Data
+     * @param  mixed $id id
+     * @return boolean
+     */
+    public function delete_subscription($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'subscriptions');
+        if ($this->db->affected_rows() > 0) {
+            log_activity('subscription Deleted [' . $id . ']');
+
+            return true;
+        }
+
+        return false;
+    }
+
+    // get timesheets data
+    public function get_timesheets_events($id ='')
+    {
+        $this->db->select('*');
+        $this->db->from(db_prefix().'taskstimers');
+        if($id >0){
+            $this->db->where('id', $id);
+        }
+        return $this->db->get()->result_array();
+    }
+
+    // insert Timesheets data
+    public function timesheets($data) {
+        $data = [
+            'task_id' =>  $this->input->post('task_id'),
+            'start_time' =>  $this->input->post('start_time'),
+            'end_time' =>  $this->input->post('end_time'),
+            'staff_id' =>  $this->input->post('staff_id'),
+            'hourly_rate' => $this->input->post('hourly_rate'),
+            'note' => $this->input->post('note')
+        ];
+
+        $this->db->insert(db_prefix() . 'taskstimers', $data);
+        $insert_id = $this->db->insert_id();
+
+        if ($insert_id) {
+            return true;
+        }
+        return false;
+    }
+
+    //  update timesheets data
+    public function timesheetUpdate($data)
+    {
+        if (isset($data['id'])){
+            $this->db->where('id', $data['id']);
+            $event = $this->db->get(db_prefix() . 'taskstimers')->row();
+            if (!$event){
+                return false;
+            }
+            $data = hooks()->apply_filters('event_update_data', $data, $data['id']);
+            $this->db->where('id', $data['id']);
+            $this->db->update(db_prefix() . 'taskstimers', $data);
+            if ($this->db->affected_rows() > 0){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Delete Timesheets data
+     * @param  mixed $id id
+     * @return boolean
+     */
+    public function timesheetDelete($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'taskstimers');
+        if ($this->db->affected_rows() > 0) {
+            log_activity('Event Deleted [' . $id . ']');
+
+            return true;
         }
 
         return false;

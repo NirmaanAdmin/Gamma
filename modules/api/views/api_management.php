@@ -32,10 +32,10 @@
                               <td><?php echo addslashes($user['user']); ?></td>
                               <td><?php echo addslashes($user['name']); ?></td>
                               <td><?php echo addslashes($user['token']); ?></td>
-                              <td><?php echo addslashes($user['expiration_date']); ?></td>
+                              <td><?php echo addslashes($user['expiration_date'] ?? ""); ?></td>
                               <td>
                                  <a href="<?php echo admin_url('api/edit_user/' . $user['id']) ?>" class="btn btn-default btn-icon"><i class="fa fa-pencil-square"></i></a>
-                                 <a href="<?php echo admin_url('api/delete_user/'.addslashes($user['id'])); ?>" class="btn btn-danger btn-icon _delete"><i class="fa fa-remove"></i></a>
+                                 <a href="<?php echo admin_url('api/delete_user/' . addslashes($user['id'])); ?>" class="btn btn-danger btn-icon _delete"><i class="fa fa-remove"></i></a>
                               </td>
                            </tr>
                         <?php } ?>
@@ -66,7 +66,7 @@
                   <?php echo render_input('user','user_api'); ?>
                   <?php echo render_input('name','name_api'); ?>
 				      <?php echo render_datetime_input('expiration_date','expiration_date'); ?>
-               </div>               
+               </div>
             </div>
          </div>
          <div class="modal-footer">

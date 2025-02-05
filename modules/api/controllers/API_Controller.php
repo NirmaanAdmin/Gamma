@@ -80,7 +80,7 @@ class API_Controller extends CI_Controller
      * RETURN DATA
      */
     protected $return_other_data = [];
-    
+
     public function __construct() {
         parent::__construct();
         $this->CI =& get_instance();
@@ -95,7 +95,7 @@ class API_Controller extends CI_Controller
         $this->API_LIMIT_TABLE_NAME = $this->CI->config->item('api_limit_table_name');
         $this->API_KEYS_TABLE_NAME  = $this->CI->config->item('api_keys_table_name');
 
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+        
     }
 
     public function _APIConfig($config = [])
@@ -162,9 +162,9 @@ class API_Controller extends CI_Controller
      * ------------------------
      * @param: {int} number
      * @param: {type} ip
-     * 
+     *
      * Total Number Limit without Time
-     * 
+     *
      * @param: {minute} time/everyday
      * Total Number Limit with Last {3,4,5...} minute
      * --------------------------------------------------------
@@ -180,7 +180,7 @@ class API_Controller extends CI_Controller
         if (!isset($data[1])) {
             $this->_response(['status' => FALSE, 'error' => 'Limit Type Required'], self::HTTP_BAD_REQUEST);
         }
-        
+
         if (!isset($this->db)) {
             $this->_response(['status' => FALSE, 'error' => 'Load CodeIgniter Database Library'], self::HTTP_BAD_REQUEST);
         }
@@ -215,7 +215,7 @@ class API_Controller extends CI_Controller
                     {
                         $limit_timestamp = time() - ($limit_time*60);
                         // echo Date('d/m/Y h:i A', $times);
-    
+
                         $where_data_ip_with_time = [
                             'uri' => $this->CI->uri->uri_string(),
                             'class' => $this->CI->router->fetch_class(),
@@ -223,7 +223,7 @@ class API_Controller extends CI_Controller
                             'ip_address' => $this->CI->input->ip_address(),
                             'time >=' => $limit_timestamp
                         ];
-    
+
                         $time_limit_query = $this->CI->db->get_where($this->API_LIMIT_TABLE_NAME, $where_data_ip_with_time);
                         // echo $this->CI->db->last_query();
                         if ($this->db->affected_rows() >= $limit_num)
@@ -245,10 +245,10 @@ class API_Controller extends CI_Controller
 
                         $start_date = nice_date($bad_date .' 12:00 AM', 'd-m-Y h:i A'); // {DATE} 12:00 AM
                         $end_date = nice_date($bad_date .' 12:00 PM', 'd-m-Y h:i A'); // {DATE} 12:00 PM
-                        
+
                         $start_date_timestamp = strtotime($start_date);
                         $end_date_timestamp = strtotime($end_date);
-                       
+
                         $where_data_ip_with_time = [
                             'uri' => $this->CI->uri->uri_string(),
                             'class' => $this->CI->router->fetch_class(),
@@ -257,7 +257,7 @@ class API_Controller extends CI_Controller
                             'time >=' => $start_date_timestamp,
                             'time <=' => $end_date_timestamp,
                         ];
-    
+
                         $time_limit_query = $this->CI->db->get_where($this->API_LIMIT_TABLE_NAME, $where_data_ip_with_time);
                         // echo $this->CI->db->last_query();exit;
                         if ($this->db->affected_rows() >= $limit_num)
@@ -352,7 +352,7 @@ class API_Controller extends CI_Controller
                     if (!$this->db->affected_rows() > 0)
                     {
                         $this->_response(['status' => FALSE, 'error' => 'API Key Invalid'], self::HTTP_NOT_FOUND);
-                    } 
+                    }
                 }
             } else {
                 $this->_response(['status' => FALSE, 'error' => 'Set API Key in Request Header'], self::HTTP_NOT_FOUND);
@@ -370,7 +370,7 @@ class API_Controller extends CI_Controller
             }
 
             $api_key_get_name = $this->config->item('api_key_get_name');
-            
+
             $get_param_value = $this->CI->input->get($api_key_get_name, TRUE);
             if (!empty($get_param_value) AND is_string($get_param_value))
             {
@@ -399,7 +399,7 @@ class API_Controller extends CI_Controller
                     if (!$this->db->affected_rows() > 0)
                     {
                         $this->_response(['status' => FALSE, 'error' => 'API Key Invalid'], self::HTTP_NOT_FOUND);
-                    } 
+                    }
                 }
             } else {
                 $this->_response(['status' => FALSE, 'error' => 'API Key GET Parameter Required'], self::HTTP_NOT_FOUND);
@@ -417,7 +417,7 @@ class API_Controller extends CI_Controller
             }
 
             $api_key_post_name = $this->config->item('api_key_post_name');
-           
+
             $get_param_value = $this->CI->input->post($api_key_post_name, TRUE);
             if (!empty($get_param_value) AND is_string($get_param_value))
             {
@@ -431,7 +431,7 @@ class API_Controller extends CI_Controller
                     if (!isset($this->db)) {
                         $this->_response(['status' => FALSE, 'error' => 'Load CodeIgniter Database Library'], self::HTTP_BAD_REQUEST);
                     }
-                    
+
                     // check api key database table exists
                     if (!$this->db->table_exists($this->API_KEYS_TABLE_NAME)) {
                         $this->_response(['status' => FALSE, 'error' => 'Create API Key Database Table'], self::HTTP_BAD_REQUEST);
@@ -446,7 +446,7 @@ class API_Controller extends CI_Controller
                     if (!$this->db->affected_rows() > 0)
                     {
                         $this->_response(['status' => FALSE, 'error' => 'API Key Invalid'], self::HTTP_NOT_FOUND);
-                    } 
+                    }
                 }
             } else {
                 $this->_response(['status' => FALSE, 'error' => 'API Key POST Parameter Required'], self::HTTP_NOT_FOUND);

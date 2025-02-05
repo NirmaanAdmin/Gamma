@@ -7,7 +7,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * Help convert between various formats such as XML, JSON, CSV, etc.
  */
 class Format {
-
     /**
      * Array output format
      */

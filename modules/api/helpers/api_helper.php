@@ -132,7 +132,7 @@ function get_available_api_permissions($data = [])
         ],
         'contracts' => [
             'name'         => _l('contracts'),
-            'capabilities' => $thirdPermissionsArray,
+            'capabilities' => $firstPermissionsArray,
         ],
         'credit_notes' => [
             'name'         => _l('credit_notes'),
@@ -155,7 +155,7 @@ function get_available_api_permissions($data = [])
             'capabilities' => $firstPermissionsArray,
         ],
         'taxes' => [
-            'name'         => _l('expenses'),
+            'name'         => _l('taxes'),
             'capabilities' => $forthPermissionsArray,
         ],
         'payment_methods' => [
@@ -167,7 +167,19 @@ function get_available_api_permissions($data = [])
             'capabilities' => $secondPermissionsArray,
         ],
         'proposals' => [
-            'name'         => _l('payments'),
+            'name'         => _l('proposals'),
+            'capabilities' => $firstPermissionsArray,
+        ],
+         'calendar' => [
+            'name'         => _l('calendar'),
+            'capabilities' => $firstPermissionsArray,
+        ],
+         'subscriptions' => [
+            'name'         => _l('subscriptions'),
+            'capabilities' => $firstPermissionsArray,
+        ],
+         'timesheets' => [
+            'name'         => _l('timesheets'),
             'capabilities' => $firstPermissionsArray,
         ],
     ];

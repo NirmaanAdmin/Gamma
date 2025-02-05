@@ -27,7 +27,7 @@ class Milestones extends REST_Controller {
     /**
      * @api {get} api/milestones/:id Request Milestones information
      * @apiName GetMilestones
-     * @apiGroup Milestone
+     * @apiGroup Milestones
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -79,7 +79,7 @@ class Milestones extends REST_Controller {
     /**
      * @api {get} api/milestones/search/:keysearch Search Milestones Information
      * @apiName GetMilestoneSearch
-     * @apiGroup Milestone
+     * @apiGroup Milestones
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -131,7 +131,7 @@ class Milestones extends REST_Controller {
     /**
      * @api {post} api/milestones Add New Milestone
      * @apiName PostMilestone
-     * @apiGroup Milestone
+     * @apiGroup Milestones
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -203,7 +203,7 @@ class Milestones extends REST_Controller {
     /**
      * @api {delete} api/delete/milestones/:id Delete a Milestone
      * @apiName DeleteMilestone
-     * @apiGroup Milestone
+     * @apiGroup Milestones
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -253,7 +253,7 @@ class Milestones extends REST_Controller {
     /**
      * @api {put} api/milestones/:id Update a Milestone
      * @apiName PutMilestone
-     * @apiGroup Milestone
+     * @apiGroup Milestones
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *

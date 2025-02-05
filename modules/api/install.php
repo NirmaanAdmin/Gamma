@@ -10,7 +10,7 @@ if (!$CI->db->table_exists(db_prefix() . 'user_api')) {
         `user` VARCHAR(50) NOT NULL,
         `name` VARCHAR(50) NOT NULL,
         `token` VARCHAR(255) NOT NULL,
-        `expiration_date` DATETIME NOT NULL,
+        `expiration_date` DATETIME,
         `permission_enable` TINYINT(4) DEFAULT 0,
         PRIMARY KEY (`id`));
     ');

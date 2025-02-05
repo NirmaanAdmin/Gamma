@@ -28,7 +28,7 @@ class Tasks extends REST_Controller {
     /**
      * @api {get} api/tasks/:id Request Task information
      * @apiName GetTask
-     * @apiGroup Task
+     * @apiGroup Tasks
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -40,7 +40,7 @@ class Tasks extends REST_Controller {
      *     HTTP/1.1 200 OK
      *     {
      *         "id": "10",
-     *         "name": "Khảo sát chi tiết hiện trạng",
+     *         "name": "This is a task",
      *         "description": "",
      *         "priority": "2",
      *         "dateadded": "2019-02-25 12:26:37",
@@ -75,7 +75,7 @@ class Tasks extends REST_Controller {
         // Check if the data store contains
         if ($data)
         {
-            $data = $this->Api_model->get_api_custom_data($data,"tasks", $id);
+            $data = $this->Api_model->get_api_custom_data($data, "tasks", $id);
 
             // Set the response and exit
             $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
@@ -93,7 +93,7 @@ class Tasks extends REST_Controller {
     /**
      * @api {get} api/tasks/search/:keysearch Search Tasks Information
      * @apiName GetTaskSearch
-     * @apiGroup Task
+     * @apiGroup Tasks
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -105,7 +105,7 @@ class Tasks extends REST_Controller {
      *     HTTP/1.1 200 OK
      *     {
      *         "id": "10",
-     *         "name": "Khảo sát chi tiết hiện trạng",
+     *         "name": "This is a task",
      *         "description": "",
      *         "priority": "2",
      *         "dateadded": "2019-02-25 12:26:37",
@@ -140,6 +140,9 @@ class Tasks extends REST_Controller {
         // Check if the data store contains
         if ($data)
         {
+			usort($data, function($a, $b) {
+				return $a['id'] - $b['id'];
+			});
             $data = $this->Api_model->get_api_custom_data($data,"tasks");
 
             // Set the response and exit
@@ -156,7 +159,7 @@ class Tasks extends REST_Controller {
     /**
      * @api {post} api/tasks Add New Task
      * @apiName PostTask
-     * @apiGroup Task
+     * @apiGroup Tasks
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -216,11 +219,12 @@ class Tasks extends REST_Controller {
      *       "status": false,
      *       "message": "Task add fail."
      *     }
-     * 
+     *
      */
     public function data_post()
     {
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+        //
+
         // form validation
         $this->form_validation->set_rules('name', 'Task Name', 'trim|required|max_length[600]', array('is_unique' => 'This %s already exists please enter another Task Name'));
         $this->form_validation->set_rules('startdate', 'Task Start Date', 'trim|required', array('is_unique' => 'This %s already exists please enter another Task Start Date'));
@@ -231,7 +235,7 @@ class Tasks extends REST_Controller {
             $message = array(
                 'status' => FALSE,
                 'error' => $this->form_validation->error_array(),
-                'message' => validation_errors() 
+                'message' => validation_errors()
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -255,21 +259,22 @@ class Tasks extends REST_Controller {
                 'tags' => $this->Api_model->value($this->input->post('tags', TRUE)),
                 'description' => $this->Api_model->value($this->input->post('description', TRUE))
             ];
-               
+
             if (!empty($this->input->post('custom_fields', TRUE))) {
                 $insert_data['custom_fields'] = $this->Api_model->value($this->input->post('custom_fields', TRUE));
             }
             // insert data
             $this->load->model('tasks_model');
             $output = $this->tasks_model->add($insert_data);
-            if($output > 0 && !empty($output)){
+            if ($output > 0 && !empty($output)) {
                 // success
+                $this->handle_task_attachments_array($output);
                 $message = array(
                     'status' => TRUE,
                     'message' => 'Task add successful.'
                 );
                 $this->response($message, REST_Controller::HTTP_OK);
-            }else{
+            } else {
                 // error
                 $message = array(
                     'status' => FALSE,
@@ -283,7 +288,7 @@ class Tasks extends REST_Controller {
     /**
      * @api {delete} api/delete/tasks/:id Delete a Task
      * @apiName DeleteTask
-     * @apiGroup Task
+     * @apiGroup Tasks
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -343,7 +348,7 @@ class Tasks extends REST_Controller {
     /**
      * @api {put} api/tasks/:id Update a task
      * @apiName PutTask
-     * @apiGroup Task
+     * @apiGroup Tasks
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -367,7 +372,7 @@ class Tasks extends REST_Controller {
      *
      * @apiParamExample {json} Request-Example:
      *  {
-     *      "billable": "1", 
+     *      "billable": "1",
      *      "is_public": "1",
      *      "name": "Task 1",
      *      "hourly_rate": "0.00",
@@ -408,29 +413,40 @@ class Tasks extends REST_Controller {
     public function data_put($id = '')
     {
         $_POST = json_decode($this->security->xss_clean(file_get_contents("php://input")), true);
-        if(empty($_POST ) || !isset($_POST )) {
-            $message = array(
-                'status' => FALSE,
-                'message' => 'Data Not Acceptable OR Not Provided'
-            );
-            $this->response($message, REST_Controller::HTTP_NOT_ACCEPTABLE);
+        if (empty($_POST) || !isset($_POST)) {
+            $this->load->library('parse_input_stream');
+            $_POST = $this->parse_input_stream->parse_parameters();
+            $_FILES = $this->parse_input_stream->parse_files();
+            if (empty($_POST) || !isset($_POST)) {
+                $message = array('status' => FALSE, 'message' => 'Data Not Acceptable OR Not Provided');
+                $this->response($message, REST_Controller::HTTP_NOT_ACCEPTABLE);
+            }
         }
         $this->form_validation->set_data($_POST);
-        
-        if(empty($id) && !is_numeric($id)) {
-            $message = array(
-                'status' => FALSE,
-                'message' => 'Invalid Task ID'
-            );
+        if (empty($id) && !is_numeric($id)) {
+            $message = array('status' => FALSE, 'message' => 'Invalid Lead ID');
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
             $update_data = $this->input->post();
+            $update_file = isset($update_data['file']) ? $update_data['file'] : null;
+            unset($update_data['file']);
 
             // update data
             $this->load->model('tasks_model');
             $output = $this->tasks_model->update($update_data, $id);
-            if($output > 0 && !empty($output)){
+            if (!empty($update_file) && count($update_file)) {
+                if ($output <= 0 || empty($output)) {
+                    $output = $id;
+                }
+            }
+
+            if ($output > 0 && !empty($output)) {
                 // success
+                $attachments = $this->tasks_model->get_task_attachments($output);
+                foreach ($attachments as $attachment) {
+                    $this->tasks_model->remove_task_attachment($attachment['id']);
+                }
+                $this->handle_task_attachments_array($output);
                 $message = array(
                     'status' => TRUE,
                     'message' => 'Task Update Successful.'
@@ -445,5 +461,43 @@ class Tasks extends REST_Controller {
                 $this->response($message, REST_Controller::HTTP_NOT_FOUND);
             }
         }
+    }
+
+    function handle_task_attachments_array($task_id, $index_name = 'file') {
+        $path = get_upload_path_by_type('task') . $task_id . '/';
+        $CI = & get_instance();
+        if (isset($_FILES[$index_name]['name']) && ($_FILES[$index_name]['name'] != '' || is_array($_FILES[$index_name]['name']) && count($_FILES[$index_name]['name']) > 0)) {
+            if (!is_array($_FILES[$index_name]['name'])) {
+                $_FILES[$index_name]['name'] = [$_FILES[$index_name]['name']];
+                $_FILES[$index_name]['type'] = [$_FILES[$index_name]['type']];
+                $_FILES[$index_name]['tmp_name'] = [$_FILES[$index_name]['tmp_name']];
+                $_FILES[$index_name]['error'] = [$_FILES[$index_name]['error']];
+                $_FILES[$index_name]['size'] = [$_FILES[$index_name]['size']];
+            }
+            _file_attachments_index_fix($index_name);
+            for ($i = 0; $i < count($_FILES[$index_name]['name']); $i++) {
+                // Get the temp file path
+                $tmpFilePath = $_FILES[$index_name]['tmp_name'][$i];
+                // Make sure we have a filepath
+                if (!empty($tmpFilePath) && $tmpFilePath != '') {
+                    if (_perfex_upload_error($_FILES[$index_name]['error'][$i]) || !_upload_extension_allowed($_FILES[$index_name]['name'][$i])) {
+                        continue;
+                    }
+                    _maybe_create_upload_path($path);
+                    $filename = unique_filename($path, $_FILES[$index_name]['name'][$i]);
+                    $newFilePath = $path . $filename;
+                    // Upload the file into the temp dir
+                    if (copy($tmpFilePath, $newFilePath)) {
+                        unlink($tmpFilePath);
+                        $CI = & get_instance();
+                        $CI->load->model('tasks_model');
+                        $data = [];
+                        $data[] = ['file_name' => $filename, 'filetype' => $_FILES[$index_name]['type'][$i], ];
+                        $CI->tasks_model->add_attachment_to_database($task_id, $data, false);
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

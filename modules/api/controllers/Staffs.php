@@ -29,7 +29,7 @@ class Staffs extends REST_Controller {
     /**
      * @api {get} api/staffs/:id Request Staff information
      * @apiName GetStaff
-     * @apiGroup Staff
+     * @apiGroup Staffs
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -89,7 +89,7 @@ class Staffs extends REST_Controller {
     /**
      * @api {get} api/staffs/search/:keysearch Search Staff Information
      * @apiName GetStaffSearch
-     * @apiGroup Staff
+     * @apiGroup Staffs
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -147,7 +147,7 @@ class Staffs extends REST_Controller {
     /**
      * @api {post} api/staffs Add New Staff
      * @apiName PostStaffs
-     * @apiGroup Staff
+     * @apiGroup Staffs
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -177,7 +177,7 @@ class Staffs extends REST_Controller {
      *     'default_language' => string '' (length=0)
      *     'email_signature' => string '' (length=0)
      *     'direction' => string '' (length=0)
-     *    'departments' => 
+     *    'departments' =>
      *       array (size=5)
      *         0 => string '1' (length=1)
      *         1 => string '2' (length=1)
@@ -210,11 +210,12 @@ class Staffs extends REST_Controller {
      *       "status": false,
      *       "message": "Staff add fail."
      *     }
-     * 
+     *
      */
     public function data_post()
     {
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+        //
+
         // form validation
         $this->form_validation->set_rules('firstname', 'First Name', 'trim|required|max_length[600]', array('is_unique' => 'This %s already exists please enter another Staff First Name'));
         $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email', array('is_unique' => 'This %s already exists please enter another Staff Email'));
@@ -225,7 +226,7 @@ class Staffs extends REST_Controller {
             $message = array(
                 'status' => FALSE,
                 'error' => $this->form_validation->error_array(),
-                'message' => validation_errors() 
+                'message' => validation_errors()
             );
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         }
@@ -247,8 +248,8 @@ class Staffs extends REST_Controller {
                 'direction' => $this->Api_model->value($this->input->post('direction', TRUE)),
                 'send_welcome_email' => $this->Api_model->value($this->input->post('send_welcome_email', TRUE)),
                 'role' => '1',
-                'permissions' => array( 
-                    'bulk_pdf_exporter' => array('view'), 
+                'permissions' => array(
+                    'bulk_pdf_exporter' => array('view'),
                     'contracts' => array('create','edit','delete'),
                     'credit_notes' => array('create','edit','delete'),
                     'customers' => array('view','create','edit','delete'),
@@ -305,7 +306,7 @@ class Staffs extends REST_Controller {
     /**
      * @api {delete} api/delete/staffs/:id Delete a Staff
      * @apiName DeleteStaff
-     * @apiGroup Staff
+     * @apiGroup Staffs
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -369,7 +370,7 @@ class Staffs extends REST_Controller {
     /**
      * @api {put} api/staffs/:id Update a Staff
      * @apiName PutStaff
-     * @apiGroup Staff
+     * @apiGroup Staffs
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -438,7 +439,7 @@ class Staffs extends REST_Controller {
             $this->response($message, REST_Controller::HTTP_NOT_ACCEPTABLE);
         }
         $this->form_validation->set_data($_POST);
-        
+
         if(empty($id) && !is_numeric($id))
         {
             $message = array(

@@ -168,11 +168,11 @@ class Estimates extends REST_Controller {
             $data = $this->Api_model->get_api_custom_data($data, "estimate", $id);
             // Set the response and exit
             $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
-            
+
         } else {
             // Set the response and exit
             $this->response(['status' => FALSE, 'message' => 'No data were found'], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
-            
+
         }
     }
 
@@ -283,11 +283,11 @@ class Estimates extends REST_Controller {
             $data = $this->Api_model->get_api_custom_data($data, "estimate");
             // Set the response and exit
             $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
-            
+
         } else {
             // Set the response and exit
             $this->response(['status' => FALSE, 'message' => 'No data were found'], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
-            
+
         }
     }
 
@@ -473,7 +473,9 @@ class Estimates extends REST_Controller {
      *
      */
     public function data_post() {
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+        //
+
+		error_reporting(0);
         $data = $this->input->post();
         $this->form_validation->set_rules('clientid', 'Customer', 'trim|required|numeric|greater_than[0]');
         $this->form_validation->set_rules('project_id', 'Project', 'trim|numeric|greater_than[0]');

@@ -26,7 +26,7 @@ class Customers extends REST_Controller {
     /**
      * @api {get} api/customers/:id Request customer information
      * @apiName GetCustomer
-     * @apiGroup Customer
+     * @apiGroup Customers
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -78,18 +78,18 @@ class Customers extends REST_Controller {
             $data = $this->Api_model->get_api_custom_data($data, "customers", $id);
             // Set the response and exit
             $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
-            
+
         } else {
             // Set the response and exit
             $this->response(['status' => FALSE, 'message' => 'No data were found'], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
-            
+
         }
     }
 
     /**
      * @api {get} api/customers/search/:keysearch Search Customer Information
      * @apiName GetCustomerSearch
-     * @apiGroup Customer
+     * @apiGroup Customers
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -141,18 +141,18 @@ class Customers extends REST_Controller {
             $data = $this->Api_model->get_api_custom_data($data, "customers");
             // Set the response and exit
             $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
-            
+
         } else {
             // Set the response and exit
             $this->response(['status' => FALSE, 'message' => 'No data were found'], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
-            
+
         }
     }
 
     /**
      * @api {post} api/customers Add New Customer
      * @apiName PostCustomer
-     * @apiGroup Customer
+     * @apiGroup Customers
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -231,7 +231,8 @@ class Customers extends REST_Controller {
      *
      */
     public function data_post() {
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+        //
+
         // form validation
         $this->form_validation->set_rules('company', 'Company', 'trim|required|max_length[600]', array('is_unique' => 'This %s already exists please enter another Company'));
         if ($this->form_validation->run() == FALSE) {
@@ -265,7 +266,7 @@ class Customers extends REST_Controller {
     /**
      * @api {delete} api/delete/customers/:id Delete a Customer
      * @apiName DeleteCustomer
-     * @apiGroup Customer
+     * @apiGroup Customers
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -315,7 +316,7 @@ class Customers extends REST_Controller {
     /**
      * @api {put} api/customers/:id Update a Customer
      * @apiName PutCustomer
-     * @apiGroup Customer
+     * @apiGroup Customers
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *

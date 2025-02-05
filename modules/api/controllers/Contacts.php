@@ -29,7 +29,7 @@ class Contacts extends REST_Controller {
      * @api {get} api/contacts/:customer_id/:contact_id List all Contacts of a Customer
      * @apiVersion 0.1.0
      * @apiName GetContact
-     * @apiGroup Contact
+     * @apiGroup Contacts
      *
      * @apiHeader {String} Authorization Basic Access Authentication token
      *
@@ -115,7 +115,7 @@ class Contacts extends REST_Controller {
      * @api {get} api/contacts/search/:keysearch Search Contact Information
      * @apiVersion 0.1.0
      * @apiName GetContactSearch
-     * @apiGroup Contact
+     * @apiGroup Contacts
      *
      * @apiHeader {String} Authorization Basic Access Authentication token
      *
@@ -213,7 +213,7 @@ class Contacts extends REST_Controller {
      * @api {post} api/contacts/ Add New Contact
      * @apiVersion 0.1.0
      * @apiName PostContact
-     * @apiGroup Contact
+     * @apiGroup Contacts
      *
      * @apiHeader {String} Authorization Basic Access Authentication token
      *
@@ -313,7 +313,7 @@ class Contacts extends REST_Controller {
      * @api {delete} api/delete/contacts/:id Delete Contact
      * @apiVersion 0.1.0
      * @apiName DeleteContact
-     * @apiGroup Contact
+     * @apiGroup Contacts
      *
      * @apiHeader {String} Authorization Basic Access Authentication token
      *
@@ -368,7 +368,7 @@ class Contacts extends REST_Controller {
      * @api {put} api/contacts/:id Update Contact Information
      * @apiVersion 0.1.0
      * @apiName PutContact
-     * @apiGroup Contact
+     * @apiGroup Contacts
      *
      * @apiHeader {String} Authorization Basic Access Authentication token
      *

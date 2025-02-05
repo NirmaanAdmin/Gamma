@@ -37,7 +37,7 @@ class Common extends REST_Controller {
      * @api {get} api/common/expense_category Request Expense category
      * @apiVersion 0.3.0
      * @apiName GetExpense category
-     * @apiGroup Expense category
+     * @apiGroup Expense Categories
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -83,7 +83,7 @@ class Common extends REST_Controller {
      * @api {get} api/common/payment_mode Request Payment Modes
      * @apiVersion 0.3.0
      * @apiName GetPayment Mode
-     * @apiGroup Payment Mode
+     * @apiGroup Payment Modes
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -126,7 +126,7 @@ class Common extends REST_Controller {
      * @api {get} api/common/tax_data Request Taxes
      * @apiVersion 0.3.0
      * @apiName GetTaxes
-     * @apiGroup List Taxes
+     * @apiGroup Taxes
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *

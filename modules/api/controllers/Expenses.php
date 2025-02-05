@@ -128,12 +128,10 @@ class Expenses extends REST_Controller {
         if ($data) {
             $data = $this->Api_model->get_api_custom_data($data, "expenses", $id);
             // Set the response and exit
-            $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
-            
+            $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code            
         } else {
             // Set the response and exit
             $this->response(['status' => FALSE, 'message' => 'No data were found'], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
-            
         }
     }
 
@@ -243,12 +241,10 @@ class Expenses extends REST_Controller {
         if ($data) {
             $data = $this->Api_model->get_api_custom_data($data, "expenses");
             // Set the response and exit
-            $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
-            
+            $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code            
         } else {
             // Set the response and exit
             $this->response(['status' => FALSE, 'message' => 'No data were found'], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
-            
         }
     }
 
@@ -417,7 +413,7 @@ class Expenses extends REST_Controller {
         $this->form_validation->set_rules('date', 'Invoice date', 'trim|required|max_length[255]');
         $this->form_validation->set_rules('currency', 'Currency', 'trim|required|max_length[255]');
         $this->form_validation->set_rules('amount', 'Amount', 'trim|required|decimal|greater_than[0]');
-        $data['note'] = $data['note']??"";
+        $data['note'] = $data['note'] ?? "";
         if ($this->form_validation->run() == FALSE) {
             $message = array('status' => FALSE, 'error' => $this->form_validation->error_array(), 'message' => validation_errors());
             $this->response($message, REST_Controller::HTTP_CONFLICT);
@@ -426,6 +422,7 @@ class Expenses extends REST_Controller {
             $id = $this->expenses_model->add($data);
             if ($id > 0 && !empty($id)) {
                 // success
+                $this->handle_expense_attachments_array($id);
                 $message = array('status' => TRUE, 'message' => 'Expense added successfully.');
                 $this->response($message, REST_Controller::HTTP_OK);
             } else {
@@ -543,45 +540,50 @@ class Expenses extends REST_Controller {
     public function data_put($id = "") {
         $_POST = json_decode($this->security->xss_clean(file_get_contents("php://input")), true);
         if (empty($_POST) || !isset($_POST)) {
-            $message = array('status' => FALSE, 'message' => 'Data Not Acceptable OR Not Provided');
-            $this->response($message, REST_Controller::HTTP_NOT_ACCEPTABLE);
+            $this->load->library('parse_input_stream');
+            $_POST = $this->parse_input_stream->parse_parameters();
+            $_FILES = $this->parse_input_stream->parse_files();
+            if (empty($_POST) || !isset($_POST)) {
+                $message = array('status' => FALSE, 'message' => 'Data Not Acceptable OR Not Provided');
+                $this->response($message, REST_Controller::HTTP_NOT_ACCEPTABLE);
+            }
         }
         $this->form_validation->set_data($_POST);
         if (empty($id) && !is_numeric($id)) {
-            echo "here";
-            $message = array('status' => FALSE, 'message' => 'Invalid Expense ID');
+            $message = array('status' => FALSE, 'message' => 'Invalid Lead ID');
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $this->form_validation->set_rules('category', 'Expense Category', 'trim|required|max_length[255]|callback_validate_category');
-            $this->form_validation->set_rules('date', 'Expense date', 'trim|required|max_length[255]');
-            $this->form_validation->set_rules('currency', 'Currency', 'trim|required|max_length[255]');
-            $this->form_validation->set_rules('amount', 'Amount', 'trim|required|decimal|greater_than[0]');
-            $data['note'] = $data['note']??"";
-            if ($this->form_validation->run() == FALSE) {
-                $message = array('status' => FALSE, 'error' => $this->form_validation->error_array(), 'message' => validation_errors());
+            $this->load->model('expenses_model');
+            $is_exist = $this->expenses_model->get($id);
+            if (!is_object($is_exist)) {
+                $message = array('status' => FALSE, 'message' => 'Expense ID Doesn\'t Not Exist.');
                 $this->response($message, REST_Controller::HTTP_CONFLICT);
-            } else {
-                $this->load->model('expenses_model');
-                $is_exist = $this->expenses_model->get($id);
-                if (!is_object($is_exist)) {
-                    $message = array('status' => FALSE, 'message' => 'Expense ID Doesn\'t Not Exist.');
-                    $this->response($message, REST_Controller::HTTP_CONFLICT);
-                }
-                if (is_object($is_exist)) {
-                    $data = $this->input->post();
-                    $success = $this->expenses_model->update($data, $id);
-                    if ($success == true) {
-                        $message = array('status' => TRUE, 'message' => "Expense Updated Successfully",);
-                        $this->response($message, REST_Controller::HTTP_OK);
-                    } else {
-                        // error
-                        $message = array('status' => FALSE, 'message' => 'Expense Update Fail');
-                        $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+            }
+            if (is_object($is_exist)) {
+                $update_data = $this->input->post();
+                $update_file = isset($update_data['file']) ? $update_data['file'] : null;
+                unset($update_data['file']);
+                
+                $output = $this->expenses_model->update($update_data, $id);
+                if (!empty($update_file) && count($update_file)) {
+                    if ($output <= 0 || empty($output)) {
+                        $output = $id;
                     }
+                }
+
+                if ($output > 0 && !empty($output)) {
+                    $this->expenses_model->delete_expense_attachment($output);
+                    $this->handle_expense_attachments_array($output);
+                    $message = array('status' => TRUE, 'message' => "Expense Updated Successfully",);
+                    $this->response($message, REST_Controller::HTTP_OK);
                 } else {
-                    $message = array('status' => FALSE, 'message' => 'Invalid Expense ID');
+                    // error
+                    $message = array('status' => FALSE, 'message' => 'Expense Update Fail');
                     $this->response($message, REST_Controller::HTTP_NOT_FOUND);
                 }
+            } else {
+                $message = array('status' => FALSE, 'message' => 'Invalid Expense ID');
+                $this->response($message, REST_Controller::HTTP_NOT_FOUND);
             }
         }
     }
@@ -595,6 +597,71 @@ class Expenses extends REST_Controller {
         }
         return FALSE;
     }
+
+    function handle_expense_attachments_array($expense_id, $index_name = 'file') {
+        $path = get_upload_path_by_type('expense') . $expense_id . '/';
+        $CI = & get_instance();
+        if (isset($_FILES[$index_name]['name']) && ($_FILES[$index_name]['name'] != '' || is_array($_FILES[$index_name]['name']) && count($_FILES[$index_name]['name']) > 0)) {
+            if (!is_array($_FILES[$index_name]['name'])) {
+                $_FILES[$index_name]['name'] = [$_FILES[$index_name]['name']];
+                $_FILES[$index_name]['type'] = [$_FILES[$index_name]['type']];
+                $_FILES[$index_name]['tmp_name'] = [$_FILES[$index_name]['tmp_name']];
+                $_FILES[$index_name]['error'] = [$_FILES[$index_name]['error']];
+                $_FILES[$index_name]['size'] = [$_FILES[$index_name]['size']];
+            }
+            _file_attachments_index_fix($index_name);
+            for ($i = 0; $i < count($_FILES[$index_name]['name']); $i++) {
+                // Get the temp file path
+                $tmpFilePath = $_FILES[$index_name]['tmp_name'][$i];
+                // Make sure we have a filepath
+                if (!empty($tmpFilePath) && $tmpFilePath != '') {
+                    if (_perfex_upload_error($_FILES[$index_name]['error'][$i]) || !_upload_extension_allowed($_FILES[$index_name]['name'][$i])) {
+                        continue;
+                    }
+                    _maybe_create_upload_path($path);
+                    $filename = unique_filename($path, $_FILES[$index_name]['name'][$i]);
+                    $newFilePath = $path . $filename;
+                    // Upload the file into the temp dir
+                    if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                        $CI = & get_instance();
+                        $CI->load->model('expenses_model');
+                        $data = [];
+                        $data[] = ['file_name' => $filename, 'filetype' => $_FILES[$index_name]['type'][$i], ];
+                        $this->add_attachment_to_database($expense_id, $data, false);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    function add_attachment_to_database($expense_id, $attachment, $external = false, $form_activity = false) {
+        $this->misc_model->add_attachment_to_database($expense_id, 'expense', $attachment, $external);
+
+        // No notification when attachment is imported from web to lead form
+        if ($form_activity == false) {
+            $this->load->model('expenses_model');
+            $expense         = $this->expenses_model->get($expense_id);
+            $not_user_ids = [];
+            if ($expense->addedfrom != get_staff_user_id()) {
+                array_push($not_user_ids, $expense->addedfrom);
+            }
+            $notifiedUsers = [];
+            foreach ($not_user_ids as $uid) {
+                $notified = add_notification([
+                    'description'     => 'not_expense_added_attachment',
+                    'touserid'        => $uid,
+                    'link'            => '#expenseid=' . $expense_id,
+                    'additional_data' => serialize([
+                        $expense->expense_name,
+                    ]),
+                ]);
+                if ($notified) {
+                    array_push($notifiedUsers, $uid);
+                }
+            }
+            pusher_trigger_notification($notifiedUsers);
+        }
+    }
 }
 /* End of file Expenses.php */
-/* Location: .//F/projects/ci_work_home/perfex_crm_latest_restapi/modules/api/controllers/Expenses.php */

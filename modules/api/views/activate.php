@@ -6,9 +6,9 @@
          <div class="col-md-6 col-md-offset-3">
             <div class="panel_s">
                <div class="panel-body">
-                  <h4>Module activation | Enter random value</h4>
+                  <h4>Module activation</h4>
                   <hr class="hr-panel-heading">
-                  Please activate your product, using your license purchase key (<a style="color:red;" href="https://cutt.ly/PLFZenO" target="_blank">NULLED Web Community</a>)
+                  Please activate your product, using your license purchase key (<a target="_blank" href="https://help.market.envato.com/hc/en-us/articles/202822600-Where-Is-My-Purchase-Code-">where can I find my purchase key?</a>)
                   <br><br>
                   <?php echo form_open($submit_url, ['autocomplete' => 'off', 'id' => 'verify-form']); ?>
                   <?php echo form_hidden('original_url', $original_url); ?>

@@ -20,9 +20,53 @@ class Leads extends REST_Controller {
     }
 
     /**
-     * @api {get} api/leads/:id Request lead information
+     * @api {get} api/leads/ Request all Leads
+     * @apiName GetLeads
+     * @apiGroup Leads
+     *
+     * @apiHeader {String} Authorization Basic Access Authentication token.
+     *
+     *
+     * @apiSuccess {Object} Lead information.
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *         "id": "17",
+     *         "hash": "c6e938f8b7a40b1bcfd98dc04f6eeee0-60d9c039da373a685fc0f74d4bfae631",
+     *         "name": "Lead name",
+     *         "contact": "",
+     *         "title": "",
+     *         "company": "Themesic Interactive",
+     *         "description": "",
+     *         "country": "243",
+     *         "zip": null,
+     *         "city": "London",
+     *         "state": "London",
+     *         "address": "1a The Alexander Suite Silk Point",
+     *         "assigned": "5",
+     *         "dateadded": "2019-07-18 08:59:28",
+     *         "from_form_id": "0",
+     *         "status": "0",
+     *         "source": "4",
+     *         ...
+     *     }
+     *
+     * @apiError {Boolean} status Request status.
+     * @apiError {String} message No data were found.
+     *
+     * @apiErrorExample Error-Response:
+     *     HTTP/1.1 404 Not Found
+     *     {
+     *       "status": false,
+     *       "message": "No data were found"
+     *     }
+     */
+
+    /**
+     * @api {get} api/leads/:id Request Lead information
      * @apiName GetLead
-     * @apiGroup Lead
+     * @apiGroup Leads
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -71,18 +115,16 @@ class Leads extends REST_Controller {
             $data = $this->Api_model->get_api_custom_data($data, "leads", $id);
             // Set the response and exit
             $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
-            
         } else {
             // Set the response and exit
             $this->response(['status' => FALSE, 'message' => 'No data were found'], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
-            
         }
     }
 
     /**
      * @api {get} api/leads/search/:keysearch Search Lead Information
      * @apiName GetLeadSearch
-     * @apiGroup Lead
+     * @apiGroup Leads
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -130,25 +172,23 @@ class Leads extends REST_Controller {
             $data = $this->Api_model->get_api_custom_data($data, "leads");
             // Set the response and exit
             $this->response($data, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
-            
         } else {
             // Set the response and exit
             $this->response(['status' => FALSE, 'message' => 'No data were found'], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
-            
         }
     }
 
     /**
      * @api {post} api/leads Add New Lead
      * @apiName PostLead
-     * @apiGroup Lead
+     * @apiGroup Leads
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
      * @apiParam {String} source            Mandatory Lead source.
      * @apiParam {String} status            Mandatory Lead Status.
      * @apiParam {String} name              Mandatory Lead Name.
-     * @apiParam {String} [assigned]        Optional Lead assigned.
+     * @apiParam {String} assigned          Mandatory Lead assigned.
      * @apiParam {String} [client_id]       Optional Lead From Customer.
      * @apiParam {String} [tags]            Optional Lead tags.
      * @apiParam {String} [contact]         Optional Lead contact.
@@ -213,17 +253,19 @@ class Leads extends REST_Controller {
      *
      */
     public function data_post() {
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+        //
+
         // form validation
         $this->form_validation->set_rules('name', 'Lead Name', 'trim|required|max_length[600]', array('is_unique' => 'This %s already exists please enter another Lead Name'));
         $this->form_validation->set_rules('source', 'Source', 'trim|required', array('is_unique' => 'This %s already exists please enter another Lead source'));
         $this->form_validation->set_rules('status', 'Status', 'trim|required', array('is_unique' => 'This %s already exists please enter another Status'));
+        $this->form_validation->set_rules('assigned', 'Assigned', 'trim|required', array('is_unique' => 'This %s already exists please enter another Assigned'));
         if ($this->form_validation->run() == FALSE) {
             // form validation error
             $message = array('status' => FALSE, 'error' => $this->form_validation->error_array(), 'message' => validation_errors());
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $insert_data = ['name' => $this->input->post('name', TRUE), 'source' => $this->input->post('source', TRUE), 'status' => $this->input->post('status', TRUE), 'assigned' => $this->Api_model->value($this->input->post('assigned', TRUE)), 'tags' => $this->Api_model->value($this->input->post('tags', TRUE)), 'title' => $this->Api_model->value($this->input->post('title', TRUE)), 'email' => $this->Api_model->value($this->input->post('email', TRUE)), 'website' => $this->Api_model->value($this->input->post('website', TRUE)), 'phonenumber' => $this->Api_model->value($this->input->post('phonenumber', TRUE)), 'company' => $this->Api_model->value($this->input->post('company', TRUE)), 'address' => $this->Api_model->value($this->input->post('address', TRUE)), 'city' => $this->Api_model->value($this->input->post('city', TRUE)), 'zip' => '', 'state' => $this->Api_model->value($this->input->post('state', TRUE)), 'default_language' => $this->Api_model->value($this->input->post('default_language', TRUE)), 'description' => $this->Api_model->value($this->input->post('description', TRUE)), 'custom_contact_date' => $this->Api_model->value($this->input->post('custom_contact_date', TRUE)), 'is_public' => $this->Api_model->value($this->input->post('is_public', TRUE)), 'contacted_today' => $this->Api_model->value($this->input->post('contacted_today', TRUE)) ];
+            $insert_data = ['name' => $this->input->post('name', TRUE), 'source' => $this->input->post('source', TRUE), 'status' => $this->input->post('status', TRUE), 'assigned' => $this->input->post('assigned', TRUE), 'tags' => $this->Api_model->value($this->input->post('tags', TRUE)), 'title' => $this->Api_model->value($this->input->post('title', TRUE)), 'email' => $this->Api_model->value($this->input->post('email', TRUE)), 'website' => $this->Api_model->value($this->input->post('website', TRUE)), 'phonenumber' => $this->Api_model->value($this->input->post('phonenumber', TRUE)), 'company' => $this->Api_model->value($this->input->post('company', TRUE)), 'address' => $this->Api_model->value($this->input->post('address', TRUE)), 'city' => $this->Api_model->value($this->input->post('city', TRUE)), 'zip' => '', 'state' => $this->Api_model->value($this->input->post('state', TRUE)), 'default_language' => $this->Api_model->value($this->input->post('default_language', TRUE)), 'description' => $this->Api_model->value($this->input->post('description', TRUE)), 'custom_contact_date' => $this->Api_model->value($this->input->post('custom_contact_date', TRUE)), 'is_public' => $this->Api_model->value($this->input->post('is_public', TRUE)), 'contacted_today' => $this->Api_model->value($this->input->post('contacted_today', TRUE)) ];
             if (!empty($this->input->post('custom_fields', TRUE))) {
                 $insert_data['custom_fields'] = $this->Api_model->value($this->input->post('custom_fields', TRUE));
             }
@@ -246,7 +288,7 @@ class Leads extends REST_Controller {
     /**
      * @api {delete} api/delete/leads/:id Delete a Lead
      * @apiName DeleteLead
-     * @apiGroup Lead
+     * @apiGroup Leads
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
@@ -296,14 +338,14 @@ class Leads extends REST_Controller {
     /**
      * @api {put} api/leads/:id Update a lead
      * @apiName PutLead
-     * @apiGroup Lead
+     * @apiGroup Leads
      *
      * @apiHeader {String} Authorization Basic Access Authentication token.
      *
      * @apiParam {String} source            Mandatory Lead source.
      * @apiParam {String} status            Mandatory Lead Status.
      * @apiParam {String} name              Mandatory Lead Name.
-     * @apiParam {String} [assigned]        Optional Lead assigned.
+     * @apiParam {String} assigned        Mandatory Lead assigned.
      * @apiParam {String} [client_id]       Optional Lead From Customer.
      * @apiParam {String} [tags]            Optional Lead tags.
      * @apiParam {String} [contact]         Optional Lead contact.
@@ -367,8 +409,13 @@ class Leads extends REST_Controller {
     public function data_put($id = '') {
         $_POST = json_decode($this->security->xss_clean(file_get_contents("php://input")), true);
         if (empty($_POST) || !isset($_POST)) {
-            $message = array('status' => FALSE, 'message' => 'Data Not Acceptable OR Not Provided');
-            $this->response($message, REST_Controller::HTTP_NOT_ACCEPTABLE);
+            $this->load->library('parse_input_stream');
+            $_POST = $this->parse_input_stream->parse_parameters();
+            $_FILES = $this->parse_input_stream->parse_files();
+            if (empty($_POST) || !isset($_POST)) {
+                $message = array('status' => FALSE, 'message' => 'Data Not Acceptable OR Not Provided');
+                $this->response($message, REST_Controller::HTTP_NOT_ACCEPTABLE);
+            }
         }
         $this->form_validation->set_data($_POST);
         if (empty($id) && !is_numeric($id)) {
@@ -376,11 +423,24 @@ class Leads extends REST_Controller {
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
             $update_data = $this->input->post();
+            $update_file = isset($update_data['file']) ? $update_data['file'] : null;
+            unset($update_data['file']);
             // update data
             $this->load->model('leads_model');
             $output = $this->leads_model->update($update_data, $id);
+            if (!empty($update_file) && count($update_file)) {
+                if ($output <= 0 || empty($output)) {
+                    $output = $id;
+                }
+            }
+
             if ($output > 0 && !empty($output)) {
                 // success
+                $attachments = $this->leads_model->get_lead_attachments($output);
+                foreach ($attachments as $attachment) {
+                    $this->leads_model->delete_lead_attachment($attachment['id']);
+                }
+                $this->handle_lead_attachments_array($output);
                 $message = array('status' => TRUE, 'message' => 'Lead Update Successful.');
                 $this->response($message, REST_Controller::HTTP_OK);
             } else {
@@ -403,7 +463,7 @@ class Leads extends REST_Controller {
                 $_FILES[$index_name]['size'] = [$_FILES[$index_name]['size']];
             }
             _file_attachments_index_fix($index_name);
-            for ($i = 0;$i < count($_FILES[$index_name]['name']);$i++) {
+            for ($i = 0; $i < count($_FILES[$index_name]['name']); $i++) {
                 // Get the temp file path
                 $tmpFilePath = $_FILES[$index_name]['tmp_name'][$i];
                 // Make sure we have a filepath
@@ -415,7 +475,8 @@ class Leads extends REST_Controller {
                     $filename = unique_filename($path, $_FILES[$index_name]['name'][$i]);
                     $newFilePath = $path . $filename;
                     // Upload the file into the temp dir
-                    if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                    if (copy($tmpFilePath, $newFilePath)) {
+                        unlink($tmpFilePath);
                         $CI = & get_instance();
                         $CI->load->model('leads_model');
                         $data = [];

@@ -16,12 +16,13 @@ class Api extends AdminController
         if (!$this->app_modules->is_active('api')) {
             access_denied("Api");
         }
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+
+        //
     }
 
     public function api_management()
     {
-        \modules\api\core\Apiinit::the_da_vinci_code('api');
+        //
 
         $data['user_api'] = $this->api_model->get_user();
         $data['title'] = _l('api_management');
@@ -29,22 +30,24 @@ class Api extends AdminController
     }
 
     public function api_guide()
-    { 
+    {
         fopen(APP_MODULES_PATH . 'api/views/apidoc/index.html', 'r');
     }
 
     /* Add new user or update existing*/
     public function user()
     {
-        \modules\api\core\Apiinit::ease_of_mind('api');
+
+
         if (!is_admin()) {
             access_denied('Ticket Priorities');
         }
         if ($this->input->post()) {
-            \modules\api\core\Apiinit::the_da_vinci_code('api');
+            //
+
             if (!$this->input->post('id')) {
                 $id = $this->api_model->add_user($this->input->post());
-               
+
                 if ($id) {
                     set_alert('success', _l('added_successfully', _l('user_api')));
                 }
@@ -66,7 +69,8 @@ class Api extends AdminController
     /* Edit user */
     public function create_user()
     {
-        \modules\api\core\Apiinit::ease_of_mind('api');
+
+
         if (!is_admin()) {
             access_denied('User');
         }
@@ -77,7 +81,8 @@ class Api extends AdminController
     /* Edit user */
     public function edit_user($id)
     {
-        \modules\api\core\Apiinit::ease_of_mind('api');
+        
+
         if (!is_admin()) {
             access_denied('User');
         }
@@ -93,7 +98,8 @@ class Api extends AdminController
     /* Delete user */
     public function delete_user($id)
     {
-        \modules\api\core\Apiinit::ease_of_mind('api');
+
+
         if (!is_admin()) {
             access_denied('User');
         }
