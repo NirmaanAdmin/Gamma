@@ -28,16 +28,20 @@ class Authorization_Token
     protected $token_header;
 
     /**
-     * Token Expire Time (default: 10 years)
+     * Token Expire Time
+     * ------------------
+     * (1 day) : 60 * 60 * 24 = 86400
+     * (1 hour) : 60 * 60 = 3600
      */
     protected $token_expire_time = 315569260; 
 
+
     public function __construct()
-    {
+	{
         $this->CI =& get_instance();
 
         /** 
-         * Load JWT config file
+         * jwt config file load
          */
         $this->CI->load->config('jwt');
 
@@ -46,8 +50,8 @@ class Authorization_Token
          */
         $this->token_key        = $this->CI->config->item('jwt_key');
         $this->token_algorithm  = $this->CI->config->item('jwt_algorithm');
-        $this->token_header     = $this->CI->config->item('token_header');
-        $this->token_expire_time= $this->CI->config->item('token_expire_time');
+        $this->token_header  = $this->CI->config->item('token_header');
+        $this->token_expire_time  = $this->CI->config->item('token_expire_time');
     }
 
     /**
@@ -56,105 +60,125 @@ class Authorization_Token
      */
     public function generateToken($data = null)
     {
-        if ($data && is_array($data))
+        if ($data AND is_array($data))
         {
-            // Add API time key in user array
+            // add api time key in user array()
             $data['API_TIME'] = time();
 
             try {
                 return api_JWT::encode($data, $this->token_key, $this->token_algorithm);
-            } catch (Exception $e) {
-                return 'Message: ' . $e->getMessage();
+            }
+            catch(Exception $e) {
+                return 'Message: ' .$e->getMessage();
             }
         } else {
             return "Token Data Undefined!";
         }
     }
 
-    /**
-     * Retrieve token from headers
-     */
+
     public function get_token()
     {
+        /**
+         * Request All Headers
+         */
         $headers = $this->CI->input->request_headers();
-        return $this->extractToken($headers);
+        
+        /**
+         * Authorization Header Exists
+         */
+        return $this->token($headers);
     }
-
     /**
-     * Validate Token from Headers
-     * @return array
+     * Validate Token with Header
+     * @return : user informations
      */
     public function validateToken()
     {
+        /**
+         * Request All Headers
+         */
         $headers = $this->CI->input->request_headers();
+        
+        /**
+         * Authorization Header Exists
+         */
         $token_data = $this->tokenIsExist($headers);
-
-        if ($token_data['status'] === TRUE) {
-            try {
-                $token_decode = api_JWT::decode($token_data['token'], new api_Key($this->token_key, $this->token_algorithm));
-
-                if (!empty($token_decode) && is_object($token_decode)) {
-                    // Validate API Time
-                    if (!isset($token_decode->API_TIME) || !is_numeric($token_decode->API_TIME)) {
-                        return ['status' => FALSE, 'message' => 'Token Time Not Defined!'];
-                    }
-
-                    // Check if token is expired
-                    if ((time() - $token_decode->API_TIME) >= $this->token_expire_time) {
-                        return ['status' => FALSE, 'message' => 'Token Expired.'];
-                    }
-
-                    return ['status' => TRUE, 'data' => $token_decode];
-
-                } else {
-                    return ['status' => FALSE, 'message' => 'Invalid Token Data.'];
+        if($token_data['status'] === TRUE)
+        {
+            try
+            {
+                /**
+                 * Token Decode
+                 */
+                try {
+                    $token_decode = api_JWT::decode($token_data['token'], new api_Key($this->token_key, $this->token_algorithm));
+                }
+                catch(Exception $e) {
+                    return ['status' => FALSE, 'message' => $e->getMessage()];
                 }
 
-            } catch (Exception $e) {
+                if(!empty($token_decode) AND is_object($token_decode))
+                {
+                    // Check Token API Time [API_TIME]
+                    if (empty($token_decode->API_TIME OR !is_numeric($token_decode->API_TIME))) {
+                        
+                        return ['status' => FALSE, 'message' => 'Token Time Not Define!'];
+                    }
+                    else
+                    {
+                        /**
+                         * Check Token Time Valid 
+                         */
+                        $time_difference = strtotime('now') - $token_decode->API_TIME;
+                        if( $time_difference >= $this->token_expire_time )
+                        {
+                            return ['status' => FALSE, 'message' => 'Token Time Expire.'];
+
+                        }else
+                        {
+                            /**
+                             * All Validation False Return Data
+                             */
+                            return ['status' => TRUE, 'data' => $token_decode];
+                        }
+                    }
+                    
+                }else{
+                    return ['status' => FALSE, 'message' => 'Forbidden'];
+                }
+            }
+            catch(Exception $e) {
                 return ['status' => FALSE, 'message' => $e->getMessage()];
             }
-        } else {
-            return ['status' => FALSE, 'message' => $token_data['message']];
+        }else
+        {
+            // Authorization Header Not Found!
+            return ['status' => FALSE, 'message' => $token_data['message'] ];
         }
     }
 
     /**
-     * Check if Token Exists in Request Headers
-     * @param array $headers
-     * @return array
+     * Token Header Check
+     * @param: request headers
      */
     private function tokenIsExist($headers)
     {
-        if (!empty($headers) && is_array($headers)) {
+        if(!empty($headers) AND is_array($headers)) {
             foreach ($headers as $header_name => $header_value) {
-                if (strtolower(trim($header_name)) == strtolower(trim($this->token_header))) {
-                    // Support "Bearer" format
-                    if (strpos(strtolower($header_value), 'bearer ') === 0) {
-                        $header_value = trim(substr($header_value, 7)); // Remove "Bearer " prefix
-                    }
+                if (strtolower(trim($header_name)) == strtolower(trim($this->token_header)))
                     return ['status' => TRUE, 'token' => $header_value];
-                }
             }
         }
         return ['status' => FALSE, 'message' => 'Token is not defined.'];
     }
 
-    /**
-     * Extract token from headers
-     * @param array $headers
-     * @return string
-     */
-    private function extractToken($headers)
+    private function token($headers)
     {
-        if (!empty($headers) && is_array($headers)) {
+        if(!empty($headers) AND is_array($headers)) {
             foreach ($headers as $header_name => $header_value) {
-                if (strtolower(trim($header_name)) == strtolower(trim($this->token_header))) {
-                    // Support "Bearer" token
-                    if (strpos(strtolower($header_value), 'bearer ') === 0) {
-                        return trim(substr($header_value, 7)); // Remove "Bearer " prefix
-                    }
+                if (strtolower(trim($header_name)) == strtolower(trim($this->token_header)))
                     return $header_value;
-                }
             }
         }
         return 'Token is not defined.';
