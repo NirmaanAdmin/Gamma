@@ -164,12 +164,12 @@ class Authorization_Token
      */
     private function tokenIsExist($headers)
     {
-        if(!empty($headers) AND is_array($headers)) {
+        // if(!empty($headers) AND is_array($headers)) {
             foreach ($headers as $header_name => $header_value) {
                 if (strtolower(trim($header_name)) == strtolower(trim($this->token_header)))
                     return ['status' => TRUE, 'token' => $header_value];
             }
-        }
+        // }
         return ['status' => FALSE, 'message' => 'Token is not defined.'];
     }
 
