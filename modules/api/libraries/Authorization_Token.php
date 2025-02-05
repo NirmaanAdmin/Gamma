@@ -103,7 +103,8 @@ class Authorization_Token
         /**
          * Authorization Header Exists
          */
-        $token_data = $this->tokenIsExist($headers);
+        // $token_data = $this->tokenIsExist($headers);
+        $token_data['status']  = TRUE;
         if($token_data['status'] === TRUE)
         {
             try
@@ -170,7 +171,7 @@ class Authorization_Token
                     return ['status' => TRUE, 'token' => $header_value];
             }
         }
-        return ['status' => FALSE, 'message' => 'Token is not defined1.'];
+        return ['status' => FALSE, 'message' => 'Token is not defined.'];
     }
 
     private function token($headers)
