@@ -9,7 +9,7 @@
 require_once __DIR__.'/../vendor/autoload.php';
 use Firebase\JWT\JWT as api_JWT;
 use Firebase\JWT\Key as api_Key;
-#[\AllowDynamicProperties]
+
 class Authorization_Token 
 {
     /**
@@ -170,11 +170,7 @@ class Authorization_Token
                     return ['status' => TRUE, 'token' => $header_value];
             }
         }
-        foreach ($headers as $header_name => $header_value) {
-            if (strtolower(trim($header_name)) == strtolower(trim($this->token_header)))
-                return ['status' => TRUE, 'token' => $header_value];
-        }
-        // return ['status' => TRUE, 'token' => 'Token is not defined.'];
+        return ['status' => FALSE, 'message' => 'Token is not defined.'];
     }
 
     private function token($headers)
