@@ -155,7 +155,7 @@ return App_table::find('leads')
         $rResult = $result['rResult'];
         $start = (int) $this->ci->input->post('start'); // Get pagination offset
         $sr = $start + 1; // Start serial numbering from correct position
-       
+
         foreach ($rResult as $aRow) {
             $row = [];
             $name = $aRow['name'];
@@ -205,7 +205,24 @@ return App_table::find('leads')
 
             $row[] = ($aRow['email'] != '' ? '<a href="mailto:' . e($aRow['email']) . '">' . e($aRow['email']) . '</a>' : '');
 
-            $row[] = ($aRow['phonenumber'] != '' ? '<a href="tel:' . e($aRow['phonenumber']) . '">' . e($aRow['phonenumber']) . '</a>' : '');
+            // $row[] = ($aRow['phonenumber'] != '' ? '<a href="tel:' . e($aRow['phonenumber']) . '">' . e($aRow['phonenumber']) . '</a>' : '');
+            $phone = trim($aRow['phonenumber']);
+
+            if (!empty($phone)) {
+                // Check if the phone number already starts with +91 or +1
+                if (strpos($phone, '+91') !== 0 && strpos($phone, '+1') !== 0) {
+                    // If the phone number starts with "1", add +1; otherwise, add +91.
+                    if (strpos($phone, '1') === 0) {
+                        $phone = '+1' . $phone;
+                    } else {
+                        $phone = '+91' . $phone;
+                    }
+                }
+                $row[] = '<a href="tel:' . e($phone) . '">' . e($phone) . '</a>';
+            } else {
+                $row[] = '';
+            }
+
 
             $base_currency = get_base_currency();
             $row[]         = e(($aRow['lead_value'] != 0 ? app_format_money($aRow['lead_value'], $base_currency->id) : ''));

@@ -180,8 +180,25 @@
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
                         <?php echo _l('lead_add_edit_phonenumber'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->phonenumber != '' ? '<a href="tel:' . e($lead->phonenumber) . '">' . e($lead->phonenumber) . '</a>' : '-') ?>
+                        <?php
+                        if (isset($lead) && $lead->phonenumber != '') {
+                            $phone = trim($lead->phonenumber);
+                            // Check if the phone number already starts with +91 or +1
+                            if (strpos($phone, '+91') !== 0 && strpos($phone, '+1') !== 0) {
+                                // If the phone number starts with "1", add +1; otherwise, add +91.
+                                if (strpos($phone, '1') === 0) {
+                                    $phone = '+1' . $phone;
+                                } else {
+                                    $phone = '+91' . $phone;
+                                }
+                            }
+                            echo '<a href="tel:' . e($phone) . '">' . e($phone) . '</a>';
+                        } else {
+                            echo '-';
+                        }
+                        ?>
                     </dd>
+
 
 
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_value'); ?>
@@ -592,58 +609,58 @@
     });
 </script> -->
 <script>
-$(document).ready(function () {
-    function populateCountryCodes(selectedCode = "+91") {
-        let countryCodeSelect = $("#countryCode");
-        countryCodeSelect.empty();
-        countryCodeSelect.append('<option value="">Loading...</option>');
+    $(document).ready(function() {
+        function populateCountryCodes(selectedCode = "+91") {
+            let countryCodeSelect = $("#countryCode");
+            countryCodeSelect.empty();
+            countryCodeSelect.append('<option value="">Loading...</option>');
 
-        // Fetch correct country codes
-        fetch("https://countriesnow.space/api/v0.1/countries/codes")
-            .then(response => response.json())
-            .then(data => {
-                countryCodeSelect.empty();
+            // Fetch correct country codes
+            fetch("https://countriesnow.space/api/v0.1/countries/codes")
+                .then(response => response.json())
+                .then(data => {
+                    countryCodeSelect.empty();
 
-                if (data.error) {
-                    console.error("API Error:", data.error);
+                    if (data.error) {
+                        console.error("API Error:", data.error);
+                        countryCodeSelect.html('<option value="">Error Loading</option>');
+                        return;
+                    }
+
+                    let defaultCountry = "+91"; // Default to India
+
+                    data.data.forEach(country => {
+                        let code = country.dial_code;
+
+                        let isSelected = selectedCode ? selectedCode === code : code === defaultCountry;
+
+                        let option = `<option value="${code}" ${isSelected ? "selected" : ""}>${code} (${country.name})</option>`;
+
+                        countryCodeSelect.append(option);
+                    });
+
+                    // Refresh Selectpicker
+                    $('.selectpicker').selectpicker('refresh');
+                })
+                .catch(error => {
+                    console.error("API Fetch Error:", error);
                     countryCodeSelect.html('<option value="">Error Loading</option>');
-                    return;
-                }
-
-                let defaultCountry = "+91"; // Default to India
-
-                data.data.forEach(country => {
-                    let code =  country.dial_code;
-
-                    let isSelected = selectedCode ? selectedCode === code : code === defaultCountry;
-                    
-                    let option = `<option value="${code}" ${isSelected ? "selected" : ""}>${code} (${country.name})</option>`;
-                    
-                    countryCodeSelect.append(option);
                 });
+        }
 
-                // Refresh Selectpicker
+        // Initialize Selectpicker
+        $('.selectpicker').selectpicker();
+
+        // Run when modal opens
+        $('#lead-modal').on('shown.bs.modal', function() {
+            let existingNumber = $("#phonenumber").val().trim();
+            let selectedCode = existingNumber.match(/^\+(\d+)/) ? existingNumber.match(/^\+(\d+)/)[0] : "+91";
+
+            populateCountryCodes(selectedCode);
+
+            setTimeout(() => {
                 $('.selectpicker').selectpicker('refresh');
-            })
-            .catch(error => {
-                console.error("API Fetch Error:", error);
-                countryCodeSelect.html('<option value="">Error Loading</option>');
-            });
-    }
-
-    // Initialize Selectpicker
-    $('.selectpicker').selectpicker();
-
-    // Run when modal opens
-    $('#lead-modal').on('shown.bs.modal', function () {
-        let existingNumber = $("#phonenumber").val().trim();
-        let selectedCode = existingNumber.match(/^\+(\d+)/) ? existingNumber.match(/^\+(\d+)/)[0] : "+91";
-
-        populateCountryCodes(selectedCode);
-
-        setTimeout(() => {
-            $('.selectpicker').selectpicker('refresh');
-        }, 500);
+            }, 500);
+        });
     });
-});
 </script>
