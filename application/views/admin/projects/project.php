@@ -227,6 +227,18 @@
                                         <?php echo render_date_input('deadline', 'project_deadline', $value); ?>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <?php $value = (isset($project) ? $project->bank_trans_detail : ''); ?>
+                                        <?php echo render_textarea('bank_trans_detail', 'Bank Transcation Detail', $value); ?>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <?php $value = (isset($project) ? $project->address : ''); ?>
+                                        <?php echo render_textarea('address', 'Address', $value); ?>
+                                            
+                                    </div>
+                                </div>
                                 <?php if (isset($project) && $project->date_finished != null && $project->status == 4) { ?>
                                     <?php echo render_datetime_input('date_finished', 'project_completed_date', _dt($project->date_finished)); ?>
                                 <?php } ?>

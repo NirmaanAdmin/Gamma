@@ -142,14 +142,16 @@
                                     </div>
                             <?php }
                             } ?>
-                            <div class="sm:tw-col-span-1 project-overview-status">
-                                <dt class="tw-text-sm tw-font-medium tw-text-neutral-500">
-                                    Rera No.
-                                </dt>
-                                <dd class="tw-mt-1 tw-text-sm tw-text-neutral-900">
-                                    <?php echo e($project->rera_no); ?>
-                                </dd>
-                            </div>
+                            <?php if ($project->rera_no) { ?>
+                                <div class="sm:tw-col-span-1 project-overview-status">
+                                    <dt class="tw-text-sm tw-font-medium tw-text-neutral-500">
+                                        Rera No.
+                                    </dt>
+                                    <dd class="tw-mt-1 tw-text-sm tw-text-neutral-900">
+                                        <?php echo e($project->rera_no); ?>
+                                    </dd>
+                                </div>
+                            <?php } ?>
                             <div class="sm:tw-col-span-1 project-overview-status">
                                 <dt class="tw-text-sm tw-font-medium tw-text-neutral-500">
                                     <?php echo _l('project_status'); ?>
@@ -182,6 +184,27 @@
                                     </dt>
                                     <dd class="tw-mt-1 tw-text-sm tw-text-neutral-900">
                                         <?php echo e(_d($project->deadline)); ?>
+                                    </dd>
+                                </div>
+                            <?php } ?>
+                            <?php if ($project->bank_trans_detail) { ?>
+                                <div class="sm:tw-col-span-1 project-overview-deadline">
+                                    <dt class="tw-text-sm tw-font-medium tw-text-neutral-500">
+                                        Bank Transcation Detail
+                                    </dt>
+                                    <dd class="tw-mt-1 tw-text-sm tw-text-neutral-900">
+                                        <?php echo e($project->bank_trans_detail); ?>
+                                    </dd>
+                                </div>
+                            <?php } ?>
+
+                            <?php if ($project->address) { ?>
+                                <div class="sm:tw-col-span-1 project-overview-deadline">
+                                    <dt class="tw-text-sm tw-font-medium tw-text-neutral-500">
+                                        Address
+                                    </dt>
+                                    <dd class="tw-mt-1 tw-text-sm tw-text-neutral-900">
+                                        <?php echo e($project->address); ?>
                                     </dd>
                                 </div>
                             <?php } ?>
