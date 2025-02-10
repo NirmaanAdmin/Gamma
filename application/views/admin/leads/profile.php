@@ -162,10 +162,41 @@
                         <?php echo _l('lead_add_edit_name'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1 lead-name">
                         <?php echo (isset($lead) && $lead->name != '' ? e($lead->name) : '-') ?></dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_title'); ?>
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">Project
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->title != '' ? e($lead->title) : '-') ?>
+                        <?php
+                        if (isset($lead) && !empty($lead->projects)) {
+                            $projects = get_projects($lead->projects);
+                            echo $projects ? e($projects) : '-';
+                        } else {
+                            echo '-';
+                        }
+                        ?>
+                    </dd>
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">Interested In
+                    </dt>
+                    <dd class="tw-text-neutral-900 tw-mt-1">
+                        <?php
+                        if (isset($lead) && !empty($lead->interested_in)) {
+                            $interested_in = get_interested_in($lead->interested_in);
+                            echo $interested_in ? e($interested_in) : '-';
+                        } else {
+                            echo '-';
+                        }
+                        ?>
+                    </dd>
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">Facing Preference
+                    </dt>
+                    <dd class="tw-text-neutral-900 tw-mt-1">
+                        <?php
+                        if (isset($lead) && !empty($lead->facing_preference)) {
+                            $facing_preference = get_facing_preference($lead->facing_preference);
+                            echo $facing_preference ? e($facing_preference) : '-';
+                        } else {
+                            echo '-';
+                        }
+                        ?>
                     </dd>
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
                         <?php echo _l('lead_add_edit_email'); ?></dt>
@@ -397,8 +428,14 @@
             <div class="col-md-6">
                 <?php $value = (isset($lead) ? $lead->name : ''); ?>
                 <?php echo render_input('name', 'lead_add_edit_name', $value); ?>
-                <?php $value = (isset($lead) ? $lead->title : ''); ?>
-                <?php echo render_input('title', 'lead_title', $value); ?>
+                <?php
+                $interested_in                = get_interested_in();
+                $selected                 = (isset($lead) ? $lead->interested_in : '');
+                echo render_select('interested_in', $interested_in, ['id', ['name']], 'Interested In', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
+                ?>
+                
+                <?php $value = (isset($lead) ? $lead->address : ''); ?>
+                <?php echo render_textarea('address', 'Current Residence', $value, ['rows' => 1, 'style' => 'height:36px;font-size:100%;']); ?>
                 <?php $value = (isset($lead) ? $lead->email : ''); ?>
                 <?php echo render_input('email', 'lead_add_edit_email', $value); ?>
                 <?php if ((isset($lead) && empty($lead->website)) || !isset($lead)) {
@@ -449,8 +486,17 @@
                 <?php echo render_input('company', 'lead_company', $value); ?> -->
             </div>
             <div class="col-md-6">
-                <?php $value = (isset($lead) ? $lead->address : ''); ?>
-                <?php echo render_textarea('address', 'Current Residence', $value, ['rows' => 1, 'style' => 'height:36px;font-size:100%;']); ?>
+                <?php
+                $projects              = get_projects();
+                $selected                 = (isset($lead) ? $lead->interested_in : '');
+                echo render_select('projects', $projects, ['id', ['name']], 'Projects', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
+                ?>
+                <?php
+                $facing_preference                = get_facing_preference();
+                $selected                 = (isset($lead) ? $lead->facing_preference : '');
+                echo render_select('facing_preference', $facing_preference, ['id', ['name']], 'Facing Preference', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
+                ?>
+
                 <?php $value = (isset($lead) ? $lead->city : ''); ?>
                 <?php echo render_input('city', 'lead_city', $value); ?>
                 <?php $value = (isset($lead) ? $lead->state : ''); ?>

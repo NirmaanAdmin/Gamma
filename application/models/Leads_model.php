@@ -66,6 +66,7 @@ class Leads_model extends App_Model
      */
     public function add($data)
     {
+
         if (isset($data['custom_contact_date']) || isset($data['custom_contact_date'])) {
             if (isset($data['contacted_today'])) {
                 $data['lastcontact'] = date('Y-m-d H:i:s');
@@ -111,6 +112,7 @@ class Leads_model extends App_Model
         $data['phonenumber'] = $data['country_code'] . $data['phonenumber'];
         unset($data['country_code']);
         $data['email'] = trim($data['email']);
+
         $this->db->insert(db_prefix() . 'leads', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
@@ -200,6 +202,7 @@ class Leads_model extends App_Model
      */
     public function update($data, $id)
     {
+
         $current_lead_data = $this->get($id);
         $current_status    = $this->get_status($current_lead_data->status);
         if ($current_status) {
@@ -265,9 +268,10 @@ class Leads_model extends App_Model
 
         $data['address'] = trim($data['address']);
         $data['address'] = nl2br($data['address']);
-
+        $data['phonenumber'] = $data['country_code'] . $data['phonenumber'];
+        unset($data['country_code']);
         $data['email'] = trim($data['email']);
-
+        
         $this->db->where('id', $id);
         $this->db->update(db_prefix() . 'leads', $data);
         if ($this->db->affected_rows() > 0) {
@@ -712,15 +716,15 @@ class Leads_model extends App_Model
         }
 
         $whereKey = md5(serialize($where));
-      
-        $statuses = $this->app_object_cache->get('leads-all-statuses-'.$whereKey);
+
+        $statuses = $this->app_object_cache->get('leads-all-statuses-' . $whereKey);
 
         if (!$statuses) {
             $this->db->where($where);
             $this->db->order_by('statusorder', 'asc');
 
             $statuses = $this->db->get(db_prefix() . 'leads_status')->result_array();
-            $this->app_object_cache->add('leads-all-statuses-'.$whereKey, $statuses);
+            $this->app_object_cache->add('leads-all-statuses-' . $whereKey, $statuses);
         }
 
         return $statuses;

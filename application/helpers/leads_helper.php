@@ -6,12 +6,12 @@ hooks()->add_action('app_admin_head', 'leads_app_admin_head_data');
 
 function leads_app_admin_head_data()
 {
-    ?>
+?>
     <script>
         var leadUniqueValidationFields = <?php echo json_decode(json_encode(get_option('lead_unique_validation'))); ?>;
         var leadAttachmentsDropzone;
     </script>
-    <?php
+<?php
 }
 
 /**
@@ -102,7 +102,7 @@ function get_leads_summary()
         'color' => '#fc2d42',
     ];
 
-/*    $statuses[] = [
+    /*    $statuses[] = [
         'junk'  => true,
         'name'  => _l('junk_leads'),
         'color' => '',
@@ -208,7 +208,7 @@ function render_leads_source_select($sources, $selected = '', $lang_key = '', $n
  */
 function load_lead_language($lead_id)
 {
-    $CI = & get_instance();
+    $CI = &get_instance();
     $CI->db->where('id', $lead_id);
     $lead = $CI->db->get(db_prefix() . 'leads')->row();
 
@@ -231,4 +231,58 @@ function load_lead_language($lead_id)
     $CI->lang->set_last_loaded_language($language);
 
     return true;
+}
+
+function get_interested_in($id = null)
+{
+    $CI = &get_instance();
+    $CI->db->where('status', 1);
+
+    // If an ID is provided, get the specific record
+    if ($id !== null) {
+        $CI->db->where('id', $id);
+        $record = $CI->db->get(db_prefix() . 'leads_interested')->row();
+
+        // Return the 'name' property if the record exists, otherwise return null
+        return $record ? $record->name : null;
+    } else {
+        // No ID provided, return all matching records as an array
+        $records = $CI->db->get(db_prefix() . 'leads_interested')->result_array();
+        return $records;
+    }
+}
+
+function get_facing_preference($id = null){
+    $CI = &get_instance();
+    $CI->db->where('status', 1);
+
+    // If an ID is provided, get the specific record
+    if ($id !== null) {
+        $CI->db->where('id', $id);
+        $record = $CI->db->get(db_prefix() . 'leads_facing_preference')->row();
+
+        // Return the 'name' property if the record exists, otherwise return null
+        return $record ? $record->name : null;
+    } else {
+        // No ID provided, return all matching records as an array
+        $records = $CI->db->get(db_prefix() . 'leads_facing_preference')->result_array();
+        return $records;
+    }
+}
+function get_projects($id = null){
+    $CI = &get_instance();
+   
+
+    // If an ID is provided, get the specific record
+    if ($id !== null) {
+        $CI->db->where('id', $id);
+        $record = $CI->db->get(db_prefix() . 'projects')->row();
+
+        // Return the 'name' property if the record exists, otherwise return null
+        return $record ? $record->name : null;
+    } else {
+        // No ID provided, return all matching records as an array
+        $records = $CI->db->get(db_prefix() . 'projects')->result_array();
+        return $records;
+    }
 }
