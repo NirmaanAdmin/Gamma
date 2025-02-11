@@ -30,6 +30,7 @@ $rules = [
     App_table_filter::new('dateadded', 'DateRule')->label(_l('date_created')),
     App_table_filter::new('dateassigned', 'DateRule')->label(_l('customer_admin_date_assigned')),
     App_table_filter::new('lead_value', 'NumberRule')->label(_l('lead_add_edit_lead_value')),
+    App_table_filter::new('projects', 'TextRule')->label(_l('projects')),
     App_table_filter::new('status', 'MultiSelectRule')->label(_l('lead_status'))->options(function () use ($statuses) {
         return collect($statuses)->map(fn($status) => [
             'value' => $status['id'],
@@ -92,10 +93,11 @@ return App_table::find('leads')
             $aColumns[] = '1';
         }
         $aColumns = array_merge($aColumns, [
-            'company',
+
             db_prefix() . 'leads.email as email',
             db_prefix() . 'leads.phonenumber as phonenumber',
             'lead_value',
+            'projects',
             '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'leads.id and rel_type="lead" ORDER by tag_order ASC LIMIT 1) as tags',
             'firstname as assigned_firstname',
             db_prefix() . 'leads_status.name as status_name',
@@ -126,9 +128,23 @@ return App_table::find('leads')
             $where[] = $filtersWhere;
         }
 
+
+        $staffid = get_staff_user_id();
+        
+        $get_assgined_projects = get_assgined_projects($staffid);
+        
+        $project_ids = !empty($get_assgined_projects) ? array_column($get_assgined_projects, 'team_manage_id') : [];
+
+        // Restrict leads view for non-admin users
         if (staff_cant('view', 'leads')) {
-            array_push($where, 'AND (assigned =' . get_staff_user_id() . ' OR addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)');
+            $project_condition = '';
+            if (!empty($project_ids)) {
+                $project_condition = ' OR projects IN (' . implode(',', $project_ids) . ')';
+            }
+
+            array_push($where, 'AND (assigned = ' . get_staff_user_id() . ' OR addedfrom = ' . get_staff_user_id() . ' OR is_public = 1 ' . $project_condition . ')');
         }
+
 
         $aColumns = hooks()->apply_filters('leads_table_sql_columns', $aColumns);
 
@@ -201,7 +217,7 @@ return App_table::find('leads')
                 }
                 $row[] = $consentHTML;
             }
-            $row[] = e($aRow['company']);
+
 
             $row[] = ($aRow['email'] != '' ? '<a href="mailto:' . e($aRow['email']) . '">' . e($aRow['email']) . '</a>' : '');
 
@@ -226,6 +242,9 @@ return App_table::find('leads')
 
             $base_currency = get_base_currency();
             $row[]         = e(($aRow['lead_value'] != 0 ? app_format_money($aRow['lead_value'], $base_currency->id) : ''));
+            $row[]          = (!empty($aRow['projects']) && $aRow['projects'] != 0) ? get_projects($aRow['projects']) : '';
+
+
 
             $row[] .= render_tags($aRow['tags']);
 

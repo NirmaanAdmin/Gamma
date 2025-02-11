@@ -252,7 +252,8 @@ function get_interested_in($id = null)
     }
 }
 
-function get_facing_preference($id = null){
+function get_facing_preference($id = null)
+{
     $CI = &get_instance();
     $CI->db->where('status', 1);
 
@@ -269,9 +270,10 @@ function get_facing_preference($id = null){
         return $records;
     }
 }
-function get_projects($id = null){
+function get_projects($id = null)
+{
     $CI = &get_instance();
-   
+
 
     // If an ID is provided, get the specific record
     if ($id !== null) {
@@ -285,4 +287,14 @@ function get_projects($id = null){
         $records = $CI->db->get(db_prefix() . 'projects')->result_array();
         return $records;
     }
+}
+
+function get_assgined_projects($staff_id)
+{
+    $CI = &get_instance();
+    $CI->db->select('project_id');
+    $CI->db->where('staff_id', $staff_id);
+    $CI->db->from(db_prefix() . 'project_members');
+
+    return $CI->db->get()->result_array();
 }
