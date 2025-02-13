@@ -4,6 +4,13 @@
 
         width: 18%;
     }
+
+    .invalid-feedback {
+        color: red;
+        position: absolute;
+        left: 0;
+        top: 32px;
+    }
 </style>
 
 <div class="<?php if ($openEdit == true) {
@@ -78,7 +85,7 @@
         </div>
 
         <div class="mleft5 pull-right<?php echo $lead_locked == true ? ' hide' : ''; ?>">
-            <a href="#" lead-edit data-toggle="tooltip" data-title="<?php echo _l('edit'); ?>"
+            <a href="#" lead-edit data-toggle="tooltip" id="lead-edit-square" data-title="<?php echo _l('edit'); ?>"
                 class="btn btn-default lead-top-btn">
 
                 <i class="fa-regular fa-pen-to-square"></i>
@@ -174,7 +181,7 @@
                         }
                         ?>
                     </dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">Interested In
+                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">Interested In
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php
@@ -185,8 +192,8 @@
                             echo '-';
                         }
                         ?>
-                    </dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">Facing Preference
+                    </dd> -->
+                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">Facing Preference
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php
@@ -197,17 +204,17 @@
                             echo '-';
                         }
                         ?>
-                    </dd>
+                    </dd> -->
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
                         <?php echo _l('lead_add_edit_email'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->email != '' ? '<a href="mailto:' . e($lead->email) . '">' . e($lead->email) . '</a>' : '-') ?>
                     </dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_website'); ?>
+                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_website'); ?>
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->website != '' ? '<a href="' . e(maybe_add_http($lead->website)) . '" target="_blank">' . e($lead->website) . '</a>' : '-') ?>
-                    </dd>
+                    </dd> -->
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
                         <?php echo _l('lead_add_edit_phonenumber'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
@@ -237,31 +244,31 @@
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->lead_value != 0 ? e(app_format_money($lead->lead_value, $base_currency->id)) : '-') ?>
                     </dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_company'); ?>
+                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_company'); ?>
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->company != '' ? e($lead->company) : '-') ?></dd>
+                        <?php echo (isset($lead) && $lead->company != '' ? e($lead->company) : '-') ?></dd> -->
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_address'); ?>
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->address != '' ? process_text_content_for_display($lead->address) : '-') ?></dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_city'); ?>
+                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_city'); ?>
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->city != '' ? e($lead->city) : '-') ?></dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_state'); ?>
+                        <?php echo (isset($lead) && $lead->city != '' ? e($lead->city) : '-') ?></dd> -->
+                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_state'); ?>
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->state != '' ? e($lead->state) : '-') ?>
-                    </dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_country'); ?>
+                    </dd> -->
+                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_country'); ?>
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->country != 0 ? e(get_country($lead->country)->short_name) : '-') ?>
-                    </dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_zip'); ?></dt>
+                    </dd> -->
+                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_zip'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->zip != '' ? e($lead->zip) : '-') ?></dd>
+                        <?php echo (isset($lead) && $lead->zip != '' ? e($lead->zip) : '-') ?></dd> -->
                 </dl>
             </div>
             <div class="col-md-4 col-xs-12 lead-information-col">
@@ -435,21 +442,299 @@
             <div class="col-md-6">
                 <?php $value = (isset($lead) ? $lead->name : ''); ?>
                 <?php echo render_input('name', 'lead_add_edit_name', $value); ?>
+                <!-- <?php
+                        $interested_in                = get_interested_in();
+                        $selected                 = (isset($lead) ? $lead->interested_in : '');
+                        echo render_select('interested_in', $interested_in, ['id', ['name']], 'Interested In', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
+                        ?> -->
+
+
                 <?php
-                $interested_in                = get_interested_in();
-                $selected                 = (isset($lead) ? $lead->interested_in : '');
-                echo render_select('interested_in', $interested_in, ['id', ['name']], 'Interested In', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
+                $phone = isset($lead) ? $lead->phonenumber : '';
+                $selected_country_code = '+91'; // default country code
+                $local_phone = $phone;
+
+                // Define a list of country codes you expect (you can add more as needed)
+                $country_codes = $countryCodes = [
+                    '+93',
+                    '+355',
+                    '+213',
+                    '+1 684',
+                    '+376',
+                    '+244',
+                    '+1 264',
+                    '+672',
+                    '+1268',
+                    '+54',
+                    '+374',
+                    '+297',
+                    '+61',
+                    '+43',
+                    '+994',
+                    '+1 242',
+                    '+973',
+                    '+880',
+                    '+1 246',
+                    '+375',
+                    '+32',
+                    '+501',
+                    '+229',
+                    '+1 441',
+                    '+975',
+                    '+591',
+                    '+387',
+                    '+267',
+                    '+55',
+                    '+55',
+                    '+246',
+                    '+673',
+                    '+359',
+                    '+226',
+                    '+257',
+                    '+855',
+                    '+237',
+                    '+1',
+                    '+238',
+                    '+1345',
+                    '+236',
+                    '+235',
+                    '+56',
+                    '+86',
+                    '+61',
+                    '+61',
+                    '+57',
+                    '+269',
+                    '+242',
+                    '+243',
+                    '+682',
+                    '+506',
+                    '+225',
+                    '+385',
+                    '+53',
+                    '+357',
+                    '+420',
+                    '+45',
+                    '+253',
+                    '+1 767',
+                    '+1 849',
+                    '+593',
+                    '+20',
+                    '+503',
+                    '+240',
+                    '+291',
+                    '+372',
+                    '+251',
+                    '+500',
+                    '+298',
+                    '+679',
+                    '+358',
+                    '+33',
+                    '+689',
+                    '+262',
+                    '+241',
+                    '+220',
+                    '+995',
+                    '+49',
+                    '+233',
+                    '+350',
+                    '+30',
+                    '+299',
+                    '+1 473',
+                    '+590',
+                    '+1 671',
+                    '+502',
+                    '+44',
+                    '+224',
+                    '+245',
+                    '+592',
+                    '+509',
+                    '+672',
+                    '+379',
+                    '+504',
+                    '+852',
+                    '+36',
+                    '+354',
+                    '+91',
+                    '+62',
+                    '+98',
+                    '+964',
+                    '+353',
+                    '+44',
+                    '+972',
+                    '+39',
+                    '+1 876',
+                    '+81',
+                    '+44',
+                    '+962',
+                    '+7',
+                    '+254',
+                    '+686',
+                    '+850',
+                    '+82',
+                    '+965',
+                    '+996',
+                    '+856',
+                    '+371',
+                    '+961',
+                    '+266',
+                    '+231',
+                    '+218',
+                    '+423',
+                    '+370',
+                    '+352',
+                    '+853',
+                    '+389',
+                    '+261',
+                    '+265',
+                    '+60',
+                    '+960',
+                    '+223',
+                    '+356',
+                    '+692',
+                    '+596',
+                    '+222',
+                    '+230',
+                    '+262',
+                    '+52',
+                    '+691',
+                    '+373',
+                    '+377',
+                    '+976',
+                    '+382',
+                    '+1664',
+                    '+212',
+                    '+258',
+                    '+95',
+                    '+264',
+                    '+674',
+                    '+977',
+                    '+31',
+                    '+599',
+                    '+687',
+                    '+64',
+                    '+505',
+                    '+227',
+                    '+234',
+                    '+683',
+                    '+672',
+                    '+1 670',
+                    '+47',
+                    '+968',
+                    '+92',
+                    '+680',
+                    '+970',
+                    '+507',
+                    '+675',
+                    '+595',
+                    '+51',
+                    '+63',
+                    '+870',
+                    '+48',
+                    '+351',
+                    '+1 939',
+                    '+974',
+                    '+262',
+                    '+40',
+                    '+7',
+                    '+250',
+                    '+290',
+                    '+1 869',
+                    '+1 758',
+                    '+508',
+                    '+1 784',
+                    '+685',
+                    '+378',
+                    '+239',
+                    '+966',
+                    '+221',
+                    '+381',
+                    '+248',
+                    '+232',
+                    '+65',
+                    '+421',
+                    '+386',
+                    '+677',
+                    '+252',
+                    '+27',
+                    '+500',
+                    '+34',
+                    '+94',
+                    '+249',
+                    '+597',
+                    '+47',
+                    '+268',
+                    '+46',
+                    '+41',
+                    '+963',
+                    '+886',
+                    '+992',
+                    '+255',
+                    '+66',
+                    '+670',
+                    '+228',
+                    '+690',
+                    '+676',
+                    '+1 868',
+                    '+216',
+                    '+90',
+                    '+993',
+                    '+1 649',
+                    '+688',
+                    '+256',
+                    '+380',
+                    '+971',
+                    '+44',
+                    '+1',
+                    '+1581',
+                    '+598',
+                    '+998',
+                    '+678',
+                    '+58',
+                    '+84',
+                    '+1 284',
+                    '+1 340',
+                    '+681',
+                    '+732',
+                    '+967',
+                    '+260',
+                    '+263'
+                ];;
+
+                // To ensure we match the longer codes first (so +91 is not confused with +9...),
+                usort($country_codes, function ($a, $b) {
+                    return strlen($b) - strlen($a);
+                });
+
+                // Check if the phone number starts with any of the known country codes
+                foreach ($country_codes as $code) {
+                    if (strpos($phone, $code) === 0) {
+                        $selected_country_code = $code;
+                        $local_phone = substr($phone, strlen($code));
+                        break;
+                    }
+                }
                 ?>
 
-                <?php $value = (isset($lead) ? $lead->address : ''); ?>
-                <?php echo render_textarea('address', 'Current Residence', $value, ['rows' => 1, 'style' => 'height:36px;font-size:100%;']); ?>
+                <div class="form-group">
+                    <label for="phonenumber"><?php echo _l('lead_add_edit_phonenumber'); ?></label>
+                    <div class="input-group" style="width: 100%;">
+                        <select id="countryCode" name="country_code" class="form-control selectpicker" data-live-search="true" style="max-width: 100px;">
+                            <!-- The country code options are populated via your API -->
+                            <option value="+91" selected>+91</option> <!-- Default to India -->
+                        </select>
+
+                        <input type="text" id="phonenumber" name="phonenumber" data-id="<?=  $lead->phonenumber ?>" class="form-control"
+                            value="<?php echo e($local_phone); ?>">
+                    </div>
+                </div>
+
                 <?php $value = (isset($lead) ? $lead->email : ''); ?>
-                <?php echo render_input('email', 'lead_add_edit_email', $value); ?>
+
                 <?php if ((isset($lead) && empty($lead->website)) || !isset($lead)) {
-                    $value = (isset($lead) ? $lead->website : '');
-                    echo render_input('website', 'lead_website', $value);
+                    // $value = (isset($lead) ? $lead->website : '');
+                    // echo render_input('website', 'lead_website', $value);
                 } else { ?>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="website"><?php echo _l('lead_website'); ?></label>
                         <div class="input-group">
                             <input type="text" name="website" id="website" value="<?php echo e($lead->website); ?>"
@@ -462,20 +747,11 @@
                                 </span>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 <?php }
-                $value = (isset($lead) ? $lead->phonenumber : ''); ?>
-                <!-- <?php echo render_input('phonenumber', 'lead_add_edit_phonenumber', $value); ?> -->
-                <div class="form-group">
-                    <label for="phone"><?php echo _l('lead_add_edit_phonenumber'); ?></label>
-                    <div class="input-group" style="width: 100%;">
-                        <select id="countryCode" name="country_code" class="form-control selectpicker" data-live-search="true" style="max-width: 100px;">
-                            <option value="+91" selected>+91</option> <!-- Default to India -->
-                        </select>
-                        <input type="text" id="phonenumber" name="phonenumber" class="form-control"
-                            value="<?php echo isset($lead) ? e(preg_replace('/^\+\d+/', '', $lead->phonenumber)) : ''; ?>">
-                    </div>
-                </div>
+
+                ?>
+
 
                 <div class="form-group">
                     <label for="lead_value"><?php echo _l('lead_value'); ?></label>
@@ -498,24 +774,27 @@
                 $selected                 = (isset($lead) ? $lead->interested_in : '');
                 echo render_select('projects', $projects, ['id', ['name']], 'Projects', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
                 ?>
-                <?php
-                $facing_preference                = get_facing_preference();
-                $selected                 = (isset($lead) ? $lead->facing_preference : '');
-                echo render_select('facing_preference', $facing_preference, ['id', ['name']], 'Facing Preference', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
-                ?>
+                <?php echo render_input('email', 'lead_add_edit_email', $value); ?>
+                <?php $value = (isset($lead) ? $lead->address : ''); ?>
+                <?php echo render_textarea('address', 'Current Residence', $value, ['rows' => 1, 'style' => 'height:36px;font-size:100%;']); ?>
+                <!-- <?php
+                        $facing_preference                = get_facing_preference();
+                        $selected                 = (isset($lead) ? $lead->facing_preference : '');
+                        echo render_select('facing_preference', $facing_preference, ['id', ['name']], 'Facing Preference', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
+                        ?> -->
 
                 <?php $value = (isset($lead) ? $lead->city : ''); ?>
-                <?php echo render_input('city', 'lead_city', $value); ?>
+                <!-- <?php echo render_input('city', 'lead_city', $value); ?> -->
                 <?php $value = (isset($lead) ? $lead->state : ''); ?>
-                <?php echo render_input('state', 'lead_state', $value); ?>
-                <?php
-                $countries                = get_all_countries();
-                $customer_default_country = get_option('customer_default_country');
-                $selected                 = (isset($lead) ? $lead->country : $customer_default_country);
-                echo render_select('country', $countries, ['country_id', ['short_name']], 'lead_country', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
-                ?>
+                <!-- <?php echo render_input('state', 'lead_state', $value); ?> -->
+                <!-- <?php
+                        $countries                = get_all_countries();
+                        $customer_default_country = get_option('customer_default_country');
+                        $selected                 = (isset($lead) ? $lead->country : $customer_default_country);
+                        echo render_select('country', $countries, ['country_id', ['short_name']], 'lead_country', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
+                        ?> -->
                 <?php $value = (isset($lead) ? $lead->zip : ''); ?>
-                <?php echo render_input('zip', 'lead_zip', $value); ?>
+                <!-- <?php echo render_input('zip', 'lead_zip', $value); ?> -->
                 <?php if (!is_language_disabled()) { ?>
                     <div class="form-group">
                         <label for="default_language"
@@ -614,53 +893,7 @@
         });
     </script>
 <?php } ?>
-<!-- <script>
-    $(document).ready(function() {
-        function populateCountryCodes(selectedCode = "+91") {
-            let countryCodeSelect = $("#countryCode");
-            countryCodeSelect.empty(); // Clear previous options
-            countryCodeSelect.append('<option value="">Loading...</option>'); // Temporary loading message
 
-            // Fetch country codes from API
-            fetch("https://countriesnow.space/api/v0.1/countries/codes")
-                .then(response => response.json())
-                .then(data => {
-                    countryCodeSelect.empty(); // Clear loading message
-
-                    // Sort by country name
-                    data.sort((a, b) => a.name.common.localeCompare(b.name.common));
-
-                    // Populate the dropdown
-                    data.forEach(country => {
-                        if (country.idd?.root) {
-                            let code = country.idd.root.replace("+", "") + (country.idd.suffixes ? country.idd.suffixes[0] : "");
-
-                            let isSelected = selectedCode === "+" + code;
-                            let option = `<option value="+${code}" ${isSelected ? "selected" : ""}>+${code} (${country.name.common})</option>`;
-
-                            countryCodeSelect.append(option);
-                        }
-                    });
-
-                    // Refresh dropdown (if using Bootstrap select)
-                    countryCodeSelect.selectpicker('refresh');
-                })
-                .catch(error => {
-                    console.error("API Fetch Error:", error);
-                    countryCodeSelect.html('<option value="">Error Loading</option>');
-                });
-        }
-        
-        // Run the function when the modal opens
-        $('#lead-modal').on('shown.bs.modal', function() {
-            let existingNumber = $("#phonenumber").val().trim();
-            let selectedCode = existingNumber.match(/^\+(\d+)/) ? existingNumber.match(/^\+(\d+)/)[0] : "+91"; // Default to India
-
-            populateCountryCodes(selectedCode);
-            
-        });
-    });
-</script> -->
 <script>
     $(document).ready(function() {
         function populateCountryCodes(selectedCode = "+91") {
@@ -715,5 +948,55 @@
                 $('.selectpicker').selectpicker('refresh');
             }, 500);
         });
+
+        $('#lead-edit-square').on('click', function() {
+            let existingNumber = $("#phonenumber").val().trim();
+            let selectedCode = existingNumber.match(/^\+(\d+)/) ? existingNumber.match(/^\+(\d+)/)[0] : "+91";
+
+            populateCountryCodes(selectedCode);
+
+            setTimeout(() => {
+                $('.selectpicker').selectpicker('refresh');
+            }, 500);
+        });
+        
+    });
+
+    $('#lead-form-submit').on('click', function(e) {
+        // Get the trimmed value of the phone number input
+        let phoneNumber = $('#phonenumber').val().trim();
+
+        // Remove any previous error states
+        $('#phonenumber').removeClass('is-invalid');
+        $('#phonenumber').closest('.form-group').find('label').removeClass('text-danger');
+        $('#phonenumber').next('.invalid-feedback').remove();
+
+        // Validate: Check if the field is empty
+        if (phoneNumber === '') {
+            e.preventDefault(); // Prevent form submission
+
+            $('#phonenumber').addClass('is-invalid');
+            $('#phonenumber').closest('.form-group').find('label').addClass('text-danger');
+
+            // Display error message for required field if not already present
+            if ($('#phonenumber').next('.invalid-feedback').length === 0) {
+                $('#phonenumber').after('<div class="invalid-feedback">This field is required</div>');
+            }
+            return false;
+        }
+
+        // Validate: Check if the phone number contains only numbers
+        if (!/^\d+$/.test(phoneNumber)) {
+            e.preventDefault(); // Prevent form submission
+
+            $('#phonenumber').addClass('is-invalid');
+            $('#phonenumber').closest('.form-group').find('label').addClass('text-danger');
+
+            // Display error message for numeric-only input if not already present
+            if ($('#phonenumber').next('.invalid-feedback').length === 0) {
+                $('#phonenumber').after('<div class="invalid-feedback">Please enter only numbers</div>');
+            }
+            return false;
+        }
     });
 </script>
