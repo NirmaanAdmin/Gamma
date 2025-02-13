@@ -383,10 +383,17 @@
             <div class="col-md-4">
                 <?php
                 $selected = '';
+                // if (isset($lead)) {
+                //     $selected = $lead->status;
+                // } elseif (isset($status_id)) {
+                //     $selected = $status_id;
+                // } else{
+                //     $selected = 18;
+                // }
                 if (isset($lead)) {
                     $selected = $lead->status;
-                } elseif (isset($status_id)) {
-                    $selected = $status_id;
+                } else {
+                    $selected = 18;
                 }
                 echo render_leads_status_select($statuses, $selected, 'lead_add_edit_status');
                 ?>
@@ -433,7 +440,7 @@
                 $selected                 = (isset($lead) ? $lead->interested_in : '');
                 echo render_select('interested_in', $interested_in, ['id', ['name']], 'Interested In', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
                 ?>
-                
+
                 <?php $value = (isset($lead) ? $lead->address : ''); ?>
                 <?php echo render_textarea('address', 'Current Residence', $value, ['rows' => 1, 'style' => 'height:36px;font-size:100%;']); ?>
                 <?php $value = (isset($lead) ? $lead->email : ''); ?>
