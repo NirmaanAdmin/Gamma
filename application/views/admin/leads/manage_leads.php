@@ -233,10 +233,7 @@
                                             'name'     => 'Project',
                                             'th_attrs' => ['class' => 'toggleable', 'id' => 'th-project'],
                                         ];
-                                        $_table_data[] = [
-                                            'name'     => _l('tags'),
-                                            'th_attrs' => ['class' => 'toggleable', 'id' => 'th-tags'],
-                                        ];
+
                                         $_table_data[] = [
                                             'name'     => _l('leads_dt_assigned'),
                                             'th_attrs' => ['class' => 'toggleable', 'id' => 'th-assigned'],
@@ -256,6 +253,10 @@
                                         $_table_data[] = [
                                             'name'     => _l('leads_dt_datecreated'),
                                             'th_attrs' => ['class' => 'date-created toggleable', 'id' => 'th-date-created'],
+                                        ];
+                                        $_table_data[] = [
+                                            'name'     => _l('tags'),
+                                            'th_attrs' => ['class' => 'toggleable', 'id' => 'th-tags'],
                                         ];
                                         foreach ($_table_data as $_t) {
                                             array_push($table_data, $_t);
