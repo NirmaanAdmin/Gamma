@@ -246,7 +246,7 @@ return App_table::find('leads')
 
 
 
-            $row[] .= render_tags($aRow['tags']);
+            $row[] = '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['dateadded'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['dateadded'])) . '</span>';
 
             $assignedOutput = '';
             if ($aRow['assigned'] != 0) {
@@ -299,7 +299,8 @@ return App_table::find('leads')
 
             $row[] = ($aRow['lastcontact'] == '0000-00-00 00:00:00' || !is_date($aRow['lastcontact']) ? '' : '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['lastcontact'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['lastcontact'])) . '</span>');
 
-            $row[] = '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['dateadded'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['dateadded'])) . '</span>';
+            
+            $row[] .= render_tags($aRow['tags']);
 
             // Custom fields add values
             foreach ($customFieldsColumns as $customFieldColumn) {
