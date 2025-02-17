@@ -1,6 +1,6 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 require __DIR__ . '/REST_Controller.php';
 
@@ -12,8 +12,10 @@ require __DIR__ . '/REST_Controller.php';
  * @subpackage      Rest Server
  * @category        Controller
  */
-class Leads extends REST_Controller {
-    function __construct() {
+class Leads extends REST_Controller
+{
+    function __construct()
+    {
         // Construct the parent class
         parent::__construct();
         $this->load->model('Api_model');
@@ -107,7 +109,8 @@ class Leads extends REST_Controller {
      *       "message": "No data were found"
      *     }
      */
-    public function data_get($id = '') {
+    public function data_get($id = '')
+    {
         // If the id parameter doesn't exist return all the
         $data = $this->Api_model->get_table('leads', $id);
         // Check if the data store contains
@@ -165,7 +168,8 @@ class Leads extends REST_Controller {
      *       "message": "No data were found"
      *     }
      */
-    public function data_search_get($key = '') {
+    public function data_search_get($key = '')
+    {
         $data = $this->Api_model->search('lead', $key);
         // Check if the data store contains
         if ($data) {
@@ -252,7 +256,8 @@ class Leads extends REST_Controller {
      *     }
      *
      */
-    public function data_post() {
+    public function data_post()
+    {
         //
 
         // form validation
@@ -265,7 +270,7 @@ class Leads extends REST_Controller {
             $message = array('status' => FALSE, 'error' => $this->form_validation->error_array(), 'message' => validation_errors());
             $this->response($message, REST_Controller::HTTP_NOT_FOUND);
         } else {
-            $insert_data = ['name' => $this->input->post('name', TRUE), 'source' => $this->input->post('source', TRUE), 'status' => $this->input->post('status', TRUE), 'assigned' => $this->input->post('assigned', TRUE), 'tags' => $this->Api_model->value($this->input->post('tags', TRUE)), 'title' => $this->Api_model->value($this->input->post('title', TRUE)), 'email' => $this->Api_model->value($this->input->post('email', TRUE)), 'website' => $this->Api_model->value($this->input->post('website', TRUE)), 'phonenumber' => $this->Api_model->value($this->input->post('phonenumber', TRUE)), 'company' => $this->Api_model->value($this->input->post('company', TRUE)), 'address' => $this->Api_model->value($this->input->post('address', TRUE)), 'city' => $this->Api_model->value($this->input->post('city', TRUE)), 'zip' => '', 'state' => $this->Api_model->value($this->input->post('state', TRUE)), 'default_language' => $this->Api_model->value($this->input->post('default_language', TRUE)), 'description' => $this->Api_model->value($this->input->post('description', TRUE)), 'custom_contact_date' => $this->Api_model->value($this->input->post('custom_contact_date', TRUE)), 'is_public' => $this->Api_model->value($this->input->post('is_public', TRUE)), 'contacted_today' => $this->Api_model->value($this->input->post('contacted_today', TRUE)) ];
+            $insert_data = ['name' => $this->input->post('name', TRUE), 'source' => $this->input->post('source', TRUE), 'status' => $this->input->post('status', TRUE), 'assigned' => $this->input->post('assigned', TRUE), 'tags' => $this->Api_model->value($this->input->post('tags', TRUE)), 'title' => $this->Api_model->value($this->input->post('title', TRUE)), 'email' => $this->Api_model->value($this->input->post('email', TRUE)), 'website' => $this->Api_model->value($this->input->post('website', TRUE)), 'phonenumber' => $this->Api_model->value($this->input->post('phonenumber', TRUE)), 'company' => $this->Api_model->value($this->input->post('company', TRUE)), 'address' => $this->Api_model->value($this->input->post('address', TRUE)), 'city' => $this->Api_model->value($this->input->post('city', TRUE)), 'zip' => '', 'state' => $this->Api_model->value($this->input->post('state', TRUE)), 'default_language' => $this->Api_model->value($this->input->post('default_language', TRUE)), 'description' => $this->Api_model->value($this->input->post('description', TRUE)), 'custom_contact_date' => $this->Api_model->value($this->input->post('custom_contact_date', TRUE)), 'is_public' => $this->Api_model->value($this->input->post('is_public', TRUE)), 'contacted_today' => $this->Api_model->value($this->input->post('contacted_today', TRUE)), 'projects' => $this->Api_model->value($this->input->post('project', TRUE))];
             if (!empty($this->input->post('custom_fields', TRUE))) {
                 $insert_data['custom_fields'] = $this->Api_model->value($this->input->post('custom_fields', TRUE));
             }
@@ -314,7 +319,8 @@ class Leads extends REST_Controller {
      *       "message": "Lead Delete Fail."
      *     }
      */
-    public function data_delete($id = '') {
+    public function data_delete($id = '')
+    {
         $id = $this->security->xss_clean($id);
         if (empty($id) && !is_numeric($id)) {
             $message = array('status' => FALSE, 'message' => 'Invalid Lead ID');
@@ -406,7 +412,8 @@ class Leads extends REST_Controller {
      *       "message": "Lead Update Fail."
      *     }
      */
-    public function data_put($id = '') {
+    public function data_put($id = '')
+    {
         $_POST = json_decode($this->security->xss_clean(file_get_contents("php://input")), true);
         if (empty($_POST) || !isset($_POST)) {
             $this->load->library('parse_input_stream');
@@ -451,9 +458,10 @@ class Leads extends REST_Controller {
         }
     }
 
-    function handle_lead_attachments_array($leadid, $index_name = 'file') {
+    function handle_lead_attachments_array($leadid, $index_name = 'file')
+    {
         $path = get_upload_path_by_type('lead') . $leadid . '/';
-        $CI = & get_instance();
+        $CI = &get_instance();
         if (isset($_FILES[$index_name]['name']) && ($_FILES[$index_name]['name'] != '' || is_array($_FILES[$index_name]['name']) && count($_FILES[$index_name]['name']) > 0)) {
             if (!is_array($_FILES[$index_name]['name'])) {
                 $_FILES[$index_name]['name'] = [$_FILES[$index_name]['name']];
@@ -477,10 +485,10 @@ class Leads extends REST_Controller {
                     // Upload the file into the temp dir
                     if (copy($tmpFilePath, $newFilePath)) {
                         unlink($tmpFilePath);
-                        $CI = & get_instance();
+                        $CI = &get_instance();
                         $CI->load->model('leads_model');
                         $data = [];
-                        $data[] = ['file_name' => $filename, 'filetype' => $_FILES[$index_name]['type'][$i], ];
+                        $data[] = ['file_name' => $filename, 'filetype' => $_FILES[$index_name]['type'][$i],];
                         $CI->leads_model->add_attachment_to_database($leadid, $data, false);
                     }
                 }
