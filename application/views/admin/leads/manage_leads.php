@@ -255,6 +255,10 @@
                                             'th_attrs' => ['class' => 'date-created toggleable', 'id' => 'th-date-created'],
                                         ];
                                         $_table_data[] = [
+                                            'name'     => _l('Duplicate'),
+                                            'th_attrs' => ['class' => 'toggleable', 'id' => 'th-double-entry-alert'],
+                                        ];
+                                        $_table_data[] = [
                                             'name'     => _l('tags'),
                                             'th_attrs' => ['class' => 'toggleable', 'id' => 'th-tags'],
                                         ];

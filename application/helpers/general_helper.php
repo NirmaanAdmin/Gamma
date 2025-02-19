@@ -1034,3 +1034,14 @@ function check_emp_leave_balance($staff_id)
     // Return leave balance details or null if no record exists
     return $query->row_array();
 }
+function get_double_entery_by_phonenumber($phoneNumber)
+{
+    $CI = &get_instance();
+    // Count the number of rows with the given phone number in the 'leads' table
+    $CI->db->from('tblleads');
+    $CI->db->where('phonenumber', $phoneNumber); // Adjust column name if needed
+    $count = $CI->db->count_all_results();
+
+    // Return true if there are 2 or more entries, otherwise false
+    return ($count >= 2);
+}

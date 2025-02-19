@@ -300,6 +300,15 @@ return App_table::find('leads')
             $row[] = ($aRow['lastcontact'] == '0000-00-00 00:00:00' || !is_date($aRow['lastcontact']) ? '' : '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['lastcontact'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['lastcontact'])) . '</span>');
 
             $row[] = '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['dateadded'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['dateadded'])) . '</span>';
+            $check_double_entry = get_double_entery_by_phonenumber($aRow['phonenumber']);
+
+            if($check_double_entry >= 2){
+                $check_double_messgae = '<span style="color: #fd2c2c;font-weight: bold;">Duplicate Entry Alert!</span>';
+            }else{
+                $check_double_messgae = '';   
+            }
+
+            $row[] .= $check_double_messgae;
             $row[] .= render_tags($aRow['tags']);
             // Custom fields add values
             foreach ($customFieldsColumns as $customFieldColumn) {
