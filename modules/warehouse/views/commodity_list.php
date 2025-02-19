@@ -4,7 +4,7 @@
   .show_hide_columns {
     position: absolute;
     z-index: 999;
-    left: 447px;
+    left: 545px;
   }
 </style>
 <div id="wrapper">
@@ -90,26 +90,26 @@
                 </div>
               </div> -->
               <!-- <?php
-              $can_be_type = [];
-              $can_be_type[] = [
-                'id' => 'can_be_sold',
-                'label' => _l('can_be_sold'),
-              ];
-              $can_be_type[] = [
-                'id' => 'can_be_purchased',
-                'label' => _l('can_be_purchased'),
-              ];
-              $can_be_type[] = [
-                'id' => 'can_be_manufacturing',
-                'label' => _l('can_be_manufacturing'),
-              ];
-              $can_be_type[] = [
-                'id' => 'can_be_inventory',
-                'label' => _l('can_be_inventory'),
-              ];
+                    $can_be_type = [];
+                    $can_be_type[] = [
+                      'id' => 'can_be_sold',
+                      'label' => _l('can_be_sold'),
+                    ];
+                    $can_be_type[] = [
+                      'id' => 'can_be_purchased',
+                      'label' => _l('can_be_purchased'),
+                    ];
+                    $can_be_type[] = [
+                      'id' => 'can_be_manufacturing',
+                      'label' => _l('can_be_manufacturing'),
+                    ];
+                    $can_be_type[] = [
+                      'id' => 'can_be_inventory',
+                      'label' => _l('can_be_inventory'),
+                    ];
 
 
-              ?>
+                    ?>
               <div class="col-md-2">
                 <?php echo render_select('can_be_value_filter[]', $can_be_type, array('id', array('label')), '', ['can_be_inventory'], ['multiple' => true, 'data-width' => '100%', 'class' => 'selectpicker'], array(), '', '', false); ?>
               </div> -->
@@ -312,11 +312,28 @@
 
               <!-- <a href="#" onclick="print_barcode_bulk_actions(); return false;" data-toggle="modal" data-table=".table-table_commodity_list" data-target="#print_barcode_item" class=" hide print_barcode-bulk-actions-btn table-btn"><?php echo _l('print_barcode'); ?></a> -->
 
+              <a href="#" onclick="open_booking_chart(); return false;"   data-toggle="modal" data-table=".table-table_commodity_list" data-target="#print_barcode_item" class=" hide print_barcode-bulk-actions-btn table-btn"><?php echo _l('Booking Chart'); ?></a>
+
+              <!-- <a href="#"  data-table=".table-table_commodity_list" class="print_barcode-bulk-actions-btn table-btn"><?php echo _l('Booking Chart'); ?></a> -->
+
+
               <!-- search all simple product and variation product -->
               <div class="row">
                 <!-- <div class="col-md-12">
                   <div class="col-md-3 pull-right">
                     <?php echo render_input('barcode_filter', '', '', '', ['placeholder' => _l('wh_barcode_filter')]); ?>
+                  </div>
+                  <div class="form-group pull-right">
+                    <div class="checkbox checkbox-primary">
+                      <input type="checkbox" id="filter_all_simple_variation" name="filter_all_simple_variation">
+                      <label for="filter_all_simple_variation"><?php echo _l('search_all_simple_variation_product'); ?> <i class="fa fa-question-circle i_tooltip" data-toggle="tooltip" title="" data-original-title="<?php echo _l('search_all_simple_variation_tooltip'); ?>"></i>
+                      </label>
+                    </div>
+                  </div>
+                </div> -->
+                <!-- <div class="col-md-12">
+                  <div class="col-md-3 pull-right">
+                  <?php echo render_input('barcode_filter', '', '', '', ['placeholder' => _l('wh_barcode_filter')]); ?>
                   </div>
                   <div class="form-group pull-right">
                     <div class="checkbox checkbox-primary">

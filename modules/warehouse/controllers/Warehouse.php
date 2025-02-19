@@ -9240,4 +9240,27 @@ if(strlen($data['inventory_filter']) > 0){
 			'goods_receipt' => $manage_receipt_detail['goods_receipt'] ? $manage_receipt_detail['goods_receipt'] : '',
 		]);
     }
+
+	public function booking_chart(){
+		$data['warehouses'] = $this->warehouse_model->get_warehouse();
+		$data['commodity_groups'] = $this->warehouse_model->get_commodity_group_add_commodity();
+		$this->load->view('booking_chart',$data);
+	}
+
+	
+	/**
+	 * get booking chart report view
+	 * @return json
+	 */
+	public function get_booking_chart_report_view()
+	{
+		if ($this->input->post()) {
+			$data = $this->input->post();
+			$booking_chart_report = $this->warehouse_model->get_booking_chart_report_view($data);
+		}
+		echo json_encode([
+			'value' => $booking_chart_report,
+		]);
+		die();
+	}
 }

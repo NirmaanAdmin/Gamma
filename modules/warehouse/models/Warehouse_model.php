@@ -3157,7 +3157,7 @@ class Warehouse_model extends App_Model
 		// <td class="text_left"><b>' . _l('total_money') . '</b></td>
 		// <td class="text_right">' . $base_currency->symbol . app_format_money((float) $goods_receipt->total_money, '') . '</td>
 		// </tr>
-		
+
 		// </tbody>
 		// </table>
 		// <br><br><br>
@@ -4080,7 +4080,7 @@ class Warehouse_model extends App_Model
 			// <td class="text_left"><b>' . _l('total_money') . '</b></td>
 			// <td class="text_right">......................................</td>
 			// </tr>
-			
+
 			// </tbody>
 			// </table>
 			// <br><br><br>
@@ -5335,9 +5335,9 @@ class Warehouse_model extends App_Model
 		/*add data tblinventory*/
 		if ($insert_id) {
 			$next_number = get_item_option('next_item_number');
-			$new_number = $next_number + 1;		
+			$new_number = $next_number + 1;
 			$this->db->where('option_name', 'next_item_number');
-            $this->db->update(db_prefix() . 'item_option',['option_val' =>  $new_number]);	
+			$this->db->update(db_prefix() . 'item_option', ['option_val' =>  $new_number]);
 			$data_inventory_min['commodity_id'] = $insert_id;
 			$data_inventory_min['commodity_code'] = $data['commodity_code'];
 			$data_inventory_min['commodity_name'] = $data['description'];
@@ -10626,7 +10626,7 @@ class Warehouse_model extends App_Model
 		unset($data['into_money']);
 		unset($data['serial_number']);
 
-		if(isset($data['save_as_draft'])) {
+		if (isset($data['save_as_draft'])) {
 			unset($data['save_as_draft']);
 			$data['approval'] = 0;
 		} else {
@@ -10834,7 +10834,7 @@ class Warehouse_model extends App_Model
 		unset($data['into_money']);
 		unset($data['serial_number']);
 
-		if(isset($data['save_as_draft'])) {
+		if (isset($data['save_as_draft'])) {
 			unset($data['save_as_draft']);
 			$data['approval'] = 0;
 		} else {
@@ -19846,5 +19846,208 @@ class Warehouse_model extends App_Model
 			}
 		}
 		return $arr_inventory_number;
+	}
+	public function get_booking_chart_report_view($data, $is_pdf = false)
+	{
+		// 1. Get the data with dynamic headings
+		$result = $this->get_booking_chart_report_data($data);
+
+		// 2. Handle "No data" scenario
+		if (empty($result)) {
+			return '
+        <p><h3 class="bold align_cen text-center">BOOKING CHART</h3></p>
+        <br>
+        <div class="col-md-12">
+          <table class="table table-bordered">
+            <tr>
+              <td colspan="3">No entries found</td>
+            </tr>
+          </table>
+        </div>';
+		}
+
+		$maxPairs = 0;
+		foreach ($result as $floorBlock) {
+			$count = count($floorBlock['rows']);
+			if ($count > $maxPairs) {
+				$maxPairs = $count;
+			}
+		}
+
+		// 4. Extract the dynamic headings from the *first* floor and row
+		//    (Assuming at least one floor and one row exist).
+		$floorHeading = $result[0]['floor_heading'];               // e.g. "Floor"
+		$flatHeading  = $result[0]['rows'][0]['flat_heading'];     // e.g. "Flats"
+		$invHeading   = $result[0]['rows'][0]['inventory_heading']; // e.g. "Inventory"
+
+		// 5. Start building the HTML
+		$html = '
+    <p>
+      <h3 class="bold align_cen text-center">' . mb_strtoupper(_l('Booking Chart')) . '</h3>
+    </p>
+    <br>
+    <div class="col-md-12">
+      <table class="table table-bordered">
+        <thead style="font-weight: 400;font-size: 20px;">
+          <tr>
+           
+            <th class="vendor-report-title" style="width: 13%">' . $floorHeading . '</th>';
+
+
+		for ($i = 0; $i < $maxPairs; $i++) {
+			$html .= '<th class="vendor-report-title">' . $flatHeading . '</th>';
+			$html .= '<th class="vendor-report-title">' . $invHeading . '</th>';
+		}
+
+		$html .= '
+          </tr>
+        </thead>
+        <tbody>';
+
+
+		foreach ($result as $floorBlock) {
+			$floorName = $floorBlock['floor_name'];
+			$rows      = $floorBlock['rows']; // array of pairs
+
+			$html .= '
+          <tr>
+        
+            <td>' . $floorName . '</td>';
+
+			// For each pair index up to $maxPairs
+			for ($i = 0; $i < $maxPairs; $i++) {
+				if (isset($rows[$i])) {
+					// We have a row for this index
+					$flatVal      = $rows[$i]['flat'];
+					$inventoryVal = $rows[$i]['inventory'];
+					$style = $rows[$i]['style'];
+					$html .= '<td>' . $flatVal . '</td>';
+					$html .= '<td style="' . $style . '">' . $inventoryVal . '</td>';
+				} else {
+					// This floor doesn't have that many rows; print blank cells
+					$html .= '<td></td><td></td>';
+				}
+			}
+
+			$html .= '
+          </tr>';
+		}
+
+		$html .= '
+        </tbody>
+      </table>
+    </div>';
+
+		return $html;
+	}
+
+
+
+
+
+	public function get_booking_chart_report_data($data)
+	{
+		$warehouse_id = $data['warehouse_id'];
+		$group_id     = $data['group_id'];
+
+		// 1. Fetch floor, commodity_code, and inventory_number in a single query
+		$this->db->select('sg.sub_group_name,i.description, i.commodity_code, im.inventory_number');
+		$this->db->from(db_prefix() . 'items i');
+		$this->db->join(db_prefix() . 'wh_sub_group sg', 'i.sub_group = sg.id', 'left');
+		$this->db->join(db_prefix() . 'inventory_manage im', 'i.commodity_code = im.commodity_id', 'left');
+		$this->db->where('i.warehouse_id', $warehouse_id);
+		$this->db->where('i.group_id', $group_id);
+		$query  = $this->db->get();
+		$result = $query->result_array();
+
+		// 2. First, group by sub_group_name (floor).
+		$tempGroupedData = [];
+		foreach ($result as $row) {
+			$subGroup = $row['sub_group_name'];
+			// Original description might be something like "Flat 101"
+			$description = $row['description'];
+
+			// Remove the word "Flat" (and an optional trailing space if needed)
+			$flatCode = str_replace('Flat ', '', $description);
+
+			// Trim any leftover whitespace
+			$flatCode = trim($flatCode);
+			// $flatCode = $row['description'];
+
+			// Determine inventory status: SOLD(0) or Unsold(X)
+			$inventoryNum = (int) $row['inventory_number']; // Cast to int to handle null or numeric
+			if ($inventoryNum === 0) {
+				$inventoryStatus = 'SOLD';
+				$style = "background: #ea9999;color: #000000;font-weight: 500;";
+			} else {
+				$inventoryStatus = 'UNSOLD';
+				$style = "background: #00ff00;color: #000000;font-weight: 500;";
+			}
+
+			// Prepare the array structure for each flat
+			$flatData = [
+				'flat'      => $flatCode,
+				'inventory' => $inventoryStatus,
+				'style'     => $style
+			];
+
+			// Initialize the array for this floor if not set
+			if (!isset($tempGroupedData[$subGroup])) {
+				$tempGroupedData[$subGroup] = [];
+			}
+
+			// Add the flat data to the floor
+			$tempGroupedData[$subGroup][] = $flatData;
+		}
+
+		// 3. Transform grouped data into a structure that includes headings
+		//    for each floor, plus repeated headings for each flat row.
+		$finalData = [];
+		foreach ($tempGroupedData as $floorName => $flatsArray) {
+			// Build a block for this floor
+			$floorBlock = [
+				// "Floor" heading is always the same
+				'floor_heading' => 'Floor',
+
+				// Actual floor name (e.g., "Ground Floor", "First Floor", etc.)
+				'floor_name' => $floorName,
+
+				// List of rows, each row has its own "Flats" and "Inventory" headings + data
+				'rows' => [],
+			];
+
+			foreach ($flatsArray as $flatInfo) {
+				$floorBlock['rows'][] = [
+					// The headings for each row
+					'flat_heading'      => 'Flats',
+					'inventory_heading' => 'Inventory',
+
+					// Actual data
+					'flat'      => $flatInfo['flat'],
+					'inventory' => $flatInfo['inventory'],
+					'style'     => $flatInfo['style'],
+				];
+			}
+
+			$finalData[] = $floorBlock;
+		}
+
+		return $finalData;
+	}
+
+
+
+	public function removeDuplicateSubGroups($array)
+	{
+		$unique = [];
+		$temp   = [];
+		foreach ($array as $item) {
+			// Check if the sub_group_name is already added
+			if (!in_array($item['sub_group_name'], $temp)) {
+				$temp[]   = $item['sub_group_name'];
+				$unique[] = $item;
+			}
+		}
+		return $unique;
 	}
 }

@@ -1680,5 +1680,9 @@ function add_opening_stock_modal(id) {
 
   init_ajax_search('items','#item_select_print_barcode.ajax-search',undefined,admin_url+'warehouse/wh_commodity_code_search_all');
 
+  function open_booking_chart(){
+    var url = admin_url + 'warehouse/booking_chart';
+    window.location.href = url;
+  }
 
 </script>
