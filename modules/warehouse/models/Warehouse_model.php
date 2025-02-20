@@ -19937,6 +19937,7 @@ class Warehouse_model extends App_Model
 			$html .= '
 			</tbody>
 		  </table>
+		  <p class="align_cen" style="font-style: italic;font-weight: 500;">Color blue indicates flat booked by investors. </p>
 		</div>';
 		} else {
 
@@ -19982,8 +19983,8 @@ class Warehouse_model extends App_Model
 				                ' . $logo . '
 				            </td>
 							 <td style="position: absolute; float: right;">
-									<p class=""><strong>' . _l('warehouse_name') . '</strong> :  <span class="fstyle">'.$warehouse_name.'</span></p><br>
-									<p class=""><strong>' . _l('Block') . '</strong> :  <span class="fstyle">'.$block_name.'</span></p><br>
+									<p class=""><strong>' . _l('warehouse_name') . '</strong> :  <span class="fstyle">' . $warehouse_name . '</span></p><br>
+									<p class=""><strong>' . _l('Block') . '</strong> :  <span class="fstyle">' . $block_name . '</span></p><br>
 							 </td>
 		  				</tr>
 				        </tr>
@@ -20030,10 +20031,19 @@ class Warehouse_model extends App_Model
 						// We have a row for this index
 						$flatVal      = $rows[$i]['flat'];
 						$inventoryVal = $rows[$i]['inventory'];
-						if($inventoryVal == 'UNSOLD'){
-							$s = 'bgcolor="#00ff00"';
-						}else{
-							$s = 'bgcolor="#ea9999"';
+						$investor     = $rows[$i]['investor'];
+						if ($inventoryVal == 'UNSOLD') {
+							if ($investor == 1) {
+								$s = 'bgcolor="#0000ff" ';
+							} else {
+								$s = 'bgcolor="#00ff00"';
+							}
+						} else {
+							if ($investor == 1) {
+								$s = 'bgcolor="#0000ff"';
+							} else {
+								$s = 'bgcolor="#ea9999"';
+							}
 						}
 						$style = $rows[$i]['style'];
 						$html .= '<td>' . $flatVal . '</td>';
@@ -20051,6 +20061,7 @@ class Warehouse_model extends App_Model
 			$html .= '
 					</tbody>
 				</table>
+				<p class="align_cen" style="font-style: italic;font-weight: 500;">Color blue indicates flat booked by investors. </p>
 				</div>';
 		}
 		$html .= '<link href="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/css/pdf_style.css') . '"  rel="stylesheet" type="text/css" />';
@@ -20063,7 +20074,7 @@ class Warehouse_model extends App_Model
 		$group_id     = $data['group_id'];
 
 		// 1. Fetch floor, commodity_code, and inventory_number in a single query
-		$this->db->select('sg.sub_group_name,i.description, i.commodity_code, im.inventory_number, wh.warehouse_name, ig.name as group_name');
+		$this->db->select('sg.sub_group_name,i.description, i.commodity_code, im.inventory_number, wh.warehouse_name, ig.name as group_name,i.investor');
 		$this->db->from(db_prefix() . 'items i');
 		$this->db->join(db_prefix() . 'wh_sub_group sg', 'i.sub_group = sg.id', 'left');
 		$this->db->join(db_prefix() . 'inventory_manage im', 'i.commodity_code = im.commodity_id', 'left');
@@ -20092,11 +20103,21 @@ class Warehouse_model extends App_Model
 			// Determine inventory status: SOLD(0) or Unsold(X)
 			$inventoryNum = (int) $row['inventory_number']; // Cast to int to handle null or numeric
 			if ($inventoryNum === 0) {
-				$inventoryStatus = 'SOLD';
-				$style = "background: #ea9999;color: #000000;font-weight: 500;";
+				if ($row['investor'] == 1) {
+					$inventoryStatus = 'SOLD';
+					$style = "background: #0000ff;color: #ffffff;font-weight: 500;";
+				} else {
+					$inventoryStatus = 'SOLD';
+					$style = "background: #ea9999;color: #000000;font-weight: 500;";
+				}
 			} else {
-				$inventoryStatus = 'UNSOLD';
-				$style = "background: #00ff00;color: #000000;font-weight: 500;";
+				if ($row['investor'] == 1) {
+					$inventoryStatus = 'UNSOLD';
+					$style = "background: #0000ff;color: #000000;font-weight: 500;";
+				} else {
+					$inventoryStatus = 'UNSOLD';
+					$style = "background: #00ff00;color: #000000;font-weight: 500;";
+				}
 			}
 
 			// Prepare the array structure for each flat
@@ -20106,6 +20127,7 @@ class Warehouse_model extends App_Model
 				'style'     => $style,
 				'warehouse_name' => $row['warehouse_name'],
 				'group_name' => $row['group_name'],
+				'investor' => $row['investor'],
 			];
 
 			// Initialize the array for this floor if not set
@@ -20145,6 +20167,7 @@ class Warehouse_model extends App_Model
 					'style'     => $flatInfo['style'],
 					'warehouse_name' => $flatInfo['warehouse_name'],
 					'group_name' => $flatInfo['group_name'],
+					'investor' => $flatInfo['investor'],
 				];
 			}
 

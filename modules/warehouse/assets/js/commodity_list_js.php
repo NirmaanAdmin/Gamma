@@ -542,7 +542,7 @@ warehouse_type_value = warehouse_type;
     data.guarantee = $('input[name="guarantee"]').val();
     data.warehouse_id = $('select[name="warehouse_id"]').val();
     data.parent_id = $('select[name="parent_id"]').val();
-
+    data.investor = $('select[name="investor"]').val();
     data.long_descriptions = tinymce.activeEditor.getContent();
     data.formdata = $( form ).serializeArray();
 
@@ -828,6 +828,11 @@ warehouse_type_value = warehouse_type;
     }else{
       $('#commodity_list-add-edit select[name="sub_group"]').val('').change();
     }
+    if($(invoker).data('investor') != 0){
+      $('#commodity_list-add-edit select[name="investor"]').val($(invoker).data('investor')).change();
+    }else{
+      $('#commodity_list-add-edit select[name="investor"]').val('').change();
+    }
     if($(invoker).data('color') != 0){
       $('#commodity_list-add-edit select[name="color"]').val($(invoker).data('color')).change();
     }else{
@@ -1069,6 +1074,7 @@ warehouse_type_value = warehouse_type;
     $('#commodity_list-add-edit input[id="can_be_inventory"]').prop('checked', true);
 
     $('#tags_value').find('ul li.tagit-choice').remove();
+    $('.submit_btn').removeAttr('disabled');
     /*init tags input*/
     init_tags_inputs();
     init_selectpicker();

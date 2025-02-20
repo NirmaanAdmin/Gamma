@@ -2162,9 +2162,9 @@ class warehouse extends AdminController {
 	 */
 	public function commodity_list_add_edit($id = '') {
 		$data = $this->input->post();
-
+		
 		if ($data) {
-
+			
 			if (!isset($data['id'])) {
 				$data['long_descriptions'] = $this->input->post('long_descriptions', false);
 				

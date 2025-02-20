@@ -312,7 +312,7 @@
 
               <!-- <a href="#" onclick="print_barcode_bulk_actions(); return false;" data-toggle="modal" data-table=".table-table_commodity_list" data-target="#print_barcode_item" class=" hide print_barcode-bulk-actions-btn table-btn"><?php echo _l('print_barcode'); ?></a> -->
 
-              <a href="#" onclick="open_booking_chart(); return false;"   data-toggle="modal" data-table=".table-table_commodity_list" data-target="#print_barcode_item" class=" hide print_barcode-bulk-actions-btn table-btn"><?php echo _l('Booking Chart'); ?></a>
+              <a href="#" onclick="open_booking_chart(); return false;" data-toggle="modal" data-table=".table-table_commodity_list" data-target="#print_barcode_item" class=" hide print_barcode-bulk-actions-btn table-btn"><?php echo _l('Booking Chart'); ?></a>
 
               <!-- <a href="#"  data-table=".table-table_commodity_list" class="print_barcode-bulk-actions-btn table-btn"><?php echo _l('Booking Chart'); ?></a> -->
 
@@ -616,14 +616,22 @@
               </div>
             </div>
 
-
             <div class="row">
 
-              <div class="col-md-6">
+              <div class="col-md-3">
                 <?php echo render_select('group_id', $commodity_groups, array('id', 'name'), 'commodity_group'); ?>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-3">
                 <?php echo render_select('sub_group', $sub_groups, array('id', 'sub_group_name'), 'sub_group'); ?>
+              </div>
+              <div class="col-md-3">
+                <?php
+                $investor_arr = [
+                  ['id' => '1', 'name' => 'Yes'],
+                  ['id' => '2', 'name' => 'No']
+                ];
+                ?>
+                <?php echo render_select('investor', $investor_arr, array('id', 'name'), 'Belongs to Investor'); ?>
               </div>
             </div>
 

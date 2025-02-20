@@ -225,7 +225,8 @@ $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, [
 	db_prefix() . 'items.can_be_sold',
 	db_prefix() . 'items.can_be_purchased',
 	db_prefix() . 'items.can_be_manufacturing',
-	db_prefix() . 'items.can_be_inventory'
+	db_prefix() . 'items.can_be_inventory',
+	db_prefix() . 'items.investor',
 ]);
 
 $output = $result['output'];
@@ -288,7 +289,7 @@ foreach ($rResult as $aRow) {
 			$code .= '<a href="' . admin_url('warehouse/view_commodity_detail/' . $aRow['id']) . '" >' . _l('view') . '</a>';
 
 			if (has_permission('warehouse', '', 'edit') || is_admin()) {
-				$code .= ' | <a href="#" onclick="edit_commodity_item(this); return false;"  data-commodity_id="' . $aRow['id'] . '" data-description="' . $aRow['description'] . '" data-unit_id="' . $aRow['unit_id'] . '" data-commodity_code="' . $aRow['commodity_code'] . '" data-commodity_barcode="' . $aRow['commodity_barcode'] . '" data-commodity_type="' . $aRow['commodity_type'] . '" data-origin="' . $aRow['origin'] . '" data-color_id="' . $aRow['color_id'] . '" data-style_id="' . $aRow['style_id'] . '" data-model_id="' . $aRow['model_id'] . '" data-size_id="' . $aRow['size_id'] . '"  data-rate="' . $aRow['rate'] . '" data-group_id="' . $aRow['group_id'] . '" data-tax="' . $aRow['tax'] . '"  data-warehouse_id="' . $aRow['warehouse_id'] . '" data-sku_code="' . $aRow['sku_code'] . '" data-sku_name="' . $aRow['sku_name'] . '" data-sub_group="' . $aRow['sub_group'] . '" data-purchase_price="' . $aRow['purchase_price'] . '" data-color="' . $aRow['color'] . '" data-guarantee="' . $aRow['guarantee'] . '" data-profif_ratio="' . $aRow['profif_ratio'] . '" data-without_checking_warehouse="' . $aRow['without_checking_warehouse'] . '" data-parent_id="' . $aRow['parent_id'] . '" data-tax2="' . $aRow['tax2'] . '" data-can_be_sold="' . $aRow['can_be_sold'] . '" data-can_be_purchased="' . $aRow['can_be_purchased'] . '" data-can_be_manufacturing="' . $aRow['can_be_manufacturing'] . '" data-can_be_inventory="' . $aRow['can_be_inventory'] . '"  >' . _l('edit') . '</a>';
+				$code .= ' | <a href="#" onclick="edit_commodity_item(this); return false;"  data-commodity_id="' . $aRow['id'] . '" data-description="' . $aRow['description'] . '" data-unit_id="' . $aRow['unit_id'] . '" data-commodity_code="' . $aRow['commodity_code'] . '" data-commodity_barcode="' . $aRow['commodity_barcode'] . '" data-commodity_type="' . $aRow['commodity_type'] . '" data-origin="' . $aRow['origin'] . '" data-color_id="' . $aRow['color_id'] . '" data-style_id="' . $aRow['style_id'] . '" data-model_id="' . $aRow['model_id'] . '" data-size_id="' . $aRow['size_id'] . '"  data-rate="' . $aRow['rate'] . '" data-group_id="' . $aRow['group_id'] . '" data-tax="' . $aRow['tax'] . '"  data-warehouse_id="' . $aRow['warehouse_id'] . '" data-sku_code="' . $aRow['sku_code'] . '" data-sku_name="' . $aRow['sku_name'] . '" data-sub_group="' . $aRow['sub_group'] . '" data-investor="' . $aRow['investor'] . '" data-purchase_price="' . $aRow['purchase_price'] . '" data-color="' . $aRow['color'] . '" data-guarantee="' . $aRow['guarantee'] . '" data-profif_ratio="' . $aRow['profif_ratio'] . '" data-without_checking_warehouse="' . $aRow['without_checking_warehouse'] . '" data-parent_id="' . $aRow['parent_id'] . '" data-tax2="' . $aRow['tax2'] . '" data-can_be_sold="' . $aRow['can_be_sold'] . '" data-can_be_purchased="' . $aRow['can_be_purchased'] . '" data-can_be_manufacturing="' . $aRow['can_be_manufacturing'] . '" data-can_be_inventory="' . $aRow['can_be_inventory'] . '"  >' . _l('edit') . '</a>';
 			}
 
 			if (has_permission('warehouse', '', 'edit') || has_permission('warehouse', '', 'create')) {
