@@ -9256,11 +9256,45 @@ if(strlen($data['inventory_filter']) > 0){
 	{
 		if ($this->input->post()) {
 			$data = $this->input->post();
-			$booking_chart_report = $this->warehouse_model->get_booking_chart_report_view($data);
+			$booking_chart_report = $this->warehouse_model->get_booking_chart_view($data);
 		}
 		echo json_encode([
 			'value' => $booking_chart_report,
 		]);
 		die();
+	}
+
+	/**
+	 * booking chart pdf
+	 * @return pdf view file
+	 */
+	public function booking_chart_report_pdf()
+	{
+		$data = $this->input->post();
+		if (!$data) {
+			redirect(admin_url('warehouse/booking_chartt'));
+		}
+
+		$booking_chart = $this->warehouse_model->get_booking_chart_view($data, true);
+		
+		try {
+			$pdf = $this->warehouse_model->booking_chart_pdf($booking_chart);
+		} catch (Exception $e) {
+			echo html_entity_decode($e->getMessage());
+			die;
+		}
+
+		$type = 'D';
+		ob_end_clean();
+
+		if ($this->input->get('output_type')) {
+			$type = $this->input->get('output_type');
+		}
+
+		if ($this->input->get('print')) {
+			$type = 'I';
+		}
+
+		$pdf->Output('booking_chart.pdf', $type);
 	}
 }

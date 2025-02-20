@@ -19847,103 +19847,215 @@ class Warehouse_model extends App_Model
 		}
 		return $arr_inventory_number;
 	}
-	public function get_booking_chart_report_view($data, $is_pdf = false)
+	public function get_booking_chart_view($data, $is_pdf = false)
 	{
 		// 1. Get the data with dynamic headings
 		$result = $this->get_booking_chart_report_data($data);
+		if ($is_pdf == false) {
 
-		// 2. Handle "No data" scenario
-		if (empty($result)) {
-			return '
-        <p><h3 class="bold align_cen text-center">BOOKING CHART</h3></p>
-        <br>
-        <div class="col-md-12">
-          <table class="table table-bordered">
-            <tr>
-              <td colspan="3">No entries found</td>
-            </tr>
-          </table>
-        </div>';
-		}
-
-		$maxPairs = 0;
-		foreach ($result as $floorBlock) {
-			$count = count($floorBlock['rows']);
-			if ($count > $maxPairs) {
-				$maxPairs = $count;
+			// 2. Handle "No data" scenario
+			if (empty($result)) {
+				return '
+			<p><h3 class="bold align_cen text-center">BOOKING CHART</h3></p>
+			<br>
+			<div class="col-md-12">
+			  <table class="table table-bordered">
+				<tr>
+				  <td colspan="3">No entries found</td>
+				</tr>
+			  </table>
+			</div>';
 			}
-		}
 
-		// 4. Extract the dynamic headings from the *first* floor and row
-		//    (Assuming at least one floor and one row exist).
-		$floorHeading = $result[0]['floor_heading'];               // e.g. "Floor"
-		$flatHeading  = $result[0]['rows'][0]['flat_heading'];     // e.g. "Flats"
-		$invHeading   = $result[0]['rows'][0]['inventory_heading']; // e.g. "Inventory"
-
-		// 5. Start building the HTML
-		$html = '
-    <p>
-      <h3 class="bold align_cen text-center">' . mb_strtoupper(_l('Booking Chart')) . '</h3>
-    </p>
-    <br>
-    <div class="col-md-12">
-      <table class="table table-bordered">
-        <thead style="font-weight: 400;font-size: 20px;">
-          <tr>
-           
-            <th class="vendor-report-title" style="width: 13%">' . $floorHeading . '</th>';
-
-
-		for ($i = 0; $i < $maxPairs; $i++) {
-			$html .= '<th class="vendor-report-title">' . $flatHeading . '</th>';
-			$html .= '<th class="vendor-report-title">' . $invHeading . '</th>';
-		}
-
-		$html .= '
-          </tr>
-        </thead>
-        <tbody>';
-
-
-		foreach ($result as $floorBlock) {
-			$floorName = $floorBlock['floor_name'];
-			$rows      = $floorBlock['rows']; // array of pairs
-
-			$html .= '
-          <tr>
-        
-            <td>' . $floorName . '</td>';
-
-			// For each pair index up to $maxPairs
-			for ($i = 0; $i < $maxPairs; $i++) {
-				if (isset($rows[$i])) {
-					// We have a row for this index
-					$flatVal      = $rows[$i]['flat'];
-					$inventoryVal = $rows[$i]['inventory'];
-					$style = $rows[$i]['style'];
-					$html .= '<td>' . $flatVal . '</td>';
-					$html .= '<td style="' . $style . '">' . $inventoryVal . '</td>';
-				} else {
-					// This floor doesn't have that many rows; print blank cells
-					$html .= '<td></td><td></td>';
+			$maxPairs = 0;
+			foreach ($result as $floorBlock) {
+				$count = count($floorBlock['rows']);
+				if ($count > $maxPairs) {
+					$maxPairs = $count;
 				}
 			}
 
+			// 4. Extract the dynamic headings from the *first* floor and row
+			//    (Assuming at least one floor and one row exist).
+			$floorHeading = $result[0]['floor_heading'];               // e.g. "Floor"
+			$flatHeading  = $result[0]['rows'][0]['flat_heading'];     // e.g. "Flats"
+			$invHeading   = $result[0]['rows'][0]['inventory_heading']; // e.g. "Inventory"
+
+			// 5. Start building the HTML
+			$html = '
+		<p>
+		  <h3 class="bold align_cen text-center">' . mb_strtoupper(_l('Booking Chart')) . '</h3>
+		</p>
+		<br>
+		<div class="col-md-12">
+		  <table class="table table-bordered">
+			<thead style="font-weight: 400;font-size: 20px;">
+			  <tr>
+			   
+				<th class="vendor-report-title" style="width: 13%">' . $floorHeading . '</th>';
+
+
+			for ($i = 0; $i < $maxPairs; $i++) {
+				$html .= '<th class="vendor-report-title">' . $flatHeading . '</th>';
+				$html .= '<th class="vendor-report-title">' . $invHeading . '</th>';
+			}
+
 			$html .= '
-          </tr>';
+			  </tr>
+			</thead>
+			<tbody>';
+
+
+			foreach ($result as $floorBlock) {
+				$floorName = $floorBlock['floor_name'];
+				$rows      = $floorBlock['rows']; // array of pairs
+
+				$html .= '
+			  <tr>
+			
+				<td>' . $floorName . '</td>';
+
+				// For each pair index up to $maxPairs
+				for ($i = 0; $i < $maxPairs; $i++) {
+					if (isset($rows[$i])) {
+						// We have a row for this index
+						$flatVal      = $rows[$i]['flat'];
+						$inventoryVal = $rows[$i]['inventory'];
+						$style = $rows[$i]['style'];
+						$html .= '<td>' . $flatVal . '</td>';
+						$html .= '<td style="' . $style . '">' . $inventoryVal . '</td>';
+					} else {
+						// This floor doesn't have that many rows; print blank cells
+						$html .= '<td></td><td></td>';
+					}
+				}
+
+				$html .= '
+			  </tr>';
+			}
+
+			$html .= '
+			</tbody>
+		  </table>
+		</div>';
+		} else {
+
+			if (empty($result)) {
+				return '
+				<p><h3 class="bold align_cen text-center">BOOKING CHART</h3></p>
+				<br>
+				<div class="col-md-12">
+				<table class="table table-bordered">
+					<tr>
+					<td colspan="3">No entries found</td>
+					</tr>
+				</table>
+				</div>';
+			}
+
+			$maxPairs = 0;
+			foreach ($result as $floorBlock) {
+				$count = count($floorBlock['rows']);
+				if ($count > $maxPairs) {
+					$maxPairs = $count;
+				}
+			}
+
+
+
+			$floorHeading = $result[0]['floor_heading'];               // e.g. "Floor"
+			$flatHeading  = $result[0]['rows'][0]['flat_heading'];     // e.g. "Flats"
+			$invHeading   = $result[0]['rows'][0]['inventory_heading']; // e.g. "Inventory"
+			$warehouse_name = $result[0]['rows'][0]['warehouse_name'];
+			$block_name = $result[0]['rows'][0]['group_name'];
+
+			$logo = '';
+			$company_logo = get_option('company_logo_dark');
+			if (!empty($company_logo)) {
+				$logo = '<img src="' . base_url('uploads/company/' . $company_logo) . '" width="230" height="100">';
+			}
+			$html = '';
+			$html .= '<table class="table">
+					<tbody>
+          				<tr>
+            				<td>
+				                ' . $logo . '
+				            </td>
+							 <td style="position: absolute; float: right;">
+									<p class=""><strong>' . _l('warehouse_name') . '</strong> :  <span class="fstyle">'.$warehouse_name.'</span></p><br>
+									<p class=""><strong>' . _l('Block') . '</strong> :  <span class="fstyle">'.$block_name.'</span></p><br>
+							 </td>
+		  				</tr>
+				        </tr>
+        			</tbody>
+      			</table>
+      			<br>';
+
+			$html .= '
+				<p>
+				<h3 class="bold align_cen text-center">' . mb_strtoupper(_l('Booking Chart')) . '</h3>
+				</p>
+				<br>
+				<div class="col-md-12">
+				<table class="table" style="width: 100%" border="1">
+					<thead style="font-weight: 400;font-size: 20px;">
+					<tr>
+					
+						<th class="vendor-report-title" >' . $floorHeading . '</th>';
+
+
+			for ($i = 0; $i < $maxPairs; $i++) {
+				$html .= '<th class="vendor-report-title">' . $flatHeading . '</th>';
+				$html .= '<th class="vendor-report-title">' . $invHeading . '</th>';
+			}
+
+			$html .= '
+					</tr>
+					</thead>
+					<tbody>';
+
+
+			foreach ($result as $floorBlock) {
+				$floorName = $floorBlock['floor_name'];
+				$rows      = $floorBlock['rows']; // array of pairs
+
+				$html .= '
+					<tr>
+					
+						<td>' . $floorName . '</td>';
+
+				// For each pair index up to $maxPairs
+				for ($i = 0; $i < $maxPairs; $i++) {
+					if (isset($rows[$i])) {
+						// We have a row for this index
+						$flatVal      = $rows[$i]['flat'];
+						$inventoryVal = $rows[$i]['inventory'];
+						if($inventoryVal == 'UNSOLD'){
+							$s = 'bgcolor="#00ff00"';
+						}else{
+							$s = 'bgcolor="#ea9999"';
+						}
+						$style = $rows[$i]['style'];
+						$html .= '<td>' . $flatVal . '</td>';
+						$html .= '<td  ' . $s . '  >' . $inventoryVal . '</td>';
+					} else {
+						// This floor doesn't have that many rows; print blank cells
+						$html .= '<td></td><td></td>';
+					}
+				}
+
+				$html .= '
+					</tr>';
+			}
+
+			$html .= '
+					</tbody>
+				</table>
+				</div>';
 		}
-
-		$html .= '
-        </tbody>
-      </table>
-    </div>';
-
+		$html .= '<link href="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/css/pdf_style.css') . '"  rel="stylesheet" type="text/css" />';
 		return $html;
 	}
-
-
-
-
 
 	public function get_booking_chart_report_data($data)
 	{
@@ -19951,10 +20063,12 @@ class Warehouse_model extends App_Model
 		$group_id     = $data['group_id'];
 
 		// 1. Fetch floor, commodity_code, and inventory_number in a single query
-		$this->db->select('sg.sub_group_name,i.description, i.commodity_code, im.inventory_number');
+		$this->db->select('sg.sub_group_name,i.description, i.commodity_code, im.inventory_number, wh.warehouse_name, ig.name as group_name');
 		$this->db->from(db_prefix() . 'items i');
 		$this->db->join(db_prefix() . 'wh_sub_group sg', 'i.sub_group = sg.id', 'left');
 		$this->db->join(db_prefix() . 'inventory_manage im', 'i.commodity_code = im.commodity_id', 'left');
+		$this->db->join(db_prefix() . 'warehouse wh', 'wh.warehouse_id = i.warehouse_id', 'left');
+		$this->db->join(db_prefix() . 'items_groups ig', 'ig.id = i.group_id', 'left');
 		$this->db->where('i.warehouse_id', $warehouse_id);
 		$this->db->where('i.group_id', $group_id);
 		$query  = $this->db->get();
@@ -19988,7 +20102,9 @@ class Warehouse_model extends App_Model
 			$flatData = [
 				'flat'      => $flatCode,
 				'inventory' => $inventoryStatus,
-				'style'     => $style
+				'style'     => $style,
+				'warehouse_name' => $row['warehouse_name'],
+				'group_name' => $row['group_name'],
 			];
 
 			// Initialize the array for this floor if not set
@@ -20026,6 +20142,8 @@ class Warehouse_model extends App_Model
 					'flat'      => $flatInfo['flat'],
 					'inventory' => $flatInfo['inventory'],
 					'style'     => $flatInfo['style'],
+					'warehouse_name' => $flatInfo['warehouse_name'],
+					'group_name' => $flatInfo['group_name'],
 				];
 			}
 
@@ -20036,18 +20154,13 @@ class Warehouse_model extends App_Model
 	}
 
 
-
-	public function removeDuplicateSubGroups($array)
+	/**
+	 * booking chart pdf
+	 * @param  string $booking_chart
+	 * @return pdf view
+	 */
+	function booking_chart_pdf($booking_chart)
 	{
-		$unique = [];
-		$temp   = [];
-		foreach ($array as $item) {
-			// Check if the sub_group_name is already added
-			if (!in_array($item['sub_group_name'], $temp)) {
-				$temp[]   = $item['sub_group_name'];
-				$unique[] = $item;
-			}
-		}
-		return $unique;
+		return app_pdf('booking_chart', module_dir_path(WAREHOUSE_MODULE_NAME, 'libraries/pdf/Booking_chart_pdf.php'), $booking_chart);
 	}
 }
