@@ -20083,6 +20083,7 @@ class Warehouse_model extends App_Model
 		$this->db->where('i.warehouse_id', $warehouse_id);
 		$this->db->where('i.group_id', $group_id);
 		$this->db->order_by('sg.id', 'ASC');
+		$this->db->order_by('i.description', 'ASC');
 		$query  = $this->db->get();
 		$result = $query->result_array();
 
