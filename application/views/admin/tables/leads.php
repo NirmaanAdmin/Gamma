@@ -30,7 +30,6 @@ $rules = [
     App_table_filter::new('dateadded', 'DateRule')->label(_l('date_created')),
     App_table_filter::new('dateassigned', 'DateRule')->label(_l('customer_admin_date_assigned')),
     App_table_filter::new('lead_value', 'NumberRule')->label(_l('lead_add_edit_lead_value')),
-    App_table_filter::new('projects', 'TextRule')->label(_l('projects')),
     App_table_filter::new('status', 'MultiSelectRule')->label(_l('lead_status'))->options(function () use ($statuses) {
         return collect($statuses)->map(fn($status) => [
             'value' => $status['id'],
@@ -46,6 +45,20 @@ $rules = [
     }),
 ];
 
+$rules[] = App_table_filter::new('projects', 'SelectRule')->label(_l('projects'))
+    ->withEmptyOperators()
+    ->emptyOperatorValue(0)
+    ->isVisible(fn() => staff_can('view', 'leads'))
+    ->options(function ($ci) {
+        $project = get_projects();
+
+        return collect($project)->map(function ($project) {
+            return [
+                'value' => $project['id'],
+                'label' => $project['name']
+            ];
+        })->all();
+    });
 $rules[] = App_table_filter::new('assigned', 'SelectRule')->label(_l('leads_dt_assigned'))
     ->withEmptyOperators()
     ->emptyOperatorValue(0)
@@ -60,6 +73,7 @@ $rules[] = App_table_filter::new('assigned', 'SelectRule')->label(_l('leads_dt_a
             ];
         })->all();
     });
+
 
 
 if (isset($consent_purposes)) {
@@ -131,9 +145,9 @@ return App_table::find('leads')
 
 
         $staffid = get_staff_user_id();
-        
+
         $get_assgined_projects = get_assgined_projects($staffid);
-        
+
         $project_ids = !empty($get_assgined_projects) ? array_column($get_assgined_projects, 'team_manage_id') : [];
 
         // Restrict leads view for non-admin users
@@ -247,7 +261,7 @@ return App_table::find('leads')
 
 
 
-            
+
 
             $assignedOutput = '';
             if ($aRow['assigned'] != 0) {
@@ -303,10 +317,10 @@ return App_table::find('leads')
             $row[] = '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['dateadded'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['dateadded'])) . '</span>';
             $check_double_entry = get_double_entery_by_phonenumber($aRow['phonenumber']);
 
-            if($check_double_entry >= 2){
+            if ($check_double_entry >= 2) {
                 $check_double_messgae = '<span style="color: #fd2c2c;font-weight: bold;">Duplicate Entry Alert!</span>';
-            }else{
-                $check_double_messgae = '';   
+            } else {
+                $check_double_messgae = '';
             }
 
             $row[] .= $check_double_messgae;
