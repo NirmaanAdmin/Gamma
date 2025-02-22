@@ -787,7 +787,7 @@
             <div class="col-md-6">
                 <?php
                 $projects              = get_projects();
-                $selected                 = (isset($lead) ? $lead->interested_in : '');
+                $selected                 = (isset($lead) ? $lead->projects : '');
                 echo render_select('projects', $projects, ['id', ['name']], 'Projects', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
                 ?>
                 <?php echo render_input('email', 'lead_add_edit_email', $value); ?>
