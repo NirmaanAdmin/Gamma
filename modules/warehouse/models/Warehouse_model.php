@@ -19937,7 +19937,7 @@ class Warehouse_model extends App_Model
 			$html .= '
 			</tbody>
 		  </table>
-		  <p class="align_cen" style="font-style: italic;font-weight: 500;">Color blue indicates flat booked by investors. </p>
+		  
 		</div>';
 		} else {
 
@@ -20034,20 +20034,24 @@ class Warehouse_model extends App_Model
 						$investor     = $rows[$i]['investor'];
 						if ($inventoryVal == 'UNSOLD') {
 							if ($investor == 1) {
-								$s = 'bgcolor="#0000ff" ';
+								$s = 'bgcolor="#00ff00" ';
+								$p = 'font-color="#ffffff" ';
 							} else {
 								$s = 'bgcolor="#00ff00"';
+								$p = '';
 							}
 						} else {
 							if ($investor == 1) {
-								$s = 'bgcolor="#0000ff"';
+								$s = 'bgcolor="#ea9999"';
+								$p = 'color="#ffffff" ';
 							} else {
 								$s = 'bgcolor="#ea9999"';
+								$p = '';
 							}
 						}
 						$style = $rows[$i]['style'];
 						$html .= '<td>' . $flatVal . '</td>';
-						$html .= '<td  ' . $s . '  >' . $inventoryVal . '</td>';
+						$html .= '<td  ' . $s . ' ' . $p . '  >' . $inventoryVal . '</td>';
 					} else {
 						// This floor doesn't have that many rows; print blank cells
 						$html .= '<td></td><td></td>';
@@ -20061,7 +20065,7 @@ class Warehouse_model extends App_Model
 			$html .= '
 					</tbody>
 				</table>
-				<p class="align_cen" style="font-style: italic;font-weight: 500;">Color blue indicates flat booked by investors. </p>
+				
 				</div>';
 		}
 		$html .= '<link href="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/css/pdf_style.css') . '"  rel="stylesheet" type="text/css" />';
@@ -20106,7 +20110,7 @@ class Warehouse_model extends App_Model
 			if ($inventoryNum === 0) {
 				if ($row['investor'] == 1) {
 					$inventoryStatus = 'SOLD';
-					$style = "background: #0000ff;color: #ffffff;font-weight: 500;";
+					$style = "background: #ea9999;color: #ffffff;font-weight: 500;";
 				} else {
 					$inventoryStatus = 'SOLD';
 					$style = "background: #ea9999;color: #000000;font-weight: 500;";
@@ -20114,7 +20118,7 @@ class Warehouse_model extends App_Model
 			} else {
 				if ($row['investor'] == 1) {
 					$inventoryStatus = 'UNSOLD';
-					$style = "background: #0000ff;color: #000000;font-weight: 500;";
+					$style = "background: #ea9999;color: #ffffff;font-weight: 500;";
 				} else {
 					$inventoryStatus = 'UNSOLD';
 					$style = "background: #00ff00;color: #000000;font-weight: 500;";
