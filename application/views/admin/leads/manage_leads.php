@@ -263,6 +263,10 @@
                                             'th_attrs' => ['class' => 'toggleable', 'id' => 'th-double-entry-alert'],
                                         ];
                                         $_table_data[] = [
+                                            'name'     => _l('Month'),
+                                            'th_attrs' => ['class' => 'toggleable', 'id' => 'th-month'],
+                                        ];
+                                        $_table_data[] = [
                                             'name'     => _l('tags'),
                                             'th_attrs' => ['class' => 'toggleable', 'id' => 'th-tags'],
                                         ];

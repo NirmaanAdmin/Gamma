@@ -324,6 +324,7 @@ return App_table::find('leads')
             }
 
             $row[] .= $check_double_messgae;
+            $row[] .= date('M', strtotime($aRow['dateadded']));
             $row[] .= render_tags($aRow['tags']);
             // Custom fields add values
             foreach ($customFieldsColumns as $customFieldColumn) {
