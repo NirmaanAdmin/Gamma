@@ -264,6 +264,8 @@ function warehouse_module_init_menu_items()
             'position' => 7,
         ]);
 
+        
+
         if(ACTIVE_PROPOSAL_OLD_CUSTOMER){
             //add all warehouse on menu item
             foreach (get_warehouse_name() as $warehouse_item) {
@@ -300,6 +302,14 @@ function warehouse_module_init_menu_items()
             'icon'     => 'fa fa-gears',
             'href'     => admin_url('warehouse/setting'),
             'position' => 8,
+        ]);
+
+        $CI->app_menu->add_sidebar_children_item('warehouse', [
+            'slug'     => 'wa_manage_booking_chart',
+            'name'     => _l('Booking Chart'),
+            'icon'     => 'fa fa-area-chart menu-icon',
+            'href'     => admin_url('warehouse/booking_chart'),
+            'position' => 9,
         ]);
        
 
