@@ -50,7 +50,7 @@
               </div>
             </div>
             <div class="row">
-              <div class=" col-md-3">
+              <div class=" col-md-2">
                 <div class="form-group">
                   <select name="warehouse_filter[]" id="warehouse_filter" class="selectpicker" multiple="true" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('warehouse_filter'); ?>">
 
@@ -60,7 +60,7 @@
                   </select>
                 </div>
               </div>
-              <div class=" col-md-3">
+              <div class=" col-md-2">
                 <?php $this->load->view('warehouse/item_include/item_select', ['select_name' => 'commodity_filter[]', 'id_name' => 'commodity_filter', 'multiple' => true, 'data_none_selected_text' => 'commodity']); ?>
               </div>
               <div class=" col-md-2">
@@ -75,7 +75,26 @@
                   </select>
                 </div>
               </div>
-
+              <div class=" col-md-2">
+                <div class="form-group">
+                  <select name="group_name" id="group_name" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('group_name'); ?>">
+                    <option value=""></option>
+                    <?php foreach ($commodity_groups as $groups) { ?>
+                      <option value="<?php echo html_entity_decode($groups['id']); ?>"><?php echo html_entity_decode($groups['name']); ?></option>
+                    <?php } ?>
+                  </select>
+                </div>
+              </div>
+              <div class=" col-md-2">
+                <div class="form-group">
+                  <select name="sub_group_name" id="sub_group_name" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('sub_group_name'); ?>">
+                    <option value=""></option>
+                    <!-- <?php foreach ($sub_groups as $sub_group) { ?>
+                      <option value="<?php echo html_entity_decode($sub_group['id']); ?>"><?php echo html_entity_decode($sub_group['sub_group_name']); ?></option>
+                    <?php } ?> -->
+                  </select>
+                </div>
+              </div>
               <!-- <div class=" col-md-2">
                 <div class="form-group">
                   <select name="alert_filter" id="alert_filter" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('alert_filter'); ?>">
@@ -404,11 +423,12 @@
                   _l('tags'),
                   _l('inventory_number'),
                   _l('unit_name'),
+                  _l('status'),
                   _l('rate'),
                   _l('purchase_price'),
                   _l('tax_1'),
                   _l('tax_2'),
-                  _l('status'),
+
                   // _l('minimum_stock'),
                   // _l('maximum_stock'),
                   _l('final_price'),
@@ -949,6 +969,28 @@
     // Prevent dropdown from closing when clicking inside
     $('.dropdown-menu').on('click', function(e) {
       e.stopPropagation();
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    // Wait for DataTable to initialize
+    $('#table-table_commodity_list').on('draw.dt', function() {
+      // Loop through each row in the table
+      $('#table-table_commodity_list tbody tr').each(function() {
+        // Find the status column (12th column, index 11)
+        var statusCell = $(this).find('td:eq(11)');
+        var statusText = statusCell.text().toLowerCase().trim();
+
+        // Apply background color based on status
+        if (statusText === 'sold') {
+          statusCell.css('background-color', '#ea9999'); // Light red
+          statusCell.css('color', '#000000'); // Black text
+        } else if (statusText === 'unsold') {
+          statusCell.css('background-color', '#00ff00'); // Light green
+          statusCell.css('color', '#000000'); // Black text
+        }
+      });
     });
   });
 </script>

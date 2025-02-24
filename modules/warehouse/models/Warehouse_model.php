@@ -7935,7 +7935,7 @@ class Warehouse_model extends App_Model
 		$this->db->where('group_id', $group);
 		$arr_subgroup = $this->db->get(db_prefix() . 'wh_sub_group')->result_array();
 
-		$options = '';
+		$options = '<option value=""></option>';
 		if (count($arr_subgroup) > 0) {
 			foreach ($arr_subgroup as $value) {
 

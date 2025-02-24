@@ -18,11 +18,12 @@ $aColumns = [
 	'(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'items.id and rel_type="item_tags" ORDER by tag_order ASC) as tags',
 	'commodity_barcode',
 	'unit_id',
+	'origin',
 	'rate',
 	'purchase_price',
 	't1.taxrate as taxrate_1',
 	't2.taxrate as taxrate_2',
-	'origin',
+
 	// '2',	//minimum stock
 	// '3',	//maximum stock
 	'4',	//maximum stock
@@ -38,7 +39,8 @@ $warehouse_ft = $this->ci->input->post('warehouse_ft');
 $commodity_ft = $this->ci->input->post('commodity_ft');
 $alert_filter = $this->ci->input->post('alert_filter');
 $can_be_value_filter = $this->ci->input->post('can_be_value_filter');
-
+$group_ids = $this->ci->input->post('group_ids');
+$sub_group_name = $this->ci->input->post('sub_group_name');
 $tags_ft = $this->ci->input->post('item_filter');
 $parent_item = $this->ci->input->post('parent_item');
 $sub_commodity_ft = $this->ci->input->post('sub_commodity_ft');
@@ -73,6 +75,14 @@ if (isset($warehouse_ft)) {
 	$arr_commodity_id = $this->ci->warehouse_model->get_commodity_in_warehouse($warehouse_ft);
 
 	$where[] = 'AND ' . db_prefix() . 'items.id IN (' . implode(', ', $arr_commodity_id) . ')';
+}
+
+if (isset($group_ids) && $group_ids != '') {
+	$where[] = 'AND ' . db_prefix() . 'items.group_id IN (' . $group_ids . ')';
+}
+
+if(isset($sub_group_name) && $sub_group_name != '') {
+	$where[] = 'AND ' . db_prefix() . 'items.sub_group IN (' . $sub_group_name . ')';
 }
 
 if (isset($commodity_ft)) {
@@ -409,13 +419,19 @@ foreach ($rResult as $aRow) {
 			}
 			$_data = $product_inventory_quantity;
 		} elseif ($aColumns[$i] == 'origin') {
-
-			if (isset($arr_inventory_min[$aRow['id']]) && $arr_inventory_min[$aRow['id']]) {
-				$_data = '<span class="label label-tag tag-id-1 label-tabus "><span class="tag text-danger">' . _l('unsafe_inventory') . '</span><span class="hide">, </span></span>&nbsp';
-			} else {
-				$_data = '';
+			$quantity_by_warehouse_status = $warehouse_value['inventory_number'];
+			if ($quantity_by_warehouse_status == 0) {
+				$_data = 'Sold';
+			} elseif ($quantity_by_warehouse_status == 1) {
+				$_data = 'Unsold';
 			}
-		} 
+			// $_data = 'asd';
+			// if (isset($arr_inventory_min[$aRow['id']]) && $arr_inventory_min[$aRow['id']]) {
+			// 	$_data = '<span class="label label-tag tag-id-1 label-tabus "><span class="tag text-danger">' . _l('unsafe_inventory') . '</span><span class="hide">, </span></span>&nbsp';
+			// } else {
+			// 	$_data = '';
+			// }
+		}
 		// elseif ($aColumns[$i] == '2') {
 		// 	/*3: minmumstock, maximum stock*/
 		// 	$minmumstock = '';
@@ -435,7 +451,7 @@ foreach ($rResult as $aRow) {
 
 		// 	$_data = $maxmumstock;
 		// }
-		 elseif ($aColumns[$i] == '4') {
+		elseif ($aColumns[$i] == '4') {
 			//final price: price*Vat
 			$tax_value = 0;
 			if ($aRow['tax'] != 0 && $aRow['tax'] != '') {
