@@ -260,7 +260,7 @@
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->firm != '' ? process_text_content_for_display($lead->firm) : '-') ?></dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Contact Details'); ?>
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Broker Contact Details'); ?>
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->contact_details != '' ? $lead->contact_details : '-') ?></dd>
@@ -780,7 +780,7 @@
                 <?php $value = (isset($lead) ? $lead->broker : ''); ?>
                 <?php echo render_input('broker', 'Broker Name', $value); ?>
                 <?php $value = (isset($lead) ? $lead->contact_details : ''); ?>
-                <?php echo render_input('contact_details', 'Contact Details', $value, 'number'); ?>
+                <?php echo render_input('contact_details', 'Broker Contact Details', $value, 'number'); ?>
                 <!-- <?php $value = (isset($lead) ? $lead->company : ''); ?>
                 <?php echo render_input('company', 'lead_company', $value); ?> -->
             </div>

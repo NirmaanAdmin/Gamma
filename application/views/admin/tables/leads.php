@@ -29,7 +29,7 @@ $rules = [
     App_table_filter::new('lastcontact', 'DateRule')->label(_l('leads_dt_last_contact')),
     App_table_filter::new('dateadded', 'DateRule')->label(_l('date_created')),
     App_table_filter::new('dateassigned', 'DateRule')->label(_l('customer_admin_date_assigned')),
-    App_table_filter::new('lead_value', 'NumberRule')->label(_l('lead_add_edit_lead_value')),
+    // App_table_filter::new('lead_value', 'NumberRule')->label(_l('lead_add_edit_lead_value')),
     App_table_filter::new('status', 'MultiSelectRule')->label(_l('lead_status'))->options(function () use ($statuses) {
         return collect($statuses)->map(fn($status) => [
             'value' => $status['id'],
@@ -112,6 +112,8 @@ return App_table::find('leads')
             db_prefix() . 'leads.phonenumber as phonenumber',
             db_prefix() . 'leads.alt_phonenumber as alt_phonenumber',
             'lead_value',
+            'broker',
+            'contact_details',
             'projects',
             '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'leads.id and rel_type="lead" ORDER by tag_order ASC LIMIT 1) as tags',
             'firstname as assigned_firstname',
@@ -234,7 +236,7 @@ return App_table::find('leads')
             }
 
 
-            $row[] = ($aRow['email'] != '' ? '<a href="mailto:' . e($aRow['email']) . '">' . e($aRow['email']) . '</a>' : '');
+            // $row[] = ($aRow['email'] != '' ? '<a href="mailto:' . e($aRow['email']) . '">' . e($aRow['email']) . '</a>' : '');
 
             // $row[] = ($aRow['phonenumber'] != '' ? '<a href="tel:' . e($aRow['phonenumber']) . '">' . e($aRow['phonenumber']) . '</a>' : '');
             $phone = trim($aRow['phonenumber']);
@@ -256,7 +258,9 @@ return App_table::find('leads')
 
             $row[] = $aRow['alt_phonenumber'];
             $base_currency = get_base_currency();
-            $row[]         = e(($aRow['lead_value'] != 0 ? app_format_money($aRow['lead_value'], $base_currency->id) : ''));
+            // $row[]         = e(($aRow['lead_value'] != 0 ? app_format_money($aRow['lead_value'], $base_currency->id) : ''));
+            $row[]        = e($aRow['broker']);
+            $row[]        = e($aRow['contact_details']);
             $row[]          = (!empty($aRow['projects']) && $aRow['projects'] != 0) ? get_projects($aRow['projects']) : '';
 
 
