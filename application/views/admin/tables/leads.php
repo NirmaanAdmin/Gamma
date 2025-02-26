@@ -29,7 +29,7 @@ $rules = [
     App_table_filter::new('lastcontact', 'DateRule')->label(_l('leads_dt_last_contact')),
     App_table_filter::new('dateadded', 'DateRule')->label(_l('date_created')),
     App_table_filter::new('dateassigned', 'DateRule')->label(_l('customer_admin_date_assigned')),
-    // App_table_filter::new('lead_value', 'NumberRule')->label(_l('lead_add_edit_lead_value')),
+    App_table_filter::new('duplicate', 'NumberRule')->label(_l('Duplicate')),
     App_table_filter::new('status', 'MultiSelectRule')->label(_l('lead_status'))->options(function () use ($statuses) {
         return collect($statuses)->map(fn($status) => [
             'value' => $status['id'],
@@ -182,7 +182,7 @@ return App_table::find('leads')
             'lastname as assigned_lastname',
             db_prefix() . 'leads.addedfrom as addedfrom',
             '(SELECT count(leadid) FROM ' . db_prefix() . 'clients WHERE ' . db_prefix() . 'clients.leadid=' . db_prefix() . 'leads.id) as is_converted',
-
+            'duplicate',
             'zip',
         ]);
 
@@ -321,9 +321,9 @@ return App_table::find('leads')
             $row[] = ($aRow['lastcontact'] == '0000-00-00 00:00:00' || !is_date($aRow['lastcontact']) ? '' : '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['lastcontact'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['lastcontact'])) . '</span>');
             $row[]        = e($aRow['broker']);
             $row[]        = e($aRow['contact_details']);
-            $check_double_entry = get_double_entery_by_phonenumber($aRow['phonenumber']);
+            $check_double_entry = $aRow['duplicate'];
 
-            if ($check_double_entry >= 2) {
+            if ($check_double_entry > 0) {
                 $check_double_messgae = '<span style="color: #fd2c2c;font-weight: bold;">Duplicate Entry Alert!</span>';
             } else {
                 $check_double_messgae = '';

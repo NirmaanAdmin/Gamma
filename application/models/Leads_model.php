@@ -109,9 +109,23 @@ class Leads_model extends App_Model
 
         $data['address'] = trim($data['address']);
         $data['address'] = nl2br($data['address']);
+        $phonenumber_without_code = $data['phonenumber'];
         $data['phonenumber'] = $data['country_code'] . $data['phonenumber'];
         unset($data['country_code']);
         $data['email'] = trim($data['email']);
+        // Check if the phone number already exists in the leads table
+        // Check if the phone number exists (with and without country code)
+        $this->db->where('phonenumber', $data['phonenumber']);
+        $this->db->or_where('phonenumber', $phonenumber_without_code); // Check without country code
+        $existing_lead = $this->db->get(db_prefix() . 'leads')->row();
+
+        if ($existing_lead) {
+            // If phone number exists, set duplicate field to 1
+            $data['duplicate'] = 1;
+        } else {
+            $data['duplicate'] = 0;
+        }
+
 
         $this->db->insert(db_prefix() . 'leads', $data);
         $insert_id = $this->db->insert_id();
@@ -271,7 +285,7 @@ class Leads_model extends App_Model
         $data['phonenumber'] = $data['country_code'] . $data['phonenumber'];
         unset($data['country_code']);
         $data['email'] = trim($data['email']);
-        
+
         $this->db->where('id', $id);
         $this->db->update(db_prefix() . 'leads', $data);
         if ($this->db->affected_rows() > 0) {
