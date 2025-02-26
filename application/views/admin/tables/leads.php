@@ -112,15 +112,17 @@ return App_table::find('leads')
             db_prefix() . 'leads.phonenumber as phonenumber',
             db_prefix() . 'leads.alt_phonenumber as alt_phonenumber',
             // 'lead_value',
-            'broker',
-            'contact_details',
+
             'projects',
             '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'leads.id and rel_type="lead" ORDER by tag_order ASC LIMIT 1) as tags',
-            
+
             db_prefix() . 'leads_status.name as status_name',
             db_prefix() . 'leads_sources.name as source_name',
-            'lastcontact',
+
             'dateadded',
+            'lastcontact',
+            'broker',
+            'contact_details',
         ]);
 
         $sIndexColumn = 'id';
@@ -261,8 +263,7 @@ return App_table::find('leads')
             $row[] = $aRow['alt_phonenumber'];
             $base_currency = get_base_currency();
             // $row[]         = e(($aRow['lead_value'] != 0 ? app_format_money($aRow['lead_value'], $base_currency->id) : ''));
-            $row[]        = e($aRow['broker']);
-            $row[]        = e($aRow['contact_details']);
+
             $row[]          = (!empty($aRow['projects']) && $aRow['projects'] != 0) ? get_projects($aRow['projects']) : '';
 
             $assignedOutput = '';
@@ -314,9 +315,12 @@ return App_table::find('leads')
 
             $row[] = e($aRow['source_name']);
 
-            $row[] = ($aRow['lastcontact'] == '0000-00-00 00:00:00' || !is_date($aRow['lastcontact']) ? '' : '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['lastcontact'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['lastcontact'])) . '</span>');
+
 
             $row[] = '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['dateadded'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['dateadded'])) . '</span>';
+            $row[] = ($aRow['lastcontact'] == '0000-00-00 00:00:00' || !is_date($aRow['lastcontact']) ? '' : '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['lastcontact'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['lastcontact'])) . '</span>');
+            $row[]        = e($aRow['broker']);
+            $row[]        = e($aRow['contact_details']);
             $check_double_entry = get_double_entery_by_phonenumber($aRow['phonenumber']);
 
             if ($check_double_entry >= 2) {
