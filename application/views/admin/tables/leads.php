@@ -108,15 +108,15 @@ return App_table::find('leads')
         }
         $aColumns = array_merge($aColumns, [
 
-            db_prefix() . 'leads.email as email',
+            // db_prefix() . 'leads.email as email',
             db_prefix() . 'leads.phonenumber as phonenumber',
             db_prefix() . 'leads.alt_phonenumber as alt_phonenumber',
-            'lead_value',
+            // 'lead_value',
             'broker',
             'contact_details',
             'projects',
             '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'leads.id and rel_type="lead" ORDER by tag_order ASC LIMIT 1) as tags',
-            'firstname as assigned_firstname',
+            
             db_prefix() . 'leads_status.name as status_name',
             db_prefix() . 'leads_sources.name as source_name',
             'lastcontact',
@@ -176,9 +176,11 @@ return App_table::find('leads')
             'color',
             'status',
             'assigned',
+            'firstname as assigned_firstname',
             'lastname as assigned_lastname',
             db_prefix() . 'leads.addedfrom as addedfrom',
             '(SELECT count(leadid) FROM ' . db_prefix() . 'clients WHERE ' . db_prefix() . 'clients.leadid=' . db_prefix() . 'leads.id) as is_converted',
+
             'zip',
         ]);
 
@@ -262,10 +264,6 @@ return App_table::find('leads')
             $row[]        = e($aRow['broker']);
             $row[]        = e($aRow['contact_details']);
             $row[]          = (!empty($aRow['projects']) && $aRow['projects'] != 0) ? get_projects($aRow['projects']) : '';
-
-
-
-
 
             $assignedOutput = '';
             if ($aRow['assigned'] != 0) {
