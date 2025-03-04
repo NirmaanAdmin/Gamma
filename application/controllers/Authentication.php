@@ -83,7 +83,7 @@ class Authentication extends ClientsController
         }
 
         $requiredFields = get_required_fields_for_registration();
-       
+
         $honeypot = get_option('enable_honeypot_spam_validation') == 1;
 
         $fields = [
@@ -106,7 +106,7 @@ class Authentication extends ClientsController
                 if(isset($fields[$formKey])) {
                     $formKey = $fields[$formKey];
                 }
-                
+
                 if($key !== 'contact_email'){
                     if($field['is_required']) {
                         $this->form_validation->set_rules($formKey, $field['label'], 'required');
@@ -129,7 +129,7 @@ class Authentication extends ClientsController
                 ['required' => _l('terms_and_conditions_validation')]
             );
         }
-       
+
         $this->form_validation->set_rules('password', _l('clients_register_password'), 'required');
         $this->form_validation->set_rules('passwordr', _l('clients_register_password_repeat'), 'required|matches[password]');
 

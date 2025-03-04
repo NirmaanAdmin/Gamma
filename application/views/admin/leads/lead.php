@@ -63,7 +63,7 @@ if (isset($lead)) {
                                 </a>
                             </li>
                             <?php } ?>
-                            <li role="presentation">
+<!--                            <li role="presentation">
                                 <a href="#tab_proposals_leads"
                                     onclick="initDataTable('.table-proposals-lead', admin_url + 'proposals/proposal_relations/' + <?php echo e($lead->id); ?> + '/lead','undefined', 'undefined','undefined',[6,'desc']);"
                                     aria-controls="tab_proposals_leads" role="tab" data-toggle="tab">
@@ -73,7 +73,7 @@ if (isset($lead)) {
                         }
                         ?>
                                 </a>
-                            </li>
+                            </li>-->
                             <li role="presentation">
                                 <a href="#tab_tasks_leads"
                                     onclick="init_rel_tasks_table(<?php echo e($lead->id); ?>,'lead','.table-rel-tasks-leads');"
@@ -85,7 +85,7 @@ if (isset($lead)) {
                         ?>
                                 </a>
                             </li>
-                            <li role="presentation">
+<!--                            <li role="presentation">
                                 <a href="#attachments" aria-controls="attachments" role="tab" data-toggle="tab">
                                     <?php echo _l('lead_attachments');
                         if ($total_attachments > 0) {
@@ -93,8 +93,8 @@ if (isset($lead)) {
                         }
                         ?>
                                 </a>
-                            </li>
-                            <li role="presentation">
+                            </li>-->
+<!--                            <li role="presentation">
                                 <a href="#lead_reminders"
                                     onclick="initDataTable('.table-reminders-leads', admin_url + 'misc/get_reminders/' + <?php echo e($lead->id); ?> + '/' + 'lead', undefined, undefined,undefined,[1, 'asc']);"
                                     aria-controls="lead_reminders" role="tab" data-toggle="tab">
@@ -104,8 +104,8 @@ if (isset($lead)) {
                            }
                            ?>
                                 </a>
-                            </li>
-                            <li role="presentation">
+                            </li>-->
+<!--                            <li role="presentation">
                                 <a href="#lead_notes" aria-controls="lead_notes" role="tab" data-toggle="tab">
                                     <?php echo _l('lead_add_edit_notes');
                         if ($total_notes > 0) {
@@ -113,12 +113,12 @@ if (isset($lead)) {
                         }
                         ?>
                                 </a>
-                            </li>
-                            <li role="presentation">
+                            </li>-->
+<!--                            <li role="presentation">
                                 <a href="#lead_activity" aria-controls="lead_activity" role="tab" data-toggle="tab">
                                     <?php echo _l('lead_add_edit_activity'); ?>
                                 </a>
-                            </li>
+                            </li>-->
                             <?php if (is_gdpr() && (get_option('gdpr_enable_lead_public_form') == '1' || get_option('gdpr_enable_consent_for_leads') == '1')) { ?>
                             <li role="presentation">
                                 <a href="#gdpr" aria-controls="gdpr" role="tab" data-toggle="tab">
@@ -210,7 +210,7 @@ if (isset($lead)) {
                                 <div class="text">
                                     <?php if ($log['staffid'] != 0) { ?>
                                     <a href="<?php echo admin_url('profile/' . $log['staffid']); ?>">
-                                        <?php 
+                                        <?php
                                             echo staff_profile_image($log['staffid'], ['staff-profile-xs-image pull-left mright5']);
                                         ?>
                                     </a>

@@ -10,7 +10,7 @@
                   echo form_hidden('status_'.$status['id']);
                }
                foreach($staffs as $staff){
-                  echo form_hidden('assigned_'.$staff['staffid']);  
+                  echo form_hidden('assigned_'.$staff['staffid']);
                }
                foreach($sources as $source){
                   echo form_hidden('source_'.$source['id']);
@@ -21,7 +21,7 @@
                foreach($years as $year){
                   echo form_hidden('period_year_'.$year['year']);
                }
-               for ($m = 1; $m <= 12; $m++) { 
+               for ($m = 1; $m <= 12; $m++) {
                 echo form_hidden('period_month_'.$m);
              }
              echo form_hidden('period_from');
@@ -229,7 +229,7 @@
 </div>
 </div>
 </div>
-</div> 
+</div>
 </div>
 </div>
 <div class="modal fade lead-modal" id="lead-manager-activity-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
@@ -237,7 +237,7 @@
   <div class="modal-content data">
 
   </div>
-</div> 
+</div>
 </div>
 <div class="modal fade" id="lead-manager-sms-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  <div class="modal-dialog">
@@ -268,7 +268,7 @@
 </div>
 </div>
 <div class="modal fade" id="lead-manager-mail-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
- 
+
 </div>
 <?php init_tail(); ?>
 <script type="text/javascript">
@@ -282,7 +282,7 @@
    $('#date_f,#date_t').on('change',function(){
     $('input[name="period_from"]').val($('#date_f').val());
     $('input[name="period_to"]').val(date_t_value);
-    $('.table-lead-managerd').DataTable().ajax.reload(); 
+    $('.table-lead-managerd').DataTable().ajax.reload();
  });
    lead_manager_table_api.column(12).visible(false);
 </script>

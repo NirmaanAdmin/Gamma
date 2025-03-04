@@ -222,7 +222,7 @@
                                                     'the_number_sign',
                                                     'leads_dt_name',
                                                     'leads_dt_phonenumber',
-                                                    'Alternative Phonenumber',
+                                                    /*'Alternative Phonenumber',*/
                                                     'Project',
                                                     'leads_dt_assigned',
                                                     'leads_dt_status',
@@ -239,7 +239,7 @@
                                                 ?>
                                                 <div>
                                                     <?php foreach ($columns as $key => $label): ?>
-                                                        <input type="checkbox" class="toggle-column" value="<?php echo $key; ?>" checked>
+                                                        <input type="checkbox" class="toggle-column" name="toggle_column[<?php echo $label; ?>]" value="<?php echo $key; ?>" checked>
                                                         <?php echo _l($label); ?><br>
                                                     <?php endforeach; ?>
                                                 </div>
@@ -275,10 +275,10 @@
                                             'name'     => _l('leads_dt_phonenumber'),
                                             'th_attrs' => ['class' => 'toggleable', 'id' => 'th-phone'],
                                         ];
-                                        $_table_data[] = [
+                                        /*$_table_data[] = [
                                             'name'     => _l('Alternative Phonenumber'),
                                             'th_attrs' => ['class' => 'toggleable', 'id' => 'th-alt-phone'],
-                                        ];
+                                        ];*/
                                         // $_table_data[] = [
                                         //     'name'     => 'Budget',
                                         //     'th_attrs' => ['class' => 'toggleable', 'id' => 'th-lead-value'],
@@ -392,6 +392,18 @@
 <script>
     $(document).ready(function() {
         var table = $('.customizable-table').DataTable();
+        var storageKey = 'table_column_visibility';
+
+        // Load saved column visibility settings from localStorage
+        var savedSettings = JSON.parse(localStorage.getItem(storageKey)) || {};
+
+        // Apply saved settings
+        table.columns().every(function(index) {
+            var column = this;
+            var isVisible = savedSettings[index] !== undefined ? savedSettings[index] : column.visible();
+            column.visible(isVisible);
+            $('.toggle-column[value="' + index + '"]').prop('checked', isVisible);
+        });
 
         // Handle "Select All" checkbox
         $('#select-all-columns').on('change', function() {
@@ -401,25 +413,31 @@
 
         // Handle individual column visibility toggling
         $('.toggle-column').on('change', function() {
-            var column = table.column($(this).val());
-            column.visible($(this).is(':checked'));
+            var columnIndex = $(this).val();
+            var column = table.column(columnIndex);
+            var isVisible = $(this).is(':checked');
+
+            column.visible(isVisible);
+
+            // Update local storage
+            savedSettings[columnIndex] = isVisible;
+            localStorage.setItem(storageKey, JSON.stringify(savedSettings));
 
             // Sync "Select All" checkbox state
             var allChecked = $('.toggle-column').length === $('.toggle-column:checked').length;
             $('#select-all-columns').prop('checked', allChecked);
         });
 
-        // Sync checkboxes with column visibility on page load
-        table.columns().every(function(index) {
-            var column = this;
-            $('.toggle-column[value="' + index + '"]').prop('checked', column.visible());
-        });
+        // Sync "Select All" checkbox state on page load
+        var allChecked = $('.toggle-column').length === $('.toggle-column:checked').length;
+        $('#select-all-columns').prop('checked', allChecked);
 
         // Prevent dropdown from closing when clicking inside
         $('.dropdown-menu').on('click', function(e) {
             e.stopPropagation();
         });
     });
+
 </script>
 </body>
 

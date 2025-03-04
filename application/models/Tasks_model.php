@@ -1134,7 +1134,7 @@ class Tasks_model extends App_Model
 
                 $member = $this->staff_model->get($data['assignee']);
 
-                send_mail_template('task_assigned_to_staff', $member->email, $data['assignee'], $data['taskid']);
+                /*send_mail_template('task_assigned_to_staff', $member->email, $data['assignee'], $data['taskid']);*/
             }
 
             $description                  = 'not_task_assigned_someone';

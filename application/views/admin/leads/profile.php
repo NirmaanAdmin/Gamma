@@ -735,7 +735,7 @@
                             <option value="+91" selected>+91</option> <!-- Default to India -->
                         </select>
 
-                        <input type="text" id="phonenumber" name="phonenumber" data-id="<?= $lead->phonenumber ?>" class="form-control"
+                        <input type="text" id="phonenumber" name="phonenumber" data-id="<?= isset($lead) ?? $lead->phonenumber ?>" class="form-control"
                             value="<?php echo e($local_phone); ?>">
                     </div>
                 </div>
@@ -876,7 +876,89 @@
             <div class="clearfix"></div>
         </div>
     </div>
+    <?php echo form_close(); ?>
     <?php if (isset($lead)) { ?>
+        <div class="lead-latest-activity tw-mb-3 lead-view">
+            <div class="lead-info-heading">
+                <h4><?php echo _l('notes'); ?></h4>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="lead_notes_inner">
+                <?php echo form_open(admin_url('leads/add_note/' . $lead->id), ['id' => 'lead-notes']); ?>
+                <div class="form-group">
+                        <textarea id="lead_note_description" name="lead_note_description" class="form-control"
+                                  rows="4"></textarea>
+                </div>
+                <div class="lead-select-date-contacted hide">
+                    <?php echo render_datetime_input('custom_contact_date', 'lead_add_edit_datecontacted', '', ['data-date-end-date' => date('Y-m-d')]); ?>
+                </div>
+                <div class="radio radio-primary">
+                    <input type="radio" name="contacted_indicator" id="contacted_indicator_yes" value="yes">
+                    <label
+                            for="contacted_indicator_yes"><?php echo _l('lead_add_edit_contacted_this_lead'); ?></label>
+                </div>
+                <div class="radio radio-primary">
+                    <input type="radio" name="contacted_indicator" id="contacted_indicator_no" value="no" checked>
+                    <label for="contacted_indicator_no"><?php echo _l('lead_not_contacted'); ?></label>
+                </div>
+                <button type="submit"
+                        class="btn btn-primary pull-right"><?php echo _l('lead_add_edit_add_note'); ?></button>
+                <?php echo form_close(); ?>
+                <div class="clearfix"></div>
+                <hr />
+                <?php
+                $len = count($notes);
+                $i   = 0;
+                foreach ($notes as $note) { ?>
+                    <div class="media lead-note">
+                        <a href="<?php echo admin_url('profile/' . $note['addedfrom']); ?>" target="_blank">
+                            <?php echo staff_profile_image($note['addedfrom'], ['staff-profile-image-small', 'pull-left mright10']); ?>
+                        </a>
+                        <div class="media-body">
+                            <?php if ($note['addedfrom'] == get_staff_user_id() || is_admin()) { ?>
+                            <a href="#" class="pull-right text-danger"
+                               onclick="delete_lead_note(this,<?php echo e($note['id']); ?>, <?php echo e($lead->id); ?>);return false;">
+
+                                <i class="fa fa fa-times"></i></a>
+                            <a href="#" class="pull-right mright5"
+                               onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                                <?php } ?>
+
+                                <a href="<?php echo admin_url('profile/' . $note['addedfrom']); ?>" target="_blank">
+                                    <h5 class="media-heading tw-font-semibold tw-mb-0">
+                                        <?php if (!empty($note['date_contacted'])) { ?>
+                                            <span data-toggle="tooltip"
+                                                  data-title="<?php echo e(_dt($note['date_contacted'])); ?>">
+                                            <i class="fa fa-phone-square text-success" aria-hidden="true"></i>
+                                        </span>
+                                        <?php } ?>
+                                        <?php echo e(get_staff_full_name($note['addedfrom'])); ?>
+                                    </h5>
+                                    <span class="tw-text-sm tw-text-neutral-500">
+                                        <?php echo e(_l('lead_note_date_added', _dt($note['dateadded']))); ?>
+                                    </span>
+                                </a>
+
+                                <div data-note-description="<?php echo e($note['id']); ?>" class="text-muted mtop10"><?php echo process_text_content_for_display($note['description']); ?></div>
+                                <div data-note-edit-textarea="<?php echo e($note['id']); ?>" class="hide mtop15">
+                                    <?php echo render_textarea('note', '', $note['description']); ?>
+                                    <div class="text-right">
+                                        <button type="button" class="btn btn-default"
+                                                onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;"><?php echo _l('cancel'); ?></button>
+                                        <button type="button" class="btn btn-primary"
+                                                onclick="edit_note(<?php echo e($note['id']); ?>);"><?php echo _l('update_note'); ?></button>
+                                    </div>
+                                </div>
+                        </div>
+                        <?php if ($i >= 0 && $i != $len - 1) {
+                            echo '<hr />';
+                        }
+                        ?>
+                    </div>
+                    <?php $i++; } ?>
+            </div>
+        </div>
+
         <div class="lead-latest-activity tw-mb-3 lead-view">
             <div class="lead-info-heading">
                 <h4><?php echo _l('lead_latest_activity'); ?></h4>
@@ -896,7 +978,6 @@
         </div>
     <?php } ?>
     <div class="clearfix"></div>
-    <?php echo form_close(); ?>
 </div>
 <?php if (isset($lead) && $lead_locked == true) { ?>
     <script>

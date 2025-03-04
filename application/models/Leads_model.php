@@ -9,6 +9,7 @@ class Leads_model extends App_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('tasks_model');
     }
 
     /**
@@ -129,7 +130,22 @@ class Leads_model extends App_Model
 
         $this->db->insert(db_prefix() . 'leads', $data);
         $insert_id = $this->db->insert_id();
+
         if ($insert_id) {
+            if(isset($data['assigned'])) {
+                $taskData = [
+                    'name' => 'Lead FollowUp ( '.$data['name'].' )',
+                    'is_public' => 1,
+                    'startdate' => _d(date('Y-m-d')),
+                    'duedate' => _d(date('Y-m-d', strtotime('+1 day'))),
+                    'priority' => 3,
+                    'rel_type' => 'lead',
+                    'rel_id' => $insert_id,
+                    'assignees' => [$data['assigned']],
+                ];
+                $insert_id = $this->tasks_model->add($taskData);
+            }
+
             log_activity('New Lead Added [ID: ' . $insert_id . ']');
             $this->log_lead_activity($insert_id, 'not_lead_activity_created');
 
@@ -288,6 +304,21 @@ class Leads_model extends App_Model
 
         $this->db->where('id', $id);
         $this->db->update(db_prefix() . 'leads', $data);
+
+        if(isset($data['assigned']) && $current_lead_data->assigned != $data['assigned'] && $data['assigned'] != 0) {
+            $taskData = [
+                'name' => 'Lead FollowUp ( '.$data['name'].' )',
+                'is_public' => 1,
+                'startdate' => _d(date('Y-m-d')),
+                'duedate' => _d(date('Y-m-d', strtotime('+1 day'))),
+                'priority' => 3,
+                'rel_type' => 'lead',
+                'rel_id' => $id,
+                'assignees' => [$data['assigned']],
+            ];
+            $insert_id = $this->tasks_model->add($taskData);
+        }
+
         if ($this->db->affected_rows() > 0) {
             $affectedRows++;
             if (isset($data['status']) && $current_status_id != $data['status']) {
