@@ -129,7 +129,7 @@
                     <i class="fa fa-th-list"></i>
                 </a>
             </p>
-            <?php if ($task->billed == 0) {
+<!--            <?php if ($task->billed == 0) {
           $is_assigned = $task->current_user_is_assigned;
           if (!$this->tasks_model->is_timer_started($task->id)) { ?>
             <p class="no-margin pull-left" <?php if (!$is_assigned) { ?> data-toggle="tooltip"
@@ -155,7 +155,7 @@
             </p>
             <?php } ?>
             <?php
-      } ?>
+      } ?>-->
             <div class="clearfix"></div>
             <hr class="hr-10" />
             <div id="task_single_timesheets" class="<?php if (!$this->session->flashdata('task_single_timesheets_open')) {
@@ -842,7 +842,7 @@
             </h5>
         </div>
         <?php if ($task->current_user_is_creator || staff_can('edit',  'tasks')) { ?>
-        <div class="task-info task-info-hourly-rate">
+<!--        <div class="task-info task-info-hourly-rate">
             <h5 class="tw-inline-flex tw-items-center tw-space-x-1.5">
                 <i class="fa-regular fa-clock fa-fw fa-lg task-info-icon pull-left"></i>
                 <?php echo _l('task_hourly_rate'); ?>: <span class="tw-text-neutral-800">
@@ -854,8 +854,8 @@
                   ?>
                 </span>
             </h5>
-        </div>
-        <div class="task-info task-info-billable">
+        </div>-->
+<!--        <div class="task-info task-info-billable">
             <h5 class="tw-inline-flex tw-items-center tw-space-x-1.5">
                 <i class="fa fa-credit-card fa-fw fa-lg task-info-icon pull-left"></i>
                 <?php echo _l('task_billable'); ?>: <span class="tw-text-neutral-800">
@@ -868,34 +868,34 @@
             <?php if ($task->rel_type == 'project' && $task->project_data->billing_type == 1) {
                       echo '<br /><span class="tw-ml-5 tw-text-sm">(' . _l('project') . ' ' . _l('project_billing_type_fixed_cost') . ')</span>';
                   } ?>
-        </div>
-        <?php if ($task->billable == 1
+        </div>-->
+        <?php /*if ($task->billable == 1
             && $task->billed == 0
             && ($task->rel_type != 'project' || ($task->rel_type == 'project' && $task->project_data->billing_type != 1))
-            && staff_can('create', 'invoices')) { ?>
+            && staff_can('create', 'invoices')) { */?><!--
         <div class="task-info task-billable-amount">
             <h5 class="tw-inline-flex tw-items-center tw-space-x-1.5">
                 <i class="fa fa-regular fa-file-lines fa-fw fa-lg pull-left task-info-icon"></i>
-                <?php echo _l('billable_amount'); ?>:
+                <?php /*echo _l('billable_amount'); */?>:
                 <span class="tw-font-semibold tw-text-neutral-800">
-                    <?php echo e($this->tasks_model->get_billable_amount($task->id)); ?>
+                    <?php /*echo e($this->tasks_model->get_billable_amount($task->id)); */?>
                 </span>
             </h5>
         </div>
+        --><?php /*} */?>
         <?php } ?>
-        <?php } ?>
-        <?php if ($task->current_user_is_assigned || total_rows(db_prefix() . 'taskstimers', ['task_id' => $task->id, 'staff_id' => get_staff_user_id()]) > 0) { ?>
+        <?php /*if ($task->current_user_is_assigned || total_rows(db_prefix() . 'taskstimers', ['task_id' => $task->id, 'staff_id' => get_staff_user_id()]) > 0) { */?><!--
         <div class="task-info task-info-user-logged-time">
             <h5 class="tw-inline-flex tw-items-center">
                 <i class="fa fa-asterisk task-info-icon fa-fw fa-lg" aria-hidden="true"></i>
                 <span class="tw-text-neutral-800">
-                    <?php echo _l('task_user_logged_time'); ?>
-                    <?php echo e(seconds_to_time_format($this->tasks_model->calc_task_total_time($task->id, ' AND staff_id=' . get_staff_user_id()))); ?>
+                    <?php /*echo _l('task_user_logged_time'); */?>
+                    <?php /*echo e(seconds_to_time_format($this->tasks_model->calc_task_total_time($task->id, ' AND staff_id=' . get_staff_user_id()))); */?>
                 </span>
             </h5>
         </div>
-        <?php } ?>
-        <?php if (staff_can('create',  'tasks')) { ?>
+        --><?php /*} */?>
+<!--        <?php if (staff_can('create',  'tasks')) { ?>
         <div class="task-info task-info-total-logged-time">
             <h5 class="tw-inline-flex tw-items-center tw-space-x-1.5">
                 <i
@@ -905,7 +905,7 @@
                 </span>
             </h5>
         </div>
-        <?php } ?>
+        <?php } ?>-->
         <?php $custom_fields = get_custom_fields('tasks');
             foreach ($custom_fields as $field) { ?>
         <?php $value = get_custom_field_value($task->id, $field['id'], 'tasks');

@@ -52,6 +52,23 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-2 text-center border-right">
+                        <div class="form-group no-margin select-placeholder">
+                            <select name="time_period" id="time_period" class="selectpicker no-margin" data-width="100%"
+                                data-title="<?php echo _l('Time Period'); ?>">
+                                <option value="" selected><?php echo _l('Select Period'); ?></option>
+                                <option value="today" <?php if ($this->input->post('time_period') == 'today') {
+                                    echo 'selected';
+                                } ?>><?php echo _l('Today'); ?></option>
+                                <option value="7_day" <?php if ($this->input->post('time_period') == '7_day') {
+                                    echo 'selected';
+                                } ?>><?php echo _l('7 Days'); ?></option>
+                                <option value="week" <?php if ($this->input->post('time_period') == 'week') {
+                                    echo 'selected';
+                                } ?>><?php echo _l('This Week'); ?></option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-md-2 border-right select-placeholder">
                         <select name="year" id="year" class="selectpicker no-margin" data-width="100%">
                             <?php foreach ($years as $data) { ?>
@@ -61,7 +78,7 @@
                             <?php } ?>
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2 mt-3" style="margin-top: 15px !important;">
                         <button type="submit" class="btn btn-primary btn-block"
                             style="margin-top:3px;"><?php echo _l('filter'); ?></button>
                     </div>
@@ -82,6 +99,42 @@
                                    echo ' (' . e(get_staff_full_name($staff_id)) . ')';
                                } ?>
                         </h4>
+                            <div class="btn-group show_hide_columns" id="show_hide_columns">
+                                <!-- Settings Icon -->
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 4px 7px;">
+                                    <i class="fa fa-cog"></i> <?php  ?> <span class="caret"></span>
+                                </button>
+                                <!-- Dropdown Menu with Checkboxes -->
+                                <div class="dropdown-menu" style="padding: 10px; min-width: 250px;">
+                                    <!-- Select All / Deselect All -->
+                                    <div>
+                                        <input type="checkbox" id="select-all-columns"> <strong><?php echo _l('select_all'); ?></strong>
+                                    </div>
+                                    <hr>
+                                    <!-- Column Checkboxes -->
+                                    <?php
+                                    $columns = [
+                                        'Name',
+                                        'Start Date',
+                                        'Due Date',
+                                        'Status',
+                                        'Total attachments added',
+                                        'Total Comments',
+                                        'Checklist Items',
+                                        'Total Logged Time',
+                                        'Finished on time',
+                                        'Assigned To',
+                                    ];
+                                    ?>
+                                    <div>
+                                        <?php foreach ($columns as $key => $label): ?>
+                                            <input type="checkbox" class="toggle-column" name="toggle_column[<?php echo $label; ?>]" value="<?php echo $key; ?>" checked>
+                                            <?php echo _l($label); ?><br>
+                                        <?php endforeach; ?>
+                                    </div>
+
+                                </div>
+                            </div>
                         <table class="table tasks-overview dt-table">
                             <thead>
                                 <tr>
@@ -200,6 +253,57 @@
     </div>
 </div>
 <?php init_tail(); ?>
+
+<script>
+    $(document).ready(function() {
+        var table = $('.tasks-overview').DataTable();
+        var storageKey = 'table_column_visibility_task';
+
+        // Load saved column visibility settings from localStorage
+        var savedSettings = JSON.parse(localStorage.getItem(storageKey)) || {};
+
+        // Apply saved settings
+        table.columns().every(function(index) {
+            var column = this;
+            var isVisible = savedSettings[index] !== undefined ? savedSettings[index] : column.visible();
+            column.visible(isVisible);
+            $('.toggle-column[value="' + index + '"]').prop('checked', isVisible);
+        });
+
+        // Handle "Select All" checkbox
+        $('#select-all-columns').on('change', function() {
+            var isChecked = $(this).is(':checked');
+            $('.toggle-column').prop('checked', isChecked).trigger('change');
+        });
+
+        // Handle individual column visibility toggling
+        $('.toggle-column').on('change', function() {
+            var columnIndex = $(this).val();
+            var column = table.column(columnIndex);
+            var isVisible = $(this).is(':checked');
+
+            column.visible(isVisible);
+
+            // Update local storage
+            savedSettings[columnIndex] = isVisible;
+            localStorage.setItem(storageKey, JSON.stringify(savedSettings));
+
+            // Sync "Select All" checkbox state
+            var allChecked = $('.toggle-column').length === $('.toggle-column:checked').length;
+            $('#select-all-columns').prop('checked', allChecked);
+        });
+
+        // Sync "Select All" checkbox state on page load
+        var allChecked = $('.toggle-column').length === $('.toggle-column:checked').length;
+        $('#select-all-columns').prop('checked', allChecked);
+
+        // Prevent dropdown from closing when clicking inside
+        $('.dropdown-menu').on('click', function(e) {
+            e.stopPropagation();
+        });
+    });
+
+</script>
 </body>
 
 </html>

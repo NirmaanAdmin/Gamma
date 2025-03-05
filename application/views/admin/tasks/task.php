@@ -87,15 +87,17 @@
                             <input type="checkbox" id="task_is_public" name="is_public" <?php if (isset($task)) {
                                if ($task->is_public == 1) {
                                    echo 'checked';
+                               }else{
+                                   echo 'checked';
                                }
-                           }; ?>>
+                           }else{
+                                echo 'checked';
+                            }; ?>>
                             <label for="task_is_public" data-toggle="tooltip" data-placement="bottom"
                                 title="<?php echo _l('task_public_help'); ?>"><?php echo _l('task_public'); ?></label>
                         </div>
                         <div class="checkbox checkbox-primary checkbox-inline task-add-edit-billable tw-pt-2">
-                            <input type="checkbox" id="task_is_billable" name="billable" <?php if ((isset($task) && $task->billable == 1) || (!isset($task) && get_option('task_biillable_checked_on_creation') == 1)) {
-                               echo ' checked';
-                           }?>>
+                            <input type="checkbox" id="task_is_billable" name="billable">
                             <label for="task_is_billable"><?php echo _l('task_billable'); ?></label>
                         </div>
                         <div class="task-visible-to-customer tw-pt-2 checkbox checkbox-inline checkbox-primary<?php if ((isset($task) && $task->rel_type != 'project') || !isset($task) || (isset($task) && $task->rel_type == 'project' && total_rows(db_prefix() . 'project_settings', ['project_id' => $task->rel_id, 'name' => 'view_tasks', 'value' => 0]) > 0)) {
@@ -144,12 +146,12 @@
                         <hr class="-tw-mx-3.5" />
                         <?php $value = (isset($task) ? $task->name : ''); ?>
                         <?php echo render_input('name', 'task_add_edit_subject', $value); ?>
-                        <div class="task-hours<?php if (isset($task) && $task->rel_type == 'project' && total_rows(db_prefix() . 'projects', ['id' => $task->rel_id, 'billing_type' => 3]) == 0) {
+<!--                        <div class="task-hours<?php if (isset($task) && $task->rel_type == 'project' && total_rows(db_prefix() . 'projects', ['id' => $task->rel_id, 'billing_type' => 3]) == 0) {
                             echo ' hide';
                           } ?>">
                             <?php $value = (isset($task) ? $task->hourly_rate : 0); ?>
                             <?php echo render_input('hourly_rate', 'task_hourly_rate', $value); ?>
-                        </div>
+                        </div>-->
                         <div class="project-details<?php if ($rel_type != 'project') {
                             echo ' hide';
                           } ?>">
@@ -186,7 +188,7 @@
                                 <?php $value = (isset($task) ? _d($task->duedate) : ''); ?>
                                 <?php echo render_date_input('duedate', 'task_add_edit_due_date', $value, $project_end_date_attrs); ?>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="priority"
                                         class="control-label"><?php echo _l('task_add_edit_priority'); ?></label>
@@ -201,7 +203,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+<!--                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="repeat_every"
                                         class="control-label"><?php echo _l('task_repeat_every'); ?></label>
@@ -234,7 +236,7 @@
                         } ?>><?php echo _l('recurring_custom'); ?></option>
                                     </select>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                         <div class="recurring_custom <?php if ((isset($task) && $task->custom_recurring != 1) || (!isset($task))) {
                             echo 'hide';

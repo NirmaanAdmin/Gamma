@@ -112,7 +112,7 @@ class Tasks extends AdminController
         $this->session->set_userdata([
             'tasks_kanban_view' => $set,
         ]);
-        
+
         if ($manual == false) {
             redirect(previous_url() ?: $_SERVER['HTTP_REFERER']);
         }
@@ -170,6 +170,7 @@ class Tasks extends AdminController
         }
 
         $status = $this->input->post('status');
+        $period = $this->input->post('time_period');
 
         $fetch_month_from = 'startdate';
 
@@ -251,6 +252,14 @@ class Tasks extends AdminController
 
             if ($status) {
                 $this->db->where('status', $status);
+            }
+
+            if ($period == 'today') {
+                $this->db->where($fetch_month_from, date('Y-m-d')); // Fetch today's tasks
+            } elseif ($period == '7_day') {
+                $this->db->where($fetch_month_from . ' >=', date('Y-m-d', strtotime('-7 days'))); // Fetch last 7 days' tasks
+            } elseif ($period == 'week') {
+                $this->db->where('WEEK(' . $fetch_month_from . ')', date('W')); // Fetch tasks from the current week
             }
 
             $this->db->order_by($fetch_month_from, 'ASC');
@@ -950,8 +959,8 @@ class Tasks extends AdminController
             set_alert('warning', $message);
         }
 
-        if (empty($_SERVER['HTTP_REFERER']) || 
-            strpos($_SERVER['HTTP_REFERER'], 'tasks/index') !== false || 
+        if (empty($_SERVER['HTTP_REFERER']) ||
+            strpos($_SERVER['HTTP_REFERER'], 'tasks/index') !== false ||
             strpos($_SERVER['HTTP_REFERER'], 'tasks/view') !== false) {
             redirect(admin_url('tasks'));
         } else {
