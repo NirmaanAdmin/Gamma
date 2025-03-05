@@ -110,7 +110,7 @@
                                         echo ' hide';
                                     } ?>">
                 <button type="button" class="btn btn-primary pull-right lead-top-btn lead-save-btn"
-                    onclick="document.getElementById('lead-form-submit').click();">
+                    onclick="document.getElementById('lead-form-submit').click();" form="lead_form">
                     <?php echo _l('submit'); ?>
                 </button>
             </div>
@@ -876,6 +876,7 @@
             <div class="clearfix"></div>
         </div>
     </div>
+    <?php echo form_close(); ?>
     <?php if (isset($lead)) { ?>
         <div class="lead-latest-activity tw-mb-3 lead-view">
             <div class="lead-info-heading">
@@ -968,7 +969,7 @@
     <?php if ($lead_locked == false) { ?>
         <div class="lead-edit<?php echo isset($lead) ? ' hide' : ''; ?>">
             <hr class="-tw-mx-4 tw-border-neutral-200" />
-            <button type="submit" class="btn btn-primary pull-right lead-save-btn" id="lead-form-submit">
+            <button type="submit" class="btn btn-primary pull-right lead-save-btn" id="lead-form-submit" form="lead_form">
                 <?php echo _l('submit'); ?>
             </button>
             <button type=" button" class="btn btn-default pull-right mright5" data-dismiss="modal">
@@ -977,7 +978,6 @@
         </div>
     <?php } ?>
     <div class="clearfix"></div>
-    <?php echo form_close(); ?>
 </div>
 <?php if (isset($lead) && $lead_locked == true) { ?>
     <script>
