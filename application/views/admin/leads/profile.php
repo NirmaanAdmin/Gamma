@@ -876,7 +876,6 @@
             <div class="clearfix"></div>
         </div>
     </div>
-    <?php echo form_close(); ?>
     <?php if (isset($lead)) { ?>
         <div class="lead-latest-activity tw-mb-3 lead-view">
             <div class="lead-info-heading">
@@ -900,7 +899,7 @@
                     <input type="radio" name="contacted_indicator" id="contacted_indicator_no" value="no" checked>
                     <label for="contacted_indicator_no"><?php echo _l('lead_not_contacted'); ?></label>
                 </div>
-                <button type="submit"
+                <button type="submit" form="lead-notes"
                         class="btn btn-primary pull-right"><?php echo _l('lead_add_edit_add_note'); ?></button>
                 <?php echo form_close(); ?>
                 <div class="clearfix"></div>
@@ -978,6 +977,7 @@
         </div>
     <?php } ?>
     <div class="clearfix"></div>
+    <?php echo form_close(); ?>
 </div>
 <?php if (isset($lead) && $lead_locked == true) { ?>
     <script>

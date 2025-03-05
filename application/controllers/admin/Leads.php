@@ -15,7 +15,7 @@ class Leads extends AdminController
     {
         parent::__construct();
         $this->load->model('leads_model');
-    } 
+    }
 
     /* List all leads */
     public function index($id = '')
@@ -869,7 +869,7 @@ class Leads extends AdminController
                     ]);
                 }
             }
- 
+
             if ($f == 'name') {
                 $field_array['required'] = true;
             }
@@ -1255,7 +1255,6 @@ class Leads extends AdminController
                     die();
                 }
             }
-
             echo total_rows(db_prefix() . 'leads', [ $field => $value ]) > 0 ? 'false' : 'true';
         }
     }

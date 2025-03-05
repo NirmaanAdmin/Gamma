@@ -153,8 +153,8 @@ class App_table
         return $this;
     }
     /**
-     * @param string $id 
-     * @return \App_table 
+     * @param string $id
+     * @return \App_table
      */
     public static function find($id)
     {
@@ -277,7 +277,7 @@ class App_table
                     }
 
                     $whereValueSql = $this->toSql($value, $operator, $operatorSql, $valueSqlColumn, $ruleInstance);
-                }   
+                }
 
                 return $prefix . $this->customFieldWhereSql($whereValueSql, $table, $field['fieldto'], $field['id']);
             });
