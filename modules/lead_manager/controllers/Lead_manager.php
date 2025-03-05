@@ -22,7 +22,7 @@ class Lead_manager extends AdminController
         if (!$this->app_modules->is_active('lead_manager')) {
             access_denied("Lead Manager");
         }
-        
+
         $this->load->model('clients_model');
         $this->load->library('mails/lead_manager_mail_template');
         $this->load->library('sms/sms_twilio_lead_manager');

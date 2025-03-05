@@ -192,10 +192,10 @@
            'name'=>_l('leads_dt_last_contact'),
            'th_attrs'=>array('class'=>'toggleable', 'id'=>'th-last-contact')
         );
-          $_table_data[] = array(
+          /*$_table_data[] = array(
            'name'=>_l('lead_manger_dt_follow_up'),
            'th_attrs'=>array('class'=>'toggleable', 'id'=>'th-follow_up')
-        );
+        );*/
           $_table_data[] = array(
              'name'=>_l('leads_dt_datecreated'),
              'th_attrs'=>array('class'=>'date-created toggleable','id'=>'th-date-created')
@@ -204,10 +204,10 @@
              'name'=>_l('lm_remark_th'),
              'th_attrs'=>array('class'=>'toggleable not-export','id'=>'th-remark')
           );
-          $_table_data[] = array(
+          /*$_table_data[] = array(
              'name'=>_l('lm_last_remark_th'),
              'th_attrs'=>array('class'=>'toggleable','id'=>'th-remark-last')
-          );
+          );*/
           foreach($_table_data as $_t){
            array_push($table_data,$_t);
         }

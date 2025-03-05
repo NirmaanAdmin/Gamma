@@ -259,19 +259,19 @@ foreach ($rResult as $aRow) {
     }
     $row[] = $outputStatus;
     $row[] = ($aRow['lastcontact'] == '0000-00-00 00:00:00' || !is_date($aRow['lastcontact']) ? '' : '<span data-toggle="tooltip" data-title="' . _dt($aRow['lastcontact']) . '" class="text-has-action is-date">' . time_ago($aRow['lastcontact']) . '</span>');
-    if ($aRow['lm_follow_up'] == 1) {
+    /*if ($aRow['lm_follow_up'] == 1) {
         $result_data =  $this->ci->lead_manager_model->get_follow_up_date($aRow['id']);
         $row[] = '<span class="inline-block label label-warning">' . _dt($result_data->lm_follow_up_date) . '</span>';
     } else {
         $row[] = '<span class="inline-block label label-primary">' . _l('lead_manger_dt_follow_up_no') . '</span>';
-    }
+    }*/
     $row[] = '<span data-toggle="tooltip" data-title="' . _dt($aRow['dateadded']) . '" class="text-has-action is-date">' . time_ago($aRow['dateadded']) . '</span>';
     foreach ($customFieldsColumns as $customFieldColumn) {
         $row[] = (strpos($customFieldColumn, 'date_picker_') !== false ? _d($aRow[$customFieldColumn]) : $aRow[$customFieldColumn]);
     }
     $remarkadd_fields = '<a href="javascript:void(0);" title="Add remarks"><i class="fa fa-file-text" aria-hidden="true" onclick="saveMeetingRemark(' . $aRow['id'] . ',1);"></i></a>&nbsp;&nbsp;<a href="javascript:void(0);" title="View remarks"><i class="fa fa-eye" aria-hidden="true" onclick="showMeetingRemark(' . $aRow['id'] . ',1);"></i></a>';
     $row[] = $remarkadd_fields;
-    $row[] = '<p>' . $aRow['last_remark'] . '</p>';
+    /*$row[] = '<p>' . $aRow['last_remark'] . '</p>';*/
     $row['DT_RowId'] = 'lead_' . $aRow['id'];
     if ($aRow['assigned'] == get_staff_user_id()) {
         $row['DT_RowClass'] = 'alert-info';
