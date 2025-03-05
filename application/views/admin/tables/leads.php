@@ -260,7 +260,7 @@ return App_table::find('leads')
                 $row[] = '';
             }
 
-            $row[] = $aRow['alt_phonenumber'];
+            /*$row[] = $aRow['alt_phonenumber'];*/
             $base_currency = get_base_currency();
             // $row[]         = e(($aRow['lead_value'] != 0 ? app_format_money($aRow['lead_value'], $base_currency->id) : ''));
 
