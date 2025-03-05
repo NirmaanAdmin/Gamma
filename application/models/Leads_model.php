@@ -143,7 +143,7 @@ class Leads_model extends App_Model
                     'rel_id' => $insert_id,
                     'assignees' => [$data['assigned']],
                 ];
-                $insert_id = $this->tasks_model->add($taskData);
+                $task_id = $this->tasks_model->add($taskData);
             }
 
             log_activity('New Lead Added [ID: ' . $insert_id . ']');
