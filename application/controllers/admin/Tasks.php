@@ -257,9 +257,14 @@ class Tasks extends AdminController
             if ($period == 'today') {
                 $this->db->where($fetch_month_from, date('Y-m-d')); // Fetch today's tasks
             } elseif ($period == '7_day') {
-                $this->db->where($fetch_month_from . ' >=', date('Y-m-d', strtotime('-7 days'))); // Fetch last 7 days' tasks
+                $start_date = date('Y-m-d', strtotime("$year-$month-01 -7 days"));
+                $this->db->where($fetch_month_from . ' >=', $start_date); // Fetch last 7 days' tasks from selected month
             } elseif ($period == 'week') {
-                $this->db->where('WEEK(' . $fetch_month_from . ')', date('W')); // Fetch tasks from the current week
+                // Get the correct week number as an integer
+                $selected_week = (int) date('W', strtotime("$year-$month-01"));
+
+                // Apply the condition correctly
+                $this->db->where('WEEK(' . $fetch_month_from . ', 1) =', $selected_week);
             }
 
             $this->db->order_by($fetch_month_from, 'ASC');
