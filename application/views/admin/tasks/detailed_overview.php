@@ -1,5 +1,12 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <?php init_head(); ?>
+<style>
+    .show_hide_columns {
+        position: absolute;
+        z-index: 9999;
+        left: 170px
+    }
+</style>
 <div id="wrapper">
     <div class="content">
         <div class="row">
