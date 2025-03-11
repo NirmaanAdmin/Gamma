@@ -14,6 +14,7 @@ return App_table::find('tasks')
             '1', // bulk actions
             db_prefix() . 'tasks.id as id',
             db_prefix() . 'tasks.name as task_name',
+            db_prefix() . 'tasks.description as description',
             'status',
             'startdate',
             'duedate',
@@ -31,14 +32,14 @@ return App_table::find('tasks')
         if ($filtersWhere = $this->getWhereFromRules()) {
             $where[] = $filtersWhere;
         }
-                
+
         if (staff_cant('view', 'tasks')) {
             $where[] = get_tasks_where_string();
         }
 
         // Dashboard my tasks table
-        if($this->ci->input->post('my_tasks')) {
-            $where[] = 'AND (' . db_prefix() . 'tasks.id IN (SELECT taskid FROM ' . db_prefix() . 'task_assigned WHERE staffid = ' . get_staff_user_id() . ') AND status != '.Tasks_model::STATUS_COMPLETE.')';
+        if ($this->ci->input->post('my_tasks')) {
+            $where[] = 'AND (' . db_prefix() . 'tasks.id IN (SELECT taskid FROM ' . db_prefix() . 'task_assigned WHERE staffid = ' . get_staff_user_id() . ') AND status != ' . Tasks_model::STATUS_COMPLETE . ')';
         }
 
         array_push($where, 'AND CASE WHEN rel_type="project" AND rel_id IN (SELECT project_id FROM ' . db_prefix() . 'project_settings WHERE project_id=rel_id AND name="hide_tasks_on_main_tasks_table" AND value=1) THEN rel_type != "project" ELSE 1=1 END');
@@ -144,6 +145,19 @@ return App_table::find('tasks')
             $outputName .= '</div>';
 
             $row[] = $outputName;
+            // $row[] = strip_tags($aRow['description'], '<br><strong>');
+            $get_task_comments = get_task_comments($aRow['id']);
+
+            $comments_text = ''; // Initialize an empty string
+
+            if (!empty($get_task_comments)) {
+                foreach ($get_task_comments as $comment) {
+                    $comments_text .= strip_tags($comment['content'], '<br><strong>') . "<br>"; // Append each comment with a line break
+                }
+            }
+
+            $row[] = $comments_text; // Store all formatted comments in the row array
+
 
             $canChangeStatus = ($aRow['current_user_is_creator'] != '0' || $aRow['current_user_is_assigned'] || staff_can('edit',  'tasks'));
             $status          = get_task_status_by_id($aRow['status']);
@@ -237,14 +251,14 @@ return App_table::find('tasks')
             ->withEmptyOperators(),
 
         App_table_filter::new('status', 'MultiSelectRule')->label(_l('task_status'))->options(function ($ci) {
-            return collect($ci->tasks_model->get_statuses())->map(fn ($status) => [
+            return collect($ci->tasks_model->get_statuses())->map(fn($status) => [
                 'value' => $status['id'],
                 'label' => $status['name']
             ])->all();
         }),
 
         App_table_filter::new('priority', 'MultiSelectRule')->label(_l('tasks_list_priority'))->options(function ($ci) {
-            return collect(get_tasks_priorities())->map(fn ($priority) => [
+            return collect(get_tasks_priorities())->map(fn($priority) => [
                 'value' => $priority['id'],
                 'label' => $priority['name']
             ])->all();
@@ -288,17 +302,17 @@ return App_table::find('tasks')
 
         App_table_filter::new('recurring', 'BooleanRule')
             ->label(_l('recurring_tasks'))
-            ->isVisible(fn () => staff_can('create', 'tasks') || staff_can('edit', 'tasks')),
+            ->isVisible(fn() => staff_can('create', 'tasks') || staff_can('edit', 'tasks')),
 
         App_table_filter::new('billable', 'BooleanRule')
             ->label(_l('task_billable'))
-            ->isVisible(fn () => staff_can('create', 'invoices')),
+            ->isVisible(fn() => staff_can('create', 'invoices')),
 
         App_table_filter::new('billed', 'BooleanRule')->label(_l('task_billed'))
-            ->isVisible(fn () => staff_can('create', 'invoices')),
+            ->isVisible(fn() => staff_can('create', 'invoices')),
 
         App_table_filter::new('assigned', 'MultiSelectRule')->label(_l('task_assigned'))
-            ->isVisible(fn () => staff_can('view', 'tasks'))
+            ->isVisible(fn() => staff_can('view', 'tasks'))
             ->options(function ($ci) {
                 return collect($ci->misc_model->get_tasks_distinct_assignees())->map(function ($staff) {
                     return [

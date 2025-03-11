@@ -315,9 +315,9 @@ function init_relation_tasks_table($table_attributes = [], $filtersWrapperId = '
 
     foreach ($custom_fields as $field) {
         array_push($table_data, [
-           'name'     => $field['name'],
-           'th_attrs' => ['data-type' => $field['type'], 'data-custom-field' => 1],
-       ]);
+            'name'     => $field['name'],
+            'th_attrs' => ['data-type' => $field['type'], 'data-custom-field' => 1],
+        ]);
     }
 
     $table_data = hooks()->apply_filters('tasks_related_table_columns', $table_data);
@@ -334,8 +334,8 @@ function init_relation_tasks_table($table_attributes = [], $filtersWrapperId = '
     $table_name = '.table-' . $name;
 
     $CI->load->view('admin/tasks/filters', [
-        'tasks_table'=>$tasks_table,
-        'filters_wrapper_id'=>$filtersWrapperId,
+        'tasks_table' => $tasks_table,
+        'filters_wrapper_id' => $filtersWrapperId,
     ]);
 
     if (staff_can('create',  'tasks')) {
@@ -577,21 +577,21 @@ function task_timer_round($seconds)
     $roundSeconds = $roundMinutes * 60;
     switch (get_option('round_off_task_timer_option')) {
         case 1: // up
-        return ceil($seconds / $roundSeconds) * $roundSeconds;
+            return ceil($seconds / $roundSeconds) * $roundSeconds;
 
-        break;
+            break;
         case 2: // down
-        return floor($seconds / $roundSeconds) * $roundSeconds;
+            return floor($seconds / $roundSeconds) * $roundSeconds;
 
-        break;
+            break;
         case 3: // nearest
-        return round($seconds / $roundSeconds) * $roundSeconds;
+            return round($seconds / $roundSeconds) * $roundSeconds;
 
-        break;
+            break;
         default:
-        return $seconds;
+            return $seconds;
 
-        break;
+            break;
     }
 }
 
@@ -623,4 +623,24 @@ function is_task_created_by_staff($taskId, $staffId = null)
         ->where('id', $taskId);
 
     return $CI->db->count_all_results(db_prefix() . 'tasks') > 0 ? true : false;
+}
+
+function get_task_comments($taskId)
+{
+    $CI = &get_instance();
+    $CI->load->database(); // Ensure database is loaded
+
+    // Validate task existence
+    $taskExists = $CI->db->where('id', $taskId)->get('tbltasks')->num_rows();
+    if ($taskExists == 0) {
+        return ['error' => 'Task not found'];
+    }
+
+    // Fetch all comments for the task
+    $CI->db->select('id, taskid, content');
+    $CI->db->from('tbltask_comments');
+    $CI->db->where('taskid', $taskId);
+
+    $query = $CI->db->get();
+    return $query->result_array(); // Return comments as an array
 }

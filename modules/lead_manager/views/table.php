@@ -16,10 +16,11 @@ $aColumns = [
     db_prefix() . 'leads.id as id',
     db_prefix() . 'leads.name as name',
     '1',
-    db_prefix() . 'leads.company as company',
+    
     db_prefix() . 'leads.phonenumber as phonenumber',
     'firstname as assigned_firstname',
     db_prefix() . 'leads_status.name as status_name',
+    db_prefix() . 'leads.duplicate as duplicate',
     db_prefix() . 'leads.lastcontact as lastcontact',
     db_prefix() . 'leads.lm_follow_up as lm_follow_up',
     db_prefix() . 'leads.dateadded as dateadded',
@@ -134,8 +135,7 @@ if ($this->ci->input->post('period_from')) {
 if ($this->ci->input->post('period_to')) {
     array_push($where, "AND dateadded <= '" . to_sql_date($this->ci->input->post('period_to')) . "'+ INTERVAL 1 DAY");
     array_push($where, "OR (lm_follow_up_date >= '" . to_sql_date($this->ci->input->post('period_from')) . "' AND lm_follow_up_date <= '" . to_sql_date($this->ci->input->post('period_to')) . "'+ INTERVAL 1 DAY)");
-}
-;
+};
 if (!staff_can('view', 'lead_manager')) {
     array_push($where, 'AND (assigned =' . get_staff_user_id() . ' OR addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)');
 }
@@ -213,7 +213,15 @@ foreach ($rResult as $aRow) {
         }
         $row[] = $consentHTML;
     }
-    $row[] = $aRow['company'];
+    $check_double_entry = $aRow['duplicate'];
+
+    if ($check_double_entry > 0) {
+        $check_double_messgae = '<span style="color: #fd2c2c;font-weight: bold;">Duplicate Entry Alert!</span>';
+    } else {
+        $check_double_messgae = '';
+    }
+
+    
     $is_contact_show = $aRow['phonenumber'] != '' ? '<a href="tel:' . $aRow['phonenumber'] . '">' . $aRow['phonenumber'] . '</a>' : '';
     if (!staff_can('show_contact', 'lead_manager')) {
         $is_contact_show  = ($aRow['phonenumber'] != '' ? getTruncatedPhoneNumber($aRow['phonenumber'])  : '');
@@ -258,6 +266,7 @@ foreach ($rResult as $aRow) {
         $outputStatus .= '</span>';
     }
     $row[] = $outputStatus;
+    $row[] .= $check_double_messgae;
     $row[] = ($aRow['lastcontact'] == '0000-00-00 00:00:00' || !is_date($aRow['lastcontact']) ? '' : '<span data-toggle="tooltip" data-title="' . _dt($aRow['lastcontact']) . '" class="text-has-action is-date">' . time_ago($aRow['lastcontact']) . '</span>');
     /*if ($aRow['lm_follow_up'] == 1) {
         $result_data =  $this->ci->lead_manager_model->get_follow_up_date($aRow['id']);

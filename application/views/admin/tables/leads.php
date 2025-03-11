@@ -29,7 +29,9 @@ $rules = [
     App_table_filter::new('lastcontact', 'DateRule')->label(_l('leads_dt_last_contact')),
     App_table_filter::new('dateadded', 'DateRule')->label(_l('date_created')),
     App_table_filter::new('dateassigned', 'DateRule')->label(_l('customer_admin_date_assigned')),
-    App_table_filter::new('duplicate', 'NumberRule')->label(_l('Duplicate')),
+    // App_table_filter::new('duplicate', 'NumberRule')->label(_l('Duplicate')),
+
+
     App_table_filter::new('status', 'MultiSelectRule')->label(_l('lead_status'))->options(function () use ($statuses) {
         return collect($statuses)->map(fn($status) => [
             'value' => $status['id'],
@@ -44,7 +46,24 @@ $rules = [
         ]);
     }),
 ];
+$rules[] = App_table_filter::new('duplicate', 'SelectRule')->label(_l('Duplicate'))
+    ->withEmptyOperators()
+    ->emptyOperatorValue(0)
+    ->isVisible(fn() => staff_can('view', 'leads'))
+    ->options(function ($ci) {
+        $duplicate = [
+            ['id' => 1, 'name' => _l('Yes')],
+            ['id' => 0, 'name' => _l('no')],
 
+        ];
+
+        return collect($duplicate)->map(function ($duplicate) {
+            return [
+                'value' => $duplicate['id'],
+                'label' => $duplicate   ['name']
+            ];
+        })->all();
+    });
 $rules[] = App_table_filter::new('projects', 'SelectRule')->label(_l('projects'))
     ->withEmptyOperators()
     ->emptyOperatorValue(0)
