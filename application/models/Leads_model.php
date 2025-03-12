@@ -116,7 +116,7 @@ class Leads_model extends App_Model
         $data['email'] = trim($data['email']);
         // Check if the phone number already exists in the leads table
         // Check if the phone number exists (with and without country code)
-        if(isset($data['projects'])){
+        if (isset($data['projects'])) {
             $this->db->where('projects', $data['projects']);
         }
         $this->db->where('phonenumber', $data['phonenumber']);
@@ -135,9 +135,9 @@ class Leads_model extends App_Model
         $insert_id = $this->db->insert_id();
 
         if ($insert_id) {
-            if(isset($data['assigned'])) {
+            if (isset($data['assigned'])) {
                 $taskData = [
-                    'name' => 'Lead FollowUp ( '.$data['name'].' )',
+                    'name' => 'Lead FollowUp ( ' . $data['name'] . ' )',
                     'is_public' => 1,
                     'startdate' => _d(date('Y-m-d')),
                     'duedate' => _d(date('Y-m-d', strtotime('+1 day'))),
@@ -305,28 +305,31 @@ class Leads_model extends App_Model
         $data['phonenumber'] = $data['country_code'] . $data['phonenumber'];
         unset($data['country_code']);
         $data['email'] = trim($data['email']);
+        $this->db->group_start();
+        $this->db->where('phonenumber', $data['phonenumber']);
+        $this->db->or_where('phonenumber', $phonenumber_without_code);
+        $this->db->group_end();
+
+        $existing_lead = $this->db->get(db_prefix() . 'leads')->row();
+        if ($existing_lead) {
+            // If a record is found, set duplicate to 1
+            $data['duplicate'] = 1;
+        }
 
         // Check if the phone number exists (with and without country code)
-        if(isset($data['projects'])){
+        if (isset($data['projects'])) {
             $this->db->where('projects', $data['projects']);
         }
-        $this->db->where('phonenumber', $data['phonenumber']);
-        $this->db->or_where('phonenumber', $phonenumber_without_code); // Check without country code
-        $existing_lead = $this->db->get(db_prefix() . 'leads')->row();
 
-        if ($existing_lead) {
-            // If phone number exists, set duplicate field to 1
-            $data['duplicate'] = 1;
-        } else {
-            $data['duplicate'] = 0;
-        }
+
+
 
         $this->db->where('id', $id);
         $this->db->update(db_prefix() . 'leads', $data);
 
-        if(isset($data['assigned']) && $current_lead_data->assigned != $data['assigned'] && $data['assigned'] != 0) {
+        if (isset($data['assigned']) && $current_lead_data->assigned != $data['assigned'] && $data['assigned'] != 0) {
             $taskData = [
-                'name' => 'Lead FollowUp ( '.$data['name'].' )',
+                'name' => 'Lead FollowUp ( ' . $data['name'] . ' )',
                 'is_public' => 1,
                 'startdate' => _d(date('Y-m-d')),
                 'duedate' => _d(date('Y-m-d', strtotime('+1 day'))),
