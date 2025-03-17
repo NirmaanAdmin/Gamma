@@ -305,16 +305,18 @@ class Leads_model extends App_Model
         $data['phonenumber'] = $data['country_code'] . $data['phonenumber'];
         unset($data['country_code']);
         $data['email'] = trim($data['email']);
-        $this->db->group_start();
-        $this->db->where('phonenumber', $data['phonenumber']);
-        $this->db->or_where('phonenumber', $phonenumber_without_code);
-        $this->db->group_end();
 
-        $existing_lead = $this->db->get(db_prefix() . 'leads')->row();
-        if ($existing_lead) {
-            // If a record is found, set duplicate to 1
-            $data['duplicate'] = 1;
-        }
+        // $this->db->group_start();
+        // $this->db->where('phonenumber', $data['phonenumber']);
+        // $this->db->or_where('phonenumber', $phonenumber_without_code);
+        // $this->db->group_end();
+
+        // $existing_lead = $this->db->get(db_prefix() . 'leads')->row();
+       
+        // if ($existing_lead) {
+        //     // If a record is found, set duplicate to 1
+        //     $data['duplicate'] = 1;
+        // }
 
         // Check if the phone number exists (with and without country code)
         if (isset($data['projects'])) {
