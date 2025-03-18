@@ -40,7 +40,7 @@ class Facebookleadsintegration extends ClientsController
 
         $pages = $_POST['pages'];
 
-        update_option('facebook_pages', json_encode($pages));
+         update_option('facebook_pages',json_encode($pages));
         $html = '<table class="table table-striped" id="pageTable">
         <thead>
             <tr>
@@ -53,15 +53,17 @@ class Facebookleadsintegration extends ClientsController
             if (!in_array($page['id'] . get_option('appId'), json_decode(get_option('subscribed_pages')))) {
 
                 $html .= '<tr> <td>' . $page["name"] . '</td> <td><input type="button" value="' . _l('fbleadssubscribe') . '" id="' . $page['id'] . '" onclick="subscribe (' . $page['id'] . ',\'' . $page["access_token"] . '\');" class="btn btn-info"></td> </tr>';
-            } else {
+
+            }else{
                 $html .= '<tr> <td>' . $page["name"] . '</td> <td><input type="button" value="' . _l('fbleadsunsubscribe') . '" id="' . $page['id'] . '" onclick="unsubscribeApps (' . $page['id'] . ',\'' . $page["access_token"] . '\');" class="btn btn-danger"></td> </tr>';
             }
+
         }
 
         $html .= '</tbody>
         </table>';
-        //\modules\facebookleadsintegration\core\Apiinit::ease_of_mind('facebookleadsintegration');
-        //\modules\facebookleadsintegration\core\Apiinit::the_da_vinci_code('facebookleadsintegration');
+		//\modules\facebookleadsintegration\core\Apiinit::ease_of_mind('facebookleadsintegration');
+		//\modules\facebookleadsintegration\core\Apiinit::the_da_vinci_code('facebookleadsintegration');
         print_r($html);
     }
     // save Facebook leads data
@@ -100,11 +102,7 @@ class Facebookleadsintegration extends ClientsController
         $custom_fields_with_values['leads'] = array();
         $data = array();
         foreach ($json->field_data as $field) {
-            if ($field->name == "number") {
-                $data['phonenumber'] = $field->values[0]; // Assign "number" to phonenumber
-            } elseif ($field->name == "phone number") {
-                $data['alt_phonenumber'] = $field->values[0]; // Assign "phone number" to alt_phonenumber
-            } elseif (in_array($field->name, $fields)) {
+            if (in_array($field->name, $fields)) {
                 $data[$field->name] = $field->values[0];
             } elseif (in_array($field->name, $custom_fields)) {
                 $id = array_search($field->name, $custom_fields);
@@ -141,8 +139,8 @@ class Facebookleadsintegration extends ClientsController
     // Store pages id which are subscribed
     public function pageSubscribed()
     {
-        //\modules\facebookleadsintegration\core\Apiinit::ease_of_mind('facebookleadsintegration');
-        //\modules\facebookleadsintegration\core\Apiinit::the_da_vinci_code('facebookleadsintegration');
+		//\modules\facebookleadsintegration\core\Apiinit::ease_of_mind('facebookleadsintegration');
+		//\modules\facebookleadsintegration\core\Apiinit::the_da_vinci_code('facebookleadsintegration');
         $pages = json_decode(get_option('subscribed_pages'));
         $page_id = $_POST['id'];
         $app_id = get_option('appId');
