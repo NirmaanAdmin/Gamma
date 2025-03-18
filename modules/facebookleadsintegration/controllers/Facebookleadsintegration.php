@@ -70,26 +70,28 @@ class Facebookleadsintegration extends ClientsController
         if ($status == true) {
             $lead = $data;
         } else {
-            $lead =  file_get_contents(APP_MODULES_PATH . 'facebookleadsintegration/lead_data.json', TRUE);
+            $lead = file_get_contents(APP_MODULES_PATH . 'facebookleadsintegration/lead_data.json', TRUE);
         }
         $json = json_decode($lead);
-        $fields = array();
-        array_push($fields, 'name');
-        array_push($fields, 'address');
-        array_push($fields, 'title');
-        array_push($fields, 'city');
-        array_push($fields, 'email');
-        array_push($fields, 'state');
-        array_push($fields, 'website');
-        array_push($fields, 'country');
-        array_push($fields, 'phonenumber');
-        array_push($fields, 'zip');
-        array_push($fields, 'company');
-        array_push($fields, 'default_language');
-        array_push($fields, 'description');
-        array_push($fields, 'assigned');
-        array_push($fields, 'source');
-        array_push($fields, 'status');
+
+        $fields = array(
+            'name',
+            'address',
+            'title',
+            'city',
+            'email',
+            'state',
+            'website',
+            'country',
+            'phonenumber',
+            'zip',
+            'company',
+            'default_language',
+            'description',
+            'assigned',
+            'source',
+            'status'
+        );
 
         $custom_fields = array();
         foreach (get_custom_fields('leads') as $field) {
@@ -99,11 +101,15 @@ class Facebookleadsintegration extends ClientsController
         $custom_fields_with_values = array();
         $custom_fields_with_values['leads'] = array();
         $data = array();
+
+        // Extract form_id
+        $form_id = isset($json->form_id) ? $json->form_id : null;
+
         foreach ($json->field_data as $field) {
             if ($field->name == "number") {
-                $data['phonenumber'] = $field->values[0]; // Assign "number" to phonenumber
+                $data['phonenumber'] = $field->values[0];
             } elseif ($field->name == "phone number") {
-                $data['alt_phonenumber'] = $field->values[0]; // Assign "phone number" to alt_phonenumber
+                $data['alt_phonenumber'] = $field->values[0];
             } elseif (in_array($field->name, $fields)) {
                 $data[$field->name] = $field->values[0];
             } elseif (in_array($field->name, $custom_fields)) {
@@ -112,14 +118,57 @@ class Facebookleadsintegration extends ClientsController
             }
         }
 
-        $data['assigned'] = get_option("facebook_lead_assigned");
+        // Assign project conditionally based on form ID
+        if ($form_id == "578055965208240") {
+            $data['projects'] = 1;
+        }
+
+        // Assign lead based on project ID = 1
+        if (isset($data['projects']) && $data['projects'] == 1) {
+            $today = date('Y-m-d');
+
+            // Get today's lead count for each staff ID
+            $staff_leads = [];
+            $staff_ids = [8 => 5, 13 => 4, 7 => 1]; // Staff ID => Max Leads
+            foreach ($staff_ids as $staff_id => $limit) {
+                $query = $this->db->query("SELECT COUNT(*) as total FROM " . db_prefix() . "leads WHERE assigned = $staff_id AND DATE(dateadded) = '$today'");
+                $staff_leads[$staff_id] = $query->row()->total;
+            }
+
+            // Assign lead based on available slots
+            foreach ($staff_ids as $staff_id => $limit) {
+                if ($staff_leads[$staff_id] < $limit) {
+                    $data['assigned'] = $staff_id;
+                    break;
+                }
+            }
+        } elseif (isset($data['projects']) && $data['projects'] == 2) {
+            $today = date('Y-m-d');
+
+            // Get today's lead count for each staff ID
+            $staff_leads = [];
+            $staff_ids = [3 => 5, 6 => 4, 2 => 1]; // Staff ID => Max Leads
+            foreach ($staff_ids as $staff_id => $limit) {
+                $query = $this->db->query("SELECT COUNT(*) as total FROM " . db_prefix() . "leads WHERE assigned = $staff_id AND DATE(dateadded) = '$today'");
+                $staff_leads[$staff_id] = $query->row()->total;
+            }
+
+            // Assign lead based on available slots
+            foreach ($staff_ids as $staff_id => $limit) {
+                if ($staff_leads[$staff_id] < $limit) {
+                    $data['assigned'] = $staff_id;
+                    break;
+                }
+            }
+        } else {
+            $data['assigned'] = get_option("facebook_lead_assigned");
+        }
+
         $data['source'] = get_option("facebook_lead_source");
         $data['status'] = get_option("facebook_lead_status");
-
         $data['is_public'] = 0;
 
-
-        if (!isset($data['country']) || isset($data['country']) && $data['country'] == '') {
+        if (!isset($data['country']) || (isset($data['country']) && $data['country'] == '')) {
             $data['country'] = 0;
         }
 
@@ -127,17 +176,17 @@ class Facebookleadsintegration extends ClientsController
             unset($data['custom_contact_date']);
         }
 
-        $data['dateadded']   = date('Y-m-d H:i:s');
-        $data['addedfrom']   = get_staff_user_id();
+        $data['dateadded'] = date('Y-m-d H:i:s');
+        $data['addedfrom'] = get_staff_user_id();
         $this->db->insert(db_prefix() . 'leads', $data);
         $insert_id = $this->db->insert_id();
-
 
         // Save custom fields
         if (isset($custom_fields)) {
             handle_custom_fields_post($insert_id, $custom_fields_with_values);
         }
     }
+
     // Store pages id which are subscribed
     public function pageSubscribed()
     {
