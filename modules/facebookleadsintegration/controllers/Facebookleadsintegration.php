@@ -180,7 +180,19 @@ class Facebookleadsintegration extends ClientsController
         $data['addedfrom'] = get_staff_user_id();
         $this->db->insert(db_prefix() . 'leads', $data);
         $insert_id = $this->db->insert_id();
-
+        if (isset($data['assigned']) && $data['assigned'] != 0) {
+            $taskData = [
+                'name' => 'Lead FollowUp ( ' . $data['name'] . ' )',
+                'is_public' => 1,
+                'startdate' => _d(date('Y-m-d')),
+                'duedate' => _d(date('Y-m-d', strtotime('+1 day'))),
+                'priority' => 3,
+                'rel_type' => 'lead',
+                'rel_id' => $insert_id,
+                'assignees' => [$data['assigned']],
+            ];
+            $insert_id = $this->tasks_model->add($taskData);
+        }
         // Save custom fields
         if (isset($custom_fields)) {
             handle_custom_fields_post($insert_id, $custom_fields_with_values);
