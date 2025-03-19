@@ -11,6 +11,7 @@ class Facebookleadsintegration extends ClientsController
     {
         parent::__construct();
         $this->load->library('session');
+        $this->load->model('tasks_model');
     }
     //zapier integration
     public function zapier()
@@ -180,6 +181,7 @@ class Facebookleadsintegration extends ClientsController
         $data['addedfrom'] = get_staff_user_id();
         $this->db->insert(db_prefix() . 'leads', $data);
         $insert_id = $this->db->insert_id();
+        
         if (isset($data['assigned']) && $data['assigned'] != 0) {
             $taskData = [
                 'name' => 'Lead FollowUp ( ' . $data['name'] . ' )',
