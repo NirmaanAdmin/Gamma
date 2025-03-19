@@ -15,6 +15,7 @@ return App_table::find('tasks')
             db_prefix() . 'tasks.id as id',
             db_prefix() . 'tasks.name as task_name',
             db_prefix() . 'tasks.description as description',
+            '1',
             'status',
             'startdate',
             'duedate',
@@ -58,7 +59,7 @@ return App_table::find('tasks')
         if (count($custom_fields) > 4) {
             @$this->ci->db->query('SET SQL_BIG_SELECTS=1');
         }
-
+        $task_moldule_condition = 1;
         $result = data_tables_init(
             $aColumns,
             $sIndexColumn,
@@ -76,18 +77,23 @@ return App_table::find('tasks')
                 '(SELECT MAX(id) FROM ' . db_prefix() . 'taskstimers WHERE task_id=' . db_prefix() . 'tasks.id and staff_id=' . get_staff_user_id() . ' and end_time IS NULL) as not_finished_timer_by_current_staff',
                 '(SELECT staffid FROM ' . db_prefix() . 'task_assigned WHERE taskid=' . db_prefix() . 'tasks.id AND staffid=' . get_staff_user_id() . ') as current_user_is_assigned',
                 '(SELECT CASE WHEN addedfrom=' . get_staff_user_id() . ' AND is_added_from_contact=0 THEN 1 ELSE 0 END) as current_user_is_creator',
-            ]
+            ],
+            '',
+            [],
+            '',
+            '',
+            $task_moldule_condition,
         );
 
         $output  = $result['output'];
         $rResult = $result['rResult'];
-
+        $sr=1;
         foreach ($rResult as $aRow) {
             $row = [];
 
             $row[] = '<div class="checkbox"><input type="checkbox" value="' . $aRow['id'] . '"><label></label></div>';
 
-            $row[] = '<a href="' . admin_url('tasks/view/' . $aRow['id']) . '" onclick="init_task_modal(' . $aRow['id'] . '); return false;">' . $aRow['id'] . '</a>';
+            $row[] = '<a href="' . admin_url('tasks/view/' . $aRow['id']) . '" onclick="init_task_modal(' . $aRow['id'] . '); return false;">' . $sr++ . '</a>';
 
             $outputName = '';
 
@@ -157,7 +163,7 @@ return App_table::find('tasks')
             }
 
             $row[] = $comments_text; // Store all formatted comments in the row array
-
+            $row[] = get_lead_status_by_lead_id($aRow['rel_id']);
 
             $canChangeStatus = ($aRow['current_user_is_creator'] != '0' || $aRow['current_user_is_assigned'] || staff_can('edit',  'tasks'));
             $status          = get_task_status_by_id($aRow['status']);

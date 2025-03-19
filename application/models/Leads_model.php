@@ -119,19 +119,24 @@ class Leads_model extends App_Model
         if (isset($data['projects'])) {
             $this->db->where('projects', $data['projects']);
         }
-        $this->db->where('phonenumber', $data['phonenumber']);
-        $this->db->or_where('phonenumber', $phonenumber_without_code); // Check without country code
+        $this->db->where('projects', $data['projects']);
+        $this->db->where('(phonenumber = "' . $data['phonenumber'] . '" OR phonenumber = "' . $phonenumber_without_code . '")', NULL, FALSE);
         $existing_lead = $this->db->get(db_prefix() . 'leads')->row();
 
         if ($existing_lead) {
-            // If phone number exists, set duplicate field to 1
+            // Update the existing record's duplicate field to 1
+            $this->db->where('id', $existing_lead->id);
+            $this->db->update(db_prefix() . 'leads', ['duplicate' => 1]);
+
+            // Also mark the new record as duplicate
             $data['duplicate'] = 1;
         } else {
             $data['duplicate'] = 0;
         }
 
-
+        // Insert new lead
         $this->db->insert(db_prefix() . 'leads', $data);
+
         $insert_id = $this->db->insert_id();
 
         if ($insert_id) {
@@ -312,7 +317,7 @@ class Leads_model extends App_Model
         // $this->db->group_end();
 
         // $existing_lead = $this->db->get(db_prefix() . 'leads')->row();
-       
+
         // if ($existing_lead) {
         //     // If a record is found, set duplicate to 1
         //     $data['duplicate'] = 1;

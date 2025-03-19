@@ -13,7 +13,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @param  string $sGroupBy group results
  * @return array
  */
-function data_tables_init($aColumns, $sIndexColumn, $sTable, $join = [], $where = [], $additionalSelect = [], $sGroupBy = '', $searchAs = [], $having = '', $module ='')
+function data_tables_init($aColumns, $sIndexColumn, $sTable, $join = [], $where = [], $additionalSelect = [], $sGroupBy = '', $searchAs = [], $having = '', $module ='',$task_moldule_condition ='')
 {
     $CI          = &get_instance();
     $data      = $CI->input->post();
@@ -71,7 +71,12 @@ if ($CI->input->post('order')) {
 
         if ((in_array($sTable . '.' . $columnName, $nullColumnsAsLast)
             || in_array($columnName, $nullColumnsAsLast))) {
-            $sOrder .= $columnName . ' IS NULL ' . $dir . ', ' . $columnName;
+            if($task_moldule_condition === 1){
+                $sOrder .= $columnName . ' IS NOT NULL ' . $dir . ', ' . $columnName;
+            }else{
+                $sOrder .= $columnName . ' IS NULL ' . $dir . ', ' . $columnName;
+            }
+            
         } else {
             if ($type === 'number') {
                 $sOrder .= hooks()->apply_filters('datatables_query_order_column', 'CAST(' . $columnName . ' as SIGNED)', $sTable);
@@ -252,7 +257,7 @@ if ($CI->input->post('order')) {
         $havingSet = 'HAVING ' . $having;
     }
 
-    $resultQuery = '
+   $resultQuery = '
     SELECT ' . str_replace(' , ', ' ', implode(', ', $allColumns)) . ' ' . $additionalColumns . "
     FROM $sTable
     " . $join . "
@@ -263,7 +268,6 @@ if ($CI->input->post('order')) {
     $sOrder
     $sLimit
     ";
-
     $rResult = hooks()->apply_filters(
         'datatables_sql_query_results',
         $CI->db->query($resultQuery)->result_array(),

@@ -644,3 +644,16 @@ function get_task_comments($taskId)
     $query = $CI->db->get();
     return $query->result_array(); // Return comments as an array
 }
+
+function get_lead_status_by_lead_id($lead_id){
+    $CI = &get_instance();
+    $CI->db->select(db_prefix().'leads_status.name as lead_status, ' . db_prefix() . 'leads.status, ' . db_prefix() . 'leads_status.color');
+    $CI->db->where(db_prefix() . 'leads.id', $lead_id);
+    $CI->db->join(db_prefix() . 'leads_status', db_prefix() . 'leads_status.id = ' . db_prefix() . 'leads.status', 'left');
+    $lead = $CI->db->get(db_prefix() . 'leads')->row();
+     
+    $outputStatus = '<span class="lead-status-' . $lead->status . ' label' . (empty($lead->color) ? ' label-default' : '') . '" style="color:' . $lead->color . ';border:1px solid ' . adjust_hex_brightness($lead->color, 0.4) . ';background: ' . adjust_hex_brightness($lead->color, 0.04) . ';">' . e($lead->lead_status);
+
+
+    return $outputStatus;
+}
