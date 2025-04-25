@@ -411,16 +411,7 @@ class Leads_model extends App_Model
 
         $this->db->where('id', $id);
         $this->db->delete(db_prefix() . 'leads');
-
         if ($this->db->affected_rows() > 0) {
-
-            echo '<pre>';
-            print_r($lead);
-            die;
-
-            if($lead->duplicate == 1) {
-                
-            }
             log_activity('Lead Deleted [Deleted by: ' . get_staff_full_name() . ', ID: ' . $id . ']');
 
             $attachments = $this->get_lead_attachments($id);
