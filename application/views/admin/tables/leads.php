@@ -129,19 +129,17 @@ return App_table::find('leads')
 
             // db_prefix() . 'leads.email as email',
             db_prefix() . 'leads.phonenumber as phonenumber',
-            db_prefix() . 'leads.alt_phonenumber as alt_phonenumber',
-            // 'lead_value',
-
             'projects',
-            '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'leads.id and rel_type="lead" ORDER by tag_order ASC LIMIT 1) as tags',
-
+            'assigned',
             db_prefix() . 'leads_status.name as status_name',
             db_prefix() . 'leads_sources.name as source_name',
-
             'dateadded',
             'lastcontact',
             'broker',
             'contact_details',
+            'duplicate',
+            'dateadded',
+            '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'leads.id and rel_type="lead" ORDER by tag_order ASC LIMIT 1) as tags',
         ]);
 
         $sIndexColumn = 'id';
