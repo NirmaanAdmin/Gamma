@@ -465,6 +465,25 @@ class Leads_model extends App_Model
             }
 
             $affectedRows++;
+            // Check if remaining leads need to have duplicate set to 0
+            $project = $lead->projects;
+            $phonenumber = $lead->phonenumber;
+
+            // Replicate the logic to generate phone number without country code
+            // Example: Remove the first 2 characters (adjust as per your logic)
+            $phonenumber_without_code = substr($phonenumber, 2);
+
+            $this->db->where('projects', $project);
+            $this->db->group_start();
+            $this->db->where('phonenumber', $phonenumber);
+            $this->db->or_where('phonenumber', $phonenumber_without_code);
+            $this->db->group_end();
+            $remaining_leads = $this->db->get(db_prefix() . 'leads')->result();
+
+            if (count($remaining_leads) == 1) {
+                $this->db->where('id', $remaining_leads[0]->id);
+                $this->db->update(db_prefix() . 'leads', ['duplicate' => 0]);
+            }
         }
         if ($affectedRows > 0) {
             hooks()->do_action('after_lead_deleted', $id);
