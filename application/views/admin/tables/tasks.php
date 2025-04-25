@@ -17,7 +17,7 @@ return App_table::find('tasks')
             db_prefix() . 'tasks.description as description',
             '1',
             'status',
-            'startdate',
+            // 'startdate',
             'duedate',
             get_sql_select_task_asignees_full_names() . ' as assignees',
             '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'tasks.id and rel_type="task" ORDER by tag_order ASC) as tags',
@@ -197,9 +197,9 @@ return App_table::find('tasks')
 
             $row[] = $outputStatus;
 
-            $row[] = e(_d($aRow['startdate']));
+            // $row[] = e(_d($aRow['startdate']));
 
-            $row[] = e(_d($aRow['duedate']));
+            // $row[] = e(_d($aRow['duedate']));
 
             $row[] = format_members_by_ids_and_names($aRow['assignees_ids'], $aRow['assignees']);
 

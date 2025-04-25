@@ -8,11 +8,11 @@ $table_data = [
     _l('Comments'),
     _l('Lead status'),
     _l('task_status'),
-    _l('tasks_dt_datestart'),
-    [
-        'name'     => _l('task_duedate'),
-        'th_attrs' => ['class' => 'duedate'],
-    ],
+    // _l('tasks_dt_datestart'),
+    // [
+    //     'name'     => _l('task_duedate'),
+    //     'th_attrs' => ['class' => 'duedate'],
+    // ],
     _l('task_assigned'),
     _l('tags'),
     _l('tasks_list_priority'),
