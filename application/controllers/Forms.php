@@ -487,6 +487,9 @@ class Forms extends ClientsController
                     $regular_fields['dateadded']    = date('Y-m-d H:i:s');
                     $regular_fields['from_form_id'] = $form->id;
                     $regular_fields['is_public']    = $form->mark_public;
+                    if($this->input->post('key') == '347f376295d303a60c2c662263a1bc0b'){
+                        $regular_fields['projects']  = 1;
+                    }
                     $this->db->insert(db_prefix() . 'leads', $regular_fields);
                     $lead_id = $this->db->insert_id();
 
