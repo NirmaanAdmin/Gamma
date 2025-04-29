@@ -487,8 +487,23 @@ class Forms extends ClientsController
                     $regular_fields['dateadded']    = date('Y-m-d H:i:s');
                     $regular_fields['from_form_id'] = $form->id;
                     $regular_fields['is_public']    = $form->mark_public;
-                    if($this->input->post('key') == '347f376295d303a60c2c662263a1bc0b'){
+
+                    if ($this->input->post('key') == '347f376295d303a60c2c662263a1bc0b') {
                         $regular_fields['projects']  = 1;
+                    } elseif ($this->input->post('key') == '297b1a90ba97a2f497c068b45d91a630') {
+                        $regular_fields['projects']  = 2;
+                    } elseif ($this->input->post('key') == '7764a894c046848bfdaadf403ae7816c') {
+                        $regular_fields['projects']  = 3;
+                    }elseif ($this->input->post('key') == 'dcf1d870f5a9bb632c5e3468d0aeb3d6'){ 
+                        $regular_fields['projects']  = $this->input->post('project');
+
+                        if($this->input->post('project') == 1){
+                            $regular_fields['assigned'] = 8;
+                        }elseif ($this->input->post('project') == 2) {
+                            $regular_fields['assigned']  = 3;
+                        }elseif ($this->input->post('project') == 3) {
+                            $regular_fields['assigned']  = 6; 
+                        }
                     }
                     $this->db->insert(db_prefix() . 'leads', $regular_fields);
                     $lead_id = $this->db->insert_id();
