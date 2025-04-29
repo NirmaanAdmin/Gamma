@@ -1751,7 +1751,7 @@ $(function () {
       leadsTableNotSearchable.push(tableLeadsConsentHeading.index());
     }
 
-    _table_api = initDataTable(
+    _table_api = initDataTable( 
       table_leads,
       admin_url + "leads/table",
       leadsTableNotSearchable,
@@ -2242,7 +2242,7 @@ $(function () {
       tasksTableNotSortable,
       tasksTableNotSortable,
       TasksServerParams,
-      [table_tasks.find("th.duedate").index(), "asc"]
+      [table_tasks.find("th.status").index(), "asc"]
     );
 
     if (_table_api && $("body").hasClass("dashboard")) {

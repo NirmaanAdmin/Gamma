@@ -63,7 +63,7 @@ return App_table::find('tasks')
         $result = data_tables_init(
             $aColumns,
             $sIndexColumn,
-            $sTable,
+            $sTable, 
             $join,
             $where,
             [
@@ -81,7 +81,7 @@ return App_table::find('tasks')
             '',
             [],
             '',
-            '',
+            'tasks',
             $task_moldule_condition,
         );
 
