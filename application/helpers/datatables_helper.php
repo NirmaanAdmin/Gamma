@@ -106,10 +106,8 @@ function data_tables_init($aColumns, $sIndexColumn, $sTable, $join = [], $where 
                 $additionalOrder = '(status = 1) DESC, ';
                 // Prepend additional order conditions
                 $sOrder = 'ORDER BY ' . $additionalOrder . ltrim($sOrder, 'ORDER BY ');
-            }elseif ($module === 'tasks') {
-                $additionalOrder = 'duedate DESC, ';
-                $sOrder = 'ORDER BY ' . $additionalOrder . ltrim($sOrder, 'ORDER BY ');
             }
+
             
         }
 
