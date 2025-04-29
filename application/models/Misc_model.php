@@ -285,6 +285,7 @@ class Misc_model extends App_Model
 
     public function add_note($data, $rel_type, $rel_id)
     {
+        $this->load->model('tasks_model');
         $data['dateadded']   = date('Y-m-d H:i:s');
         $data['addedfrom']   = get_staff_user_id();
         $data['rel_type']    = $rel_type;
@@ -292,6 +293,15 @@ class Misc_model extends App_Model
         $data['description'] = nl2br($data['description']);
 
         $data = hooks()->apply_filters('create_note_data', $data, $rel_type, $rel_id);
+
+        $get_task_id = get_task_by_id_for_notes($rel_id);
+        if (count($get_task_id) > 0) {
+            $taskcomment_data = [
+                'taskid' => $get_task_id['id'],
+                'content' => $data['description'],
+            ];
+            $this->tasks_model->add_task_comment($taskcomment_data);
+        }
 
         $this->db->insert(db_prefix() . 'notes', $data);
         $insert_id = $this->db->insert_id();
@@ -1530,23 +1540,23 @@ class Misc_model extends App_Model
             'type'           => 'quotation',
             'search_heading' => _l('quotations'),
         ];
-    
+
         // Quotations
         $this->db->select();
         $this->db->from(db_prefix() . 'pur_estimates'); // Table for quotations
-    
+
         // Search in the specified columns
         $this->db->where('(prefix LIKE "%' . $this->db->escape_like_str($q) . '%" ESCAPE \'!\')');
         if ($limit != 0) {
             $this->db->limit($limit);
         }
-    
+
         $this->db->order_by('prefix', 'ASC');
         $result['result'] = $this->db->get()->result_array();
-    
+
         return $result;
     }
-    
+
     public function _search_pur_contracts($q, $limit = 0)
     {
         $result = [

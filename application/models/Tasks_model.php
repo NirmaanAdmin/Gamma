@@ -408,7 +408,7 @@ class Tasks_model extends App_Model
 
     public function get_tasks_by_staff_id($id, $where = [])
     {
-        $this->db->where($where);
+        $this->db->where($where); 
         $this->db->where('(id IN (SELECT taskid FROM ' . db_prefix() . 'task_assigned WHERE staffid=' . $this->db->escape_str($id) . '))');
 
         return $this->db->get(db_prefix() . 'tasks')->result_array();

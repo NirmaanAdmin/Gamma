@@ -17,7 +17,7 @@ class Taxes_model extends App_Model
     public function get($id = '')
     {
         if (is_numeric($id)) {
-            $this->db->where('id', $id);
+            $this->db->where('id', $id); 
 
             return $this->db->get(db_prefix() . 'taxes')->row();
         }

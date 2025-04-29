@@ -1045,3 +1045,12 @@ function get_double_entery_by_phonenumber($phoneNumber)
     // Return true if there are 2 or more entries, otherwise false
     return ($count >= 2);
 }
+
+function get_task_by_id_for_notes($leads){
+    $CI = &get_instance();
+    $CI->db->select('id');
+    $CI->db->from('tbltasks');
+    $CI->db->where('rel_id', $leads); // Adjust the condition as needed
+    $query = $CI->db->get();
+    return $query->row_array(); // Return the result as an associative array
+}
