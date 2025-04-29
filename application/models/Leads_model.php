@@ -142,7 +142,7 @@ class Leads_model extends App_Model
         if ($insert_id) {
             if (isset($data['assigned'])) {
                 $taskData = [
-                    'name' => 'Lead FollowUp ( ' . $data['name'] . ' )',
+                    'name' => 'Lead FollowUp ' . $data['name'] . '',
                     'is_public' => 1,
                     'startdate' => _d(date('Y-m-d')),
                     'duedate' => _d(date('Y-m-d', strtotime('+1 day'))),
