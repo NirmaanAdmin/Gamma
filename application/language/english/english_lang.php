@@ -2602,6 +2602,7 @@ $lang['custom_field_disallow_customer_to_edit'] = 'Disallow customer to edit thi
 $lang['project_due_notice']                     = 'This project is overdue by %s days';
 $lang['not_lead_added_attachment']              = 'added new attachment to lead %s';
 $lang['lead_note_date_added']                   = 'Note added: %s';
+$lang['next_follow_up_date']                    = 'Next Follow Up Date: %s';
 $lang['recurring_custom']                       = 'Custom';
 // don't translate these, only added for better readability already translated for the expenses custom recurring feature.
 $lang['invoice_recurring_months'] = $lang['expense_recurring_months'];

@@ -943,7 +943,18 @@
                                     </h5>
                                     <span class="tw-text-sm tw-text-neutral-500">
                                         <?php echo e(_l('lead_note_date_added', _dt($note['dateadded']))); ?>
-                                    </span>
+                                    </span><br>
+                                    <?php
+                                    if ($note['next_followup_date'] != '0000-00-00' && $note['next_followup_date'] != '') { ?>
+                                        <span class="tw-text-sm tw-text-neutral-500">
+                                            <!-- <?php echo e(_l('next_follow_up_date', _dt($note['next_followup_date']))); ?> -->
+
+                                            Next Follow Up Date: <?php echo date('d-m-Y', strtotime($note['next_followup_date'])); ?>
+
+                                        </span>
+                                    <?php }
+                                    ?>
+
                                 </a>
 
                                 <div data-note-description="<?php echo e($note['id']); ?>" class="text-muted mtop10"><?php echo process_text_content_for_display($note['description']); ?></div>
