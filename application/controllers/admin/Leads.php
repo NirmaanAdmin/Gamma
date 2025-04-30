@@ -15,11 +15,13 @@ class Leads extends AdminController
     {
         parent::__construct();
         $this->load->model('leads_model');
+        $this->load->model('projects_model');
     }
 
     /* List all leads */
     public function index($id = '')
     {
+
         close_setup_menu();
 
         if (!is_staff_member()) {
@@ -42,7 +44,9 @@ class Leads extends AdminController
         $data['statuses'] = $this->leads_model->get_status();
         $data['sources']  = $this->leads_model->get_source();
         $data['title']    = _l('leads');
-        $data['table'] = App_table::find('leads');
+        // $data['table']    = App_table::find('leads');
+        $data['projects'] = $this->projects_model->get();
+
         // in case accesed the url leads/index/ directly with id - used in search
         $data['leadid']   = $id;
         $data['isKanBan'] = $this->session->has_userdata('leads_kanban_view') &&
@@ -51,13 +55,11 @@ class Leads extends AdminController
         $this->load->view('admin/leads/manage_leads', $data);
     }
 
-    public function table()
+    public function table_leads_details()
     {
-        if (!is_staff_member()) {
-            ajax_access_denied();
+        if ($this->input->is_ajax_request()) {
+            $this->app->get_table_data('leads_new');
         }
-
-        App_table::find('leads')->output();
     }
 
     public function kanban()
@@ -102,7 +104,8 @@ class Leads extends AdminController
 
                     $proposalWarning = (total_rows(db_prefix() . 'proposals', [
                         'rel_type' => 'lead',
-                        'rel_id'   => $id, ]) > 0 && ($emailOriginal != $emailNow) && $emailNow != '') ? true : false;
+                        'rel_id'   => $id,
+                    ]) > 0 && ($emailOriginal != $emailNow) && $emailNow != '') ? true : false;
 
                     $message = _l('updated_successfully', _l('lead'));
                 }
@@ -142,16 +145,16 @@ class Leads extends AdminController
                 die;
             }
 
-            if (total_rows(db_prefix() . 'clients', ['leadid' => $id ]) > 0) {
+            if (total_rows(db_prefix() . 'clients', ['leadid' => $id]) > 0) {
                 $data['lead_locked'] = ((!is_admin() && get_option('lead_lock_after_convert_to_customer') == 1) ? true : false);
             }
 
             $reminder_data = $this->load->view('admin/includes/modals/reminder', [
-                    'id'             => $lead->id,
-                    'name'           => 'lead',
-                    'members'        => $data['members'],
-                    'reminder_title' => _l('lead_set_reminder_title'),
-                ], true);
+                'id'             => $lead->id,
+                'name'           => 'lead',
+                'members'        => $data['members'],
+                'reminder_title' => _l('lead_set_reminder_title'),
+            ], true);
 
             $data['lead']          = $lead;
             $data['mail_activity'] = $this->leads_model->get_mail_activity($id);
@@ -197,12 +200,12 @@ class Leads extends AdminController
         $status = $this->db->get(db_prefix() . 'leads_status')->row_array();
 
         $leads = (new LeadsKanban($status['id']))
-        ->search($this->input->get('search'))
-        ->sortBy(
-            $this->input->get('sort_by'),
-            $this->input->get('sort')
-        )
-        ->page($page)->get();
+            ->search($this->input->get('search'))
+            ->sortBy(
+                $this->input->get('sort_by'),
+                $this->input->get('sort')
+            )
+            ->page($page)->get();
 
         foreach ($leads as $lead) {
             $this->load->view('admin/leads/_kan_ban_card', [
@@ -434,7 +437,7 @@ class Leads extends AdminController
                             'addedfrom'      => $note['addedfrom'],
                             'description'    => $note['description'],
                             'date_contacted' => $note['date_contacted'],
-                            ]);
+                        ]);
                     }
                 }
                 if (isset($consents)) {
@@ -899,6 +902,7 @@ class Leads extends AdminController
         $this->load->view('admin/leads/forms', $data);
     }
 
+
     public function delete_form($id)
     {
         if (!is_admin()) {
@@ -1209,18 +1213,20 @@ class Leads extends AdminController
 
         $this->load->library('import/import_leads', [], 'import');
         $this->import->setDatabaseFields($dbFields)
-        ->setCustomFields(get_custom_fields('leads'));
+            ->setCustomFields(get_custom_fields('leads'));
 
         if ($this->input->post('download_sample') === 'true') {
             $this->import->downloadSample();
         }
 
-        if ($this->input->post()
-            && isset($_FILES['file_csv']['name']) && $_FILES['file_csv']['name'] != '') {
+        if (
+            $this->input->post()
+            && isset($_FILES['file_csv']['name']) && $_FILES['file_csv']['name'] != ''
+        ) {
             $this->import->setSimulation($this->input->post('simulate'))
-                          ->setTemporaryFileLocation($_FILES['file_csv']['tmp_name'])
-                          ->setFilename($_FILES['file_csv']['name'])
-                          ->perform();
+                ->setTemporaryFileLocation($_FILES['file_csv']['tmp_name'])
+                ->setFilename($_FILES['file_csv']['name'])
+                ->perform();
 
             $data['total_rows_post'] = $this->import->totalRows();
 
@@ -1255,7 +1261,7 @@ class Leads extends AdminController
                     die();
                 }
             }
-            echo total_rows(db_prefix() . 'leads', [ $field => $value ]) > 0 ? 'false' : 'true';
+            echo total_rows(db_prefix() . 'leads', [$field => $value]) > 0 ? 'false' : 'true';
         }
     }
 

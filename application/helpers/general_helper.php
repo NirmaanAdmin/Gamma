@@ -1046,7 +1046,8 @@ function get_double_entery_by_phonenumber($phoneNumber)
     return ($count >= 2);
 }
 
-function get_task_by_id_for_notes($leads){
+function get_task_by_id_for_notes($leads)
+{
     $CI = &get_instance();
     $CI->db->select('*');
     $CI->db->from('tbltasks');
@@ -1055,19 +1056,61 @@ function get_task_by_id_for_notes($leads){
     return $query->row_array(); // Return the result as an associative array
 }
 
-function get_task_assignee($task_id) {
+function get_task_assignee($task_id)
+{
     $CI = &get_instance();
     $CI->db->select('staffid');
     $CI->db->from('tbltask_assigned');
     $CI->db->where('taskid', $task_id);
     $query = $CI->db->get();
     $result = $query->result_array();
-    
+
     // Extract just the staffid values into a simple array
     $staff_ids = [];
     foreach ($result as $row) {
         $staff_ids[] = $row['staffid'];
     }
-    
+
     return $staff_ids;
+}
+
+function update_module_filter($module_name, $filter_name, $filter_value)
+{
+    $CI = &get_instance();
+    $CI->db->select('*');
+    $CI->db->from(db_prefix() . 'module_filter');
+    $CI->db->where('module_name', $module_name);
+    $CI->db->where('filter_name', $filter_name);
+    $CI->db->where('staff_id', get_staff_user_id());
+    $row = $CI->db->get()->row();
+    if (!empty($row)) {
+        $CI->db->where('module_name', $module_name);
+        $CI->db->where('filter_name', $filter_name);
+        $CI->db->where('staff_id', get_staff_user_id());
+        $CI->db->update(db_prefix() . 'module_filter', [
+            'filter_value' => $filter_value,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+    } else {
+        $data = array();
+        $data['module_name'] = $module_name;
+        $data['staff_id'] = get_staff_user_id();
+        $data['filter_name'] = $filter_name;
+        $data['filter_value'] = $filter_value;
+        $data['created_at'] = date('Y-m-d H:i:s');
+        $CI->db->insert(db_prefix() . 'module_filter', $data);
+    }
+    return true;
+}
+
+function get_module_filter($module_name, $filter_name) 
+{
+    $CI = &get_instance();
+    $CI->db->select('*');
+    $CI->db->from(db_prefix() . 'module_filter');
+    $CI->db->where('module_name', $module_name);
+    $CI->db->where('filter_name', $filter_name);
+    $CI->db->where('staff_id', get_staff_user_id());
+    $row = $CI->db->get()->row();
+    return $row;
 }

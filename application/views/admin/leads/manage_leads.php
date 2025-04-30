@@ -1,9 +1,10 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
-<?php init_head(); ?>
+<?php init_head();
+$module_name = 'leads'; ?>
 <style>
     .show_hide_columns {
         position: absolute;
-        z-index: 9999;
+        z-index: 999;
         left: 289px
     }
 </style>
@@ -40,26 +41,7 @@
                                 <?php }; ?>
                             </a>
                         </div>
-                        <div class="col-sm-4 col-xs-12 pull-right leads-search">
-                            <?php if ($this->session->userdata('leads_kanban_view') == 'true') { ?>
-                                <div data-toggle="tooltip" data-placement="top"
-                                    data-title="<?php echo _l('search_by_tags'); ?>">
-                                    <?php echo render_input('search', '', '', 'search', ['data-name' => 'search', 'onkeyup' => 'leads_kanban();', 'placeholder' => _l('leads_search')], [], 'no-margin') ?>
-                                </div>
-                            <?php } else { ?>
-                                <div id="vueApp" class="tw-inline pull-right">
-                                    <app-filters
-                                        id="<?php echo $table->id(); ?>"
-                                        view="<?php echo $table->viewName(); ?>"
-                                        :rules="<?php echo app\services\utilities\Js::from($this->input->get('status') ? $table->findRule('status')->setValue([$this->input->get('status')]) : []); ?>"
-                                        :saved-filters="<?php echo $table->filtersJs(); ?>"
-                                        :available-rules="<?php echo $table->rulesJs(); ?>">
-                                    </app-filters>
-                                </div>
-                            <?php } ?>
-                            <?php echo form_hidden('sort_type'); ?>
-                            <?php echo form_hidden('sort', (get_option('default_leads_kanban_sort') != '' ? get_option('default_leads_kanban_sort_type') : '')); ?>
-                        </div>
+
                     </div>
                     <div class="clearfix"></div>
                     <div class="hide leads-overview tw-mt-2 sm:tw-mt-4 tw-mb-4 sm:tw-mb-0">
@@ -91,8 +73,10 @@
 
                     </div>
                 </div>
+
                 <div class="<?php echo $isKanBan ? '' : 'panel_s'; ?>">
                     <div class="<?php echo $isKanBan ? '' : 'panel-body'; ?>">
+
                         <div class="tab-content">
                             <?php
                             if ($isKanBan) { ?>
@@ -127,6 +111,61 @@
                                     </div>
                                 </div>
                             <?php } else { ?>
+                                <div class="row all_ot_filters">
+                                    <div class="col-md-2 form-group">
+                                        <?php
+                                        $project_type_filter = get_module_filter($module_name, 'project');
+                                        $project_type_filter_val = !empty($project_type_filter) ? explode(",", $project_type_filter->filter_value) : '';
+                                        echo render_select('project[]', $projects, array('id', 'name'), '', $project_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('project'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
+                                        ?>
+                                    </div>
+                                    <div class="col-md-2 form-group">
+
+                                        <?php
+                                        $assigned_type_filter = get_module_filter($module_name, 'assigned');
+                                        $assigned_type_filter_val = !empty($assigned_type_filter) ? explode(",", $assigned_type_filter->filter_value) : '';
+                                        echo render_select('assigned[]', $staff, array('staffid', 'firstname'), '', $assigned_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('Assigned'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
+                                        ?>
+
+                                    </div>
+                                    <div class="col-md-2 form-group">
+                                        <?php
+                                        $status_type_filter = get_module_filter($module_name, 'status');
+                                        $status_type_filter_val = !empty($status_type_filter) ? explode(",", $status_type_filter->filter_value) : '';
+                                        echo render_select('status[]', $statuses, array('id', 'name'), '', $status_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('status'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
+
+                                        ?>
+                                    </div>
+                                    <div class="col-md-2 form-group">
+                                        <?php
+                                        $sources_type_filter = get_module_filter($module_name, 'source');
+                                        $sources_type_filter_val = !empty($sources_type_filter) ? explode(",", $sources_type_filter->filter_value) : '';
+                                        echo render_select('sources[]', $sources, array('id', 'name'), '', $sources_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('Sources'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
+                                        ?>
+                                    </div>
+                                    <div class="col-md-2 form-group">
+
+                                        <?php
+                                        $months = [];
+                                        foreach (range(1, 12) as $month) {
+                                            $months[] = [
+                                                'id' => $month,
+                                                'name' => _l(date('F', mktime(0, 0, 0, $month, 10))),
+                                            ];
+                                        }
+
+                                        $month_type_filter = get_module_filter($module_name, 'month');
+                                        $month_type_filter_val = !empty($month_type_filter) ? explode(",", $month_type_filter->filter_value) : '';
+                                        echo render_select('month[]', $months, array('id', 'name'), '', $month_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('Month'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
+                                        ?>
+                                    </div>
+                                    <div class="col-md-1 form-group">
+                                        <a href="javascript:void(0)" class="btn btn-info btn-icon reset_all_ot_filters">
+                                            <?php echo _l('reset_filter'); ?>
+                                        </a>
+                                    </div>
+                                </div>
+
                                 <div class="row" id="leads-table">
                                     <div class="col-md-12">
                                         <a href="#" data-toggle="modal" data-table=".table-leads"
@@ -235,8 +274,6 @@
                                                     'tags',
                                                     'Whatsapp Enable'
                                                 ];
-
-
                                                 ?>
                                                 <div>
                                                     <?php foreach ($columns as $key => $label): ?>
@@ -373,6 +410,39 @@
 <?php include_once(APPPATH . 'views/admin/leads/status.php'); ?>
 <?php init_tail(); ?>
 <script>
+    var table_rec_leads;
+    (function($) {
+        table_rec_leads = $('.table-leads');
+
+        var Params = {
+            "project": "[name='project[]']",
+            "assigned": "[name='assigned[]']",
+            "status": "[name='status[]']",
+            "source": "[name='sources[]']",
+            "month": "[name='month[]']",
+        };
+
+        initDataTable('.table-leads', admin_url + 'leads/table_leads_details', [], [], Params, [8, 'desc']);
+
+
+        $.each(Params, function(i, obj) {
+            $('select' + obj).on('change', function() {
+                table_rec_leads.DataTable().ajax.reload()
+                    .columns.adjust()
+                    .responsive.recalc();
+            });
+        });
+
+        $(document).on('click', '.reset_all_ot_filters', function() {
+            var filterArea = $('.all_ot_filters');
+            filterArea.find('input').val("");
+            filterArea.find('select').selectpicker("val", "");
+            table_rec_leads.DataTable().ajax.reload().columns.adjust().responsive.recalc();
+        });
+
+    })(jQuery);
+</script>
+<script>
     var openLeadID = '<?php echo e($leadid); ?>';
     $(function() {
         leads_kanban();
@@ -388,6 +458,7 @@
                 $('#leads_bulk_mark_lost').prop('disabled', false);
             }
         });
+
     });
 </script>
 <script>
@@ -438,7 +509,6 @@
             e.stopPropagation();
         });
     });
-
 </script>
 </body>
 

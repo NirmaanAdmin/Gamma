@@ -947,7 +947,6 @@
                                     <?php
                                     if ($note['next_followup_date'] != '0000-00-00' && $note['next_followup_date'] != '') { ?>
                                         <span class="tw-text-sm tw-text-neutral-500">
-                                            <!-- <?php echo e(_l('next_follow_up_date', _dt($note['next_followup_date']))); ?> -->
 
                                             Next Follow Up Date: <?php echo date('d-m-Y', strtotime($note['next_followup_date'])); ?>
 
