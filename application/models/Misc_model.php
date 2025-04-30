@@ -295,6 +295,8 @@ class Misc_model extends App_Model
         $data = hooks()->apply_filters('create_note_data', $data, $rel_type, $rel_id);
 
         $get_task_id = get_task_by_id_for_notes($rel_id);
+        $get_task_assignee = get_task_assignee($get_task_id['id']);
+        
         if (count($get_task_id) > 0) {
             $taskcomment_data = [
                 'taskid' => $get_task_id['id'],
@@ -305,8 +307,31 @@ class Misc_model extends App_Model
 
         $this->db->insert(db_prefix() . 'notes', $data);
         $insert_id = $this->db->insert_id();
+        
+        if ($insert_id && $data['next_followup_date'] != '') {
+            if (isset($get_task_id['id'])) {
+                $taskData = [
+                    'name' => 'Lead FollowUp ('. $get_task_id['name'] .')',
+                    'is_public' => 1,
+                    'startdate' => _d($data['next_followup_date']),
+                    'duedate' => _d($data['next_followup_date']),
+                    'priority' => 3,
+                    'rel_type' => 'lead',
+                    'rel_id' => $get_task_id['rel_id'],
+                ];
 
-        if ($insert_id) {
+                $task_id = $this->tasks_model->add($taskData);
+                foreach ($get_task_assignee as $assignee) {
+                    $assignss = [
+                        'staffid' => $assignee,
+                        'taskid'  =>  $task_id
+                    ];
+                    $this->db->insert('tbltask_assigned', $assignss);
+                }
+
+            }
+
+
             hooks()->do_action('note_created', $insert_id, $data);
 
             return $insert_id;

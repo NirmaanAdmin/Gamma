@@ -885,23 +885,30 @@
             <div role="tabpanel" class="tab-pane" id="lead_notes_inner">
                 <?php echo form_open(admin_url('leads/add_note/' . $lead->id), ['id' => 'lead-notes']); ?>
                 <div class="form-group">
-                        <textarea id="lead_note_description" name="lead_note_description" class="form-control"
-                                  rows="4"></textarea>
+                    <textarea id="lead_note_description" name="lead_note_description" class="form-control"
+                        rows="4"></textarea>
                 </div>
                 <div class="lead-select-date-contacted hide">
                     <?php echo render_datetime_input('custom_contact_date', 'lead_add_edit_datecontacted', '', ['data-date-end-date' => date('Y-m-d')]); ?>
                 </div>
-                <div class="radio radio-primary">
-                    <input type="radio" name="contacted_indicator" id="contacted_indicator_yes" value="yes">
-                    <label
+
+                <div class="form-group col-md-6">
+                    <div class="radio radio-primary">
+                        <input type="radio" name="contacted_indicator" id="contacted_indicator_yes" value="yes">
+                        <label
                             for="contacted_indicator_yes"><?php echo _l('lead_add_edit_contacted_this_lead'); ?></label>
+                    </div>
+                    <div class="radio radio-primary">
+                        <input type="radio" name="contacted_indicator" id="contacted_indicator_no" value="no" checked>
+                        <label for="contacted_indicator_no"><?php echo _l('lead_not_contacted'); ?></label>
+                    </div>
                 </div>
-                <div class="radio radio-primary">
-                    <input type="radio" name="contacted_indicator" id="contacted_indicator_no" value="no" checked>
-                    <label for="contacted_indicator_no"><?php echo _l('lead_not_contacted'); ?></label>
+                <div class="form-group col-md-6">
+                    <label for="next_followup_date"><?php echo _l('Next Follow Up Date'); ?></label>
+                    <input type="date" class="form-control pull-right" name="next_followup_date" id="next_followup_date">
                 </div>
                 <button type="submit" form="lead-notes"
-                        class="btn btn-primary pull-right"><?php echo _l('lead_add_edit_add_note'); ?></button>
+                    class="btn btn-primary pull-right"><?php echo _l('lead_add_edit_add_note'); ?></button>
                 <?php echo form_close(); ?>
                 <div class="clearfix"></div>
                 <hr />
@@ -915,22 +922,22 @@
                         </a>
                         <div class="media-body">
                             <?php if ($note['addedfrom'] == get_staff_user_id() || is_admin()) { ?>
-                            <a href="#" class="pull-right text-danger"
-                               onclick="delete_lead_note(this,<?php echo e($note['id']); ?>, <?php echo e($lead->id); ?>);return false;">
+                                <a href="#" class="pull-right text-danger"
+                                    onclick="delete_lead_note(this,<?php echo e($note['id']); ?>, <?php echo e($lead->id); ?>);return false;">
 
-                                <i class="fa fa fa-times"></i></a>
-                            <a href="#" class="pull-right mright5"
-                               onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;">
-                                <i class="fa-regular fa-pen-to-square"></i>
+                                    <i class="fa fa fa-times"></i></a>
+                                <a href="#" class="pull-right mright5"
+                                    onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;">
+                                    <i class="fa-regular fa-pen-to-square"></i>
                                 <?php } ?>
 
                                 <a href="<?php echo admin_url('profile/' . $note['addedfrom']); ?>" target="_blank">
                                     <h5 class="media-heading tw-font-semibold tw-mb-0">
                                         <?php if (!empty($note['date_contacted'])) { ?>
                                             <span data-toggle="tooltip"
-                                                  data-title="<?php echo e(_dt($note['date_contacted'])); ?>">
-                                            <i class="fa fa-phone-square text-success" aria-hidden="true"></i>
-                                        </span>
+                                                data-title="<?php echo e(_dt($note['date_contacted'])); ?>">
+                                                <i class="fa fa-phone-square text-success" aria-hidden="true"></i>
+                                            </span>
                                         <?php } ?>
                                         <?php echo e(get_staff_full_name($note['addedfrom'])); ?>
                                     </h5>
@@ -944,9 +951,9 @@
                                     <?php echo render_textarea('note', '', $note['description']); ?>
                                     <div class="text-right">
                                         <button type="button" class="btn btn-default"
-                                                onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;"><?php echo _l('cancel'); ?></button>
+                                            onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;"><?php echo _l('cancel'); ?></button>
                                         <button type="button" class="btn btn-primary"
-                                                onclick="edit_note(<?php echo e($note['id']); ?>);"><?php echo _l('update_note'); ?></button>
+                                            onclick="edit_note(<?php echo e($note['id']); ?>);"><?php echo _l('update_note'); ?></button>
                                     </div>
                                 </div>
                         </div>
@@ -955,7 +962,8 @@
                         }
                         ?>
                     </div>
-                    <?php $i++; } ?>
+                <?php $i++;
+                } ?>
             </div>
         </div>
 
