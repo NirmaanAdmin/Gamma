@@ -23,7 +23,7 @@ switch (count(array_filter([$canViewInvoices, $canViewEstimates, $canViewProposa
    break;
 }
 ?>
-<div class="widget" id="widget-<?php echo create_widget_id(); ?>" data-name="<?php echo _l('finance_overview'); ?>">
+<!-- <div class="widget" id="widget-<?php echo create_widget_id(); ?>" data-name="<?php echo _l('finance_overview'); ?>">
     <?php if ($canViewInvoices || $canViewEstimates || $canViewProposals) { ?>
     <div class="finance-summary">
         <div class="panel_s">
@@ -265,4 +265,4 @@ switch (count(array_filter([$canViewInvoices, $canViewEstimates, $canViewProposa
         </div>
     </div>
     <?php } ?>
-</div>
+</div> -->

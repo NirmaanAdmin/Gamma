@@ -15,7 +15,7 @@ $(function() {
             $("body,#wrapper").addClass('noscroll');
             $('body').find('[data-container]').css('min-height', '20px');
         },
-        stop: function(event, ui) {
+        stop: function(event, ui) { 
             $("body,#wrapper").removeClass('noscroll');
             $('body').find('[data-container]').removeAttr('style');
         },

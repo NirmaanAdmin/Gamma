@@ -43,15 +43,15 @@ class Tasks extends AdminController
         $data['task_statuses'] = $this->tasks_model->get_statuses();
         $data['staff'] = $this->staff_model->get('', ['active' => 1]);
         $data['title'] = _l('tasks');
+        
         // $data['tasks_table'] = App_table::find('tasks');
         $this->load->view('admin/tasks/manage', $data);
     }
 
-    // public function table()
-    // {
-    //     App_table::find('tasks')->output();
-    // }
-
+    public function table()
+    {
+        $this->app->get_table_data('tasks_new');
+    }
     public function table_tasks_details()
     {
         if ($this->input->is_ajax_request()) {
