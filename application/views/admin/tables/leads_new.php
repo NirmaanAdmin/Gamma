@@ -95,24 +95,24 @@ if($CI->input->post('duplicate') && count($CI->input->post('duplicate')) > 0){
 }
 
 // Restrict for non-admins
-if (!has_permission('view', 'leads')) {
-    $staffid = get_staff_user_id();
-    $assigned_projects = get_assigned_projects($staffid);
-    $project_ids = !empty($assigned_projects)
-        ? array_column($assigned_projects, 'team_manage_id')
-        : [];
-    $projCond = '';
-    if (!empty($project_ids)) {
-        $projCond = ' OR ' . db_prefix() .
-            'leads.projects IN (' . implode(',', $project_ids) . ')';
-    }
-    $where[] = 'AND ('
-        . db_prefix() . 'leads.assigned  = ' . $staffid
-        . ' OR ' . db_prefix() . 'leads.addedfrom = ' . $staffid
-        . ' OR ' . db_prefix() . 'leads.is_public  = 1'
-        . $projCond
-        . ')';
-}
+// if (!has_permission('view', 'leads')) {
+//     $staffid = get_staff_user_id();
+//     $assigned_projects = get_assigned_projects($staffid);
+//     $project_ids = !empty($assigned_projects)
+//         ? array_column($assigned_projects, 'team_manage_id')
+//         : [];
+//     $projCond = '';
+//     if (!empty($project_ids)) {
+//         $projCond = ' OR ' . db_prefix() .
+//             'leads.projects IN (' . implode(',', $project_ids) . ')';
+//     }
+//     $where[] = 'AND ('
+//         . db_prefix() . 'leads.assigned  = ' . $staffid
+//         . ' OR ' . db_prefix() . 'leads.addedfrom = ' . $staffid
+//         . ' OR ' . db_prefix() . 'leads.is_public  = 1'
+//         . $projCond
+//         . ')';
+// }
 
 
 $project_filter_name_value = !empty($this->ci->input->post('project')) ? implode(',', $this->ci->input->post('project')) : NULL;
