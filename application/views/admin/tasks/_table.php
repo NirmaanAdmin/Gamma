@@ -8,7 +8,7 @@ $table_data = [
     _l('Comments'),
     _l('Lead status'),
     [
-        'name'     => _l('task_status'),
+        'name'     => _l('Task status'),
         'th_attrs' => ['class' => 'status'],
     ],
     // _l('tasks_dt_datestart'),

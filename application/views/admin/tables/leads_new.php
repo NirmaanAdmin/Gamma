@@ -8,10 +8,10 @@ $source_filter_name = 'source';
 $status_filter_name = 'status';
 $assigned_filter_name = 'assigned';
 $month_filter_name = 'month';
-
+$duplicate_filter_name = 'duplicate';
 // Get CI instance
 $CI = &get_instance();
-$CI->load->model('gdpr_model');
+$CI->load->model('gdpr_model'); 
 $CI->load->model('leads_model');
 $CI->load->model('staff_model');
 
@@ -90,6 +90,10 @@ if ($CI->input->post('month') && count($CI->input->post('month')) > 0) {
     $where[] = 'AND MONTH(' . db_prefix() . 'leads.dateadded) IN (' . implode(',', $CI->input->post('month')) . ')';
 }
 
+if($CI->input->post('duplicate') && count($CI->input->post('duplicate')) > 0){
+    $where[] = 'AND ' . db_prefix() . 'leads.duplicate IN (' . implode(',', $CI->input->post('duplicate')) . ')';
+}
+
 // Restrict for non-admins
 if (!has_permission('view', 'leads')) {
     $staffid = get_staff_user_id();
@@ -125,6 +129,9 @@ update_module_filter($module_name, $assigned_filter_name, $assigned_filter_name_
 
 $month_filter_name_value = !empty($this->ci->input->post('month')) ? implode(',', $this->ci->input->post('month')) : NULL;
 update_module_filter($module_name, $month_filter_name, $month_filter_name_value);
+
+$duplicate_filter_name_value = !empty($this->ci->input->post('duplicate')) ? implode(',', $this->ci->input->post('duplicate')) : NULL;
+update_module_filter($module_name, $duplicate_filter_name, $duplicate_filter_name_value);
 
 $result = data_tables_init(
     $aColumns,

@@ -156,10 +156,23 @@ $module_name = 'leads'; ?>
 
                                         $month_type_filter = get_module_filter($module_name, 'month');
                                         $month_type_filter_val = !empty($month_type_filter) ? explode(",", $month_type_filter->filter_value) : '';
+
+                                        
                                         echo render_select('month[]', $months, array('id', 'name'), '', $month_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('Month'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
                                         ?>
                                     </div>
-                                    <div class="col-md-1 form-group">
+                                    <div class="col-md-2 form-group">
+                                        <?php
+                                        $duplicate_type_filter = get_module_filter($module_name, 'duplicate');
+                                        $duplicate_type_filter_val = !empty($duplicate_type_filter) ? explode(",", $duplicate_type_filter->filter_value) : '';
+
+                                        $duplicate = [
+                                            ['id' => '1', 'name' => 'Duplicate'], 
+                                        ];
+                                        echo render_select('duplicate[]', $duplicate, array('id', 'name'), '', $duplicate_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('Duplicate'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
+                                        ?>
+                                    </div>
+                                    <div class="col-md-1 form-group pull-right">
                                         <a href="javascript:void(0)" class="btn btn-info btn-icon reset_all_ot_filters">
                                             <?php echo _l('reset_filter'); ?>
                                         </a>
@@ -420,6 +433,7 @@ $module_name = 'leads'; ?>
             "status": "[name='status[]']",
             "source": "[name='sources[]']",
             "month": "[name='month[]']",
+            "duplicate": "[name='duplicate[]']",
         };
 
         initDataTable('.table-leads', admin_url + 'leads/table_leads_details', [], [], Params, [8, 'desc']);
