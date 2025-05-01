@@ -5,6 +5,7 @@ $module_name = 'tasks';
 $status_filter_name = 'task_status';
 $task_priority_name = 'task_priority';
 $period_name = 'period';
+$task_assignees_name = 'task_assignees';
 // Get CI instance
 $CI = &get_instance();
 $CI->load->model('tasks_model');
@@ -65,6 +66,13 @@ if ($CI->input->post('task_status') && count($CI->input->post('task_status')) > 
 if ($CI->input->post('task_priority') && count($CI->input->post('task_priority')) > 0) {
     $where[] = 'AND ' . db_prefix() . 'tasks.priority IN (' . implode(',', $CI->input->post('task_priority')) . ')';
 }
+if ($CI->input->post('task_assignees') && count($CI->input->post('task_assignees')) > 0) {
+    $conditions = [];
+    foreach ($CI->input->post('task_assignees') as $assignee_id) {
+        $conditions[] = 'FIND_IN_SET(' . (int)$assignee_id . ', ' . get_sql_select_task_assignees_ids() . ')';
+    }
+    $where[] = 'AND (' . implode(' OR ', $conditions) . ')';
+}
 
 // Period filter options (for the select dropdown)
 $period_type_filter_val = [
@@ -115,6 +123,9 @@ update_module_filter($module_name, $task_priority_name, $task_priority_filter_na
 $period_filter_name_value = !empty($this->ci->input->post('period')) ? implode(',', $this->ci->input->post('period')) : NULL;
 update_module_filter($module_name, $period_name, $period_filter_name_value);
 
+
+$task_assignees_filter_name_value = !empty($this->ci->input->post('task_assignees')) ? implode(',', $this->ci->input->post('task_assignees')) : NULL;
+update_module_filter($module_name, $task_assignees_name, $task_assignees_filter_name_value);
 
 array_push($where, 'AND CASE WHEN rel_type="project" AND rel_id IN (SELECT project_id FROM ' . db_prefix() . 'project_settings WHERE project_id=rel_id AND name="hide_tasks_on_main_tasks_table" AND value=1) THEN rel_type != "project" ELSE 1=1 END');
 
