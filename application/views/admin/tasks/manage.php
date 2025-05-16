@@ -71,7 +71,13 @@ $module_name = 'tasks'; ?>
                         <div class="col-md-2 form-group">
                             <?php
                             $task_assignees_type_filter = get_module_filter($module_name, 'task_assignees');
-                            $task_assignees_type_filter_val = !empty($task_assignees_type_filter) ? explode(",", $task_assignees_type_filter->filter_value) : '';
+                            if (!empty($task_assignees_type_filter) && !empty($task_assignees_type_filter->filter_value)) {
+                                $task_assignees_type_filter_val = !empty($task_assignees_type_filter) ? explode(",", $task_assignees_type_filter->filter_value) : '';
+                            }else{
+                               $staff_id = get_staff_user_id();
+                                $task_assignees_type_filter_val = explode(",",  $staff_id);
+                            }
+
 
                             echo render_select('task_assignees[]', $staff, array('staffid', 'firstname'), '', $task_assignees_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('Task Assignees'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
                             ?>
@@ -87,15 +93,24 @@ $module_name = 'tasks'; ?>
 
                         <div class="col-md-2 form-group">
                             <?php
-                            $period_type_filter = get_module_filter($module_name, 'period');
-                            $period_type_filter_val = !empty($period_type_filter) ? explode(",", $period_type_filter->filter_value) : '';
-
-
                             $period = [
                                 ['id' => 'today', 'name' => 'Today'],
                                 ['id' => '7_day', 'name' => '7 Days'],
                                 ['id' => 'this_week', 'name' => 'This Week'],
                             ];
+                            $period_type_filter = get_module_filter($module_name, 'period');
+
+                            if(!empty($period_type_filter) && !empty($period_type_filter->filter_value)){
+                                $period_type_filter_val = !empty($period_type_filter) ? explode(",", $period_type_filter->filter_value) : '';
+                            }else{
+                                $period_type_filter_val = ['today'];
+                            }
+                            
+
+
+                            
+
+
                             echo render_select('period[]', $period, array('id', 'name'), '', $period_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('Period'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
                             ?>
                         </div>

@@ -13,7 +13,7 @@
                 <h4 class="modal-title" id="myModalLabel">
                     <?php echo e($title); ?>
                 </h4>
-            </div>
+            </div> 
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
