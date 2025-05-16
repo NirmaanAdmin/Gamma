@@ -18,7 +18,7 @@ $task_statuses = $CI->tasks_model->get_statuses();
 
 // Base columns
 $aColumns = [
-    '1', // bulk actions
+    0, // bulk actions
     db_prefix() . 'tasks.id as id',
     db_prefix() . 'tasks.name as task_name',
     db_prefix() . 'tasks.description as description',
@@ -315,3 +315,4 @@ foreach ($rResult as $aRow) {
 
     $output['aaData'][] = $row;
 }
+ 

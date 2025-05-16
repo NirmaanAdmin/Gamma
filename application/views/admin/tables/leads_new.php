@@ -25,7 +25,7 @@ $custom_fields = get_custom_fields('leads', ['show_on_table' => 1]);
 
 // Base columns
 $aColumns = [
-    '1', // checkbox placeholder
+    0, // checkbox placeholder
     db_prefix() . 'leads.id as id',
     db_prefix() . 'leads.name as name',
     db_prefix() . 'leads.phonenumber as phonenumber',
