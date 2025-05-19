@@ -907,7 +907,7 @@
                     <label for="next_followup_date"><?php echo _l('Next Follow Up Date'); ?></label>
                     <input type="date" class="form-control pull-right" name="next_followup_date" id="next_followup_date">
                 </div>
-                <button type="submit" form="lead-notes"
+                <button type="submit" form="lead-notes" id="lead-notes-submit"
                     class="btn btn-primary pull-right"><?php echo _l('lead_add_edit_add_note'); ?></button>
                 <?php echo form_close(); ?>
                 <div class="clearfix"></div>
@@ -1115,5 +1115,55 @@
             }
             return false;
         }
+    });
+</script>
+<script>
+    $('#lead-notes-submit').on('click', function(e) {
+        e.preventDefault(); // Always prevent default first
+
+        let leadId = '<?php echo $lead->id; ?>';
+        let $submitButton = $(this);
+        let $form = $('#lead-notes');
+
+        // Disable button to prevent multiple clicks
+        $submitButton.prop('disabled', true);
+
+        // First check lead status - this runs every click
+        $.ajax({
+            url: '<?php echo admin_url("leads/get_lead_status"); ?>',
+            type: 'POST',
+            data: {
+                id: leadId
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // For status 1, 6, or 11 (skip_date_check = true), submit immediately
+                    if (response.skip_date_check) {
+                        $form.submit();
+                        return;
+                    }
+
+                    // For other statuses, validate followup date
+                    let next_followup_date = $('#next_followup_date').val();
+                    if (!next_followup_date) {
+                        alert_float('danger', 'Please select a follow-up date');
+                        $submitButton.prop('disabled', false); // Re-enable button
+                        return false;
+                    } else {
+                        // If date is provided, submit the form
+                        $form.submit();
+                    }
+                } else {
+                    // Lead status check failed
+                    alert_float('danger', response.message || 'Invalid lead status');
+                    $submitButton.prop('disabled', false); // Re-enable button
+                }
+            },
+            error: function() {
+                alert_float('danger', 'Error checking lead status');
+                $submitButton.prop('disabled', false); // Re-enable button
+            }
+        });
     });
 </script>

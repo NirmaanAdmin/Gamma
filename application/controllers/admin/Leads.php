@@ -1364,4 +1364,25 @@ class Leads extends AdminController
         $this->zip->download('files.zip');
         $this->zip->clear_data();
     }
+
+    public function get_lead_status()
+    {
+        $this->load->model('leads_model');
+        $leadId = $this->input->post('id');
+        $lead = $this->leads_model->get($leadId);
+
+        if (!$lead) {
+            echo json_encode(['success' => false, 'message' => 'Lead not found', 'skip_date_check' => false]);
+            return;
+        }
+
+        // If status is 1, 6, or 11, we can skip date check
+        if (in_array($lead->status, [1, 6, 11])) {
+            echo json_encode(['success' => true, 'skip_date_check' => true]);
+            return;
+        }
+
+        // For other statuses, date check will be required
+        echo json_encode(['success' => true, 'skip_date_check' => false]);
+    }
 }

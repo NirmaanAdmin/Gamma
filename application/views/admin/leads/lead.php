@@ -315,7 +315,7 @@ if (isset($lead)) {
                     </div>
                     <?php } ?>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="lead_notes">
+                <div role="tabpanel" class="tab-pane" id="lead_notes"> 
                     <?php echo form_open(admin_url('leads/add_note/' . $lead->id), ['id' => 'lead-notes']); ?>
                     <div class="form-group">
                         <textarea id="lead_note_description" name="lead_note_description" class="form-control"
@@ -334,7 +334,7 @@ if (isset($lead)) {
                         <label for="contacted_indicator_no"><?php echo _l('lead_not_contacted'); ?></label>
                     </div>
                     <button type="submit"
-                        class="btn btn-primary pull-right"><?php echo _l('lead_add_edit_add_note'); ?></button>
+                        class="btn btn-primary pull-right" id="lead-notes-submit"><?php echo _l('lead_add_edit_add_note'); ?></button>
                     <?php echo form_close(); ?>
                     <div class="clearfix"></div>
                     <hr />
