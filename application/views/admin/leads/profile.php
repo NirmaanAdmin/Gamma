@@ -904,7 +904,7 @@
                     </div>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="next_followup_date"><?php echo _l('Next Follow Up Date'); ?></label>
+                    <label for="next_followup_date"><?php echo _l('Next Follow Up Date'); ?></label><small class="req text-danger">* </small>
                     <input type="date" class="form-control pull-right" name="next_followup_date" id="next_followup_date">
                 </div>
                 <button type="submit" form="lead-notes" id="lead-notes-submit"
