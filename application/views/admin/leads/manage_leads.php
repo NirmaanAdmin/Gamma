@@ -274,6 +274,7 @@ $module_name = 'leads'; ?>
                                                     'the_number_sign',
                                                     'leads_dt_name',
                                                     'leads_dt_phonenumber',
+                                                    'Alt Phonenumber',
                                                     'Project',
                                                     'leads_dt_assigned',
                                                     'leads_dt_status',
