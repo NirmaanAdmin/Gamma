@@ -29,6 +29,7 @@ $aColumns = [
     db_prefix() . 'leads.id as id',
     db_prefix() . 'leads.name as name',
     db_prefix() . 'leads.phonenumber as phonenumber',
+    db_prefix() . 'leads.alt_phonenumber as alt_phonenumber',
     db_prefix() . 'leads.projects as projects',
     db_prefix() . 'leads.assigned as assigned',
     db_prefix() . 'leads_status.name as status_name',
@@ -219,7 +220,9 @@ foreach ($rResult as $aRow) {
     } else {
         $row[] = '';
     }
-
+    $row[] = !empty($aRow['alt_phonenumber'])
+        ? '<a href="tel:' . e($aRow['alt_phonenumber']) . '">' . e($aRow['alt_phonenumber']) . '</a>'
+        : '';
 
     // Projects
     $row[] = !empty($aRow['projects'])

@@ -326,10 +326,10 @@ $module_name = 'leads'; ?>
                                             'name'     => _l('leads_dt_phonenumber'),
                                             'th_attrs' => ['class' => 'toggleable', 'id' => 'th-phone'],
                                         ];
-                                        /*$_table_data[] = [
-                                            'name'     => _l('Alternative Phonenumber'),
+                                        $_table_data[] = [
+                                            'name'     => _l('Alt Phonenumber'),
                                             'th_attrs' => ['class' => 'toggleable', 'id' => 'th-alt-phone'],
-                                        ];*/
+                                        ];
                                         // $_table_data[] = [
                                         //     'name'     => 'Budget',
                                         //     'th_attrs' => ['class' => 'toggleable', 'id' => 'th-lead-value'],
