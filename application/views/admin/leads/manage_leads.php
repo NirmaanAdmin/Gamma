@@ -436,7 +436,7 @@ $module_name = 'leads'; ?>
             "duplicate": "[name='duplicate[]']",
         };
 
-        initDataTable('.table-leads', admin_url + 'leads/table_leads_details', [], [], Params, [8, 'desc']);
+        initDataTable('.table-leads', admin_url + 'leads/table_leads_details', [], [], Params, [9, 'desc']);
 
 
         $.each(Params, function(i, obj) {
