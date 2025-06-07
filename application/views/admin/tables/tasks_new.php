@@ -100,7 +100,7 @@ if ($CI->input->post('period') && is_array($CI->input->post('period')) && count(
     foreach ($periods as $period) {
         switch ($period) {
             case 'today':
-                $periodConditions[] = "DATE($dateField) >= '" . date('Y-m-d H:i:s', strtotime('-20 hours')) . "'";
+                $periodConditions[] = "DATE($dateField) >= '" . date('Y-m-d H:i:s', strtotime('-36 hours')) . "'";
                 break;
 
             case '7_day':
