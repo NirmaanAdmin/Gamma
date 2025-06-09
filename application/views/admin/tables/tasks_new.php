@@ -102,7 +102,7 @@ if ($CI->input->post('period') && is_array($CI->input->post('period')) && count(
             case 'today':
                 // Get tasks from today (00:00:00 to now) AND last 12 hours
                 $todayStart = date('Y-m-d 00:00:00');
-                $twelveHoursAgo = date('Y-m-d H:i:s', strtotime('-36 hours'));
+                $twelveHoursAgo = date('Y-m-d', strtotime('-1 days'));
                 $periodConditions[] = "($dateField = '$todayStart' OR $dateField = '$twelveHoursAgo')";
                 break;
 
