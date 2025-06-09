@@ -320,7 +320,7 @@
                         <?php echo (isset($lead) && $lead->assigned != 0 ? e(get_staff_full_name($lead->assigned)) : '-') ?>
                     </dd>
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                        <?php echo _l('Alt Phonenymber'); ?></dt>
+                        <?php echo _l('Alt Phonenumber'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php
                         if (isset($lead) && $lead->alt_phonenumber != '') {
