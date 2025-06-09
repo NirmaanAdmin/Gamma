@@ -319,6 +319,27 @@
                     <dd class="tw-text-neutral-900 tw-mt-1 mbot15">
                         <?php echo (isset($lead) && $lead->assigned != 0 ? e(get_staff_full_name($lead->assigned)) : '-') ?>
                     </dd>
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
+                        <?php echo _l('Alt Phonenymber'); ?></dt>
+                    <dd class="tw-text-neutral-900 tw-mt-1">
+                        <?php
+                        if (isset($lead) && $lead->alt_phonenumber != '') {
+                            $alt_phonenumber = trim($lead->alt_phonenumber);
+                            // Check if the phone number already starts with +91 or +1
+                            if (strpos($alt_phonenumber, '+91') !== 0 && strpos($alt_phonenumber, '+1') !== 0) {
+                                // If the phone number starts with "1", add +1; otherwise, add +91.
+                                if (strpos($alt_phonenumber, '1') === 0) {
+                                    $alt_phonenumber = '+1' . $phone;
+                                } else {
+                                    $alt_phonenumber = '+91' . $alt_phonenumber;
+                                }
+                            }
+                            echo '<a href="tel:' . e($alt_phonenumber) . '">' . e($alt_phonenumber) . '</a>';
+                        } else {
+                            echo '-';
+                        }
+                        ?>
+                    </dd>
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('tags'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1 mbot10">
                         <?php
@@ -740,7 +761,7 @@
                     </div>
                 </div>
 
-                <?php $value = (isset($lead) ? $lead->email : ''); ?>
+
 
                 <?php if ((isset($lead) && empty($lead->website)) || !isset($lead)) {
                     // $value = (isset($lead) ? $lead->website : '');
@@ -790,6 +811,7 @@
                 $selected                 = (isset($lead) ? $lead->projects : '');
                 echo render_select('projects', $projects, ['id', ['name']], 'Projects', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
                 ?>
+                <?php $value = (isset($lead) ? $lead->email : ''); ?>
                 <?php echo render_input('email', 'lead_add_edit_email', $value); ?>
                 <?php $value = (isset($lead) ? $lead->address : ''); ?>
                 <?php echo render_textarea('address', 'Current Residence', $value, ['rows' => 1, 'style' => 'height:36px;font-size:100%;']); ?>

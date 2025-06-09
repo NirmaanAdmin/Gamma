@@ -1056,19 +1056,19 @@ function get_task_by_id_for_notes($leads)
     return $query->row_array(); // Return the result as an associative array
 }
 
-function get_task_assignee($task_id)
+function get_task_assignee($lead_id)
 {
     $CI = &get_instance();
-    $CI->db->select('staffid');
-    $CI->db->from('tbltask_assigned');
-    $CI->db->where('taskid', $task_id);
+    $CI->db->select('assigned');
+    $CI->db->from('tblleads');
+    $CI->db->where('id', $lead_id);
     $query = $CI->db->get();
     $result = $query->result_array();
 
     // Extract just the staffid values into a simple array
     $staff_ids = [];
     foreach ($result as $row) {
-        $staff_ids[] = $row['staffid'];
+        $staff_ids[] = $row['assigned'];
     }
 
     return $staff_ids;

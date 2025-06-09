@@ -295,7 +295,7 @@ class Misc_model extends App_Model
         $data = hooks()->apply_filters('create_note_data', $data, $rel_type, $rel_id);
 
         $get_task_id = get_task_by_id_for_notes($rel_id);
-        $get_task_assignee = get_task_assignee($get_task_id['id']);
+        $get_task_assignee = get_task_assignee($rel_id);
         
         if (count($get_task_id) > 0) {
             $taskcomment_data = [

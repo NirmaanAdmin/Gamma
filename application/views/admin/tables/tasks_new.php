@@ -100,7 +100,10 @@ if ($CI->input->post('period') && is_array($CI->input->post('period')) && count(
     foreach ($periods as $period) {
         switch ($period) {
             case 'today':
-                $periodConditions[] = "DATE($dateField) >= '" . date('Y-m-d H:i:s', strtotime('-36 hours')) . "'";
+                // Get tasks from today (00:00:00 to now) AND last 12 hours
+                $todayStart = date('Y-m-d 00:00:00');
+                $twelveHoursAgo = date('Y-m-d H:i:s', strtotime('-12 hours'));
+                $periodConditions[] = "($dateField = '$todayStart' OR $dateField = '$twelveHoursAgo')";
                 break;
 
             case '7_day':
@@ -315,4 +318,3 @@ foreach ($rResult as $aRow) {
 
     $output['aaData'][] = $row;
 }
- 
