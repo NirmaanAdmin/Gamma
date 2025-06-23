@@ -324,11 +324,14 @@ class Leads_model extends App_Model
         // }
 
         // Check if the phone number exists (with and without country code)
-        if (isset($data['projects'])) {
-            $this->db->where('projects', $data['projects']);
-        }
+        // if (isset($data['projects'])) {
+        //     $this->db->where('projects', $data['projects']);
+        // }
 
-
+        // echo '<pre>';
+        // print_r($data);
+        // echo '</pre>'; // Debugging line to check data before insertion
+        // exit;
 
 
         $this->db->where('id', $id);
