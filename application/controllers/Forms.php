@@ -495,8 +495,8 @@ class Forms extends ClientsController
                         // Prepare the URL with parameters
                         $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928';
                         $params = [
-                            'number' => '91' . $form->phonenumber,
-                            'message' => 'welcome%20reminder%202%20clone,' . urlencode($regular_fields['name']) .
+                            'number' => '91' . $regular_fields['phonenumber'],
+                            'message' => 'welcomereminderclone154,' . urlencode($regular_fields['name']) .
                                 ',are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 – 3BHK* Club Class Living! Step into your future home and experience premium features, including:',
                             'medialink' => 'https://kautilya.n360.site/assets/images/whatimg.png'
                         ];
@@ -526,6 +526,7 @@ class Forms extends ClientsController
                             $regular_fields['assigned']  = 6;
                         }
                     }
+                    
                     $this->db->insert(db_prefix() . 'leads', $regular_fields);
                     $lead_id = $this->db->insert_id();
 
