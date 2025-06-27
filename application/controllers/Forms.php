@@ -50,9 +50,9 @@ class Forms extends ClientsController
                     if (isset($field->name)) {
                         if ($field->name == 'file-input') {
                             $submission[] = [
-                            'label' => $field->label,
-                            'name'  => $field->name,
-                            'value' => null,
+                                'label' => $field->label,
+                                'name'  => $field->name,
+                                'value' => null,
                             ];
 
                             continue;
@@ -60,9 +60,9 @@ class Forms extends ClientsController
 
                         if (!isset($post_data[$field->name])) {
                             $submission[] = [
-                            'label' => property_exists($field, 'label') ? $field->label : $field->name,
-                            'name'  => $field->name,
-                            'value' => '',
+                                'label' => property_exists($field, 'label') ? $field->label : $field->name,
+                                'name'  => $field->name,
+                                'value' => '',
                             ];
 
                             continue;
@@ -149,7 +149,8 @@ class Forms extends ClientsController
 
                 if (show_recaptcha() && $form->recaptcha == 1) {
                     if (!do_recaptcha_validation($post_data['g-recaptcha-response'])) {
-                        echo json_encode(['success' => false,
+                        echo json_encode([
+                            'success' => false,
                             'message'               => _l('recaptcha_error'),
                         ]);
                         die;
@@ -196,7 +197,7 @@ class Forms extends ClientsController
 
                             if (is_array($ids) && count($ids) > 0) {
                                 $this->db->where('active', 1)
-                                ->where_in($form->notify_type == 'specific_staff' ? 'staffid' : 'role', $ids);
+                                    ->where_in($form->notify_type == 'specific_staff' ? 'staffid' : 'role', $ids);
 
                                 $staff = $this->db->get(db_prefix() . 'staff')->result_array();
                             }
@@ -213,15 +214,15 @@ class Forms extends ClientsController
 
                         foreach ($staff as $member) {
                             if (add_notification([
-                                    'description' => 'new_estimate_request_submitted_from_form',
-                                    'touserid' => $member['staffid'],
-                                    'fromcompany' => 1,
-                                    'fromuserid' => 0,
-                                    'additional_data' => serialize([
-                                        $form->name,
-                                    ]),
-                                    'link' => 'estimate_request/view/' . $estimate_request_id,
-                                ])) {
+                                'description' => 'new_estimate_request_submitted_from_form',
+                                'touserid' => $member['staffid'],
+                                'fromcompany' => 1,
+                                'fromuserid' => 0,
+                                'additional_data' => serialize([
+                                    $form->name,
+                                ]),
+                                'link' => 'estimate_request/view/' . $estimate_request_id,
+                            ])) {
                                 array_push($notifiedUsers, $member['staffid']);
                             }
 
@@ -489,20 +490,40 @@ class Forms extends ClientsController
                     $regular_fields['is_public']    = $form->mark_public;
 
                     if ($this->input->post('key') == '347f376295d303a60c2c662263a1bc0b') {
-                        $regular_fields['projects']  = 1;
+                        $regular_fields['projects'] = 1;
+
+                        // Prepare the URL with parameters
+                        $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928';
+                        $params = [
+                            'number' => '91' . $form->phonenumber,
+                            'message' => 'welcome%20reminder%202%20clone,' . urlencode($regular_fields['name']) .
+                                ',are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 – 3BHK* Club Class Living! Step into your future home and experience premium features, including:',
+                            'medialink' => 'https://kautilya.n360.site/assets/images/whatimg.png'
+                        ];
+
+                        // Build the full URL with query parameters
+                        $fullUrl = $url . '?' . http_build_query($params);
+
+                        // Hit the URL using cURL
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, $fullUrl);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        $response = curl_exec($ch);
+                        curl_close($ch);
+
                     } elseif ($this->input->post('key') == '297b1a90ba97a2f497c068b45d91a630') {
                         $regular_fields['projects']  = 2;
                     } elseif ($this->input->post('key') == '7764a894c046848bfdaadf403ae7816c') {
                         $regular_fields['projects']  = 3;
-                    }elseif ($this->input->post('key') == 'dcf1d870f5a9bb632c5e3468d0aeb3d6'){ 
+                    } elseif ($this->input->post('key') == 'dcf1d870f5a9bb632c5e3468d0aeb3d6') {
                         $regular_fields['projects']  = $this->input->post('project');
 
-                        if($this->input->post('project') == 1){
+                        if ($this->input->post('project') == 1) {
                             $regular_fields['assigned'] = 8;
-                        }elseif ($this->input->post('project') == 2) {
+                        } elseif ($this->input->post('project') == 2) {
                             $regular_fields['assigned']  = 3;
-                        }elseif ($this->input->post('project') == 3) {
-                            $regular_fields['assigned']  = 6; 
+                        } elseif ($this->input->post('project') == 3) {
+                            $regular_fields['assigned']  = 6;
                         }
                     }
                     $this->db->insert(db_prefix() . 'leads', $regular_fields);
@@ -540,29 +561,29 @@ class Forms extends ClientsController
 
                                 if (is_array($ids) && count($ids) > 0) {
                                     $this->db->where('active', 1)
-                                    ->where_in($form->notify_type == 'specific_staff' ? 'staffid' : 'role', $ids);
+                                        ->where_in($form->notify_type == 'specific_staff' ? 'staffid' : 'role', $ids);
                                     $staff = $this->db->get(db_prefix() . 'staff')->result_array();
                                 }
                             } elseif ($form->responsible) {
                                 $staff = [
-                                [
-                                    'staffid' => $form->responsible,
-                                ],
-                            ];
+                                    [
+                                        'staffid' => $form->responsible,
+                                    ],
+                                ];
                             }
 
                             $notifiedUsers = [];
                             foreach ($staff as $member) {
                                 if (add_notification([
-                                        'description' => 'not_lead_imported_from_form',
-                                        'touserid' => $member['staffid'],
-                                        'fromcompany' => 1,
-                                        'fromuserid' => 0,
-                                        'additional_data' => serialize([
-                                            $form->name,
-                                        ]),
-                                        'link' => '#leadid=' . $lead_id,
-                                    ])) {
+                                    'description' => 'not_lead_imported_from_form',
+                                    'touserid' => $member['staffid'],
+                                    'fromcompany' => 1,
+                                    'fromuserid' => 0,
+                                    'additional_data' => serialize([
+                                        $form->name,
+                                    ]),
+                                    'link' => '#leadid=' . $lead_id,
+                                ])) {
                                     array_push($notifiedUsers, $member['staffid']);
                                 }
                             }
