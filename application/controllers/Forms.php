@@ -497,7 +497,7 @@ class Forms extends ClientsController
                         $params = [
                             'number' => '91' . $regular_fields['phonenumber'],
                             'message' => 'welcomereminderclone154,' . urlencode($regular_fields['name']) .
-                                ',are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 – 3BHK* Club Class Living! Step into your future home and experience premium features, including:',
+                                ',are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:',
                             'medialink' => 'https://kautilya.n360.site/assets/images/whatimg.png'
                         ];
 
