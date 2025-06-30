@@ -530,12 +530,12 @@ class Forms extends ClientsController
                         curl_close($ch);
 
                         // Debugging
-                        if ($error) {
-                            echo "cURL Error: " . $error;
-                        } else {
-                            echo "HTTP Status: " . $httpCode . "\n";
-                            echo "Response: " . $response;
-                        }
+                        // if ($error) {
+                        //     echo "cURL Error: " . $error;
+                        // } else {
+                        //     echo "HTTP Status: " . $httpCode . "\n";
+                        //     echo "Response: " . $response;
+                        // }
                     } elseif ($this->input->post('key') == '297b1a90ba97a2f497c068b45d91a630') {
                         $regular_fields['projects']  = 2;
                     } elseif ($this->input->post('key') == '7764a894c046848bfdaadf403ae7816c') {
