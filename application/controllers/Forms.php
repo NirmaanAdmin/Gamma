@@ -493,16 +493,11 @@ class Forms extends ClientsController
                         $regular_fields['projects'] = 1;
 
                         // Prepare the URL with parameters
-                        $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928';
-                        $params = [
-                            'number' => '91' . $regular_fields['phonenumber'],
-                            'message' => 'welcomereminderclone154,' . urlencode($regular_fields['name']) .
-                                ',are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:',
-                            'medialink' => 'https://kautilya.n360.site/assets/images/whatimg.png'
-                        ];
-
+                        $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?number=91' . $regular_fields['phonenumber'] . '&message=welcomereminderclone154&name=' . urlencode($regular_fields['name']) .
+                                '&var2=are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:&medialink=https://kautilya.n360.site/assets/images/whatimg.png';
+                       
                         // Build the full URL with query parameters
-                        $fullUrl = $url . '?' . http_build_query($params);
+                        $fullUrl = $url;
 
                         // Hit the URL using cURL
                         $ch = curl_init();
