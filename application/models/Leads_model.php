@@ -140,6 +140,42 @@ class Leads_model extends App_Model
         $insert_id = $this->db->insert_id();
 
         if ($insert_id) {
+            if ($data['projects'] == 1) {
+                $phone = $data['phonenumber'];
+                $name = urlencode($data['name']);
+                $message = 'welcomereminderclone154';
+                $var2 = urlencode('are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:');
+                $mediaLink = 'https://kautilya.n360.site/assets/images/whatimg.png';
+
+                // Build the URL with proper encoding
+                $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?' . http_build_query([
+                    'number' => '91' . $phone,
+                    'message' => $message,
+                    'name' => $name,
+                    'var2' => $var2,
+                    'medialink' => $mediaLink
+                ]);
+
+                // Initialize cURL
+                $ch = curl_init();
+                curl_setopt_array($ch, [
+                    CURLOPT_URL => $url,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 30,
+                    CURLOPT_SSL_VERIFYPEER => true, // Set to false if you have SSL issues
+                    CURLOPT_HTTPHEADER => [
+                        'Accept: application/json'
+                    ]
+                ]);
+
+                // Execute and handle response
+                $response = curl_exec($ch);
+                $error = curl_error($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+            }
             if (isset($data['assigned'])) {
                 $taskData = [
                     'name' => $data['name'],
