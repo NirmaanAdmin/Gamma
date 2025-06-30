@@ -493,19 +493,49 @@ class Forms extends ClientsController
                         $regular_fields['projects'] = 1;
 
                         // Prepare the URL with parameters
-                        $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?number=91' . $regular_fields['phonenumber'] . '&message=welcomereminderclone154&name=' . urlencode($regular_fields['name']) .
-                                '&var2=are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:&medialink=https://kautilya.n360.site/assets/images/whatimg.png';
-                       
-                        // Build the full URL with query parameters
-                        $fullUrl = $url;
+                        // Prepare the parameters
+                        $phone = $regular_fields['phonenumber'];
+                        $name = urlencode($regular_fields['name']);
+                        $message = 'welcomereminderclone154';
+                        $var2 = urlencode('are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:');
+                        $mediaLink = 'https://kautilya.n360.site/assets/images/whatimg.png';
 
-                        // Hit the URL using cURL
+                        // Build the URL with proper encoding
+                        $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?' . http_build_query([
+                            'number' => '91' . $phone,
+                            'message' => $message,
+                            'name' => $name,
+                            'var2' => $var2,
+                            'medialink' => $mediaLink
+                        ]);
+
+                        // Initialize cURL
                         $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, $fullUrl);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt_array($ch, [
+                            CURLOPT_URL => $url,
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 30,
+                            CURLOPT_SSL_VERIFYPEER => true, // Set to false if you have SSL issues
+                            CURLOPT_HTTPHEADER => [
+                                'Accept: application/json'
+                            ]
+                        ]);
+
+                        // Execute and handle response
                         $response = curl_exec($ch);
+                        $error = curl_error($ch);
+                        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                         curl_close($ch);
 
+                        // Debugging
+                        if ($error) {
+                            echo "cURL Error: " . $error;
+                        } else {
+                            echo "HTTP Status: " . $httpCode . "\n";
+                            echo "Response: " . $response;
+                        }
                     } elseif ($this->input->post('key') == '297b1a90ba97a2f497c068b45d91a630') {
                         $regular_fields['projects']  = 2;
                     } elseif ($this->input->post('key') == '7764a894c046848bfdaadf403ae7816c') {
@@ -521,7 +551,7 @@ class Forms extends ClientsController
                             $regular_fields['assigned']  = 6;
                         }
                     }
-                    
+
                     $this->db->insert(db_prefix() . 'leads', $regular_fields);
                     $lead_id = $this->db->insert_id();
 
