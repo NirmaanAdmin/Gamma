@@ -142,9 +142,9 @@ class Leads_model extends App_Model
         if ($insert_id) {
             if ($data['projects'] == 1) {
                 $phone = $phonenumber_without_code;
-                $name = urlencode($data['name']);
+                $name = $data['name'];
                 $message = 'welcomereminderclone154';
-                $var2 = urlencode('are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:');
+                $var2 = 'are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:';
                 $mediaLink = 'https://kautilya.n360.site/assets/images/whatimg.png';
 
                 // Build the URL with proper encoding

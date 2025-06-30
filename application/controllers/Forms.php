@@ -495,9 +495,9 @@ class Forms extends ClientsController
                         // Prepare the URL with parameters
                         // Prepare the parameters
                         $phone = $regular_fields['phonenumber'];
-                        $name = urlencode($regular_fields['name']);
+                        $name = $regular_fields['name'];
                         $message = 'welcomereminderclone154';
-                        $var2 = urlencode('are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:');
+                        $var2 = 'are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:';
                         $mediaLink = 'https://kautilya.n360.site/assets/images/whatimg.png';
 
                         // Build the URL with proper encoding
