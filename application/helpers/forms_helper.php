@@ -19,18 +19,14 @@ function AdminFormsTableStructure($name = '', $bulk_action = false)
 
     $table .= '<th class="toggleable" id="th-number">' . _l('the_number_sign') . '</th>';
     $table .= '<th class="toggleable" id="th-subject">' . _l('form_dt_subject') . '</th>';
-    $table .= '<th class="toggleable" id="th-tags">' . _l('tags') . '</th>';
     $table .= '<th class="toggleable" id="th-department">' . _l('form_dt_department') . '</th>';
-    $services_th_attrs = '';
-    if (get_option('services') == 0) {
-        $services_th_attrs = ' class="not_visible"';
-    }
-    $table .= '<th' . $services_th_attrs . '>' . _l('form_dt_service') . '</th>';
-    $table .= '<th class="toggleable" id="th-submitter">' . _l('form_dt_submitter') . '</th>';
+    $table .= '<th class="toggleable" id="th-project">' . _l('project') . '</th>';
+    $table .= '<th class="toggleable" id="th-forms">' . _l('forms') . '</th>';
+    $table .= '<th class="toggleable" id="th-form-settings-assign-to">' . _l('form_settings_assign_to') . '</th>';
     $table .= '<th class="toggleable" id="th-status">' . _l('form_dt_status') . '</th>';
-    $table .= '<th class="toggleable" id="th-priority">' . _l('form_dt_priority') . '</th>';
     $table .= '<th class="toggleable" id="th-last-reply">' . _l('form_dt_last_reply') . '</th>';
     $table .= '<th class="toggleable form_created_column" id="th-created">' . _l('form_date_created') . '</th>';
+    $table .= '<th class="toggleable" id="th-export">' . _l('Export') . '</th>';
 
     $custom_fields = get_table_custom_fields('forms');
 
@@ -431,94 +427,6 @@ function get_work_stop_listing()
     return $result;
 }
 
-function get_laber_type_listing($name_type, $type)
-{
-    $result = array();
-    $result = [
-        [
-            'id' => 1,
-            'name' => 'Departmental - labor',
-        ],
-        [
-            'id' => 2,
-            'name' => 'Departmental- janitorial',
-        ],
-        [
-            'id' => 3,
-            'name' => 'Reinforcement - Skilled - bar benders',
-        ],
-        [
-            'id' => 4,
-            'name' => 'Reinforcement - semi- Skilled',
-        ],
-        [
-            'id' => 5,
-            'name' => 'Reinforcement - unskilled ',
-        ],
-        [
-            'id' => 6,
-            'name' => 'Shuttering - skilled carpenter',
-        ],
-        [
-            'id' => 7,
-            'name' => 'Shuttering - unskilled',
-        ],
-        [
-            'id' => 8,
-            'name' => 'Masonary - skilled',
-        ],
-        [
-            'id' => 9,
-            'name' => 'Masonary - unskilled -masonry helper',
-        ],
-        [
-            'id' => 10,
-            'name' => 'Fabrication - welders',
-        ],
-        [
-            'id' => 11,
-            'name' => 'Fabrication - skilled',
-        ],
-        [
-            'id' => 12,
-            'name' => 'Fabrication - helpers',
-        ],
-        [
-            'id' => 13,
-            'name' => 'Furniture - Carpenters',
-        ],
-        [
-            'id' => 14,
-            'name' => 'Plumbing - skilled',
-        ],
-        [
-            'id' => 15,
-            'name' => 'Plumbing - unskilled',
-        ],
-        [
-            'id' => 16,
-            'name' => 'Color - skilled',
-        ],
-        [
-            'id' => 17,
-            'name' => 'Security',
-        ],
-        [
-            'id' => 18,
-            'name' => 'Concrete pump labor',
-        ],
-        [
-            'id' => 19,
-            'name' => 'Electrician - skilled',
-        ],
-        [
-            'id' => 20,
-            'name' => 'Electrician - helper',
-        ],
-    ];
-    return render_select($name_type, $result, array('id', 'name'), '', $type);
-}
-
 function get_vendor($name_agency, $agency)
 {
     $id = '';
@@ -676,4 +584,106 @@ function get_staff_list($where = '')
         $CI->db->where($where);
     }
     return $CI->db->get(db_prefix() . 'staff')->result_array();
+}
+
+function get_form_name($form_id)
+{
+    $CI = &get_instance();
+    $CI->db->select('*');
+    if ($form_id != '') {
+        $CI->db->where('form_id', $form_id);
+        return $CI->db->get(db_prefix() . 'form_options')->row();
+    }
+    return $CI->db->get(db_prefix() . 'form_options')->result_array();
+}
+
+function get_work_execute_unit($name_work_execute_unit, $work_execute_unit)
+{
+    $CI = &get_instance();
+    $pur_unit = $CI->db->get(db_prefix() . 'pur_unit')->result_array();
+    return render_select($name_work_execute_unit, $pur_unit, array('unit_id', 'unit_name'), '', $work_execute_unit);
+}
+
+function get_material_consumption_unit($name_material_consumption_unit, $material_consumption_unit)
+{
+    $CI = &get_instance();
+    $pur_unit = $CI->db->get(db_prefix() . 'pur_unit')->result_array();
+    return render_select($name_material_consumption_unit, $pur_unit, array('unit_id', 'unit_name'), '', $material_consumption_unit);
+}
+
+function get_pur_unit($unit_id)
+{
+    if(!empty($unit_id)) {
+        $CI = &get_instance();
+        $CI->db->where('unit_id', $unit_id);
+        $pur_unit = $CI->db->get(db_prefix() . 'pur_unit')->row();
+        if(!empty($pur_unit)) {
+            return $pur_unit->unit_name;
+        }
+    }
+    return '';
+}
+
+function get_progress_report_type_listing($name_type, $type)
+{
+    $CI = &get_instance();
+    $result = $CI->db->get(db_prefix() . 'progress_report_type')->result_array();
+    return render_select($name_type, $result, array('id', 'name'), '', $type);
+}
+
+function get_progress_report_sub_type_listing($name_sub_type, $sub_type)
+{
+    $CI = &get_instance();
+    $result = $CI->db->get(db_prefix() . 'progress_report_sub_type')->result_array();
+    return render_select($name_sub_type, $result, array('id', 'name'), '', $sub_type);
+}
+
+function get_progress_report_machinary_listing($name_machinery, $machinery)
+{
+    $CI = &get_instance();
+    $result = $CI->db->get(db_prefix() . 'progress_report_machinary')->result_array();
+    return render_select($name_machinery, $result, array('id', 'name'), '', $machinery);
+}
+
+/**
+ * Render admin forms table
+ * @param string  $name        table name
+ * @param boolean $bulk_action include checkboxes on the left side for bulk actions
+ */
+function AdminReportsTableStructure($name = '', $bulk_action = false)
+{ 
+    $table = '<table class="table customizable-table number-index-' . ($bulk_action ? '2' : '1') . ' dt-table-loading ' . ($name == '' ? 'preports-table' : $name) . ' table-forms" id="forms" data-last-order-identifier="forms" data-default-order="' . get_table_last_order('forms') . '">';
+    $table .= '<thead>';
+    $table .= '<tr>';
+
+    $table .= '<th class="' . ($bulk_action == true ? '' : 'not_visible') . '">';
+    $table .= '<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="forms"><label></label></div>';
+    $table .= '</th>';
+
+    $table .= '<th class="toggleable" id="th-number">' . _l('the_number_sign') . '</th>';
+    $table .= '<th class="toggleable" id="th-subject">' . _l('form_dt_subject') . '</th>';
+    $table .= '<th class="toggleable" id="th-project">' . _l('project') . '</th>';
+    $table .= '<th class="toggleable" id="th-department">' . _l('form_dt_department') . '</th>';
+    // $table .= '<th class="toggleable" id="th-status">' . _l('form_dt_status') . '</th>';
+    $table .= '<th class="toggleable" id="th-priority">' . _l('form_dt_priority') . '</th>';
+    // $table .= '<th class="toggleable" id="th-last-reply">' . _l('form_dt_last_reply') . '</th>';
+    $table .= '<th class="toggleable report_created_column" id="th-created">' . _l('form_date_created') . '</th>';
+    $table .= '<th class="toggleable" id="th-tags">' . _l('tags') . '</th>';
+    $table .= '<th class="toggleable ticket_options" id="th-options">' . _l('options') . '</th>';
+    $custom_fields = get_table_custom_fields('forms');
+
+    foreach ($custom_fields as $field) {
+        $table .= '<th>' . $field['name'] . '</th>';
+    }
+
+    $table .= '</tr>';
+    $table .= '</thead>';
+    $table .= '<tbody></tbody>';
+    $table .= '</table>';
+
+    $table .= '<script id="hidden-columns-table-forms" type="text/json">';
+    $table .= get_staff_meta(get_staff_user_id(), 'hidden-columns-table-forms');
+    $table .= '</script>';
+
+    return $table;
 }

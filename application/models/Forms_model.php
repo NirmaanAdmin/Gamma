@@ -859,15 +859,14 @@ class Forms_model extends App_Model
                 unset($data['location']);
                 unset($data['agency']);
                 unset($data['type']);
+                unset($data['sub_type']);
                 unset($data['work_execute']);
                 unset($data['material_consumption']);
-                unset($data['machinery']);
-                unset($data['skilled']);
-                unset($data['unskilled']);
-                unset($data['depart']);
-                unset($data['total']);
                 unset($data['male']);
                 unset($data['female']);
+                unset($data['total']);
+                unset($data['machinery']);
+                unset($data['total_machinery']);
                 $new_order = [];
                 if (isset($data['newitems'])) {
                     $new_order = $data['newitems'];
@@ -1071,15 +1070,14 @@ class Forms_model extends App_Model
                             $dt_data['location'] = $value['location'];
                             $dt_data['agency'] = $value['agency'];
                             $dt_data['type'] = $value['type'];
+                            $dt_data['sub_type'] = $value['sub_type'];
                             $dt_data['work_execute'] = $value['work_execute'];
                             $dt_data['material_consumption'] = $value['material_consumption'];
-                            $dt_data['machinery'] = $value['machinery'];
-                            $dt_data['skilled'] = $value['skilled'];
-                            $dt_data['unskilled'] = $value['unskilled'];
-                            $dt_data['depart'] = $value['depart'];
-                            $dt_data['total'] = $value['total'];
                             $dt_data['male'] = $value['male'];
                             $dt_data['female'] = $value['female'];
+                            $dt_data['total'] = $value['total'];
+                            $dt_data['machinery'] = $value['machinery'];
+                            $dt_data['total_machinery'] = $value['total_machinery'];
                             $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
                         }
                     }
@@ -1753,7 +1751,7 @@ class Forms_model extends App_Model
         if ($data['duedate'] != '') {
             $data['duedate'] = to_sql_date($data['duedate']);
         }
-        
+
         if ($formBeforeUpdate->form_type == "dpr") {
             $dpr_form = array();
             $dpr_form['client_id'] = $data['client_id'];
@@ -1771,15 +1769,15 @@ class Forms_model extends App_Model
             unset($data['location']);
             unset($data['agency']);
             unset($data['type']);
+            unset($data['sub_type']);
             unset($data['work_execute']);
             unset($data['material_consumption']);
-            unset($data['machinery']);
-            unset($data['skilled']);
-            unset($data['unskilled']);
-            unset($data['depart']);
-            unset($data['total']);
             unset($data['male']);
             unset($data['female']);
+            unset($data['total']);
+            unset($data['machinery']);
+            unset($data['total_machinery']);
+            unset($data['isedit']);
             $new_order = [];
             if (isset($data['newitems'])) {
 
@@ -1971,7 +1969,7 @@ class Forms_model extends App_Model
                 unset($data['items']);
             }
         }
-       
+
         $this->db->where('formid', $data['formid']);
         $this->db->update(db_prefix() . 'forms', $data);
         if ($this->db->affected_rows() > 0) {
@@ -2005,15 +2003,14 @@ class Forms_model extends App_Model
                         $dt_data['location'] = $value['location'];
                         $dt_data['agency'] = $value['agency'];
                         $dt_data['type'] = $value['type'];
+                        $dt_data['sub_type'] = $value['sub_type'];
                         $dt_data['work_execute'] = $value['work_execute'];
                         $dt_data['material_consumption'] = $value['material_consumption'];
-                        $dt_data['machinery'] = $value['machinery'];
-                        $dt_data['skilled'] = $value['skilled'];
-                        $dt_data['unskilled'] = $value['unskilled'];
-                        $dt_data['depart'] = $value['depart'];
-                        $dt_data['total'] = $value['total'];
                         $dt_data['male'] = $value['male'];
                         $dt_data['female'] = $value['female'];
+                        $dt_data['total'] = $value['total'];
+                        $dt_data['machinery'] = $value['machinery'];
+                        $dt_data['total_machinery'] = $value['total_machinery'];
                         $this->db->insert(db_prefix() . $formBeforeUpdate->form_type . '_form_detail', $dt_data);
                         $new_insert_id = $this->db->insert_id();
                         if ($new_insert_id) {
@@ -2031,15 +2028,14 @@ class Forms_model extends App_Model
                         $dt_data['location'] = $value['location'];
                         $dt_data['agency'] = $value['agency'];
                         $dt_data['type'] = $value['type'];
+                        $dt_data['sub_type'] = $value['sub_type'];
                         $dt_data['work_execute'] = $value['work_execute'];
                         $dt_data['material_consumption'] = $value['material_consumption'];
-                        $dt_data['machinery'] = $value['machinery'];
-                        $dt_data['skilled'] = $value['skilled'];
-                        $dt_data['unskilled'] = $value['unskilled'];
-                        $dt_data['depart'] = $value['depart'];
-                        $dt_data['total'] = $value['total'];
                         $dt_data['male'] = $value['male'];
                         $dt_data['female'] = $value['female'];
+                        $dt_data['total'] = $value['total'];
+                        $dt_data['machinery'] = $value['machinery'];
+                        $dt_data['total_machinery'] = $value['total_machinery'];
                         $this->db->where('id', $value['id']);
                         $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form_detail', $dt_data);
                         if ($this->db->affected_rows() > 0) {
@@ -2557,7 +2553,7 @@ class Forms_model extends App_Model
                 }
             }
         } elseif ($formBeforeUpdate->form_type == "cosc") {
-           
+
             if (isset($cosc_form)) {
                 if (!empty($cosc_form)) {
                     $this->db->where('form_id', $data['formid']);
@@ -3240,62 +3236,57 @@ class Forms_model extends App_Model
      * @param      array   $unit_data  The unit data
      * @param      string  $name       The name
      */
-    public function create_dpr_row_template($name = '', $location = '', $agency = '', $type = '', $work_execute = '', $material_consumption = '', $machinery = '', $skilled = '', $unskilled = '', $depart = '', $total = '', $male = '', $female = '', $is_edit = false, $item_key = '')
+    public function create_dpr_row_template($name = '', $location = '', $agency = '', $type = '', $sub_type = '', $work_execute = '', $material_consumption = '', $male = '', $female = '', $total = '', $machinery = '', $total_machinery = '', $is_edit = false, $item_key = '')
     {
         $row = '';
 
         $name_location = 'location';
         $name_agency = 'agency';
         $name_type = 'type';
+        $name_sub_type = 'sub_type';
         $name_work_execute = 'work_execute';
         $name_material_consumption = 'material_consumption';
-        $name_machinery = 'machinery';
-        $name_skilled = 'skilled';
-        $name_unskilled = 'unskilled';
-        $name_depart = 'depart';
-        $name_total = 'total';
         $name_male = 'male';
         $name_female = 'female';
+        $name_total = 'total';
+        $name_machinery = 'machinery';
+        $name_total_machinery = 'total_machinery';
 
         if ($name == '') {
             $row .= '<tr class="main">';
             $manual = true;
         } else {
             $manual = false;
-            $row .= '<tr><input type="hidden" class="ids" name="' . $name . '[id]" value="' . $item_key . '">';
+            $row .= '<tr class="item"><input type="hidden" class="ids" name="' . $name . '[id]" value="' . $item_key . '">';
             $name_location = $name . '[location]';
             $name_agency = $name . '[agency]';
             $name_type = $name . '[type]';
+            $name_sub_type = $name . '[sub_type]';
             $name_work_execute = $name . '[work_execute]';
             $name_material_consumption = $name . '[material_consumption]';
-            $name_machinery = $name . '[machinery]';
-            $name_skilled = $name . '[skilled]';
-            $name_unskilled = $name . '[unskilled]';
-            $name_depart = $name . '[depart]';
-            $name_total = $name . '[total]';
             $name_male = $name . '[male]';
             $name_female = $name . '[female]';
+            $name_total = $name . '[total]';
+            $name_machinery = $name . '[machinery]';
+            $name_total_machinery = $name . '[total_machinery]';
         }
 
-        $skilled = !empty($skilled) ? $skilled : 0;
-        $unskilled = !empty($unskilled) ? $unskilled : 0;
-        $depart = !empty($depart) ? $depart : 0;
-        $total = !empty($total) ? $total : 0;
         $male = !empty($male) ? $male : 0;
         $female = !empty($female) ? $female : 0;
+        $total = !empty($total) ? $total : 0;
+        $total_machinery = !empty($total_machinery) ? $total_machinery : 0;
 
         $row .= '<td class="location">' . render_input($name_location, '', $location) . '</td>';
         $row .= '<td class="agency">' . get_vendor($name_agency, $agency) . '</td>';
-        $row .= '<td class="laber-type">' . get_laber_type_listing($name_type, $type) . '</td>';
+        $row .= '<td class="progress_report_type">' . get_progress_report_type_listing($name_type, $type) . '</td>';
+        $row .= '<td class="progress_report_sub_type">' . get_progress_report_sub_type_listing($name_sub_type, $sub_type) . '</td>';
         $row .= '<td class="work_execute">' . render_input($name_work_execute, '', $work_execute) . '</td>';
         $row .= '<td class="material_consumption">' . render_input($name_material_consumption, '', $material_consumption) . '</td>';
-        $row .= '<td class="machinery">' . render_input($name_machinery, '', $machinery) . '</td>';
-        $row .= '<td class="skilled">' . render_input($name_skilled, '', $skilled, 'nubmer') . '</td>';
-        $row .= '<td class="unskilled">' . render_input($name_unskilled, '', $unskilled, 'nubmer') . '</td>';
-        $row .= '<td class="depart">' . render_input($name_depart, '', $depart, 'nubmer') . '</td>';
-        $row .= '<td class="total">' . render_input($name_total, '', $total, 'nubmer') . '</td>';
-        $row .= '<td class="male">' . render_input($name_male, '', $male, 'nubmer') . '</td>';
-        $row .= '<td class="female">' . render_input($name_female, '', $female, 'nubmer') . '</td>';
+        $row .= '<td class="male">' . render_input($name_male, '', $male, 'nubmer', ['onblur' => 'dpr_calculate_total();', 'onchange' => 'dpr_calculate_total();']) . '</td>';
+        $row .= '<td class="female">' . render_input($name_female, '', $female, 'nubmer', ['onblur' => 'dpr_calculate_total();', 'onchange' => 'dpr_calculate_total();']) . '</td>';
+        $row .= '<td class="total">' . render_input($name_total, '', $total, 'number', ['readonly' => 'readonly']) . '</td>';
+        $row .= '<td class="machinery">' . get_progress_report_machinary_listing($name_machinery, $machinery) . '</td>';
+        $row .= '<td class="total_machinery">' . render_input($name_total_machinery, '', $total_machinery, 'nubmer') . '</td>';
 
         if ($name == '') {
             $row .= '<td><button type="button" class="btn pull-right btn-info dpr-add-item-to-table"><i class="fa fa-check"></i></button></td>';
@@ -3803,18 +3794,19 @@ class Forms_model extends App_Model
         redirect($_SERVER['HTTP_REFERER']);
     }
 
-    public function get_form_listing() {
+    public function get_form_listing()
+    {
         $this->db->select('fc.id AS category_id, fc.name AS category_name, fo.form_id, fo.name AS form_name');
         $this->db->from('tblform_categories fc');
         $this->db->join('tblform_options fo', 'fc.id = fo.category_id', 'left');
         $this->db->order_by('fc.sort_order, fo.sort_order'); // Add sort_order fields if needed
-        
+
         $query = $this->db->get();
         $result = array();
-    
+
         foreach ($query->result_array() as $row) {
             $category_id = $row['category_id'];
-            
+
             if (!isset($result[$category_id])) {
                 $result[$category_id] = array(
                     'id' => $category_id,
@@ -3822,21 +3814,379 @@ class Forms_model extends App_Model
                     'options' => array()
                 );
             }
-            
+
             $result[$category_id]['options'][] = array(
                 'id' => $row['form_id'],
                 'name' => $row['form_name']
             );
         }
-    
+
         return array_values($result);
     }
-    public function get_form_items($form_type) {
-        
+    public function get_form_items($form_type)
+    {
+
         $this->db->select('id, name');
         $this->db->where('form_type', $form_type);
         $this->db->order_by('sort_order', 'asc');
         $query = $this->db->get('tblform_items');
         return $query->result_array();
+    }
+
+    public function get_form_data($id)
+    {
+        $this->db->select('*');
+        $this->db->join(db_prefix() . 'form_options', db_prefix() . 'form_options.form_id = ' . db_prefix() . 'forms.form_type', 'inner');
+        $this->db->where('formid', $id);
+        $query = $this->db->get(db_prefix() . 'forms');
+        return $query->row();
+    }
+
+    public function get_progress_report_type()
+    {
+        $this->db->order_by('id', 'ASC');
+        $query = $this->db->get(db_prefix() . 'progress_report_type');
+        return $query->result_array();
+    }
+
+    public function get_progress_report_sub_type()
+    {
+        $this->db->order_by('id', 'ASC');
+        $query = $this->db->get(db_prefix() . 'progress_report_sub_type');
+        return $query->result_array();
+    }
+
+    public function get_progress_report_machinary()
+    {
+        $this->db->order_by('id', 'ASC');
+        $query = $this->db->get(db_prefix() . 'progress_report_machinary');
+        return $query->result_array();
+    }
+
+    public function add_progress_report_type($data)
+    {
+        $this->db->insert(db_prefix() . 'progress_report_type', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            return $insert_id;
+        }
+        return false;
+    }
+
+    public function update_progress_report_type($data, $id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'progress_report_type', $data);
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function delete_progress_report_type($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'progress_report_type');
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function add_progress_report_sub_type($data)
+    {
+        $this->db->insert(db_prefix() . 'progress_report_sub_type', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            return $insert_id;
+        }
+        return false;
+    }
+
+    public function update_progress_report_sub_type($data, $id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'progress_report_sub_type', $data);
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function delete_progress_report_sub_type($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'progress_report_sub_type');
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function add_progress_report_machinary($data)
+    {
+        $this->db->insert(db_prefix() . 'progress_report_machinary', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            return $insert_id;
+        }
+        return false;
+    }
+
+    public function update_progress_report_machinary($data, $id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'progress_report_machinary', $data);
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function delete_progress_report_machinary($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'progress_report_machinary');
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function get_daily_labor_report($id)
+    {
+        $result = array();
+        $dpr_form_detail = $this->get_dpr_form_detail($id);
+
+        if (!empty($dpr_form_detail)) {
+            $unique_sub_types = array_values(array_unique(array_column($dpr_form_detail, 'sub_type')));
+            if (!empty($unique_sub_types)) {
+                foreach ($unique_sub_types as $key => $value) {
+                    $sub_type_array = array();
+                    $this->db->where('id', $value);
+                    $progress_report_sub_type = $this->db->get(db_prefix() . 'progress_report_sub_type')->row();
+                    $sub_type_array['name'] = $progress_report_sub_type->name;
+
+                    $sub_type_filtered = array_filter($dpr_form_detail, function ($item) use ($value) {
+                        return $item['sub_type'] == $value;
+                    });
+                    $sub_type_array['male'] = !empty($sub_type_filtered) ? array_sum(array_column($sub_type_filtered, 'male')) : 0;
+                    $sub_type_array['female'] = !empty($sub_type_filtered) ? array_sum(array_column($sub_type_filtered, 'female')) : 0;
+                    $sub_type_array['total'] = $sub_type_array['male'] + $sub_type_array['female'];
+                    $sub_type_array['is_bold'] = true;
+
+                    $result[] = $sub_type_array;
+
+                    $unique_type = array_values(array_unique(array_column($sub_type_filtered, 'type')));
+                    if (!empty($unique_type)) {
+                        foreach ($unique_type as $ukey => $uvalue) {
+                            $type_array = array();
+                            $this->db->where('id', $uvalue);
+                            $progress_report_type = $this->db->get(db_prefix() . 'progress_report_type')->row();
+                            $type_array['name'] = $progress_report_type->name;
+
+                            $type_filtered = array_filter($sub_type_filtered, function ($item) use ($value, $uvalue) {
+                                return $item['sub_type'] == $value && $item['type'] == $uvalue;
+                            });
+                            $type_array['male'] = !empty($type_filtered) ? array_sum(array_column($type_filtered, 'male')) : 0;
+                            $type_array['female'] = !empty($type_filtered) ? array_sum(array_column($type_filtered, 'female')) : 0;
+                            $type_array['total'] = $type_array['male'] + $type_array['female'];
+                            $type_array['is_bold'] = false;
+
+                            $result[] = $type_array;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    public function get_labor_report_machinery($id)
+    {
+        $result = array();
+        $dpr_form_detail = $this->get_dpr_form_detail($id);
+
+        if (!empty($dpr_form_detail)) {
+            $unique_machinery = array_values(array_unique(array_column($dpr_form_detail, 'machinery')));
+            if (!empty($unique_machinery)) {
+                $unique_machinery = array_values(array_filter($unique_machinery));
+                foreach ($unique_machinery as $key => $value) {
+                    $machinery_array = array();
+                    $this->db->where('id', $value);
+                    $progress_report_machinary = $this->db->get(db_prefix() . 'progress_report_machinary')->row();
+                    $machinery_array['name'] = $progress_report_machinary->name;
+                    $machinery_filtered = array_filter($dpr_form_detail, function ($item) use ($value) {
+                        return $item['machinery'] == $value;
+                    });
+                    $machinery_array['total'] = !empty($machinery_filtered) ? array_sum(array_column($machinery_filtered, 'total_machinery')) : 0;
+                    $result[] = $machinery_array;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    public function get_dpr_dashboard($data)
+    {
+        $projects = isset($data['projects']) ? $data['projects'] : null;
+
+        $total_workforce_labels = [];
+        $total_workforce_values = [];
+        $stacked_labor_labels = [];
+        $stacked_labor_values = [];
+
+        // 1. Fetch distinct form dates
+        $this->db->select('DATE(date) as date');
+        $this->db->from(db_prefix() . 'forms');
+        $this->db->where('form_type', 'dpr');
+        if (!empty($projects)) {
+            $this->db->where('project_id', $projects);
+        }
+        $this->db->group_by('DATE(date)');
+        $this->db->order_by('date', 'ASC');
+        $forms = $this->db->get()->result_array();
+
+        // 2. Fetch sub_type totals grouped by date and sub_type
+        $this->db->select('DATE(' . db_prefix() . 'forms.date) as date, sub_type, SUM(' . db_prefix() . 'dpr_form_detail.total) as total');
+        $this->db->from(db_prefix() . 'dpr_form_detail');
+        $this->db->join(db_prefix() . 'forms', db_prefix() . 'forms.formid = ' . db_prefix() . 'dpr_form_detail.form_id');
+        $this->db->where("sub_type != ''", NULL, FALSE);
+        if (!empty($projects)) {
+            $this->db->where(db_prefix() . 'forms.project_id', $projects);
+        }
+        $this->db->group_by(['DATE(' . db_prefix() . 'forms.date)', 'sub_type']);
+        $sub_type_array = $this->db->get()->result_array();
+
+        // 3. Fetch type totals grouped by date and type
+        $this->db->select('DATE(' . db_prefix() . 'forms.date) as date, type, SUM(' . db_prefix() . 'dpr_form_detail.total) as total');
+        $this->db->from(db_prefix() . 'dpr_form_detail');
+        $this->db->join(db_prefix() . 'forms', db_prefix() . 'forms.formid = ' . db_prefix() . 'dpr_form_detail.form_id');
+        $this->db->where("type != ''", NULL, FALSE);
+        if (!empty($projects)) {
+            $this->db->where(db_prefix() . 'forms.project_id', $projects);
+        }
+        $this->db->group_by(['DATE(' . db_prefix() . 'forms.date)', 'type']);
+        $type_array = $this->db->get()->result_array();
+
+        // 4. Reference lists
+        $progress_report_sub_type = $this->db->get(db_prefix() . 'progress_report_sub_type')->result_array();
+        $progress_report_type = $this->db->get(db_prefix() . 'progress_report_type')->result_array();
+
+        // 5. Process each unique form date
+        foreach ($forms as $form) {
+            $date = $form['date'];
+            $total_workforce_labels[] = $date;
+            $stacked_labor_labels[] = $date;
+
+            foreach ($progress_report_sub_type as $sub) {
+                $match = array_values(array_filter($sub_type_array, function ($x) use ($date, $sub) {
+                    return $x['date'] == $date && $x['sub_type'] == $sub['id'];
+                }));
+                $total = !empty($match) ? $match[0]['total'] : 0;
+                $total_workforce_values[$sub['name']][] = $total;
+            }
+
+            foreach ($progress_report_type as $type) {
+                $match = array_values(array_filter($type_array, function ($x) use ($date, $type) {
+                    return $x['date'] == $date && $x['type'] == $type['id'];
+                }));
+                $total = !empty($match) ? $match[0]['total'] : 0;
+                $stacked_labor_values[$type['name']][] = $total;
+            }
+        }
+
+        // 6. Convert values to Chart.js compatible datasets
+        $total_workforce_datasets = array_map(function ($label) use ($total_workforce_values) {
+            return ['label' => $label, 'data' => array_values($total_workforce_values[$label])];
+        }, array_keys($total_workforce_values));
+
+        $stacked_labor_datasets = array_map(function ($label) use ($stacked_labor_values) {
+            return ['label' => $label, 'data' => array_values($stacked_labor_values[$label])];
+        }, array_keys($stacked_labor_values));
+
+        // 7. Build HTML tables
+        $preport_sub_type_html = '<div class="table-responsive s_table "><table  class="table items no-mtop preportSubTypeTable" style="border: 1px solid #dee2e6;"><tbody>';
+        $preport_sub_type_html .= '<tr style="font-weight: bold; background: #f1f5f9; color: #1e293b;"><td align="left">Row Labels</td>';
+        foreach ($progress_report_sub_type as $sub) {
+            $preport_sub_type_html .= '<td align="right">' . $sub['name'] . '</td>';
+        }
+        $preport_sub_type_html .= '</tr>';
+
+        if (!empty($forms)) {
+            foreach ($forms as $form) {
+                $date = $form['date'];
+                $preport_sub_type_html .= '<tr><td>' . $date . '</td>';
+                foreach ($progress_report_sub_type as $sub) {
+                    $match = array_values(array_filter($sub_type_array, function ($x) use ($date, $sub) {
+                        return $x['date'] == $date && $x['sub_type'] == $sub['id'];
+                    }));
+                    $total = !empty($match) ? $match[0]['total'] : 0;
+                    $preport_sub_type_html .= '<td align="right">' . $total . '</td>';
+                }
+                $preport_sub_type_html .= '</tr>';
+            }
+        } else {
+            $preport_sub_type_html .= '<tr><td colspan="' . (count($progress_report_sub_type) + 1) . '" align="center">No records found</td></tr>';
+        }
+        $preport_sub_type_html .= '</tbody></table></div>';
+
+        // Type Table
+        $preport_type_html = '<div class="table-responsive s_table"><table class="table items no-mtop preportTypeTable" style="border: 1px solid #dee2e6;"><tbody>';
+        $preport_type_html .= '<tr style="font-weight: bold; background: #f1f5f9; color: #1e293b;"><td align="left">Row Labels</td>';
+        foreach ($progress_report_type as $type) {
+            $preport_type_html .= '<td align="right">' . $type['name'] . '</td>';
+        }
+        $preport_type_html .= '</tr>';
+
+        if (!empty($forms)) {
+            foreach ($forms as $form) {
+                $date = $form['date'];
+                $preport_type_html .= '<tr><td>' . $date . '</td>';
+                foreach ($progress_report_type as $type) {
+                    $match = array_values(array_filter($type_array, function ($x) use ($date, $type) {
+                        return $x['date'] == $date && $x['type'] == $type['id'];
+                    }));
+                    $total = !empty($match) ? $match[0]['total'] : 0;
+                    $preport_type_html .= '<td align="right">' . $total . '</td>';
+                }
+                $preport_type_html .= '</tr>';
+            }
+        } else {
+            $preport_type_html .= '<tr><td colspan="' . (count($progress_report_type) + 1) . '" align="center">No records found</td></tr>';
+        }
+        $preport_type_html .= '</tbody></table></div>';
+
+        // Final response
+        return [
+            'preport_sub_type_html' => $preport_sub_type_html,
+            'preport_type_html' => $preport_type_html,
+            'total_workforce_labels' => $total_workforce_labels,
+            'total_workforce_values' => $total_workforce_datasets,
+            'stacked_labor_labels' => $stacked_labor_labels,
+            'stacked_labor_values' => $stacked_labor_values
+        ];
+    }
+
+    public function get_form($form_id)
+    {
+        $this->db->where('formid', $form_id);
+        return $this->db->get(db_prefix() . 'forms')->row();
+    }
+
+    public function get_dpr_projects()
+    {
+        $this->db->select([
+            db_prefix() . 'forms.project_id as id',
+            db_prefix() . 'projects.name'
+        ]);
+        $this->db->from(db_prefix() . 'forms');
+        $this->db->join(db_prefix() . 'projects', db_prefix() . 'projects.id = ' . db_prefix() . 'forms.project_id', 'left');
+        $this->db->where(db_prefix() . 'forms.form_type', 'dpr');
+        $this->db->group_by(db_prefix() . 'forms.project_id');
+        $this->db->order_by(db_prefix() . 'projects.name', 'asc');
+        return $this->db->get()->result_array();
     }
 }
