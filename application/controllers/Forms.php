@@ -2,1438 +2,883 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-/**
- * @property Forms_model $forms_model
- */
-class Forms extends AdminController
+class Forms extends ClientsController
 {
-    public function __construct()
+    public function index()
     {
-        parent::__construct();
-        if (get_option('access_forms_to_none_staff_members') == 0 && !is_staff_member()) {
-            redirect(admin_url());
-        }
-        $this->load->model('forms_model');
-    }
-
-    public function index($status = '', $userid = '')
-    {
-        close_setup_menu();
-
-        if (!is_numeric($status)) {
-            $status = '';
-        }
-
-        $data['table'] = App_table::find('forms');
-
-        if ($this->input->is_ajax_request()) {
-            if (!$this->input->post('via_form')) {
-                $tableParams = [
-                    'status' => $status,
-                    'userid' => $userid,
-                ];
-            } else {
-                // request for othes forms when single form is opened
-                $tableParams = [
-                    'userid'        => $this->input->post('via_form_userid'),
-                    'via_form' => $this->input->post('via_form'),
-                ];
-
-                if ($tableParams['userid'] == 0) {
-                    unset($tableParams['userid']);
-                    $tableParams['by_email'] = $this->input->post('via_form_email');
-                }
-            }
-            $data['table']->output($tableParams);
-        }
-
-        $data['chosen_form_status']              = $status;
-        $data['weekly_forms_opening_statistics'] = json_encode($this->forms_model->get_weekly_forms_opening_statistics());
-        $data['title']                             = _l('support_forms');
-        $this->load->model('departments_model');
-        $data['statuses']             = $this->forms_model->get_form_status();
-        $data['staff_deparments_ids'] = $this->departments_model->get_staff_departments(get_staff_user_id(), true);
-        $data['departments']          = $this->departments_model->get();
-        $data['priorities']           = $this->forms_model->get_priority();
-        $data['services']             = $this->forms_model->get_service();
-        $data['form_assignees']     = $this->forms_model->get_forms_assignes_disctinct();
-        $data['bodyclass']            = 'forms-page';
-        add_admin_forms_js_assets();
-        $data['default_forms_list_statuses'] = hooks()->apply_filters('default_forms_list_statuses', [1, 2, 4]);
-        $this->load->view('admin/forms/list', $data);
-    }
-
-    public function add($userid = false)
-    {
-        if ($this->input->post()) {
-            $data = $this->input->post();
-
-            $data['message'] = html_purify($this->input->post('message', false));
-            $id              = $this->forms_model->add($data, get_staff_user_id());
-            if ($id) {
-                set_alert('success', _l('new_form_added_successfully', $id));
-                redirect(admin_url('forms/form/' . $id));
-            }
-        }
-        if ($userid !== false) {
-            $data['userid'] = $userid;
-            $data['client'] = $this->clients_model->get($userid);
-        }
-        // Load necessary models
-        $this->load->model('knowledge_base_model');
-        $this->load->model('departments_model');
-
-        $data['departments']        = $this->departments_model->get();
-        $data['predefined_replies'] = $this->forms_model->get_predefined_reply();
-        $data['priorities']         = $this->forms_model->get_priority();
-        $data['services']           = $this->forms_model->get_service();
-        $whereStaff                 = [];
-        if (get_option('access_forms_to_none_staff_members') == 0) {
-            $whereStaff['is_not_staff'] = 0;
-        }
-        $data['staff']     = $this->staff_model->get('', $whereStaff);
-        $data['articles']  = $this->knowledge_base_model->get();
-        $data['bodyclass'] = 'form';
-        $data['title']     = _l('new_form');
-
-        if ($this->input->get('project_id') && $this->input->get('project_id') > 0) {
-            // request from project area to create new form
-            $data['project_id'] = $this->input->get('project_id');
-            $data['userid']     = get_client_id_by_project_id($data['project_id']);
-            if (total_rows(db_prefix() . 'contacts', ['active' => 1, 'userid' => $data['userid']]) == 1) {
-                $contact = $this->clients_model->get_contacts($data['userid']);
-                if (isset($contact[0])) {
-                    $data['contact'] = $contact[0];
-                }
-            }
-        } elseif ($this->input->get('contact_id') && $this->input->get('contact_id') > 0 && $this->input->get('userid')) {
-            $contact_id = $this->input->get('contact_id');
-            if (total_rows(db_prefix() . 'contacts', ['active' => 1, 'id' => $contact_id]) == 1) {
-                $contact = $this->clients_model->get_contact($contact_id);
-                if ($contact) {
-                    $data['contact'] = (array) $contact;
-                }
-            }
-        }
-        $data['projects'] = $this->projects_model->get_items();
-        $data['form_listing'] = $this->forms_model->get_form_listing();
-        add_admin_forms_js_assets();
-        $this->load->view('admin/forms/add', $data);
-    }
-
-    public function delete($formid)
-    {
-        if (!$formid) {
-            redirect(admin_url('forms'));
-        }
-
-        if (!can_staff_delete_form()) {
-            access_denied('delete form');
-        }
-
-        $response = $this->forms_model->delete($formid);
-
-        if ($response == true) {
-            set_alert('success', _l('deleted', _l('form')));
-        } else {
-            set_alert('warning', _l('problem_deleting', _l('form_lowercase')));
-        }
-
-        // ensure if deleted from single form page, user is redirected to index
-        if (str_contains(previous_url(), 'form/' . $formid)) {
-            redirect(admin_url('forms'));
-            return;
-        }
-        redirect(previous_url() ?: $_SERVER['HTTP_REFERER']);
-    }
-
-    public function delete_attachment($id)
-    {
-        if (is_admin() || (!is_admin() && get_option('allow_non_admin_staff_to_delete_form_attachments') == '1')) {
-            if (get_option('staff_access_only_assigned_departments') == 1 && !is_admin()) {
-                $attachment = $this->forms_model->get_form_attachment($id);
-                $form     = $this->forms_model->get_form_by_id($attachment->formid);
-
-                $this->load->model('departments_model');
-                $staff_departments = $this->departments_model->get_staff_departments(get_staff_user_id(), true);
-                if (!in_array($form->department, $staff_departments)) {
-                    set_alert('danger', _l('form_access_by_department_denied'));
-                    redirect(admin_url('access_denied'));
-                }
-            }
-
-            $this->forms_model->delete_form_attachment($id);
-        }
-
-        redirect(previous_url() ?: $_SERVER['HTTP_REFERER']);
-    }
-
-    public function update_staff_replying($formId, $userId = '')
-    {
-        if ($this->input->is_ajax_request()) {
-            echo json_encode(['success' => $this->forms_model->update_staff_replying($formId, $userId)]);
-            die;
-        }
-    }
-
-    public function check_staff_replying($formId)
-    {
-        if ($this->input->is_ajax_request()) {
-            $form            = $this->forms_model->get_staff_replying($formId);
-            $isAnotherReplying = $form->staff_id_replying !== null && $form->staff_id_replying !== get_staff_user_id();
-            echo json_encode([
-                'is_other_staff_replying' => $isAnotherReplying,
-                'message'                 => $isAnotherReplying ? e(_l('staff_is_currently_replying', get_staff_full_name($form->staff_id_replying))) : '',
-            ]);
-            die;
-        }
-    }
-
-    public function form($id)
-    {
-        if (!$id) {
-            redirect(admin_url('forms/add'));
-        }
-
-        $data['form']         = $this->forms_model->get_form_by_id($id);
-        $data['merged_forms'] = $this->forms_model->get_merged_forms_by_primary_id($id);
-
-        if (!$data['form']) {
-            blank_page(_l('form_not_found'));
-        }
-
-        if (get_option('staff_access_only_assigned_departments') == 1) {
-            if (!is_admin()) {
-                $this->load->model('departments_model');
-                $staff_departments = $this->departments_model->get_staff_departments(get_staff_user_id(), true);
-                if (!in_array($data['form']->department, $staff_departments)) {
-                    set_alert('danger', _l('form_access_by_department_denied'));
-                    redirect(admin_url('access_denied'));
-                }
-            }
-        }
-
-        if ($this->input->post()) {
-            $returnToFormList = false;
-            $data               = $this->input->post();
-
-            if (isset($data['form_add_response_and_back_to_list'])) {
-                $returnToFormList = true;
-                unset($data['form_add_response_and_back_to_list']);
-            }
-
-            $data['message'] = html_purify($this->input->post('message', false));
-            $replyid         = $this->forms_model->add_reply($data, $id, get_staff_user_id());
-
-            if ($replyid) {
-                set_alert('success', _l('replied_to_form_successfully', $id));
-            }
-            if (!$returnToFormList) {
-                redirect(admin_url('forms/form/' . $id));
-            } else {
-                set_form_open(0, $id);
-                redirect(admin_url('forms'));
-            }
-        }
-        // Load necessary models
-        $this->load->model('knowledge_base_model');
-        $this->load->model('departments_model');
-
-        $data['statuses']                       = $this->forms_model->get_form_status();
-        $data['statuses']['callback_translate'] = 'form_status_translate';
-
-        $data['departments']        = $this->departments_model->get();
-        $data['predefined_replies'] = $this->forms_model->get_predefined_reply();
-        $data['priorities']         = $this->forms_model->get_priority();
-        $data['services']           = $this->forms_model->get_service();
-        $whereStaff                 = [];
-        if (get_option('access_forms_to_none_staff_members') == 0) {
-            $whereStaff['is_not_staff'] = 0;
-        }
-        $data['staff']                = $this->staff_model->get('', $whereStaff);
-        $data['articles']             = $this->knowledge_base_model->get();
-        $data['form_replies']       = $this->forms_model->get_form_replies($id);
-        $data['bodyclass']            = 'top-tabs form single-form';
-        $data['title']                = $data['form']->subject;
-        $data['form']->form_notes = $this->misc_model->get_notes($id, 'form');
-        $data['projects'] = $this->projects_model->get_items();
-        $data['form_listing'] = $this->forms_model->get_form_listing();
-        add_admin_forms_js_assets();
-        $this->load->view('admin/forms/single', $data);
-    }
-
-    public function edit_message()
-    {
-        if (!can_staff_edit_form_message()) {
-            access_denied();
-        }
-
-        if ($this->input->post()) {
-            $data         = $this->input->post();
-            $data['data'] = html_purify($this->input->post('data', false));
-
-            if ($data['type'] == 'reply') {
-                $this->db->where('id', $data['id']);
-                $this->db->update(db_prefix() . 'form_replies', [
-                    'message' => $data['data'],
-                ]);
-            } elseif ($data['type'] == 'form') {
-                $this->db->where('formid', $data['id']);
-                $this->db->update(db_prefix() . 'forms', [
-                    'message' => $data['data'],
-                ]);
-            }
-            if ($this->db->affected_rows() > 0) {
-                set_alert('success', _l('form_message_updated_successfully'));
-            }
-            redirect(admin_url('forms/view_edit_dpr/' . $data['main_form'].'?tab=settings'));
-        }
-    }
-
-    public function delete_form_reply($form_id, $reply_id)
-    {
-        if (!$reply_id) {
-            redirect(admin_url('forms'));
-        }
-
-        if (!can_staff_delete_form_reply()) {
-            access_denied('delete form');
-        }
-
-        $response = $this->forms_model->delete_form_reply($form_id, $reply_id);
-        if ($response == true) {
-            set_alert('success', _l('deleted', _l('form_reply')));
-        } else {
-            set_alert('warning', _l('problem_deleting', _l('form_reply')));
-        }
-        redirect(admin_url('forms/form/' . $form_id));
-    }
-
-    public function change_status_ajax($id, $status)
-    {
-        if ($this->input->is_ajax_request()) {
-            echo json_encode($this->forms_model->change_form_status($id, $status));
-        }
-    }
-
-    public function update_single_form_settings()
-    {
-        if ($this->input->post()) {
-            $this->session->mark_as_flash('active_tab');
-            $this->session->mark_as_flash('active_tab_settings');
-
-            if ($this->input->post('merge_form_ids') !== 0) {
-                $formsToMerge = explode(',', $this->input->post('merge_form_ids'));
-
-                $alreadyMergedForms = $this->forms_model->get_already_merged_forms($formsToMerge);
-                if (count($alreadyMergedForms) > 0) {
-                    echo json_encode([
-                        'success' => false,
-                        'message' => _l('cannot_merge_forms_with_ids', implode(',', $alreadyMergedForms)),
-                    ]);
-
-                    die();
-                }
-            }
-            // $data = $this->input->post();
-            // dd($data);
-            $success = $this->forms_model->update_single_form_settings($this->input->post());
-            if ($success) {
-                $this->session->set_flashdata('active_tab', true);
-                $this->session->set_flashdata('active_tab_settings', true);
-                if (get_option('staff_access_only_assigned_departments') == 1) {
-                    $form = $this->forms_model->get_form_by_id($this->input->post('formid'));
-                    $this->load->model('departments_model');
-                    $staff_departments = $this->departments_model->get_staff_departments(get_staff_user_id(), true);
-                    if (!in_array($form->department, $staff_departments) && !is_admin()) {
-                        set_alert('success', _l('form_settings_updated_successfully_and_reassigned', $form->department_name));
-                        echo json_encode([
-                            'success'               => $success,
-                            'department_reassigned' => true,
-                        ]);
-                        die();
-                    }
-                }
-                set_alert('success', _l('form_settings_updated_successfully'));
-            }
-            echo json_encode([
-                'success' => $success,
-            ]);
-            die();
-        }
-    }
-
-    // Priorities
-    /* Get all form priorities */
-    public function priorities()
-    {
-        if (!is_admin()) {
-            access_denied('Form Priorities');
-        }
-        $data['priorities'] = $this->forms_model->get_priority();
-        $data['title']      = _l('form_priorities');
-        $this->load->view('admin/forms/priorities/manage', $data);
-    }
-
-    /* Add new priority od update existing*/
-    public function priority()
-    {
-        if (!is_admin()) {
-            access_denied('Form Priorities');
-        }
-        if ($this->input->post()) {
-            if (!$this->input->post('id')) {
-                $id = $this->forms_model->add_priority($this->input->post());
-                if ($id) {
-                    set_alert('success', _l('added_successfully', _l('form_priority')));
-                }
-            } else {
-                $data = $this->input->post();
-                $id   = $data['id'];
-                unset($data['id']);
-                $success = $this->forms_model->update_priority($data, $id);
-                if ($success) {
-                    set_alert('success', _l('updated_successfully', _l('form_priority')));
-                }
-            }
-            die;
-        }
-    }
-
-    /* Delete form priority */
-    public function delete_priority($id)
-    {
-        if (!is_admin()) {
-            access_denied('Form Priorities');
-        }
-        if (!$id) {
-            redirect(admin_url('forms/priorities'));
-        }
-        $response = $this->forms_model->delete_priority($id);
-        if (is_array($response) && isset($response['referenced'])) {
-            set_alert('warning', _l('is_referenced', _l('form_priority_lowercase')));
-        } elseif ($response == true) {
-            set_alert('success', _l('deleted', _l('form_priority')));
-        } else {
-            set_alert('warning', _l('problem_deleting', _l('form_priority_lowercase')));
-        }
-        redirect(admin_url('forms/priorities'));
-    }
-
-    /* List all form predefined replies */
-    public function predefined_replies()
-    {
-        if (!is_admin()) {
-            access_denied('Predefined Replies');
-        }
-        if ($this->input->is_ajax_request()) {
-            $aColumns = [
-                'name',
-            ];
-            $sIndexColumn = 'id';
-            $sTable       = db_prefix() . 'forms_predefined_replies';
-            $result       = data_tables_init($aColumns, $sIndexColumn, $sTable, [], [], [
-                'id',
-            ]);
-            $output  = $result['output'];
-            $rResult = $result['rResult'];
-            foreach ($rResult as $aRow) {
-                $row = [];
-                for ($i = 0; $i < count($aColumns); $i++) {
-                    $_data = $aRow[$aColumns[$i]];
-                    if ($aColumns[$i] == 'name') {
-                        $_data = '<a href="' . admin_url('forms/predefined_reply/' . $aRow['id']) . '">' . e($_data) . '</a>';
-                    }
-                    $row[] = $_data;
-                }
-
-                $options = '<div class="tw-flex tw-items-center tw-space-x-3">';
-                $options .= '<a href="' . admin_url('forms/predefined_reply/' . $aRow['id']) . '" class="tw-text-neutral-500 hover:tw-text-neutral-700 focus:tw-text-neutral-700">
-                    <i class="fa-regular fa-pen-to-square fa-lg"></i>
-                </a>';
-
-                $options .= '<a href="' . admin_url('forms/delete_predefined_reply/' . $aRow['id']) . '"
-                class="tw-mt-px tw-text-neutral-500 hover:tw-text-neutral-700 focus:tw-text-neutral-700 _delete">
-                    <i class="fa-regular fa-trash-can fa-lg"></i>
-                </a>';
-                $options .= '</div>';
-                $row[]              = $options;
-                $output['aaData'][] = $row;
-            }
-            echo json_encode($output);
-            die();
-        }
-        $data['title'] = _l('predefined_replies');
-        $this->load->view('admin/forms/predefined_replies/manage', $data);
-    }
-
-    public function get_predefined_reply_ajax($id)
-    {
-        echo json_encode($this->forms_model->get_predefined_reply($id));
-    }
-
-    public function form_change_data()
-    {
-        if ($this->input->is_ajax_request()) {
-            $contact_id = $this->input->post('contact_id');
-            echo json_encode([
-                'contact_data'          => $this->clients_model->get_contact($contact_id),
-                'customer_has_projects' => customer_has_projects(get_user_id_by_contact_id($contact_id)),
-            ]);
-        }
-    }
-
-    /* Add new reply or edit existing */
-    public function predefined_reply($id = '')
-    {
-        if (!is_admin() && get_option('staff_members_save_forms_predefined_replies') == '0') {
-            access_denied('Predefined Reply');
-        }
-        if ($this->input->post()) {
-            $data              = $this->input->post();
-            $data['message']   = html_purify($this->input->post('message', false));
-            $formAreaRequest = isset($data['form_area']);
-
-            if (isset($data['form_area'])) {
-                unset($data['form_area']);
-            }
-
-            if ($id == '') {
-                $id = $this->forms_model->add_predefined_reply($data);
-                if (!$formAreaRequest) {
-                    if ($id) {
-                        set_alert('success', _l('added_successfully', _l('predefined_reply')));
-                        redirect(admin_url('forms/predefined_reply/' . $id));
-                    }
-                } else {
-                    echo json_encode(['success' => $id ? true : false, 'id' => $id]);
-                    die;
-                }
-            } else {
-                $success = $this->forms_model->update_predefined_reply($data, $id);
-                if ($success) {
-                    set_alert('success', _l('updated_successfully', _l('predefined_reply')));
-                }
-                redirect(admin_url('forms/predefined_reply/' . $id));
-            }
-        }
-        if ($id == '') {
-            $title = _l('add_new', _l('predefined_reply_lowercase'));
-        } else {
-            $predefined_reply         = $this->forms_model->get_predefined_reply($id);
-            $data['predefined_reply'] = $predefined_reply;
-            $title                    = _l('edit', _l('predefined_reply_lowercase')) . ' ' . $predefined_reply->name;
-        }
-        $data['title'] = $title;
-        $this->load->view('admin/forms/predefined_replies/reply', $data);
-    }
-
-    /* Delete form reply from database */
-    public function delete_predefined_reply($id)
-    {
-        if (!is_admin()) {
-            access_denied('Delete Predefined Reply');
-        }
-        if (!$id) {
-            redirect(admin_url('forms/predefined_replies'));
-        }
-        $response = $this->forms_model->delete_predefined_reply($id);
-        if ($response == true) {
-            set_alert('success', _l('deleted', _l('predefined_reply')));
-        } else {
-            set_alert('warning', _l('problem_deleting', _l('predefined_reply_lowercase')));
-        }
-        redirect(admin_url('forms/predefined_replies'));
-    }
-
-    // Form statuses
-    /* Get all form statuses */
-    public function statuses()
-    {
-        if (!is_admin()) {
-            access_denied('Form Statuses');
-        }
-        $data['statuses'] = $this->forms_model->get_form_status();
-        $data['title']    = 'Form statuses';
-        $this->load->view('admin/forms/forms_statuses/manage', $data);
-    }
-
-    /* Add new or edit existing status */
-    public function status()
-    {
-        if (!is_admin()) {
-            access_denied('Form Statuses');
-        }
-        if ($this->input->post()) {
-            if (!$this->input->post('id')) {
-                $id = $this->forms_model->add_form_status($this->input->post());
-                if ($id) {
-                    set_alert('success', _l('added_successfully', _l('form_status')));
-                }
-            } else {
-                $data = $this->input->post();
-                $id   = $data['id'];
-                unset($data['id']);
-                $success = $this->forms_model->update_form_status($data, $id);
-                if ($success) {
-                    set_alert('success', _l('updated_successfully', _l('form_status')));
-                }
-            }
-            die;
-        }
-    }
-
-    /* Delete form status from database */
-    public function delete_form_status($id)
-    {
-        if (!is_admin()) {
-            access_denied('Form Statuses');
-        }
-        if (!$id) {
-            redirect(admin_url('forms/statuses'));
-        }
-        $response = $this->forms_model->delete_form_status($id);
-        if (is_array($response) && isset($response['default'])) {
-            set_alert('warning', _l('cant_delete_default', _l('form_status_lowercase')));
-        } elseif (is_array($response) && isset($response['referenced'])) {
-            set_alert('danger', _l('is_referenced', _l('form_status_lowercase')));
-        } elseif ($response == true) {
-            set_alert('success', _l('deleted', _l('form_status')));
-        } else {
-            set_alert('warning', _l('problem_deleting', _l('form_status_lowercase')));
-        }
-        redirect(admin_url('forms/statuses'));
-    }
-
-    /* List all form services */
-    public function services()
-    {
-        if (!is_admin()) {
-            access_denied('Form Services');
-        }
-        if ($this->input->is_ajax_request()) {
-            $aColumns = [
-                'serviceid',
-                'name',
-            ];
-            $sIndexColumn = 'serviceid';
-            $sTable       = db_prefix() . 'services';
-            $result       = data_tables_init($aColumns, $sIndexColumn, $sTable, [], [], [
-                'serviceid',
-            ]);
-            $output  = $result['output'];
-            $rResult = $result['rResult'];
-            foreach ($rResult as $aRow) {
-                $row = [];
-                for ($i = 0; $i < count($aColumns); $i++) {
-                    $_data = $aRow[$aColumns[$i]];
-                    if ($aColumns[$i] == 'name') {
-                        $_data = '<a href="#" onclick="edit_service(this,' . $aRow['serviceid'] . ');return false" data-name="' . $aRow['name'] . '">' . $_data . '</a>';
-                    }
-                    $row[] = $_data;
-                }
-                $options = icon_btn('#', 'fa-regular fa-pen-to-square', 'btn-default', [
-                    'data-name' => $aRow['name'],
-                    'onclick'   => 'edit_service(this,' . $aRow['serviceid'] . '); return false;',
-                ]);
-                $row[]              = $options .= icon_btn('forms/delete_service/' . $aRow['serviceid'], 'fa fa-remove', 'btn-danger _delete');
-                $output['aaData'][] = $row;
-            }
-            echo json_encode($output);
-            die();
-        }
-        $data['title'] = _l('services');
-        $this->load->view('admin/forms/services/manage', $data);
-    }
-
-    /* Add new service od delete existing one */
-    public function service($id = '')
-    {
-        if (!is_admin() && get_option('staff_members_save_forms_predefined_replies') == '0') {
-            access_denied('Form Services');
-        }
-
-        if ($this->input->post()) {
-            $post_data = $this->input->post();
-            if (!$this->input->post('id')) {
-                $requestFromFormArea = isset($post_data['form_area']);
-                if (isset($post_data['form_area'])) {
-                    unset($post_data['form_area']);
-                }
-                $id = $this->forms_model->add_service($post_data);
-                if (!$requestFromFormArea) {
-                    if ($id) {
-                        set_alert('success', _l('added_successfully', _l('service')));
-                    }
-                } else {
-                    echo json_encode(['success' => $id ? true : false, 'id' => $id, 'name' => $post_data['name']]);
-                }
-            } else {
-                $id = $post_data['id'];
-                unset($post_data['id']);
-                $success = $this->forms_model->update_service($post_data, $id);
-                if ($success) {
-                    set_alert('success', _l('updated_successfully', _l('service')));
-                }
-            }
-            die;
-        }
-    }
-
-    /* Delete form service from database */
-    public function delete_service($id)
-    {
-        if (!is_admin()) {
-            access_denied('Form Services');
-        }
-        if (!$id) {
-            redirect(admin_url('forms/services'));
-        }
-        $response = $this->forms_model->delete_service($id);
-        if (is_array($response) && isset($response['referenced'])) {
-            set_alert('warning', _l('is_referenced', _l('service_lowercase')));
-        } elseif ($response == true) {
-            set_alert('success', _l('deleted', _l('service')));
-        } else {
-            set_alert('warning', _l('problem_deleting', _l('service_lowercase')));
-        }
-        redirect(admin_url('forms/services'));
-    }
-
-    public function block_sender()
-    {
-        if ($this->input->post()) {
-            $this->load->model('spam_filters_model');
-            $sender  = $this->input->post('sender');
-            $success = $this->spam_filters_model->add(['type' => 'sender', 'value' => $sender], 'forms');
-            if ($success) {
-                set_alert('success', _l('sender_blocked_successfully'));
-            }
-        }
-    }
-
-    public function bulk_action()
-    {
-        hooks()->do_action('before_do_bulk_action_for_forms');
-        if ($this->input->post()) {
-            $ids      = $this->input->post('ids');
-            $is_admin = is_admin();
-            $staffCanDeleteForm = can_staff_delete_form();
-
-            if (!is_array($ids)) {
-                return;
-            }
-
-            if ($this->input->post('merge_forms')) {
-                $primary_form = $this->input->post('primary_form');
-                $status         = $this->input->post('primary_form_status');
-
-                if ($this->forms_model->is_merged($primary_form)) {
-                    set_alert('warning', _l('cannot_merge_into_merged_form'));
-
-                    return;
-                }
-
-                $total_merged = $this->forms_model->merge($primary_form, $status, $ids);
-            } elseif ($this->input->post('mass_delete')) {
-                $total_deleted = 0;
-                if ($is_admin || $staffCanDeleteForm) {
-                    foreach ($ids as $id) {
-                        if ($this->forms_model->delete($id)) {
-                            $total_deleted++;
-                        }
-                    }
-                } else {
-                    ajax_access_denied();
-                    return;
-                }
-            } else {
-                $status     = $this->input->post('status');
-                $department = $this->input->post('department');
-                $service    = $this->input->post('service');
-                $priority   = $this->input->post('priority');
-                $tags       = $this->input->post('tags');
-
-                foreach ($ids as $id) {
-                    if ($status) {
-                        $this->db->where('formid', $id);
-                        $this->db->update(db_prefix() . 'forms', [
-                            'status' => $status,
-                        ]);
-                    }
-                    if ($department) {
-                        $this->db->where('formid', $id);
-                        $this->db->update(db_prefix() . 'forms', [
-                            'department' => $department,
-                        ]);
-                    }
-                    if ($priority) {
-                        $this->db->where('formid', $id);
-                        $this->db->update(db_prefix() . 'forms', [
-                            'priority' => $priority,
-                        ]);
-                    }
-
-                    if ($service) {
-                        $this->db->where('formid', $id);
-                        $this->db->update(db_prefix() . 'forms', [
-                            'service' => $service,
-                        ]);
-                    }
-                    if ($tags) {
-                        handle_tags_save($tags, $id, 'form');
-                    }
-                }
-            }
-
-            if ($this->input->post('mass_delete')) {
-                set_alert('success', _l('total_forms_deleted', $total_deleted));
-            } elseif ($this->input->post('merge_forms') && $total_merged > 0) {
-                set_alert('success', _l('forms_merged'));
-            }
-        }
-    }
-
-    public function find_project_contact()
-    {
-        $response = array();
-        if ($this->input->post()) {
-            $data = $this->input->post();
-            if (!empty($data['project_id'])) {
-                $response = $this->forms_model->find_project_contact($data['project_id']);
-            }
-        }
-        echo json_encode($response);
-    }
-
-    public function find_form_design($form_type, $form_id = 0)
-    {
-        
-        if ($form_type == "dpr") {
-            $dpr_row_template = $this->forms_model->create_dpr_row_template();
-            $data['isedit'] = false;
-            if ($form_id != 0) {
-                $dpr_form = $this->forms_model->get_dpr_form($form_id);
-                $dpr_form_detail = $this->forms_model->get_dpr_form_detail($form_id);
-                if (!empty($dpr_form_detail)) {
-                    $index_order = 0;
-                    foreach ($dpr_form_detail as $value) {
-                        $index_order++;
-                        $dpr_row_template .= $this->forms_model->create_dpr_row_template(
-                            'items[' . $index_order . ']',
-                            $value['location'],
-                            $value['agency'],
-                            $value['type'],
-                            $value['work_execute'],
-                            $value['material_consumption'],
-                            $value['work_execute_unit'],
-                            $value['material_consumption_unit'],
-                            $value['machinery'],
-                            $value['skilled'],
-                            $value['unskilled'],
-                            $value['depart'],
-                            $value['total'],
-                            $value['male'],
-                            $value['female'],
-                            true,
-                            $value['id']
-                        );
-                    }
-                }
-                $data['dpr_form'] = $dpr_form;
-                $data['isedit'] = true;
-            }
-            $data['dpr_row_template'] = $dpr_row_template;
-            $this->load->view('admin/forms/form_design/dpr', $data);
-        } else {
-            $formConfigs = [
-                'apc' => ['has_attachments' => true],
-                'wpc' => ['has_attachments' => true],
-                'mfa' => ['has_attachments' => false],
-                'mlg' => ['has_attachments' => true],
-                'msh' => ['has_attachments' => true],
-                'sca' => ['has_attachments' => true],
-                'esc' => ['has_attachments' => true],
-                'cfwas' => ['has_attachments' => true],
-                'cflc' => ['has_attachments' => true],
-                'facc' => ['has_attachments' => true],
-                'cosc' => ['has_attachments' => true],
-            ];
-
-            if (isset($formConfigs[$form_type])) {
-                $this->handleCommonForm(
-                    $form_type,
-                    $formConfigs[$form_type]['has_attachments'],
-                    $form_id
-                );
-            } else {
-                show_error('Invalid form type specified.');
-            }
-        }
-    }
-    private function handleCommonForm($form_type, $has_attachments, $form_id)
-    {
-        $form_items = $this->forms_model->get_form_items($form_type);
-        $data = [];
-        if ($form_id != 0) {
-            
-            $getFormMethod = "get_{$form_type}_form";
-            $data["{$form_type}_form"] = $this->forms_model->$getFormMethod($form_id);
-
-            $getDetailMethod = "get_{$form_type}_form_detail";
-            $data["{$form_type}_form_detail"] = $this->forms_model->$getDetailMethod($form_id);
-
-            if ($has_attachments) {
-                $getAttachmentsMethod = "get_{$form_type}_form_attachments";
-                $data["{$form_type}_attachments"] = $this->forms_model->$getAttachmentsMethod($form_id);
-            }
-
-            $data['form_id'] = $form_id;
-            
-
-        }
-        $data['form_items'] = $form_items;
-        $this->load->view("admin/forms/form_design/{$form_type}", $data);
-    }
-
-    public function delete_apc_attachment($id)
-    {
-        $this->forms_model->delete_apc_attachment($id);
-    }
-    public function delete_msh_attachment($id)
-    {
-        $this->forms_model->delete_msh_attachment($id);
-    }
-    public function delete_sca_attachment($id)
-    {
-        $this->forms_model->delete_sca_attachment($id);
-    }
-    public function delete_mlg_attachment($id)
-    {
-        $this->forms_model->delete_mlg_attachment($id);
-    }
-    public function delete_wpc_attachment($id)
-    {
-        $this->forms_model->delete_wpc_attachment($id);
-    }
-    public function delete_esc_attachment($id)
-    {
-        $this->forms_model->delete_esc_attachment($id);
-    }
-    
-    public function delete_cfwas_attachment($id)
-    {
-        $this->forms_model->delete_cfwas_attachment($id);
-    }
-    public function delete_cflc_attachment($id)
-    {
-        $this->forms_model->delete_cflc_attachment($id);
-    }
-    public function delete_facc_attachment($id)
-    {
-        $this->forms_model->delete_facc_attachment($id);
-    }
-    public function delete_cosc_attachment($id)
-    {
-        $this->forms_model->delete_cosc_attachment($id);
-    }
-
-    /* Generates form PDF */
-    public function form_pdf($id)
-    {
-        if (!$id) {
-            redirect(admin_url('forms'));
-        }
-
-        $form_data = $this->forms_model->get_form_data($id);
-
-        if(!empty($form_data)) {
-            $pdf = create_form_pdf($form_data);
-            $type = 'D';
-            if ($this->input->get('output_type')) {
-                $type = $this->input->get('output_type');
-            }
-            if ($this->input->get('print')) {
-                $type = 'I';
-            }
-            $pdf->Output(mb_strtoupper($form_data->name) . '.pdf', $type);
-        } else {
-            echo "PDF have not created yet.";
-        }
-    }
-    
-    public function progress_report_listing($module = 'dpr')
-    {
-        $status = '';
-        $userid = '';
-        if (!is_numeric($status)) {
-            $status = '';
-        }
-
-        $data['table'] = App_table::find('preports');
-
-        if ($this->input->is_ajax_request()) {
-            if (!$this->input->post('via_form')) {
-                $tableParams = [
-                    'status' => $status,
-                    'userid' => $userid,
-                ];
-            } else {
-                // request for othes forms when single form is opened
-                $tableParams = [
-                    'userid'        => $this->input->post('via_form_userid'),
-                    'via_form' => $this->input->post('via_form'),
-                ];
-
-                if ($tableParams['userid'] == 0) {
-                    unset($tableParams['userid']);
-                    $tableParams['by_email'] = $this->input->post('via_form_email');
-                }
-            }
-            $tableParams['module'] = $module;
-            $data['table']->output($tableParams);
-        }
-
-        $data['chosen_form_status']              = $status;
-        $data['weekly_forms_opening_statistics'] = json_encode($this->forms_model->get_weekly_forms_opening_statistics());
-        $data['title']                             = _l('support_forms');
-        $this->load->model('departments_model');
-        $data['statuses']             = $this->forms_model->get_form_status();
-        $data['staff_deparments_ids'] = $this->departments_model->get_staff_departments(get_staff_user_id(), true);
-        $data['departments']          = $this->departments_model->get();
-        $data['priorities']           = $this->forms_model->get_priority();
-        $data['services']             = $this->forms_model->get_service();
-        $data['form_assignees']     = $this->forms_model->get_forms_assignes_disctinct();
-        $data['bodyclass']            = 'forms-page';
-        add_admin_progress_reports_js_assets();
-        $data['default_forms_list_statuses'] = hooks()->apply_filters('default_forms_list_statuses', [1, 2, 4]);
-        $data['module'] = $module;
-        $this->load->view('admin/progress_reports/report_listing', $data);
-    }
-
-    public function find_dpr_design($form_id = 0)
-    {
-        $dpr_row_template = $this->forms_model->create_dpr_row_template();
-        if ($form_id != 0) {
-            $dpr_main_form = $this->forms_model->get_form($form_id);
-            $dpr_form = $this->forms_model->get_dpr_form($form_id);
-            $dpr_form_detail = $this->forms_model->get_dpr_form_detail($form_id);
-            if (!empty($dpr_form_detail)) {
-                $index_order = 0;
-                foreach ($dpr_form_detail as $value) {
-                    $index_order++;
-                    $dpr_row_template .= $this->forms_model->create_dpr_row_template(
-                        'items[' . $index_order . ']',
-                        $value['location'],
-                        $value['agency'],
-                        $value['type'],
-                        $value['sub_type'],
-                        $value['work_execute'],
-                        $value['material_consumption'],
-                        $value['male'],
-                        $value['female'],
-                        $value['total'],
-                        $value['machinery'],
-                        $value['total_machinery'],
-                        true,
-                        $value['id']
-                    );
-                }
-            }
-            $data['dpr_form'] = $dpr_form;
-            $data['dpr_main_form'] = $dpr_main_form;
-        }
-        $data['dpr_row_template'] = $dpr_row_template;
-        $this->load->view('admin/progress_reports/dpr/dpr_form_design', $data);
+        show_404();
     }
 
     /**
-     * Gets the Daily Progress Report row template.
+     * Estimate request form
+     * User no need to see anything like estimate request in the url, this is the reason the method is named quote
+     * @param  string $key Estimate request form key identifier
+     * @return mixed
      */
-    public function get_dpr_row_template()
+    public function quote($key = '')
     {
-        $name = $this->input->post('name');
-        $location = $this->input->post('location');
-        $agency = $this->input->post('agency');
-        $type = $this->input->post('type');
-        $sub_type = $this->input->post('sub_type');
-        $work_execute = $this->input->post('work_execute');
-        $material_consumption = $this->input->post('material_consumption');
-        $male = $this->input->post('male');
-        $female = $this->input->post('female');
-        $total = $this->input->post('total');
-        $machinery = $this->input->post('machinery');
-        $total_machinery = $this->input->post('total_machinery');
-        $item_key = $this->input->post('item_key');
-
-        echo $this->forms_model->create_dpr_row_template($name, $location, $agency, $type, $sub_type, $work_execute, $material_consumption, $male, $female, $total, $machinery, $total_machinery, false, $item_key);
-    }
-
-    public function add_dpr($userid = false)
-    {
-        if ($this->input->post()) {
-            $data = $this->input->post();
-            $data['form_type'] = 'dpr';
-
-            $data['message'] = html_purify($this->input->post('message', false));
-            $id              = $this->forms_model->add($data, get_staff_user_id());
-            if ($id) {
-                set_alert('success', _l('dpr_added_successfully', $id));
-                redirect(admin_url('forms/progress_report_setting/dpr'));
-            }
-        }
-        if ($userid !== false) {
-            $data['userid'] = $userid;
-            $data['client'] = $this->clients_model->get($userid);
-        }
-        // Load necessary models
-        $this->load->model('knowledge_base_model');
-        $this->load->model('departments_model');
-
-        $data['departments']        = $this->departments_model->get();
-        $data['predefined_replies'] = $this->forms_model->get_predefined_reply();
-        $data['priorities']         = $this->forms_model->get_priority();
-        $data['services']           = $this->forms_model->get_service();
-        $whereStaff                 = [];
-        if (get_option('access_forms_to_none_staff_members') == 0) {
-            $whereStaff['is_not_staff'] = 0;
-        }
-        $data['staff']     = $this->staff_model->get('', $whereStaff);
-        $data['articles']  = $this->knowledge_base_model->get();
-        $data['bodyclass'] = 'form';
-        $data['title']     = _l('new_form');
-
-        if ($this->input->get('project_id') && $this->input->get('project_id') > 0) {
-            // request from project area to create new form
-            $data['project_id'] = $this->input->get('project_id');
-            $data['userid']     = get_client_id_by_project_id($data['project_id']);
-            if (total_rows(db_prefix() . 'contacts', ['active' => 1, 'userid' => $data['userid']]) == 1) {
-                $contact = $this->clients_model->get_contacts($data['userid']);
-                if (isset($contact[0])) {
-                    $data['contact'] = $contact[0];
-                }
-            }
-        } elseif ($this->input->get('contact_id') && $this->input->get('contact_id') > 0 && $this->input->get('userid')) {
-            $contact_id = $this->input->get('contact_id');
-            if (total_rows(db_prefix() . 'contacts', ['active' => 1, 'id' => $contact_id]) == 1) {
-                $contact = $this->clients_model->get_contact($contact_id);
-                if ($contact) {
-                    $data['contact'] = (array) $contact;
-                }
-            }
-        }
-        $data['projects'] = $this->projects_model->get_items();
-        $data['form_listing'] = $this->forms_model->get_form_listing();
-        add_admin_progress_reports_js_assets();
-        $this->load->view('admin/progress_reports/dpr/add', $data);
-    }
-
-    public function view_edit_dpr($id)
-    {
-        if (!$id) {
-            redirect(admin_url('forms/add'));
+        if (!$key) {
+            show_404();
         }
 
-        $data['form']         = $this->forms_model->get_form_by_id($id);
-        $data['merged_forms'] = $this->forms_model->get_merged_forms_by_primary_id($id);
+        $this->load->model('estimate_request_model');
+        $form = $this->estimate_request_model->get_form([
+            'form_key' => $key,
+        ]);
 
-        if (!$data['form']) {
-            blank_page(_l('form_not_found'));
+        if (!$form) {
+            show_404();
         }
 
-        if (get_option('staff_access_only_assigned_departments') == 1) {
-            if (!is_admin()) {
-                $this->load->model('departments_model');
-                $staff_departments = $this->departments_model->get_staff_departments(get_staff_user_id(), true);
-                if (!in_array($data['form']->department, $staff_departments)) {
-                    set_alert('danger', _l('form_access_by_department_denied'));
-                    redirect(admin_url('access_denied'));
-                }
-            }
+        // Change the locale so the validation loader function can load
+        // the proper localization file
+        $GLOBALS['locale'] = get_locale_key($form->language);
+
+        $data['form_fields'] = json_decode($form->form_data);
+        if (!$data['form_fields']) {
+            $data['form_fields'] = [];
         }
 
-        if ($this->input->post()) {
-            $returnToFormList = false;
-            $data               = $this->input->post();
+        if ($this->input->post('key')) {
 
-            if (isset($data['form_add_response_and_back_to_list'])) {
-                $returnToFormList = true;
-                unset($data['form_add_response_and_back_to_list']);
-            }
+            if ($this->input->post('key') == $key) {
+                $post_data  = $this->input->post();
+                $required   = [];
+                $submission = [];
 
-            $data['message'] = html_purify($this->input->post('message', false));
-            $replyid         = $this->forms_model->add_reply($data, $id, get_staff_user_id());
+                foreach ($data['form_fields'] as $index => $field) {
+                    if (isset($field->name)) {
+                        if ($field->name == 'file-input') {
+                            $submission[] = [
+                                'label' => $field->label,
+                                'name'  => $field->name,
+                                'value' => null,
+                            ];
 
-            if ($replyid) {
-                set_alert('success', _l('replied_to_form_successfully', $id));
-            }
-            if (!$returnToFormList) {
-                redirect(admin_url('forms/form/' . $id));
-            } else {
-                set_form_open(0, $id);
-                redirect(admin_url('forms'));
-            }
-        }
-        // Load necessary models
-        $this->load->model('knowledge_base_model');
-        $this->load->model('departments_model');
+                            continue;
+                        }
 
-        $data['statuses']                       = $this->forms_model->get_form_status();
-        $data['statuses']['callback_translate'] = 'form_status_translate';
+                        if (!isset($post_data[$field->name])) {
+                            $submission[] = [
+                                'label' => property_exists($field, 'label') ? $field->label : $field->name,
+                                'name'  => $field->name,
+                                'value' => '',
+                            ];
 
-        $data['departments']        = $this->departments_model->get();
-        $data['predefined_replies'] = $this->forms_model->get_predefined_reply();
-        $data['priorities']         = $this->forms_model->get_priority();
-        $data['services']           = $this->forms_model->get_service();
-        $whereStaff                 = [];
-        if (get_option('access_forms_to_none_staff_members') == 0) {
-            $whereStaff['is_not_staff'] = 0;
-        }
-        $data['staff']                = $this->staff_model->get('', $whereStaff);
-        $data['articles']             = $this->knowledge_base_model->get();
-        $data['form_replies']       = $this->forms_model->get_form_replies($id);
-        $data['bodyclass']            = 'top-tabs form single-form';
-        $data['title']                = $data['form']->subject;
-        $data['form']->form_notes = $this->misc_model->get_notes($id, 'form');
-        $data['projects'] = $this->projects_model->get_items();
-        $data['form_listing'] = $this->forms_model->get_form_listing();
-        $data['daily_labor_report'] = $this->forms_model->get_daily_labor_report($id);
-        $data['labor_report_machinery'] = $this->forms_model->get_labor_report_machinery($id);
-        add_admin_progress_reports_js_assets();
-        $this->load->view('admin/progress_reports/dpr/view_edit', $data);
-    }
+                            continue;
+                        }
 
-    public function update_dpr_changes()
-    {
+                        if ($field->type == 'radio-group') {
+                            $index        = array_search($post_data[$field->name], array_column($field->values, 'value'));
+                            $submission[] = [
+                                'label' => property_exists($field, 'label') ? $field->label : $field->name,
+                                'name'  => $field->name,
+                                'value' => $field->values[$index]->label,
+                            ];
 
-        if ($this->input->post()) {
-            $this->session->mark_as_flash('active_tab');
-            $this->session->mark_as_flash('active_tab_settings');
+                            continue;
+                        }
 
-            if ($this->input->post('merge_form_ids') !== 0) {
-                $formsToMerge = explode(',', $this->input->post('merge_form_ids'));
+                        if (in_array($field->type, ['select', 'checkbox-group'])) {
+                            if (is_array($post_data[$field->name])) {
+                                $value = '';
+                                foreach ($post_data[$field->name] as $selected) {
+                                    $index = array_search($selected, array_column($field->values, 'value'));
+                                    $value .= $field->values[$index]->label . '<br>';
+                                }
+                            } else {
+                                $index = array_search($post_data[$field->name], array_column($field->values, 'value'));
+                                $value = $field->values[$index]->label;
+                            }
 
-                $alreadyMergedForms = $this->forms_model->get_already_merged_forms($formsToMerge);
-                if (count($alreadyMergedForms) > 0) {
-                    echo json_encode([
-                        'success' => false,
-                        'message' => _l('cannot_merge_forms_with_ids', implode(',', $alreadyMergedForms)),
-                    ]);
+                            $submission[] = [
+                                'label' => property_exists($field, 'label') ? $field->label : $field->name,
+                                'name'  => $field->name,
+                                'value' => $value,
+                            ];
 
-                    die();
-                }
-            }
-            // $data = $this->input->post();
-            // dd($data);
-            $success = $this->forms_model->update_single_form_settings($this->input->post());
-            if ($success) {
-                $this->session->set_flashdata('active_tab', true);
-                $this->session->set_flashdata('active_tab_settings', true);
-                if (get_option('staff_access_only_assigned_departments') == 1) {
-                    $form = $this->forms_model->get_form_by_id($this->input->post('formid'));
-                    $this->load->model('departments_model');
-                    $staff_departments = $this->departments_model->get_staff_departments(get_staff_user_id(), true);
-                    if (!in_array($form->department, $staff_departments) && !is_admin()) {
-                        set_alert('success', _l('form_settings_updated_successfully_and_reassigned', $form->department_name));
-                        echo json_encode([
-                            'success'               => $success,
-                            'department_reassigned' => true,
-                        ]);
-                        die();
+                            continue;
+                        }
+
+                        if ($field->type == 'date') {
+                            $submission[] = [
+                                'label' => property_exists($field, 'label') ? $field->label : $field->name,
+                                'name'  => $field->name,
+                                'value' => $post_data[$field->name],
+                            ];
+
+                            continue;
+                        }
+
+                        if ($field->type == 'textarea') {
+                            $submission[] = [
+                                'label' => property_exists($field, 'label') ? $field->label : $field->name,
+                                'name'  => $field->name,
+                                'value' => nl2br($post_data[$field->name]),
+                            ];
+
+                            continue;
+                        }
+
+                        $submission[] = [
+                            'label' => property_exists($field, 'label') ? $field->label : $field->name,
+                            'name'  => $field->name,
+                            'value' => $post_data[$field->name],
+                        ];
+                    }
+
+                    if (isset($field->required)) {
+                        $required[] = $field->name;
                     }
                 }
-                set_alert('success', _l('dpr_updated_successfully'));
+
+                if (is_gdpr() && get_option('gdpr_enable_terms_and_conditions_estimate_request_form') == 1) {
+                    $required[] = 'accept_terms_and_conditions';
+                }
+
+                foreach ($required as $field) {
+                    if ($field == 'file-input') {
+                        continue;
+                    }
+                    if (!isset($post_data[$field]) || isset($post_data[$field]) && empty($post_data[$field])) {
+                        $this->output->set_status_header(422);
+                        die;
+                    }
+                }
+
+
+                if (show_recaptcha() && $form->recaptcha == 1) {
+                    if (!do_recaptcha_validation($post_data['g-recaptcha-response'])) {
+                        echo json_encode([
+                            'success' => false,
+                            'message'               => _l('recaptcha_error'),
+                        ]);
+                        die;
+                    }
+                }
+
+                if (isset($post_data['g-recaptcha-response'])) {
+                    unset($post_data['g-recaptcha-response']);
+                }
+
+                unset($post_data['key']);
+                $success      = false;
+                $insert_to_db = true;
             }
+
+            if ($insert_to_db == true) {
+                $regular_fields['email']        = $post_data['email'];
+                $regular_fields['status']       = $form->status;
+                $regular_fields['assigned']     = $form->responsible;
+                $regular_fields['date_added']   = date('Y-m-d H:i:s');
+                $regular_fields['from_form_id'] = $form->id;
+                $regular_fields['submission']   = json_encode($submission);
+
+                $this->db->insert(db_prefix() . 'estimate_requests', $regular_fields);
+                $estimate_request_id = $this->db->insert_id();
+
+                hooks()->do_action('estimate_requests_created', [
+                    'estimate_request_id'   => $estimate_request_id,
+                    'estimate_request_form' => true,
+                ]);
+
+                $success = false;
+                if ($estimate_request_id) {
+                    $success = true;
+
+                    $this->estimate_request_model->assigned_member_notification($estimate_request_id, $form->responsible, true);
+
+                    handle_estimate_request_attachments($estimate_request_id, 'file-input', $form->name);
+
+                    if ($form->notify_request_submitted != 0) {
+                        $staff = [];
+                        if ($form->notify_type != 'assigned') {
+                            $ids = @unserialize($form->notify_ids);
+
+                            if (is_array($ids) && count($ids) > 0) {
+                                $this->db->where('active', 1)
+                                    ->where_in($form->notify_type == 'specific_staff' ? 'staffid' : 'role', $ids);
+
+                                $staff = $this->db->get(db_prefix() . 'staff')->result_array();
+                            }
+                        } elseif ($form->responsible) {
+                            $staff = [
+                                [
+                                    'staffid' => $form->responsible,
+                                    'email'   => get_staff($form->responsible)->email,
+                                ],
+                            ];
+                        }
+
+                        $notifiedUsers = [];
+
+                        foreach ($staff as $member) {
+                            if (add_notification([
+                                'description' => 'new_estimate_request_submitted_from_form',
+                                'touserid' => $member['staffid'],
+                                'fromcompany' => 1,
+                                'fromuserid' => 0,
+                                'additional_data' => serialize([
+                                    $form->name,
+                                ]),
+                                'link' => 'estimate_request/view/' . $estimate_request_id,
+                            ])) {
+                                array_push($notifiedUsers, $member['staffid']);
+                            }
+
+                            send_mail_template('estimate_request_form_submitted', $estimate_request_id, $member['email']);
+                        }
+
+                        pusher_trigger_notification($notifiedUsers);
+                    }
+
+                    send_mail_template('estimate_request_received_to_user', $estimate_request_id, $regular_fields['email']);
+                }
+            }
+            // end insert_to_db
+            if ($success == true) {
+                if (!isset($estimate_request_id)) {
+                    $estimate_request_id = 0;
+                }
+
+                hooks()->do_action('estimate_request_form_submitted', [
+                    'estimate_request_id' => $estimate_request_id,
+                    'form_id'             => $form->id,
+                ]);
+            }
+
+            $response = ['success' => $success];
+
+            if ($form->submit_action === '0') {
+                $response['message'] = $form->success_submit_msg;
+            }
+
+            echo json_encode($response);
+            die;
+        }
+        $data['form'] = $form;
+        $this->load->view('forms/estimate_request', $data);
+    }
+
+    /**
+     * Web to lead form
+     * User no need to see anything like LEAD in the url, this is the reason the method is named wtl
+     * @param  string $key web to lead form key identifier
+     * @return mixed
+     */
+    public function wtl($key = '')
+    {
+        if (!$key) {
+            show_404();
+        }
+
+        $this->load->model('leads_model');
+        $form = $this->leads_model->get_form([
+            'form_key' => $key,
+        ]);
+
+        if (!$form) {
+            show_404();
+        }
+
+        // Change the locale so the validation loader function can load
+        // the proper localization file
+        $GLOBALS['locale'] = get_locale_key($form->language);
+
+        $data['form_fields'] = $form->form_data ? json_decode($form->form_data) : [];
+
+        if ($this->input->post('key')) {
+            if ($this->input->post('key') == $key) {
+                $post_data = $this->input->post();
+                $required  = [];
+
+                foreach ($data['form_fields'] as $field) {
+                    if (isset($field->required)) {
+                        $required[] = $field->name;
+                    }
+                }
+                if (is_gdpr() && get_option('gdpr_enable_terms_and_conditions_lead_form') == 1) {
+                    $required[] = 'accept_terms_and_conditions';
+                }
+
+                foreach ($required as $field) {
+                    if ($field == 'file-input') {
+                        continue;
+                    }
+                    if (!isset($post_data[$field]) || isset($post_data[$field]) && empty($post_data[$field])) {
+                        $this->output->set_status_header(422);
+                        die;
+                    }
+                }
+
+                if (show_recaptcha() && $form->recaptcha == 1) {
+                    if (!do_recaptcha_validation($post_data['g-recaptcha-response'])) {
+                        echo json_encode([
+                            'success' => false,
+                            'message' => _l('recaptcha_error'),
+                        ]);
+                        die;
+                    }
+                }
+
+                if (isset($post_data['g-recaptcha-response'])) {
+                    unset($post_data['g-recaptcha-response']);
+                }
+
+                unset($post_data['key']);
+
+                $regular_fields = [];
+                $custom_fields  = [];
+                foreach ($post_data as $name => $val) {
+                    if (strpos($name, 'form-cf-') !== false) {
+                        array_push($custom_fields, [
+                            'name'  => $name,
+                            'value' => $val,
+                        ]);
+                    } else {
+                        if ($this->db->field_exists($name, db_prefix() . 'leads')) {
+                            if ($name == 'country') {
+                                if (!is_numeric($val)) {
+                                    if ($val == '') {
+                                        $val = 0;
+                                    } else {
+                                        $this->db->where('iso2', $val);
+                                        $this->db->or_where('short_name', $val);
+                                        $this->db->or_where('long_name', $val);
+                                        $country = $this->db->get(db_prefix() . 'countries')->row();
+                                        if ($country) {
+                                            $val = $country->country_id;
+                                        } else {
+                                            $val = 0;
+                                        }
+                                    }
+                                }
+                            } elseif ($name == 'address') {
+                                $val = trim($val);
+                                $val = nl2br($val);
+                            }
+
+                            $regular_fields[$name] = $val;
+                        }
+                    }
+                }
+                $success      = false;
+                $insert_to_db = true;
+
+                if ($form->allow_duplicate == 0) {
+                    $where = [];
+                    if (!empty($form->track_duplicate_field) && isset($regular_fields[$form->track_duplicate_field])) {
+                        $where[$form->track_duplicate_field] = $regular_fields[$form->track_duplicate_field];
+                    }
+                    if (!empty($form->track_duplicate_field_and) && isset($regular_fields[$form->track_duplicate_field_and])) {
+                        $where[$form->track_duplicate_field_and] = $regular_fields[$form->track_duplicate_field_and];
+                    }
+
+                    if (count($where) > 0) {
+                        $total = total_rows(db_prefix() . 'leads', $where);
+
+                        $duplicateLead = false;
+                        /**
+                         * Check if the lead is only 1 time duplicate
+                         * Because we wont be able to know how user is tracking duplicate and to send the email template for
+                         * the request
+                         */
+                        if ($total == 1) {
+                            $this->db->where($where);
+                            $duplicateLead = $this->db->get(db_prefix() . 'leads')->row();
+                        }
+
+                        if ($total > 0) {
+                            // Success set to true for the response.
+                            $success      = true;
+                            $insert_to_db = false;
+                            if ($form->create_task_on_duplicate == 1) {
+                                $task_name_from_form_name = false;
+                                $task_name                = '';
+                                if (isset($regular_fields['name'])) {
+                                    $task_name = $regular_fields['name'];
+                                } elseif (isset($regular_fields['email'])) {
+                                    $task_name = $regular_fields['email'];
+                                } elseif (isset($regular_fields['company'])) {
+                                    $task_name = $regular_fields['company'];
+                                } else {
+                                    $task_name_from_form_name = true;
+                                    $task_name                = $form->name;
+                                }
+                                if ($task_name_from_form_name == false) {
+                                    $task_name .= ' - ' . $form->name;
+                                }
+
+                                $description          = '';
+                                $custom_fields_parsed = [];
+                                foreach ($custom_fields as $key => $field) {
+                                    $custom_fields_parsed[$field['name']] = $field['value'];
+                                }
+
+                                $all_fields    = array_merge($regular_fields, $custom_fields_parsed);
+                                $fields_labels = [];
+                                foreach ($data['form_fields'] as $f) {
+                                    if ($f->type != 'header' && $f->type != 'paragraph' && $f->type != 'file') {
+                                        $fields_labels[$f->name] = $f->label;
+                                    }
+                                }
+
+                                $description .= $form->name . '<br /><br />';
+                                foreach ($all_fields as $name => $val) {
+                                    if (isset($fields_labels[$name])) {
+                                        if ($name == 'country' && is_numeric($val)) {
+                                            $c = get_country($val);
+                                            if ($c) {
+                                                $val = $c->short_name;
+                                            } else {
+                                                $val = 'Unknown';
+                                            }
+                                        }
+
+                                        $description .= $fields_labels[$name] . ': ' . $val . '<br />';
+                                    }
+                                }
+
+                                $task_data = [
+                                    'name'        => $task_name,
+                                    'priority'    => get_option('default_task_priority'),
+                                    'dateadded'   => date('Y-m-d H:i:s'),
+                                    'startdate'   => date('Y-m-d'),
+                                    'addedfrom'   => $form->responsible,
+                                    'status'      => 1,
+                                    'description' => $description,
+                                ];
+
+                                $task_data = hooks()->apply_filters('before_add_task', $task_data);
+                                $this->db->insert(db_prefix() . 'tasks', $task_data);
+                                $task_id = $this->db->insert_id();
+                                if ($task_id) {
+                                    $attachment = handle_task_attachments_array($task_id, 'file-input');
+
+                                    if ($attachment && count($attachment) > 0) {
+                                        $this->tasks_model->add_attachment_to_database($task_id, $attachment, false, false);
+                                    }
+
+                                    $assignee_data = [
+                                        'taskid'   => $task_id,
+                                        'assignee' => $form->responsible,
+                                    ];
+                                    $this->tasks_model->add_task_assignees($assignee_data, true);
+
+                                    hooks()->do_action('after_add_task', $task_id);
+                                    if ($duplicateLead && $duplicateLead->email != '') {
+                                        send_mail_template('lead_web_form_submitted', $duplicateLead);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ($insert_to_db == true) {
+                    $regular_fields['status'] = $form->lead_status;
+                    if ((isset($regular_fields['name']) && empty($regular_fields['name'])) || !isset($regular_fields['name'])) {
+                        $regular_fields['name'] = 'Unknown';
+                    }
+                    $regular_fields['name']         = $form->lead_name_prefix . $regular_fields['name'];
+                    $regular_fields['source']       = $form->lead_source;
+                    $regular_fields['addedfrom']    = 0;
+                    $regular_fields['lastcontact']  = null;
+                    $regular_fields['assigned']     = $form->responsible;
+                    $regular_fields['dateadded']    = date('Y-m-d H:i:s');
+                    $regular_fields['from_form_id'] = $form->id;
+                    $regular_fields['is_public']    = $form->mark_public;
+
+                    if ($this->input->post('key') == '347f376295d303a60c2c662263a1bc0b') {
+                        $regular_fields['projects'] = 1;
+
+                        // Prepare the URL with parameters
+                        // Prepare the parameters
+                        $phone = $regular_fields['phonenumber'];
+                        $name = $regular_fields['name'];
+                        $message = 'welcomereminderclone154';
+                        $var2 = 'are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:';
+                        $mediaLink = 'https://kautilya.n360.site/assets/images/whatimg.png';
+
+                        // Build the URL with proper encoding
+                        $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?' . http_build_query([
+                            'number' => '91' . $phone,
+                            'message' => $message,
+                            'name' => $name,
+                            'var2' => $var2,
+                            'medialink' => $mediaLink
+                        ]);
+
+                        // Initialize cURL
+                        $ch = curl_init();
+                        curl_setopt_array($ch, [
+                            CURLOPT_URL => $url,
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 30,
+                            CURLOPT_SSL_VERIFYPEER => true, // Set to false if you have SSL issues
+                            CURLOPT_HTTPHEADER => [
+                                'Accept: application/json'
+                            ]
+                        ]);
+
+                        // Execute and handle response
+                        $response = curl_exec($ch);
+                        $error = curl_error($ch);
+                        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                        curl_close($ch);
+
+                        // Debugging
+                        // if ($error) {
+                        //     echo "cURL Error: " . $error;
+                        // } else {
+                        //     echo "HTTP Status: " . $httpCode . "\n";
+                        //     echo "Response: " . $response;
+                        // }
+                    } elseif ($this->input->post('key') == '297b1a90ba97a2f497c068b45d91a630') {
+                        $regular_fields['projects']  = 2;
+                    } elseif ($this->input->post('key') == '7764a894c046848bfdaadf403ae7816c') {
+                        $regular_fields['projects']  = 3;
+                    } elseif ($this->input->post('key') == 'dcf1d870f5a9bb632c5e3468d0aeb3d6') {
+                        $regular_fields['projects']  = $this->input->post('project');
+
+                        if ($this->input->post('project') == 1) {
+                            $regular_fields['assigned'] = 8;
+                        } elseif ($this->input->post('project') == 2) {
+                            $regular_fields['assigned']  = 3;
+                        } elseif ($this->input->post('project') == 3) {
+                            $regular_fields['assigned']  = 6;
+                        }
+                    }
+
+                    $this->db->insert(db_prefix() . 'leads', $regular_fields);
+                    $lead_id = $this->db->insert_id();
+
+                    hooks()->do_action('lead_created', [
+                        'lead_id'          => $lead_id,
+                        'web_to_lead_form' => true,
+                    ]);
+
+                    $success = false;
+                    if ($lead_id) {
+                        $success = true;
+
+                        $this->leads_model->log_lead_activity($lead_id, 'not_lead_imported_from_form', true, serialize([
+                            $form->name,
+                        ]));
+                        // /handle_custom_fields_post
+                        $custom_fields_build['leads'] = [];
+                        foreach ($custom_fields as $cf) {
+                            $cf_id                                = strafter($cf['name'], 'form-cf-');
+                            $custom_fields_build['leads'][$cf_id] = $cf['value'];
+                        }
+
+                        handle_custom_fields_post($lead_id, $custom_fields_build);
+
+                        $this->leads_model->lead_assigned_member_notification($lead_id, $form->responsible, true);
+
+                        handle_lead_attachments($lead_id, 'file-input', $form->name);
+
+                        if ($form->notify_lead_imported != 0) {
+                            $staff = [];
+                            if ($form->notify_type != 'assigned') {
+                                $ids = @unserialize($form->notify_ids);
+
+                                if (is_array($ids) && count($ids) > 0) {
+                                    $this->db->where('active', 1)
+                                        ->where_in($form->notify_type == 'specific_staff' ? 'staffid' : 'role', $ids);
+                                    $staff = $this->db->get(db_prefix() . 'staff')->result_array();
+                                }
+                            } elseif ($form->responsible) {
+                                $staff = [
+                                    [
+                                        'staffid' => $form->responsible,
+                                    ],
+                                ];
+                            }
+
+                            $notifiedUsers = [];
+                            foreach ($staff as $member) {
+                                if (add_notification([
+                                    'description' => 'not_lead_imported_from_form',
+                                    'touserid' => $member['staffid'],
+                                    'fromcompany' => 1,
+                                    'fromuserid' => 0,
+                                    'additional_data' => serialize([
+                                        $form->name,
+                                    ]),
+                                    'link' => '#leadid=' . $lead_id,
+                                ])) {
+                                    array_push($notifiedUsers, $member['staffid']);
+                                }
+                            }
+                            pusher_trigger_notification($notifiedUsers);
+                        }
+
+                        if (isset($regular_fields['email']) && $regular_fields['email'] != '') {
+                            $lead = $this->leads_model->get($lead_id);
+                            send_mail_template('lead_web_form_submitted', $lead);
+                        }
+                    }
+                } // end insert_to_db
+                if ($success == true) {
+                    if (!isset($lead_id)) {
+                        $lead_id = 0;
+                    }
+                    if (!isset($task_id)) {
+                        $task_id = 0;
+                    }
+                    hooks()->do_action('web_to_lead_form_submitted', [
+                        'lead_id' => $lead_id,
+                        'form_id' => $form->id,
+                        'task_id' => $task_id,
+                    ]);
+                }
+
+                $response = ['success' => $success];
+
+                if ($form->submit_action === '0') {
+                    $response['message'] = $form->success_submit_msg;
+                }
+
+                echo json_encode($response);
+                die;
+            }
+        }
+
+        $data['form'] = $form;
+        $this->load->view('forms/web_to_lead', $data);
+    }
+
+    /**
+     * Web to lead form
+     * User no need to see anything like LEAD in the url, this is the reason the method is named eq lead
+     * @param  string $hash lead unique identifier
+     * @return mixed
+     */
+    public function l($hash = '')
+    {
+        if (!$hash) {
+            show_404();
+        }
+
+        if (get_option('gdpr_enable_lead_public_form') == '0') {
+            show_404();
+        }
+        $this->load->model('leads_model');
+        $this->load->model('gdpr_model');
+        $lead = $this->leads_model->get('', ['hash' => $hash]);
+
+        if (!$lead || count($lead) > 1) {
+            show_404();
+        }
+
+        $lead = array_to_object($lead[0]);
+        load_lead_language($lead->id);
+
+        if ($this->input->post('update')) {
+            $data = $this->input->post();
+            unset($data['update']);
+            $this->leads_model->update($data, $lead->id);
+            redirect(site_url('forms/l/' . $hash));
+        } elseif ($this->input->post('export') && get_option('gdpr_data_portability_leads') == '1') {
+            $this->load->library('gdpr/gdpr_lead');
+            $this->gdpr_lead->export($lead->id);
+        } elseif ($this->input->post('removal_request')) {
+            $success = $this->gdpr_model->add_removal_request([
+                'description'  => nl2br($this->input->post('removal_description')),
+                'request_from' => $lead->name,
+                'lead_id'      => $lead->id,
+            ]);
+            if ($success) {
+                send_gdpr_email_template('gdpr_removal_request_by_lead', $lead->id);
+                set_alert('success', _l('data_removal_request_sent'));
+            }
+            redirect(site_url('forms/l/' . $hash));
+        }
+
+        $lead->attachments = $this->leads_model->get_lead_attachments($lead->id);
+        $this->disableNavigation();
+        $this->disableSubMenu();
+        $data['title'] = $lead->name;
+        $data['lead']  = $lead;
+        $this->view('forms/lead');
+        $this->data($data);
+        $this->layout(true);
+    }
+
+    public function public_ticket($key = '')
+    {
+        if (!$key) {
+            show_404();
+        }
+
+        $this->load->model('tickets_model');
+
+        if (strlen($key) != 32) {
+            show_error('Invalid ticket key.');
+        }
+
+        $ticket = $this->tickets_model->get_ticket_by_id($key);
+
+        if (!$ticket) {
+            show_404();
+        }
+
+        hooks()->do_action('view_public_ticket', $ticket);
+
+        if (!empty($ticket->merged_ticket_id)) {
+            redirect(site_url('forms/tickets/' . $this->tickets_model->get($ticket->merged_ticket_id)->ticketkey));
+        }
+
+        if (!is_client_logged_in() && $ticket->userid) {
+            load_client_language($ticket->userid);
+        }
+
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('message', _l('ticket_reply'), 'required');
+
+            if ($this->form_validation->run() !== false) {
+                $replyData = ['message' => $this->input->post('message')];
+
+                if ($ticket->userid && $ticket->contactid) {
+                    $replyData['userid']    = $ticket->userid;
+                    $replyData['contactid'] = $ticket->contactid;
+                } else {
+                    $replyData['name']  = $ticket->from_name;
+                    $replyData['email'] = $ticket->ticket_email;
+                }
+
+                $replyid = $this->tickets_model->add_reply($replyData, $ticket->ticketid);
+
+                if ($replyid) {
+                    set_alert('success', _l('replied_to_ticket_successfully', $ticket->ticketid));
+                }
+
+                redirect(get_ticket_public_url($ticket));
+            }
+        }
+
+        $data['title']          = $ticket->subject;
+        $data['ticket_replies'] = $this->tickets_model->get_ticket_replies($ticket->ticketid);
+        $data['ticket']         = $ticket;
+        hooks()->add_action('app_customers_footer', 'ticket_public_form_customers_footer');
+        $data['single_ticket_view'] = $this->load->view($this->createThemeViewPath('single_ticket'), $data, true);
+
+        $navigationDisabled = hooks()->apply_filters('disable_navigation_on_public_ticket_view', true);
+        if ($navigationDisabled) {
+            $this->disableNavigation();
+        }
+
+        $this->disableSubMenu();
+
+        $this->data($data);
+
+        $this->view('forms/public_ticket');
+        no_index_customers_area();
+        $this->layout(true);
+    }
+
+    public function ticket()
+    {
+        $provided_language = $this->input->get('language');
+        $form              = new stdClass();
+        $form->language    = $provided_language ? $provided_language : get_option('active_language');
+        $form->recaptcha   = 1;
+
+        $this->lang->load($form->language . '_lang', $form->language);
+        load_custom_lang_file($form->language);
+
+        $form->success_submit_msg = _l('success_submit_msg');
+
+        $form = hooks()->apply_filters('ticket_form_settings', $form);
+
+        if ($this->input->post() && $this->input->is_ajax_request()) {
+            $post_data = $this->input->post();
+
+            $required = ['subject', 'department', 'email', 'name', 'message', 'priority'];
+
+            if (is_gdpr() && get_option('gdpr_enable_terms_and_conditions_ticket_form') == 1) {
+                $required[] = 'accept_terms_and_conditions';
+            }
+
+            foreach ($required as $field) {
+                if (!isset($post_data[$field]) || isset($post_data[$field]) && empty($post_data[$field])) {
+                    $this->output->set_status_header(422);
+                    die;
+                }
+            }
+
+            if (show_recaptcha() && $form->recaptcha == 1) {
+                if (!do_recaptcha_validation($post_data['g-recaptcha-response'])) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => _l('recaptcha_error'),
+                    ]);
+                    die;
+                }
+            }
+
+            $post_data = [
+                'email'      => $post_data['email'],
+                'name'       => $post_data['name'],
+                'subject'    => $post_data['subject'],
+                'department' => $post_data['department'],
+                'priority'   => $post_data['priority'],
+                'service'    => isset($post_data['service']) && is_numeric($post_data['service'])
+                    ? $post_data['service']
+                    : null,
+                'custom_fields' => isset($post_data['custom_fields']) && is_array($post_data['custom_fields'])
+                    ? $post_data['custom_fields']
+                    : [],
+                'message' => $post_data['message'],
+            ];
+
+            $success = false;
+
+            $this->db->where('email', $post_data['email']);
+            $result = $this->db->get(db_prefix() . 'contacts')->row();
+
+            if ($result) {
+                $post_data['userid']    = $result->userid;
+                $post_data['contactid'] = $result->id;
+                unset($post_data['email']);
+                unset($post_data['name']);
+            }
+
+            $this->load->model('tickets_model');
+
+            $post_data = hooks()->apply_filters('ticket_external_form_insert_data', $post_data);
+            $ticket_id = $this->tickets_model->add($post_data);
+
+            if ($ticket_id) {
+                $success = true;
+            }
+
+            if ($success == true) {
+                hooks()->do_action('ticket_form_submitted', [
+                    'ticket_id' => $ticket_id,
+                ]);
+            }
+
             echo json_encode([
                 'success' => $success,
+                'message' => $form->success_submit_msg,
             ]);
-            die();
-        }
-    }
 
-    public function progress_report_setting()
-    {
-        $data['group'] = $this->input->get('group');
-        $data['title'] = _l('setting');
-        $data['tab'][] = 'progress_report_type';
-        $data['tab'][] = 'progress_report_sub_type';
-        $data['tab'][] = 'progress_report_machinary';
-        if ($data['group'] == '') {
-            $data['group'] = 'progress_report_type';
-        }
-        $data['tabs']['view'] = 'admin/progress_reports/includes/' . $data['group'];
-        $data['progress_report_type'] = $this->forms_model->get_progress_report_type();
-        $data['progress_report_sub_type'] = $this->forms_model->get_progress_report_sub_type();
-        $data['progress_report_machinary'] = $this->forms_model->get_progress_report_machinary();
-
-        $this->load->view('admin/progress_reports/manage_setting', $data);
-    }
-
-    public function progress_report_type()
-    {
-        if ($this->input->post()) {
-            $message = '';
-            $data = $this->input->post();
-            if (!$this->input->post('id')) {
-                $id = $this->forms_model->add_progress_report_type($data);
-                if ($id) {
-                    $success = true;
-                    $message = _l('added_successfully', _l('progress_report_type'));
-                    set_alert('success', $message);
-                }
-                redirect(admin_url('forms/progress_report_setting?group=progress_report_type'));
-            } else {
-                $id = $data['id'];
-                unset($data['id']);
-                $success = $this->forms_model->update_progress_report_type($data, $id);
-                if ($success) {
-                    $message = _l('updated_successfully', _l('progress_report_type'));
-                    set_alert('success', $message);
-                }
-                redirect(admin_url('forms/progress_report_setting?group=progress_report_type'));
-            }
             die;
         }
-    }
 
-    public function delete_progress_report_type($id)
-    {
-        if (!$id) {
-            redirect(admin_url('forms/progress_report_setting?group=progress_report_type'));
-        }
-        $response = $this->forms_model->delete_progress_report_type($id);
-        if (is_array($response) && isset($response['referenced'])) {
-            set_alert('warning', _l('is_referenced', _l('progress_report_type')));
-        } elseif ($response == true) {
-            set_alert('success', _l('deleted', _l('progress_report_type')));
-        } else {
-            set_alert('warning', _l('problem_deleting', _l('progress_report_type')));
-        }
-        redirect(admin_url('forms/progress_report_setting?group=progress_report_type'));
-    }
+        $this->load->model('tickets_model');
+        $this->load->model('departments_model');
+        $data['departments'] = $this->departments_model->get();
+        $data['priorities']  = $this->tickets_model->get_priority();
 
-    public function progress_report_sub_type()
-    {
-        if ($this->input->post()) {
-            $message = '';
-            $data = $this->input->post();
-            if (!$this->input->post('id')) {
-                $id = $this->forms_model->add_progress_report_sub_type($data);
-                if ($id) {
-                    $success = true;
-                    $message = _l('added_successfully', _l('progress_report_sub_type'));
-                    set_alert('success', $message);
-                }
-                redirect(admin_url('forms/progress_report_setting?group=progress_report_sub_type'));
-            } else {
-                $id = $data['id'];
-                unset($data['id']);
-                $success = $this->forms_model->update_progress_report_sub_type($data, $id);
-                if ($success) {
-                    $message = _l('updated_successfully', _l('progress_report_sub_type'));
-                    set_alert('success', $message);
-                }
-                redirect(admin_url('forms/progress_report_setting?group=progress_report_sub_type'));
-            }
-            die;
-        }
-    }
+        $data['priorities']['callback_translate'] = 'ticket_priority_translate';
+        $data['services']                         = $this->tickets_model->get_service();
 
-    public function delete_progress_report_sub_type($id)
-    {
-        if (!$id) {
-            redirect(admin_url('forms/progress_report_setting?group=progress_report_sub_type'));
-        }
-        $response = $this->forms_model->delete_progress_report_sub_type($id);
-        if (is_array($response) && isset($response['referenced'])) {
-            set_alert('warning', _l('is_referenced', _l('progress_report_sub_type')));
-        } elseif ($response == true) {
-            set_alert('success', _l('deleted', _l('progress_report_sub_type')));
-        } else {
-            set_alert('warning', _l('problem_deleting', _l('progress_report_sub_type')));
-        }
-        redirect(admin_url('forms/progress_report_setting?group=progress_report_sub_type'));
-    }
-
-    public function progress_report_machinary()
-    {
-        if ($this->input->post()) {
-            $message = '';
-            $data = $this->input->post();
-            if (!$this->input->post('id')) {
-                $id = $this->forms_model->add_progress_report_machinary($data);
-                if ($id) {
-                    $success = true;
-                    $message = _l('added_successfully', _l('progress_report_machinary'));
-                    set_alert('success', $message);
-                }
-                redirect(admin_url('forms/progress_report_setting?group=progress_report_machinary'));
-            } else {
-                $id = $data['id'];
-                unset($data['id']);
-                $success = $this->forms_model->update_progress_report_machinary($data, $id);
-                if ($success) {
-                    $message = _l('updated_successfully', _l('progress_report_machinary'));
-                    set_alert('success', $message);
-                }
-                redirect(admin_url('forms/progress_report_setting?group=progress_report_machinary'));
-            }
-            die;
-        }
-    }
-
-    public function delete_progress_report_machinary($id)
-    {
-        if (!$id) {
-            redirect(admin_url('forms/progress_report_setting?group=progress_report_machinary'));
-        }
-        $response = $this->forms_model->delete_progress_report_machinary($id);
-        if (is_array($response) && isset($response['referenced'])) {
-            set_alert('warning', _l('is_referenced', _l('progress_report_machinary')));
-        } elseif ($response == true) {
-            set_alert('success', _l('deleted', _l('progress_report_machinary')));
-        } else {
-            set_alert('warning', _l('problem_deleting', _l('progress_report_machinary')));
-        }
-        redirect(admin_url('forms/progress_report_setting?group=progress_report_machinary'));
-    }
-
-    public function dpr_dashboard()
-    {
-        $data = array();
-        $data['projects'] = $this->forms_model->get_dpr_projects();
-        $this->load->view('admin/progress_reports/dpr/dpr_dashboard', $data);
-    }
-
-    public function get_dpr_dashboard()
-    {
-        $data = $this->input->post();
-        $result = $this->forms_model->get_dpr_dashboard($data);
-        echo json_encode($result);
-        die;
-    }
-
-
-    public function form_dpr_pdf($id)
-    {
-        if (!$id) {
-            redirect(admin_url('forms'));
-        }
-
-        $form_drp_data = $this->forms_model->get_form_dpr_pdf_data($id);
-       
-        if(!empty($form_drp_data)) {
-            $pdf = create_dpr_form_pdf($form_drp_data);
-            $type = 'D';
-            if ($this->input->get('output_type')) {
-                $type = $this->input->get('output_type');
-            }
-            if ($this->input->get('print')) {
-                $type = 'I';
-            }
-            $pdf->Output('DPR'.date('d-m').'.pdf', $type);
-        } else {
-            echo "PDF have not created yet.";
-        }
+        $data['form'] = $form;
+        $this->load->view('forms/ticket', $data);
     }
 }
