@@ -1034,83 +1034,32 @@ function check_emp_leave_balance($staff_id)
     // Return leave balance details or null if no record exists
     return $query->row_array();
 }
-function get_double_entery_by_phonenumber($phoneNumber)
+
+function get_staff_department_name($department)
 {
-    $CI = &get_instance();
-    // Count the number of rows with the given phone number in the 'leads' table
-    $CI->db->from('tblleads');
-    $CI->db->where('phonenumber', $phoneNumber); // Adjust column name if needed
-    $count = $CI->db->count_all_results();
-
-    // Return true if there are 2 or more entries, otherwise false
-    return ($count >= 2);
-}
-
-function get_task_by_id_for_notes($leads)
-{
-    $CI = &get_instance();
-    $CI->db->select('*');
-    $CI->db->from('tbltasks');
-    $CI->db->where('rel_id', $leads); // Adjust the condition as needed
-    $query = $CI->db->get();
-    return $query->row_array(); // Return the result as an associative array
-}
-
-function get_task_assignee($lead_id)
-{
-    $CI = &get_instance();
-    $CI->db->select('assigned');
-    $CI->db->from('tblleads');
-    $CI->db->where('id', $lead_id);
-    $query = $CI->db->get();
-    $result = $query->result_array();
-
-    // Extract just the staffid values into a simple array
-    $staff_ids = [];
-    foreach ($result as $row) {
-        $staff_ids[] = $row['assigned'];
+    if (!empty($department)) {
+        $CI = &get_instance();
+        $CI->db->select('name');
+        $CI->db->from('tbldepartments');
+        $CI->db->where('departmentid', $department);
+        $query = $CI->db->get();
+        $result = $query->row();
+        if (!empty($result)) {
+            return $result->name;
+        }
     }
-
-    return $staff_ids;
+    return '';
 }
 
-function update_module_filter($module_name, $filter_name, $filter_value)
+function get_priority_name($priority)
 {
-    $CI = &get_instance();
-    $CI->db->select('*');
-    $CI->db->from(db_prefix() . 'module_filter');
-    $CI->db->where('module_name', $module_name);
-    $CI->db->where('filter_name', $filter_name);
-    $CI->db->where('staff_id', get_staff_user_id());
-    $row = $CI->db->get()->row();
-    if (!empty($row)) {
-        $CI->db->where('module_name', $module_name);
-        $CI->db->where('filter_name', $filter_name);
-        $CI->db->where('staff_id', get_staff_user_id());
-        $CI->db->update(db_prefix() . 'module_filter', [
-            'filter_value' => $filter_value,
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
+    if ($priority == 1) {
+        return "Low";
+    } elseif ($priority == 2) {
+        return "Medium";
+    } elseif ($priority == 3) {
+        return "High";
     } else {
-        $data = array();
-        $data['module_name'] = $module_name;
-        $data['staff_id'] = get_staff_user_id();
-        $data['filter_name'] = $filter_name;
-        $data['filter_value'] = $filter_value;
-        $data['created_at'] = date('Y-m-d H:i:s');
-        $CI->db->insert(db_prefix() . 'module_filter', $data);
+        return null; // or handle invalid input as needed
     }
-    return true;
-}
-
-function get_module_filter($module_name, $filter_name) 
-{
-    $CI = &get_instance();
-    $CI->db->select('*');
-    $CI->db->from(db_prefix() . 'module_filter');
-    $CI->db->where('module_name', $module_name);
-    $CI->db->where('filter_name', $filter_name);
-    $CI->db->where('staff_id', get_staff_user_id());
-    $row = $CI->db->get()->row();
-    return $row;
 }

@@ -311,3 +311,8 @@ function pdf_multi_row($left, $right, $pdf, $left_width = 40)
     $pdf->setPage(max($page_end_1, $page_end_2));
     $pdf->SetXY($pdf->GetX(), $ynew);
 }
+
+function create_dpr_form_pdf($form_data)
+{
+    return app_pdf('Dprr', LIBSPATH . 'pdf/Dprr_pdf', $form_data);
+}
