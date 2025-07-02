@@ -264,9 +264,6 @@ class Forms extends AdminController
 
     public function edit_message()
     {
-        if (!can_staff_edit_form_message()) {
-            access_denied();
-        }
 
         if ($this->input->post()) {
             $data         = $this->input->post();
