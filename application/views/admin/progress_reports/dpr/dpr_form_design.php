@@ -98,7 +98,7 @@
                     <th rowspan="2" class="daily_report_head daily_center" style="width: 160px;">
                         <span class="daily_report_label">Agency</span>
                     </th>
-                    <th rowspan="2" class="daily_report_head daily_center" style="width: 160px;">
+                    <th rowspan="2" class="daily_report_head daily_center" style="width: 140px;">
                         <span class="daily_report_label">Type</span>
                     </th>
                     <th rowspan="2" class="daily_report_head daily_center" style="width: 160px;">
