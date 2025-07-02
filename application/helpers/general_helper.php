@@ -1104,3 +1104,29 @@ function update_module_filter($module_name, $filter_name, $filter_value)
     }
     return true;
 }
+
+function get_task_by_id_for_notes($leads){
+    $CI = &get_instance();
+    $CI->db->select('id');
+    $CI->db->from('tbltasks');
+    $CI->db->where('rel_id', $leads); // Adjust the condition as needed
+    $query = $CI->db->get();
+    return $query->row_array(); // Return the result as an associative array
+}
+
+function get_task_assignee($task_id) {
+    $CI = &get_instance();
+    $CI->db->select('staffid');
+    $CI->db->from('tbltask_assigned');
+    $CI->db->where('taskid', $task_id);
+    $query = $CI->db->get();
+    $result = $query->result_array();
+    
+    // Extract just the staffid values into a simple array
+    $staff_ids = [];
+    foreach ($result as $row) {
+        $staff_ids[] = $row['staffid'];
+    }
+    
+    return $staff_ids;
+}
