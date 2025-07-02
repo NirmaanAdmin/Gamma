@@ -385,8 +385,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php 
-                                            if(!empty($daily_labor_report)) {
+                                            <?php
+                                            if (!empty($daily_labor_report)) {
                                                 foreach ($daily_labor_report as $key => $value) { ?>
                                                     <tr<?php echo $value['is_bold'] ? ' style="font-weight: bold;"' : ''; ?>>
                                                         <td align="left">
@@ -401,7 +401,7 @@
                                                         <td align="right">
                                                             <?php echo $value['total']; ?>
                                                         </td>
-                                                    </tr>
+                                                        </tr>
                                                 <?php }
                                             } ?>
                                         </tbody>
@@ -417,8 +417,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php 
-                                            if(!empty($labor_report_machinery)) {
+                                            <?php
+                                            if (!empty($labor_report_machinery)) {
                                                 foreach ($labor_report_machinery as $key => $value) { ?>
                                                     <tr>
                                                         <td align="left">
@@ -428,7 +428,7 @@
                                                             <?php echo $value['total']; ?>
                                                         </td>
                                                     </tr>
-                                                <?php }
+                                            <?php }
                                             } ?>
                                         </tbody>
                                     </table>
@@ -627,12 +627,12 @@
                                                 onclick="print_form_message(<?php echo e($form->formid); ?>, 'form'); return false;"
                                                 class="mright5"><i class="fa fa-print"></i></a>
                                         <?php } ?>
-                                        <?php if (can_staff_edit_form_message()) { ?>
-                                            <a href="#"
-                                                class="tw-text-neutral-500 hover:tw-text-neutral-700 active:tw-text-neutral-600"
-                                                onclick="edit_form_message(<?php echo e($form->formid); ?>,'form'); return false;"><i
-                                                    class="fa-regular fa-pen-to-square"></i></a>
-                                        <?php } ?>
+
+                                        <a href="#"
+                                            class="tw-text-neutral-500 hover:tw-text-neutral-700 active:tw-text-neutral-600"
+                                            onclick="edit_form_message(<?php echo e($form->formid); ?>,'form'); return false;"><i
+                                                class="fa-regular fa-pen-to-square"></i></a>
+
                                     </div>
                                 </div>
                                 <div data-form-id="<?php echo e($form->formid); ?>" class="tc-content">
