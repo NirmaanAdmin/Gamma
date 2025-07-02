@@ -989,6 +989,14 @@ class Leads_model extends App_Model
             if ($_log_message == '') {
                 return true;
             }
+            if ($data['status'] != 1 || $data['status'] != 11 || $data['status'] != 13) {
+                $staff_name = get_staff_full_name(get_staff_user_id());
+                $note_data = [
+                    'description' => $staff_name . ' Lead status changed from ' . $old_status . ' to ' . $current_status,
+                    'next_followup_date' => date('Y-m-d', strtotime('+3 days')),
+                ];
+                $this->misc_model->add_note($note_data, 'lead', $data['leadid']);
+            }
 
             $this->log_lead_activity($data['leadid'], $_log_message, false, $additional_data);
 

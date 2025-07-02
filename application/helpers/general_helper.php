@@ -1107,7 +1107,7 @@ function update_module_filter($module_name, $filter_name, $filter_value)
 
 function get_task_by_id_for_notes($leads){
     $CI = &get_instance();
-    $CI->db->select('id');
+    $CI->db->select('*');
     $CI->db->from('tbltasks');
     $CI->db->where('rel_id', $leads); // Adjust the condition as needed
     $query = $CI->db->get();

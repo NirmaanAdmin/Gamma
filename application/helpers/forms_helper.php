@@ -628,7 +628,7 @@ function get_progress_report_type_listing($name_type, $type)
 {
     $CI = &get_instance();
     $result = $CI->db->get(db_prefix() . 'progress_report_type')->result_array();
-    return render_select($name_type, $result, array('id', 'name'), '', $type,['width' => '80%']);
+    return render_select($name_type, $result, array('id', 'name'), '', $type);
 }
 
 function get_progress_report_sub_type_listing($name_sub_type, $sub_type)

@@ -378,10 +378,10 @@
                                     <table class="table items no-mtop" style="border: 1px solid #dee2e6;">
                                         <thead>
                                             <tr>
-                                                <th width="25%" align="">Row Labels</th>
-                                                <th width="25%" align="right">Sum of Male</th>
-                                                <th width="25%" align="right">Sum of Female</th>
-                                                <th width="25%" align="right">Sum of Total</th>
+                                                <th width="25%" align="">Type</th>
+                                                <th width="25%" align="right">Skilled</th>
+                                                <th width="25%" align="right">Unskilled</th>
+                                                <th width="25%" align="right">Total</th>
                                             </tr>
                                         </thead>
                                         <tbody>

@@ -3278,13 +3278,13 @@ class Forms_model extends App_Model
 
         $row .= '<td class="location">' . render_input($name_location, '', $location) . '</td>';
         $row .= '<td class="agency">' . get_vendor($name_agency, $agency) . '</td>';
-        $row .= '<td class="progress_report_type">' . get_progress_report_type_listing($name_type, $type) . '</td>';
-        $row .= '<td class="progress_report_sub_type">' . get_progress_report_sub_type_listing($name_sub_type, $sub_type) . '</td>';
+        $row .= '<td class="progress_report_type" >' . get_progress_report_type_listing($name_type, $type) . '</td>';
+        $row .= '<td class="progress_report_sub_type">' . render_textarea($name_sub_type, '', $sub_type) . '</td>';
         $row .= '<td class="work_execute">' . render_input($name_work_execute, '', $work_execute) . '</td>';
         $row .= '<td class="material_consumption">' . render_input($name_material_consumption, '', $material_consumption) . '</td>';
         $row .= '<td class="male">' . render_input($name_male, '', $male, 'nubmer', ['onblur' => 'dpr_calculate_total();', 'onchange' => 'dpr_calculate_total();']) . '</td>';
         $row .= '<td class="female">' . render_input($name_female, '', $female, 'nubmer', ['onblur' => 'dpr_calculate_total();', 'onchange' => 'dpr_calculate_total();']) . '</td>';
-        $row .= '<td class="total">' . render_input($name_total, '', $total, 'number', ['readonly' => 'readonly']) . '</td>';
+        $row .= '<td class="total">' . render_input($name_total, '', $total, 'number', ['readonly' => true, 'style' => 'padding:0px !important;text-align: center;']) . '</td>';
         $row .= '<td class="machinery">' . get_progress_report_machinary_listing($name_machinery, $machinery) . '</td>';
         $row .= '<td class="total_machinery">' . render_input($name_total_machinery, '', $total_machinery, 'nubmer') . '</td>';
 
@@ -3959,42 +3959,30 @@ class Forms_model extends App_Model
         $dpr_form_detail = $this->get_dpr_form_detail($id);
 
         if (!empty($dpr_form_detail)) {
-            $unique_sub_types = array_values(array_unique(array_column($dpr_form_detail, 'sub_type')));
-            if (!empty($unique_sub_types)) {
-                foreach ($unique_sub_types as $key => $value) {
-                    $sub_type_array = array();
-                    $this->db->where('id', $value);
-                    $progress_report_sub_type = $this->db->get(db_prefix() . 'progress_report_sub_type')->row();
-                    $sub_type_array['name'] = $progress_report_sub_type->name;
+            // Get all unique types from the form data
+            $unique_types = array_values(array_unique(array_column($dpr_form_detail, 'type')));
 
-                    $sub_type_filtered = array_filter($dpr_form_detail, function ($item) use ($value) {
-                        return $item['sub_type'] == $value;
-                    });
-                    $sub_type_array['male'] = !empty($sub_type_filtered) ? array_sum(array_column($sub_type_filtered, 'male')) : 0;
-                    $sub_type_array['female'] = !empty($sub_type_filtered) ? array_sum(array_column($sub_type_filtered, 'female')) : 0;
-                    $sub_type_array['total'] = $sub_type_array['male'] + $sub_type_array['female'];
-                    $sub_type_array['is_bold'] = true;
+            if (!empty($unique_types)) {
+                foreach ($unique_types as $type_id) {
+                    // Get type name from database
+                    $this->db->where('id', $type_id);
+                    $progress_report_type = $this->db->get(db_prefix() . 'progress_report_type')->row();
 
-                    $result[] = $sub_type_array;
+                    if ($progress_report_type) {
+                        // Filter records by this type
+                        $type_filtered = array_filter($dpr_form_detail, function ($item) use ($type_id) {
+                            return $item['type'] == $type_id;
+                        });
 
-                    $unique_type = array_values(array_unique(array_column($sub_type_filtered, 'type')));
-                    if (!empty($unique_type)) {
-                        foreach ($unique_type as $ukey => $uvalue) {
-                            $type_array = array();
-                            $this->db->where('id', $uvalue);
-                            $progress_report_type = $this->db->get(db_prefix() . 'progress_report_type')->row();
-                            $type_array['name'] = $progress_report_type->name;
+                        // Create result array for this type
+                        $type_result = array(
+                            'name' => $progress_report_type->name,
+                            'male' => !empty($type_filtered) ? array_sum(array_column($type_filtered, 'male')) : 0,
+                            'female' => !empty($type_filtered) ? array_sum(array_column($type_filtered, 'female')) : 0
+                        );
+                        $type_result['total'] = $type_result['male'] + $type_result['female'];
 
-                            $type_filtered = array_filter($sub_type_filtered, function ($item) use ($value, $uvalue) {
-                                return $item['sub_type'] == $value && $item['type'] == $uvalue;
-                            });
-                            $type_array['male'] = !empty($type_filtered) ? array_sum(array_column($type_filtered, 'male')) : 0;
-                            $type_array['female'] = !empty($type_filtered) ? array_sum(array_column($type_filtered, 'female')) : 0;
-                            $type_array['total'] = $type_array['male'] + $type_array['female'];
-                            $type_array['is_bold'] = false;
-
-                            $result[] = $type_array;
-                        }
+                        $result[] = $type_result;
                     }
                 }
             }
@@ -4170,6 +4158,8 @@ class Forms_model extends App_Model
         ];
     }
 
+
+
     public function get_form($form_id)
     {
         $this->db->where('formid', $form_id);
@@ -4197,5 +4187,4 @@ class Forms_model extends App_Model
         $query = $this->db->get(db_prefix() . 'forms');
         return $query->row();
     }
-
 }

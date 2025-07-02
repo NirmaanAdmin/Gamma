@@ -38,8 +38,29 @@
 
     .agency .dropdown-toggle,
     .laber-type .dropdown-toggle {
-        width: 90px !important;
+        width: 138px !important;
     }
+    .laber-type .dropdown-menu .open,
+    .progress_report_type .dropdown-menu .open {
+        width: max-content !important;
+    }
+
+    .progress_report_type .dropdown-toggle,
+    .laber-type .dropdown-toggle {
+        width: 140px !important;
+    }
+
+    .laber-type .dropdown-menu .open,
+    .machinery .dropdown-menu .open {
+        width: max-content !important;
+    }
+
+    .machinery .dropdown-toggle,
+    .laber-type .dropdown-toggle {
+        width: 140px !important;
+    }
+   
+    
 </style>
 <div class="col-md-12">
     <hr class="hr-panel-separator" />
@@ -98,17 +119,17 @@
                     <th rowspan="2" class="daily_report_head daily_center" style="width: 160px;">
                         <span class="daily_report_label">Agency</span>
                     </th>
-                    <th rowspan="2" class="daily_report_head daily_center" style="width: 140px;">
+                    <th rowspan="2" class="daily_report_head daily_center" style="width: 160px;">
                         <span class="daily_report_label">Type</span>
                     </th>
                     <th rowspan="2" class="daily_report_head daily_center" style="width: 160px;">
-                        <span class="daily_report_label">Sub Type</span>
+                        <span class="daily_report_label">Remarks</span>
                     </th>
                     <th colspan="2" class="daily_report_head daily_center">
                         <span class="daily_report_label">Work Progress</span>
                     </th>
                     <th colspan="3" class="daily_report_head daily_center">
-                        <span class="daily_report_label">Manpower</span>
+                        <span class="daily_report_label">Type Of Manpower</span>
                     </th>
                     <th colspan="3" class="daily_report_head daily_center">
                         <span class="daily_report_label"></span>
@@ -122,10 +143,10 @@
                         <span class="daily_report_label">Material Consumption</span>
                     </th>
                     <th class="daily_report_head daily_center">
-                        <span class="daily_report_label">Male</span>
+                        <span class="daily_report_label">Skilled</span>
                     </th>
                     <th class="daily_report_head daily_center">
-                        <span class="daily_report_label">Female</span>
+                        <span class="daily_report_label">Unskilled</span>
                     </th>
                     <th class="daily_report_head daily_center">
                         <span class="daily_report_label">Total</span>
@@ -224,7 +245,7 @@
         response.location = $('.dpr-items-table input[name="location"]').val();
         response.agency = $('.dpr-items-table select[name="agency"]').selectpicker('val');
         response.type = $('.dpr-items-table select[name="type"]').selectpicker('val');
-        response.sub_type = $('.dpr-items-table select[name="sub_type"]').selectpicker('val');
+        response.sub_type = $('.dpr-items-table textarea[name="sub_type"]').val();
         response.work_execute = $('.dpr-items-table input[name="work_execute"]').val();
         response.material_consumption = $('.dpr-items-table input[name="material_consumption"]').val();
         response.male = $('.dpr-items-table input[name="male"]').val();

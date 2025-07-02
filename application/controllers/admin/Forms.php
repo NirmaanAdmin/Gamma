@@ -1253,7 +1253,7 @@ class Forms extends AdminController
         $data['group'] = $this->input->get('group');
         $data['title'] = _l('setting');
         $data['tab'][] = 'progress_report_type';
-        $data['tab'][] = 'progress_report_sub_type';
+        // $data['tab'][] = 'progress_report_sub_type';
         $data['tab'][] = 'progress_report_machinary';
         if ($data['group'] == '') {
             $data['group'] = 'progress_report_type';
