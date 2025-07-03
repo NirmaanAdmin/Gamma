@@ -84,12 +84,12 @@ function is_vendor_admin($id, $staff_id = '')
 function get_vendor_company_name($userid, $prevent_empty_company = false)
 {
     if ($userid !== '') {
-        $_userid = $userid;
+        $userid = $userid;
     }
     $CI = & get_instance();
 
     $client = $CI->db->select('company')
-    ->where('userid', $_userid)
+    ->where('userid', $userid)
     ->from(db_prefix() . 'pur_vendor')
     ->get()
     ->row();

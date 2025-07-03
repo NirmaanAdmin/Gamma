@@ -59,8 +59,8 @@
     .laber-type .dropdown-toggle {
         width: 140px !important;
     }
-   
-    
+
+
 </style>
 <div class="col-md-12">
     <hr class="hr-panel-separator" />
@@ -122,7 +122,7 @@
                     <th rowspan="2" class="daily_report_head daily_center" style="width: 160px;">
                         <span class="daily_report_label">Type</span>
                     </th>
-                    <th rowspan="2" class="daily_report_head daily_center" style="width: 160px;">
+                    <th rowspan="2" class="daily_report_head daily_center" style="width: 17%;">
                         <span class="daily_report_label">Remarks</span>
                     </th>
                     <th colspan="2" class="daily_report_head daily_center">
@@ -155,7 +155,7 @@
                         <span class="daily_report_label">Machinary</span>
                     </th>
                     <th class="daily_report_head daily_center">
-                        <span class="daily_report_label">Total Machinary</span>
+                        <span class="daily_report_label">Total</span>
                     </th>
                     <th class="daily_report_head daily_center">
                         <span class="daily_report_label"><i class="fa fa-cog"></i></span>

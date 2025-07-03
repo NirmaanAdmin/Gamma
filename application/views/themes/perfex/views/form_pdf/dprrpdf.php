@@ -60,21 +60,21 @@ $formbasicinfo .= '</table>';
 $pdf->writeHTML($formbasicinfo, true, false, false, false, '');
 
 $formrowsinfo = '';
-$formrowsinfo .= '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1">';
-$formrowsinfo .= '<tbody>';
+$formrowsinfo .= '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
+$formrowsinfo .= '<thead>';  // Changed from tbody to thead for header rows
 $formrowsinfo .= '
 <tr style="font-size:20px;">
     <td colspan="11" align="center"><b>ACTIVITY WITH LOCATION & OUTPUT</b></td>
 </tr>
 <tr style="font-size:11px;">
-    <td rowspan="2" width="16%;" align="center"><b>Location</b></td>
+    <td rowspan="2" width="11%;" align="center"><b>Location</b></td>
     <td rowspan="2" width="11%;" align="center"><b>Agency</b></td>
     <td rowspan="2" width="10%;" align="center"><b>Type</b></td>
-    <td rowspan="2" width="8%;" align="center"><b>Remarks</b></td> 
+    <td rowspan="2" width="16%;" align="center"><b>Remarks</b></td> 
     <td colspan="2" width="20%;" align="center"><b>Work Progress</b></td>
     <td colspan="3" width="19%;" align="center"><b>Type Of Manpower</b></td>
     <td rowspan="2" width="8%;" align="center"><b>Machinery</b></td>
-    <td rowspan="2" width="8%;" align="center"><b>Total Machinery</b></td> 
+    <td rowspan="2" width="5%;" align="center"><b>Total</b></td> 
 </tr>
 <tr style="font-size:11px;">
     <td width="10%;" align="center"><b>Work Execute (smt/Rmt/Cmt)</b></td>
@@ -84,37 +84,41 @@ $formrowsinfo .= '
     <td width="5%;" align="center"><b>Total</b></td>
 </tr>
 ';
+$formrowsinfo .= '</thead>';
 
+$formrowsinfo .= '<tbody>';  // Start tbody for data rows
 if (!empty($form_rows_info)) {
     foreach ($form_rows_info as $key => $value) {
         $formrowsinfo .= '
             <tr style="font-size:11px;">
-                <td align="left">' . $value['location'] . '</td>
-                <td align="left">' . get_vendor_company_name($value['agency']) . '</td>
-                <td align="left">' . get_progress_report_type_name($value['type']) . '</td>
-                <td align="left">' . $value['sub_type'] . '</td> 
-                <td align="left">' . $value['work_execute'] . '</td>
-                <td align="left">' . $value['material_consumption'] . '</td>
-                <td align="center">' . $value['male'] . '</td>
-                <td align="center">' . $value['female'] . '</td>
-                <td align="center">' . $value['total'] . '</td>
-                <td align="left">' . get_progress_report_machinary_name($value['machinery']) . '</td>
-                <td align="center">' . $value['total_machinery'] . '</td> 
+                <td align="left" width="11%;">' . $value['location'] . '</td>
+                <td align="left" width="11%;">' . get_vendor_company_name($value['agency']) . '</td>
+                <td align="left" width="10%;">' . get_progress_report_type_name($value['type']) . '</td>
+                <td align="left" width="16%;">' . $value['sub_type'] . '</td> 
+                <td align="left" width="10%;">' . $value['work_execute'] . '</td>
+                <td align="left" width="10%;">' . $value['material_consumption'] . '</td>
+                <td align="center" width="6%;">' . $value['male'] . '</td>
+                <td align="center" width="8%;">' . $value['female'] . '</td>
+                <td align="center" width="5%;">' . $value['total'] . '</td>
+                <td align="left" width="8%;">' . get_progress_report_machinary_name($value['machinery']) . '</td>
+                <td align="center" width="5%;">' . $value['total_machinery'] . '</td> 
             </tr>';
     }
 }
-
 $formrowsinfo .= '</tbody>';
 $formrowsinfo .= '</table>';
 
+
+
+$pdf->SetAutoPageBreak(true, 20);
 $pdf->writeHTML($formrowsinfo, true, false, false, false, '');
 
 // Add a page break before the note
 if ($form_data->message != '') {
     $pdf->AddPage(); // Add a new page
-    
+
     $noteContent = '<h2>Note:</h2>';
     $noteContent .= '<p>' . $form_data->message . '</p>';
-    
+
     $pdf->writeHTML($noteContent, true, false, false, false, '');
 }

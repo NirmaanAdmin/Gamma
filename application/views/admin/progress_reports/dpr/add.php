@@ -1,25 +1,24 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <?php init_head(); ?>
 <style type="text/css">
-  .loader-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.8);
-    z-index: 9999;
-  }
+    .loader-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        z-index: 9999;
+    }
 
-  .loader-gif {
-    width: 100px;
-    /* Adjust the size as needed */
-    height: 100px;
-  }
-
+    .loader-gif {
+        width: 100px;
+        /* Adjust the size as needed */
+        height: 100px;
+    }
 </style>
 <div id="wrapper">
     <div class="content">
@@ -190,7 +189,76 @@
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
-                                <?php echo render_textarea('message', '', '', [], [], '', 'tinymce'); ?>
+                                <?php
+                                $table_html = '
+<table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 20px; margin-bottom: 20px; border: 1px solid #000;">
+    <tr>
+        <th colspan="5" style="font-weight: bold; text-align: center; border: 1px solid #000">RMC PLANT</th>
+    </tr>
+    <tr>
+        <th style="border: 1px solid #000;font-weight: bold">Sr NO</th>
+        <th style="border: 1px solid #000;font-weight: bold">Challan No</th>
+        <th style="border: 1px solid #000;font-weight: bold">Grade</th>
+        <th style="border: 1px solid #000;font-weight: bold">Structure Work</th>
+        <th style="border: 1px solid #000;font-weight: bold">Quantity(CMT)</th>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td>
+    </tr>
+    <tr>
+        <td colspan="4" style="text-align: center; border: 1px solid #000;font-weight: bold">Total Qty</td>
+        <td style="border: 1px solid #000">0</td>
+    </tr>
+</table>
+<br>
+<table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 20px; margin-bottom: 20px; border: 1px solid #000;">
+    <tr>
+        <th colspan="5" style="font-weight: bold; text-align: center; border: 1px solid #000">Material Inward</th>
+    </tr>
+    <tr>
+        <th style="border: 1px solid #000;font-weight: bold">Sr NO</th>
+        <th style="border: 1px solid #000;font-weight: bold">Challan No/ Truck No </th>
+        <th style="border: 1px solid #000;font-weight: bold">Supplier Name</th>
+        <th style="border: 1px solid #000;font-weight: bold">Material Description</th>
+        <th style="border: 1px solid #000;font-weight: bold">Total</th>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #000;"> </td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td>
+    </tr>
+    
+</table>
+';
+
+                                echo render_textarea(
+                                    'message',    // name
+                                    '',           // label
+                                    $table_html,  // initial content (now two tables)
+                                    [],           // textarea attributes
+                                    [],           // additional data
+                                    '',           // form-control class
+                                    'tinymce'     // editor type
+                                );
+                                ?>
+
+
                             </div>
                         </div>
 
@@ -232,11 +300,10 @@
             let project_val = $('#project_id').val();
             let duedate = $('#duedate').val();
             if (project_val != '' || duedate != '') {
-                 $('#loader-container').removeClass('hide');
+                $('#loader-container').removeClass('hide');
             }
-           
+
         });
-        
     </script>
     </body>
 
