@@ -245,6 +245,28 @@
     </tr>
     
 </table>
+<br>
+<table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 20px; margin-bottom: 20px; border: 1px solid #000;">
+    <tr>
+        <th colspan="5" style="font-weight: bold; text-align: center; border: 1px solid #000">Kautilya Department Labour</th>
+    </tr>
+    <tr>
+        <th style="border: 1px solid #000;font-weight: bold">Sr NO</th>
+        <th style="border: 1px solid #000;font-weight: bold">Attendance</th>
+        <th style="border: 1px solid #000;font-weight: bold">Over Time</th>
+        <th style="border: 1px solid #000;font-weight: bold">Kharchi</th>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #000;"> </td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td><td style="border: 1px solid #000;"></td>
+    </tr>
+    
+</table>
 ';
 
                                 echo render_textarea(
