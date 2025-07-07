@@ -528,16 +528,54 @@ class Forms extends ClientsController
                         $error = curl_error($ch);
                         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                         curl_close($ch);
-
-                        // Debugging
-                        // if ($error) {
-                        //     echo "cURL Error: " . $error;
-                        // } else {
-                        //     echo "HTTP Status: " . $httpCode . "\n";
-                        //     echo "Response: " . $response;
-                        // }
                     } elseif ($this->input->post('key') == '297b1a90ba97a2f497c068b45d91a630') {
                         $regular_fields['projects']  = 2;
+                        $phone = $regular_fields['phonenumber'];
+                        $message = 'welcomereminder220';
+                        $var1 = 'Project Highlights:';
+                        $var2 = '- 2 allotted car parking spaces';
+                        $var3 = '- 16-feet long master bedroom';
+                        $var4 = '- Taj-facing apartments and SP Ring Road view';
+                        $var5 = '- Standing balcony in every room';
+                        $var6 = '- SP Ring Road touch project';
+                        $var7 = '- Amenities such as a gym, yoga-meditation room, indoor game zone, party hall, home theatre, etc.';
+                        $var8 = 'Enquire: https://kautilyadevelopers.in/project/kautilya-two20/';
+                        $mediaLink = 'https://kautilya.n360.site/assets/pdf/Kautilya_Two20_Brochure.pdf';
+
+                        // Build the URL with proper encoding
+                        $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?' . http_build_query([
+                            'number' => '91' . $phone,
+                            'message' => $message,
+                            'var1' => $var1,
+                            'var2' => $var2,
+                            'var3' => $var3,
+                            'var4' => $var4,
+                            'var5' => $var5,
+                            'var6' => $var6,
+                            'var7' => $var7,
+                            'var8' => $var8,
+                            'medialink' => $mediaLink
+                        ]);
+
+                        // Initialize cURL
+                        $ch = curl_init();
+                        curl_setopt_array($ch, [
+                            CURLOPT_URL => $url,
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 30,
+                            CURLOPT_SSL_VERIFYPEER => true, // Set to false if you have SSL issues
+                            CURLOPT_HTTPHEADER => [
+                                'Accept: application/json'
+                            ]
+                        ]);
+
+                        // Execute and handle response
+                        $response = curl_exec($ch);
+                        $error = curl_error($ch);
+                        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                        curl_close($ch);
                     } elseif ($this->input->post('key') == '7764a894c046848bfdaadf403ae7816c') {
                         $regular_fields['projects']  = 3;
                     } elseif ($this->input->post('key') == 'dcf1d870f5a9bb632c5e3468d0aeb3d6') {
