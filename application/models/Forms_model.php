@@ -1524,7 +1524,6 @@ class Forms_model extends App_Model
                     $this->insert_form_attachments_to_database($attachments, $formid);
                 }
             }
-
             $_attachments = $this->get_form_attachments($formid);
 
 
@@ -1559,7 +1558,7 @@ class Forms_model extends App_Model
                 //         }
                 //     }
                 // }
-                pusher_trigger_notification($notifiedUsers);
+                // pusher_trigger_notification($notifiedUsers);
             } else {
                 if ($cc) {
                     $this->db->where('formid', $formid);
@@ -4186,5 +4185,61 @@ class Forms_model extends App_Model
         $this->db->where('formid', $id);
         $query = $this->db->get(db_prefix() . 'forms');
         return $query->row();
+    }
+
+    public function add_edit_attachments($data, $id, $admin = null, $pipe_attachments = false)
+    {
+        if (isset($data['assign_to_current_user'])) {
+            $assigned = get_staff_user_id();
+            unset($data['assign_to_current_user']);
+        }
+
+        $unsetters = [
+            'note_description',
+            'department',
+            'priority',
+            'subject',
+            'assigned',
+            'project_id',
+            'service',
+            'status_top',
+            'attachments',
+            'DataTables_Table_0_length',
+            'DataTables_Table_1_length',
+            'custom_fields',
+        ];
+
+        foreach ($unsetters as $unset) {
+            if (isset($data[$unset])) {
+                unset($data[$unset]);
+            }
+        }
+
+
+        if ($pipe_attachments != false) {
+            $this->process_pipe_attachments($pipe_attachments, $id);
+        } else {
+            $attachments = handle_form_attachments($id);
+            if ($attachments) {
+                $this->forms_model->insert_form_attachments_to_database($attachments, $id);
+                return true;
+            }
+        }
+
+
+
+
+        return false;
+    }
+
+    public function lock_dpr($data)
+    {
+        if (!empty($data)) {
+            $this->db->where('formid', $data['formid']);
+            $this->db->update(db_prefix() . 'forms', [
+                'locked' => 1,
+            ]);
+            return true;
+        }
     }
 }

@@ -1,6 +1,11 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <?php init_head(); ?>
 <?php set_form_open($form->adminread, $form->formid); ?>
+<style>
+    .preview_image {
+        margin-bottom: 0px !important;
+    }
+</style>
 <div id="wrapper">
     <div class="content">
         <div class="row">
@@ -45,18 +50,20 @@
                                 <div class="scroller arrow-right"><i class="fa fa-angle-right"></i></div>
                                 <div class="horizontal-tabs">
                                     <ul class="nav nav-tabs nav-tabs-horizontal" role="tablist">
-                                        <!-- <li role="presentation" class="<?php if (!$this->session->flashdata('active_tab')) {
-                                                                                echo 'active';
-                                                                            } ?>">
-                                            <a href="#addreply" aria-controls="addreply" role="tab" data-toggle="tab">
-                                                <?php echo _l('form_single_add_reply'); ?>
-                                            </a>
-                                        </li> -->
+
                                         <li role="presentation" class="<?php if ($this->session->flashdata('active_tab_settings')) {
                                                                             echo 'active';
                                                                         } ?>">
                                             <a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
                                                 <?php echo _l('Data'); ?>
+                                            </a>
+                                        </li>
+
+                                        <li role="presentation" class="<?php if (!$this->session->flashdata('active_tab')) {
+                                                                            echo 'active';
+                                                                        } ?>">
+                                            <a href="#addreply" aria-controls="addreply" role="tab" data-toggle="tab">
+                                                <?php echo _l('Attachments'); ?>
                                             </a>
                                         </li>
                                         <li role="presentation">
@@ -114,179 +121,18 @@
                             <div role="tabpanel" class="tab-pane <?php if (!$this->session->flashdata('active_tab')) {
                                                                         echo 'active';
                                                                     } ?>" id="addreply">
-                                <?php $tags = get_tags_in($form->formid, 'form'); ?>
-                                <?php if (count($tags) > 0) { ?>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <?php echo '<p><i class="fa fa-tag" aria-hidden="true"></i> ' . _l('tags') . ':</p> ' . render_tags($tags); ?>
-                                            <hr class="hr-panel-separator" />
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                                <?php if (count($form->form_notes) > 0) { ?>
-                                    <div class="mbot15">
-                                        <h4 class="tw-font-semibold tw-text-base tw-mt-0">
-                                            <?php echo _l('form_single_private_staff_notes'); ?>
-                                        </h4>
-                                        <div class="formstaffnotes tw-mb-1 tw-inline-block tw-w-full">
-                                            <?php foreach ($form->form_notes as $note) { ?>
-                                                <div
-                                                    class="tw-rounded-md tw-bg-warning-50 tw-p-4 tw-mb-2 tw-group tw-border tw-border-solid tw-border-warning-100">
-                                                    <div class="tw-flex">
-                                                        <div class="tw-flex-shrink-0">
-                                                            <?php echo staff_profile_image($note['addedfrom'], ['staff-profile-xs-image']); ?>
-                                                        </div>
-                                                        <div class="tw-ml-2 tw-flex-1">
-                                                            <div class="tw-flex">
-                                                                <h3
-                                                                    class="tw-text-sm tw-font-medium tw-text-warning-800 tw-mb-0 tw-mt-1 tw-grow">
-                                                                    <a href="<?php echo admin_url('staff/profile/' . $note['addedfrom']); ?>"
-                                                                        class="tw-text-warning-700 hover:tw-text-warning-900">
-                                                                        <?php echo e(_l('form_single_form_note_by', get_staff_full_name($note['addedfrom']))); ?>
-                                                                    </a>
-                                                                    <br />
-                                                                    <span class="tw-text-xs tw-text-warning-600">
-                                                                        <?php echo e(_l('form_single_note_added', _dt($note['dateadded']))); ?>
-                                                                    </span>
-                                                                </h3>
 
-                                                                <?php if ($note['addedfrom'] == get_staff_user_id() || is_admin()) { ?>
-                                                                    <div class="tw-space-x-1 tw-hidden group-hover:tw-block">
-                                                                        <a href="#"
-                                                                            class="tw-text-warning-600 hover:tw-text-warning-700 focus:tw-text-warning-700"
-                                                                            onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;">
-                                                                            <i class="fa-regular fa-pen-to-square fa-lg"></i>
-                                                                        </a>
-                                                                        <a href="<?php echo admin_url('misc/delete_note/' . $note['id']); ?>"
-                                                                            class="tw-text-warning-600 hover:tw-text-warning-700 focus:tw-text-warning-700 _delete">
-                                                                            <i class="fa-regular fa-trash-can fa-lg"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                <?php } ?>
-                                                            </div>
 
-                                                            <div class="tw-mt-2 tw-text-sm tw-text-warning-700">
-                                                                <div data-note-description="<?php echo e($note['id']); ?>">
-                                                                    <?php echo process_text_content_for_display($note['description']); ?>
-                                                                </div>
-                                                                <div data-note-edit-textarea="<?php echo e($note['id']); ?>"
-                                                                    class="hide">
-                                                                    <textarea name="description" class="form-control"
-                                                                        rows="4"><?php echo clear_textarea_breaks($note['description']); ?></textarea>
-                                                                    <div class="text-right tw-mt-3">
-                                                                        <button type="button" class="btn btn-default"
-                                                                            onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;">
-                                                                            <?php echo _l('cancel'); ?>
-                                                                        </button>
-                                                                        <button type="button" class="btn btn-primary"
-                                                                            onclick="edit_note(<?php echo e($note['id']); ?>);">
-                                                                            <?php echo _l('update_note'); ?>
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            <?php } ?>
-                                        </div>
-                                    </div>
-                                <?php } ?>
                                 <div>
                                     <?php echo form_open_multipart($this->uri->uri_string(), ['id' => 'single-form-form', 'novalidate' => true]); ?>
-                                    <?php if (can_staff_delete_form()) { ?>
-                                        <a href="<?php echo admin_url('forms/delete/' . $form->formid); ?>"
-                                            data-toggle="tooltip" data-title="<?= _l('delete', _l('form_lowercase')); ?>"
-                                            class="tw-text-neutral-500 hover:tw-text-neutral-700 focus:tw-text-neutral-700 _delete tw-mr-2">
-                                            <i class="fa-regular fa-trash-can fa-lg"></i>
-                                        </a>
-                                    <?php } ?>
 
-                                    <?php if (!empty($form->priority_name)) { ?>
-                                        <span class="form-label label label-default inline-block">
-                                            <?php echo e(_l('form_single_priority', form_priority_translate($form->priorityid))); ?>
-                                        </span>
-                                    <?php } ?>
-                                    <?php if (!empty($form->service_name)) { ?>
-                                        <span class="form-label label label-default inline-block">
-                                            <?php echo _l('service') . ': ' . $form->service_name; ?>
-                                        </span>
-                                    <?php } ?>
+
                                     <?php echo form_hidden('formid', $form->formid); ?>
-                                    <span class="form-label label label-default inline-block">
-                                        <?php echo _l('department') . ': ' . $form->department_name; ?>
-                                    </span>
-                                    <?php if ($form->assigned != 0) { ?>
-                                        <span class="form-label label label-info inline-block">
-                                            <?php echo _l('form_assigned'); ?>:
-                                            <?php echo e(get_staff_full_name($form->assigned)); ?>
-                                        </span>
-                                    <?php } ?>
-                                    <?php if ($form->lastreply !== null) { ?>
-                                        <span class="form-label label label-success inline-block" data-toggle="tooltip"
-                                            title="<?php echo e(_dt($form->lastreply)); ?>">
-                                            <span class="text-has-action">
-                                                <?php echo e(_l('form_single_last_reply', time_ago($form->lastreply))); ?>
-                                            </span>
-                                        </span>
-                                    <?php } ?>
 
-                                    <a class="form-label label label-info inline-block"
-                                        href="<?php echo get_form_public_url($form); ?>" target="_blank">
-                                        <?php echo _l('view_public_form'); ?>
-                                    </a>
 
-                                    <div class="mtop15">
-                                        <?php
-                                        $use_knowledge_base = get_option('use_knowledge_base');
-                                        ?>
-                                        <div class="row mbot15">
-                                            <div class="col-md-6 hide">
-                                                <select data-width="100%" id="insert_predefined_reply"
-                                                    data-live-search="true" class="selectpicker"
-                                                    data-title="<?php echo _l('form_single_insert_predefined_reply'); ?>">
-                                                    <?php foreach ($predefined_replies as $predefined_reply) { ?>
-                                                        <option value="<?php echo e($predefined_reply['id']); ?>">
-                                                            <?php echo e($predefined_reply['name']); ?></option>
-                                                    <?php } ?>
-                                                </select>
-                                            </div>
-                                            <?php if ($use_knowledge_base == 1) { ?>
-                                                <div class="visible-xs">
-                                                    <div class="mtop15"></div>
-                                                </div>
-                                                <div class="col-md-6 hide">
-                                                    <?php $groups = get_all_knowledge_base_articles_grouped(); ?>
-                                                    <select data-width="100%" id="insert_knowledge_base_link"
-                                                        class="selectpicker" data-live-search="true"
-                                                        onchange="insert_form_knowledgebase_link(this);"
-                                                        data-title="<?php echo _l('form_single_insert_knowledge_base_link'); ?>">
-                                                        <option value=""></option>
-                                                        <?php foreach ($groups as $group) { ?>
-                                                            <?php if (count($group['articles']) > 0) { ?>
-                                                                <optgroup label="<?php echo e($group['name']); ?>">
-                                                                    <?php foreach ($group['articles'] as $article) { ?>
-                                                                        <option value="<?php echo e($article['articleid']); ?>">
-                                                                            <?php echo e($article['subject']); ?>
-                                                                        </option>
-                                                                    <?php } ?>
-                                                                </optgroup>
-                                                            <?php } ?>
-                                                        <?php } ?>
-                                                    </select>
-                                                </div>
-                                            <?php } ?>
-                                        </div>
-                                        <?php echo render_textarea('message', '', '', [], [], '', 'tinymce'); ?>
-                                        <div
-                                            class="alert alert-warning staff_replying_notice <?php echo ($form->staff_id_replying === null || $form->staff_id_replying === get_staff_user_id()) ? 'hide' : '' ?>">
-                                            <?php if ($form->staff_id_replying !== null && $form->staff_id_replying !== get_staff_user_id()) { ?>
-                                                <p><?php echo e(_l('staff_is_currently_replying', get_staff_full_name($form->staff_id_replying))); ?>
-                                                </p>
-                                            <?php } ?>
-                                        </div>
-                                    </div>
+
+
+
                                     <div class="form-reply-tools">
                                         <?php if ($form->merged_form_id === null) { ?>
                                             <div class="btn-bottom-toolbar text-right">
@@ -298,49 +144,6 @@
                                             </div>
                                         <?php } ?>
                                         <div>
-                                            <div class="row">
-                                                <div class="col-md-5">
-                                                    <?php echo render_select('status', $statuses, ['formstatusid', 'name'], 'form_single_change_status', $form->status, [], [], '', '', false); ?>
-                                                    <?php echo render_input('cc', 'CC', $form->cc); ?>
-                                                    <?php if ($form->assigned !== get_staff_user_id()) { ?>
-                                                        <div class="checkbox">
-                                                            <input type="checkbox" name="assign_to_current_user"
-                                                                id="assign_to_current_user">
-                                                            <label
-                                                                for="assign_to_current_user"><?php echo _l('form_single_assign_to_me_on_update'); ?></label>
-                                                        </div>
-                                                    <?php } ?>
-                                                    <div class="checkbox">
-                                                        <input type="checkbox"
-                                                            <?php echo hooks()->apply_filters('form_add_response_and_back_to_list_default', 'checked'); ?>
-                                                            name="form_add_response_and_back_to_list" value="1"
-                                                            id="form_add_response_and_back_to_list">
-                                                        <label
-                                                            for="form_add_response_and_back_to_list"><?php echo _l('form_add_response_and_back_to_list'); ?></label>
-                                                    </div>
-                                                </div>
-                                                <?php
-                                                $totalMergedForms = count($merged_forms);
-                                                if ($totalMergedForms > 0) { ?>
-                                                    <div class="col-md-7">
-                                                        <div class="mtop25">
-                                                            <p class="alert alert-info">
-                                                                <?php echo _l('form_merged_forms_header', $totalMergedForms) ?>
-                                                            </p>
-                                                            <ul class="list-group">
-                                                                <?php foreach ($merged_forms as $merged_form) { ?>
-                                                                    <a href="<?php echo admin_url('forms/form/' . $merged_form['formid']) ?>"
-                                                                        class="list-group-item tw-font-medium">
-                                                                        #<?php echo $merged_form['formid'] ?> -
-                                                                        <?php echo $merged_form['subject'] ?>
-                                                                    </a>
-                                                                <?php } ?>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                <?php } ?>
-                                            </div>
-                                            <hr class="hr-panel-separator" />
                                             <div class="row attachments">
                                                 <div class="attachment">
                                                     <div class="col-md-5 mbot15">
@@ -561,7 +364,12 @@
                                     <a href="#" class="btn btn-primary save_dpr_changes">
                                         <?php echo _l('submit'); ?>
                                     </a>
+                                    <a href="javascript:void(0);" class="btn btn-primary lock_dpr" onclick="lock_dpr()">
+                                        <?php echo _l('Lock'); ?>
+                                    </a>
+
                                 </div>
+
                             </div>
                             <?php hooks()->do_action('after_admin_single_form_tab_menu_last_content', $form); ?>
 
@@ -645,33 +453,43 @@
                                     ?>
                                 </div>
                                 <?php if (count($form->attachments) > 0) {
-                                    echo '<hr />';
+                                    echo '<hr /><div class="row">';
                                     foreach ($form->attachments as $attachment) {
                                         $path     = get_upload_path_by_type('form') . $form->formid . '/' . $attachment['file_name'];
                                         $is_image = is_image($path);
+                                ?>
 
-                                        if ($is_image) {
+                                        <div class="col-md-3 attachment-item">
+                                            <?php
+                                            // if ($is_image) {
                                             echo '<div class="preview_image">';
-                                        } ?>
-                                        <a href="<?php echo site_url('download/file/form/' . $attachment['id']); ?>"
-                                            class="display-block mbot5" <?php if ($is_image) { ?>
-                                            data-lightbox="attachment-form-<?php echo e($form->formid); ?>" <?php } ?>>
-                                            <i class="<?php echo get_mime_class($attachment['filetype']); ?>"></i>
-                                            <?php echo e($attachment['file_name']); ?>
-                                            <?php if ($is_image) { ?>
-                                                <img class="mtop5"
-                                                    src="<?php echo site_url('download/preview_image?path=' . protected_file_url_by_path($path) . '&type=' . $attachment['filetype']); ?>">
-                                            <?php } ?>
-                                        </a>
-                                        <?php if ($is_image) {
+                                            // } 
+                                            ?>
+
+                                            <a href="<?php echo site_url('download/file/form/' . $attachment['id']); ?>"
+                                                class="display-block mbot5" <?php if ($is_image) { ?>
+                                                data-lightbox="attachment-form-<?php echo e($form->formid); ?>" <?php } ?>>
+                                                <i class="<?php echo get_mime_class($attachment['filetype']); ?>"></i>
+                                                <?php echo e($attachment['file_name']); ?>
+                                                <?php if ($is_image) { ?>
+                                                    <img class="mtop5 img-responsive"
+                                                        src="<?php echo site_url('download/preview_image?path=' . protected_file_url_by_path($path) . '&type=' . $attachment['filetype']); ?>">
+                                                <?php } ?>
+                                            </a>
+
+                                            <?php
+                                            // if ($is_image) {
                                             echo '</div>';
-                                        }
-                                        if (is_admin() || (!is_admin() && get_option('allow_non_admin_staff_to_delete_form_attachments') == '1')) {
-                                            echo '<a href="' . admin_url('forms/delete_attachment/' . $attachment['id']) . '" class="text-danger _delete">' . _l('delete') . '</a>';
-                                        }
-                                        echo '<hr />'; ?>
+                                            // }
+
+                                            if (is_admin() || (!is_admin() && get_option('allow_non_admin_staff_to_delete_form_attachments') == '1')) {
+                                                echo '<a href="' . admin_url('forms/delete_attachment/' . $attachment['id']) . '" class="text-danger _delete">' . _l('delete') . '</a>';
+                                            } ?>
+                                        </div>
+
                                 <?php
                                     }
+                                    echo '</div><hr />';
                                 } ?>
                             </div>
                         </div>
@@ -862,43 +680,43 @@
                 }, 100);
             }
         });
-        var editorMessage = tinymce.get('message');
-        if (typeof(editorMessage) != 'undefined') {
-            var firstTypeCheckPerformed = false;
+        // var editorMessage = tinymce.get('message');
+        // if (typeof(editorMessage) != 'undefined') {
+        //     var firstTypeCheckPerformed = false;
 
-            editorMessage.on('change', function() {
-                if (!firstTypeCheckPerformed) {
-                    // make AJAX Request
-                    $.get(admin_url + 'forms/check_staff_replying/<?php echo e($form->formid); ?>',
-                        function(result) {
-                            var data = JSON.parse(result)
-                            if (data.is_other_staff_replying === true || data
-                                .is_other_staff_replying === 'true') {
-                                $('.staff_replying_notice').html('<p>' + data.message + '</p>');
-                                $('.staff_replying_notice').removeClass('hide');
-                            } else {
-                                $('.staff_replying_notice').addClass('hide');
-                            }
-                        });
+        //     editorMessage.on('change', function() {
+        //         if (!firstTypeCheckPerformed) {
+        //             // make AJAX Request
+        //             $.get(admin_url + 'forms/check_staff_replying/<?php echo e($form->formid); ?>',
+        //                 function(result) {
+        //                     var data = JSON.parse(result)
+        //                     if (data.is_other_staff_replying === true || data
+        //                         .is_other_staff_replying === 'true') {
+        //                         $('.staff_replying_notice').html('<p>' + data.message + '</p>');
+        //                         $('.staff_replying_notice').removeClass('hide');
+        //                     } else {
+        //                         $('.staff_replying_notice').addClass('hide');
+        //                     }
+        //                 });
 
-                    firstTypeCheckPerformed = true;
-                }
+        //             firstTypeCheckPerformed = true;
+        //         }
 
-                $.post(admin_url +
-                    'forms/update_staff_replying/<?php echo e($form->formid); ?>/<?php echo get_staff_user_id() ?>'
-                );
-            });
+        //         $.post(admin_url +
+        //             'forms/update_staff_replying/<?php echo e($form->formid); ?>/<?php echo get_staff_user_id() ?>'
+        //         );
+        //     });
 
-            $(document).on('pagehide, beforeunload', function() {
-                $.post(admin_url + 'forms/update_staff_replying/<?php echo e($form->formid); ?>');
-            })
+        //     $(document).on('pagehide, beforeunload', function() {
+        //         $.post(admin_url + 'forms/update_staff_replying/<?php echo e($form->formid); ?>');
+        //     })
 
-            $(document).on('visibilitychange', function() {
-                if (document.visibilityState === 'visible' || (editorMessage.getContent().trim() != ''))
-                    return;
-                $.post(admin_url + 'forms/update_staff_replying/<?php echo e($form->formid); ?>');
-            })
-        }
+        //     $(document).on('visibilitychange', function() {
+        //         if (document.visibilityState === 'visible' || (editorMessage.getContent().trim() != ''))
+        //             return;
+        //         $.post(admin_url + 'forms/update_staff_replying/<?php echo e($form->formid); ?>');
+        //     })
+        // }
     });
 
 
@@ -950,6 +768,37 @@
             var project_name = $('#project_id option:selected').text();
             $('.view_project_name').html(project_name);
             $('.selectpicker').selectpicker('refresh');
+        });
+    }
+
+    function lock_dpr() {
+        var formData = new FormData();
+        if (typeof csrfData !== "undefined") {
+            formData.append(csrfData["token_name"], csrfData["hash"]);
+        }
+        formData.append("formid", $('input[name="formid"]').val());
+        $.ajax({
+            url: admin_url + "forms/lock_dpr",
+            type: "POST",
+            data: formData,
+            processData: false, // Prevent jQuery from automatically processing the data
+            contentType: false, // Prevent jQuery from setting the Content-Type header
+            success: function(response) {
+                response = JSON.parse(response);
+                if (response.success === true) {
+                    if (typeof response.department_reassigned !== "undefined") {
+                        window.location.href = admin_url + "progress_report_listing/dpr";
+                    } else {
+                        window.location.href = admin_url + "forms/progress_report_listing/dpr";
+                    }
+                } else if (typeof response.message !== "undefined") {
+                    alert_float("warning", response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                alert_float("danger", "An error occurred while processing your request.");
+            },
         });
     }
 </script>

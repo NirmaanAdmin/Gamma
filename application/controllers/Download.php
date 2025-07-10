@@ -236,7 +236,15 @@ class Download extends App_Controller
             }
 
             $path = get_upload_path_by_type('estimate_request') . $attachment->rel_id . '/' . $attachment->file_name;
-        } else {
+        } elseif ($folder_indicator == 'form') {    
+            $this->db->where('id', $attachmentid);
+            $attachment = $this->db->get(db_prefix() . 'form_attachments')->row();
+            if (!$attachment) {
+                show_404();
+            }
+            $path = get_upload_path_by_type('form') . $attachment->formid . '/' . $attachment->file_name;
+
+        }else {
             die('folder not specified');
         }
 

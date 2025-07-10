@@ -79,7 +79,7 @@ class purchase extends AdminController
                 }
             } else {
 
-                if(has_permission('purchase_vendors', '', 'view_own') && !is_admin()){
+                if(has_permission('purchase_vendors', '', 'view_own') && !is_admin()){ 
                     if(!is_vendor_admin($id, get_staff_user_id())){
                         access_denied('purchase');
                     }

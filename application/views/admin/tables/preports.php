@@ -68,7 +68,7 @@ return App_table::find('preports')
             // 'status',
             'priority',
             // 'lastreply',
-            db_prefix() . 'forms.date',
+            db_prefix() . 'forms.date as date',
             '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'forms.formid and rel_type="form" ORDER by tag_order ASC) as tags',
             '2'
         ];
@@ -86,6 +86,8 @@ return App_table::find('preports')
             db_prefix() . 'forms.userid',
             'assigned',
             db_prefix() . 'clients.company',
+            db_prefix() . 'forms.locked as locked',
+
         ];
 
         $join = [
@@ -160,7 +162,6 @@ return App_table::find('preports')
 
         $output  = $result['output'];
         $rResult = $result['rResult'];
-
         foreach ($rResult as $pkey => $aRow) {
             $row = [];
             for ($i = 0; $i < count($aColumns); $i++) {
@@ -193,34 +194,48 @@ return App_table::find('preports')
                     } else {
                         $_data = e($_data);
                     }
+                    if ($aRow['locked'] == 0) {
+                        // Unlocked form - regular users can access
+                        $url = admin_url('forms/view_edit_dpr/' . $aRow['formid']);
+                        $_data = '<a href="' . $url . '?tab=settings" class="valign">' . $_data . '</a>';
 
-                    $url   = admin_url('forms/view_edit_dpr/' . $aRow['formid']);
-                    $_data = '<a href="' . $url . '?tab=settings" class="valign">' . $_data . '</a>';
-                    if ($aColumns[$i] == 'subject') {
-                        $_data .= '<div class="row-options">';
-                        $_data .= '<a href="' . $url . '?tab=settings">' . _l('view') . '</a>';
-                        $_data .= ' | <a href="' . $url . '?tab=settings">' . _l('edit') . '</a>';
-                        if (can_staff_delete_form()) {
-                            $_data .= ' | <a href="' . admin_url('forms/delete/' . $aRow['formid']) . '" class="text-danger _delete">' . _l('delete') . '</a>';
+                        if ($aColumns[$i] == 'subject') {
+                            $_data .= '<div class="row-options">';
+                            $_data .= '<a href="' . $url . '?tab=settings">' . _l('view') . '</a>';
+
+                            // All users can edit unlocked forms
+                            $_data .= ' | <a href="' . $url . '?tab=settings">' . _l('edit') . '</a>';
+
+                            if (can_staff_delete_form()) {
+                                $_data .= ' | <a href="' . admin_url('forms/delete/' . $aRow['formid']) . '" class="text-danger _delete">' . _l('delete') . '</a>';
+                            }
+                            $_data .= '</div>';
                         }
-                        $_data .= '</div>';
+                    } elseif ($aRow['locked'] == 1 && is_admin()) {
+                        // Locked form - only admin can access
+                        $url = admin_url('forms/view_edit_dpr/' . $aRow['formid']);
+                        $_data = '<a href="' . $url . '?tab=settings" class="valign">' . $_data . '</a>';
+
+                        if ($aColumns[$i] == 'subject') {
+                            $_data .= '<div class="row-options">';
+                            $_data .= '<a href="' . $url . '?tab=settings">' . _l('view') . '</a>';
+
+                            // Only admin can edit locked forms
+                            $_data .= ' | <a href="' . $url . '?tab=settings">' . _l('edit') . '</a>';
+
+                            if (can_staff_delete_form()) {
+                                $_data .= ' | <a href="' . admin_url('forms/delete/' . $aRow['formid']) . '" class="text-danger _delete">' . _l('delete') . '</a>';
+                            }
+                            $_data .= '</div>';
+                        }
+                    } else {
+                        // Locked form for non-admin users - no edit/delete options
+                        $_data = $_data;
                     }
                 } elseif ($i == $tagsColumns) {
                     $_data = render_tags($_data);
-                } elseif ($i == $contactColumn) {
-                    if ($aRow['userid'] != 0) {
-                        $_data = '<a href="' . admin_url('clients/client/' . $aRow['userid'] . '?group=contacts') . '">' . e($aRow['contact_full_name']);
-                        if (!empty($aRow['company'])) {
-                            $_data .= ' (' . e($aRow['company']) . ')';
-                        }
-                        $_data .= '</a>';
-                    } else {
-                        $_data = e($aRow['form_opened_by_name']);
-                    }
-                } elseif ($aColumns[$i] == 'status') {
-                    $_data = '<span class="label form-status-' . $aRow['status'] . '" style="border:1px solid ' . adjust_hex_brightness($aRow['statuscolor'], 0.4) . '; color:' . $aRow['statuscolor'] . ';background: ' . adjust_hex_brightness($aRow['statuscolor'], 0.04) . ';">' . e(form_status_translate($aRow['status'])) . '</span>';
-                } elseif ($aColumns[$i] == db_prefix() . 'forms.date') {
-                    $_data = e(_dt($_data));
+                } elseif (strpos($aColumns[$i], 'forms.date as date') !== false) {
+                    $_data =  date('d M, Y H:i A', strtotime($aRow['date']));
                 } elseif (strpos($aColumns[$i], 'service_name') !== false) {
                     $_data = e($_data);
                 } elseif ($aColumns[$i] == 'priority') {
