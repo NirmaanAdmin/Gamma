@@ -492,20 +492,30 @@ class Forms extends ClientsController
                     if ($this->input->post('key') == '347f376295d303a60c2c662263a1bc0b') {
                         $regular_fields['projects'] = 1;
 
-                        // Prepare the URL with parameters
-                        // Prepare the parameters
                         $phone = $regular_fields['phonenumber'];
-                        $name = $regular_fields['name'];
                         $message = 'welcomereminderclone154';
-                        $var2 = 'are delighted to announce that our Show House is now ready for viewing at *Kautilya One 54 - 3BHK* Club Class Living! Step into your future home and experience premium features, including:';
+                        $var1 = 'Thankyou for contacting us at Kautilya One54 - 3BHK Club class living with 2 allotted car parking and 100% loan papers.';
+                        $var2 = 'Possession Soon';
+                        $var3 = 'Project Highlights:';
+                        $var4 = '- 100% loan papers';
+                        $var5 = "- 16' Long Bedroom";
+                        $var6 = '- No-vehicle Zone';
+                        $var7 = '- Exclusive Home Theatre';
+                        $var8 = 'Youtube video link: https://shorturl.at/iTB79 Location Link: https://shorturl.at/visC4';
                         $mediaLink = 'https://kautilya.n360.site/assets/images/whatimg.png';
 
                         // Build the URL with proper encoding
                         $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?' . http_build_query([
                             'number' => '91' . $phone,
                             'message' => $message,
-                            'name' => $name,
+                            'var1' => $var1,
                             'var2' => $var2,
+                            'var3' => $var3,
+                            'var4' => $var4,
+                            'var5' => $var5,
+                            'var6' => $var6,
+                            'var7' => $var7,
+                            'var8' => $var8,
                             'medialink' => $mediaLink
                         ]);
 
