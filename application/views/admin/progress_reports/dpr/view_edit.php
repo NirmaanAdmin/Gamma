@@ -369,7 +369,7 @@
                                         <a href="javascript:void(0);" class="btn btn-primary lock_dpr" onclick="lock_dpr()">
                                             <?php echo _l('Lock'); ?>
                                         </a>
-                                    <?php elseif ($form->locked == 1): ?>
+                                    <?php elseif ($form->locked == 1 && is_admin()): ?>
                                         <a href="javascript:void(0);" class="btn btn-primary unlock_dpr" onclick="unlock_dpr()">
                                             <?php echo _l('Unlock DPR'); ?>
                                         </a>
