@@ -1468,4 +1468,40 @@ class Forms extends AdminController
             die();
         }
     }
+    
+
+    public function unlock_dpr()
+    {
+
+        if ($this->input->post()) {
+            $this->session->mark_as_flash('active_tab');
+            $this->session->mark_as_flash('active_tab_settings');
+
+            $data = $this->input->post();
+            // dd($data);
+            $success = $this->forms_model->unlock_dpr($this->input->post());
+            if ($success) {
+                $this->session->set_flashdata('active_tab', true);
+                $this->session->set_flashdata('active_tab_settings', true);
+                if (get_option('staff_access_only_assigned_departments') == 1) {
+                    $form = $this->forms_model->get_form_by_id($this->input->post('formid'));
+                    $this->load->model('departments_model');
+                    $staff_departments = $this->departments_model->get_staff_departments(get_staff_user_id(), true);
+                    if (!in_array($form->department, $staff_departments) && !is_admin()) {
+                        set_alert('success', _l('form_settings_updated_successfully_and_reassigned', $form->department_name));
+                        echo json_encode([
+                            'success'               => $success,
+                            'department_reassigned' => true,
+                        ]);
+                        die();
+                    }
+                }
+                set_alert('success', _l('DPR Unlocked Successfully'));
+            }
+            echo json_encode([
+                'success' => $success,
+            ]);
+            die();
+        }
+    }
 }

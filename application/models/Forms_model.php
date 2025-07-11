@@ -4242,4 +4242,15 @@ class Forms_model extends App_Model
             return true;
         }
     }
+
+    public function unlock_dpr($data)
+    {
+        if (!empty($data)) {
+            $this->db->where('formid', $data['formid']);
+            $this->db->update(db_prefix() . 'forms', [
+                'locked' => 0,
+            ]);
+            return true;
+        }
+    }
 }

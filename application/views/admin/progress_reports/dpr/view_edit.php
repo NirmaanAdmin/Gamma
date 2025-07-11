@@ -364,9 +364,17 @@
                                     <a href="#" class="btn btn-primary save_dpr_changes">
                                         <?php echo _l('submit'); ?>
                                     </a>
-                                    <a href="javascript:void(0);" class="btn btn-primary lock_dpr" onclick="lock_dpr()">
-                                        <?php echo _l('Lock'); ?>
-                                    </a>
+
+                                    <?php if ($form->locked == 0): ?>
+                                        <a href="javascript:void(0);" class="btn btn-primary lock_dpr" onclick="lock_dpr()">
+                                            <?php echo _l('Lock'); ?>
+                                        </a>
+                                    <?php elseif ($form->locked == 1): ?>
+                                        <a href="javascript:void(0);" class="btn btn-primary unlock_dpr" onclick="unlock_dpr()">
+                                            <?php echo _l('Unlock DPR'); ?>
+                                        </a>
+                                    <?php endif; ?>
+
 
                                 </div>
 
@@ -779,6 +787,37 @@
         formData.append("formid", $('input[name="formid"]').val());
         $.ajax({
             url: admin_url + "forms/lock_dpr",
+            type: "POST",
+            data: formData,
+            processData: false, // Prevent jQuery from automatically processing the data
+            contentType: false, // Prevent jQuery from setting the Content-Type header
+            success: function(response) {
+                response = JSON.parse(response);
+                if (response.success === true) {
+                    if (typeof response.department_reassigned !== "undefined") {
+                        window.location.href = admin_url + "progress_report_listing/dpr";
+                    } else {
+                        window.location.href = admin_url + "forms/progress_report_listing/dpr";
+                    }
+                } else if (typeof response.message !== "undefined") {
+                    alert_float("warning", response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                alert_float("danger", "An error occurred while processing your request.");
+            },
+        });
+    }
+
+    function unlock_dpr() {
+        var formData = new FormData();
+        if (typeof csrfData !== "undefined") {
+            formData.append(csrfData["token_name"], csrfData["hash"]);
+        }
+        formData.append("formid", $('input[name="formid"]').val());
+        $.ajax({
+            url: admin_url + "forms/unlock_dpr",
             type: "POST",
             data: formData,
             processData: false, // Prevent jQuery from automatically processing the data
