@@ -69,6 +69,7 @@ return App_table::find('preports')
             'priority',
             // 'lastreply',
             db_prefix() . 'forms.date as date',
+            db_prefix() . 'forms.locked as locked',
             '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'forms.formid and rel_type="form" ORDER by tag_order ASC) as tags',
             '2'
         ];
@@ -86,7 +87,7 @@ return App_table::find('preports')
             db_prefix() . 'forms.userid',
             'assigned',
             db_prefix() . 'clients.company',
-            db_prefix() . 'forms.locked as locked',
+            
 
         ];
 
@@ -250,7 +251,13 @@ return App_table::find('preports')
                     $form_pdf .= '<li><a href="' . admin_url('forms/form_dpr_pdf/' . $aRow['formid'] . '?print=true') . '" target="_blank">' . _l('print') . '</a></li>';
                     $form_pdf .= '</ul>';
                     $_data = $form_pdf;
-                } else {
+                } elseif($aColumns[$i] == db_prefix() . 'forms.locked as locked'){
+                    if ($aRow['locked'] == 1) {
+                        $_data = '<span class="label label-default">' . _l('Yes') . '</span>';
+                    }else {
+                        $_data = '<span class="label label-default">' . _l('No') . '</span>';
+                    }
+                }else {
                     if (strpos($aColumns[$i], 'date_picker_') !== false) {
                         $_data = (strpos($_data, ' ') !== false ? _dt($_data) : _d($_data));
                     }
