@@ -3,9 +3,9 @@
 
 // —— DB CONFIG ——
 $host     = "localhost";
-$username = "root";
-$password = "root";
-$database = "gamma_new";
+$username = "u318220648_kautilyadb";
+$password = "Nirmaan@1234";
+$database = "u318220648_kautilyadb";
 
 // connect
 $conn = new mysqli($host, $username, $password, $database);
