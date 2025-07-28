@@ -476,6 +476,7 @@ class Forms extends ClientsController
                 }
 
                 if ($insert_to_db == true) {
+                    $assigned = '';
                     $regular_fields['status'] = $form->lead_status;
                     if ((isset($regular_fields['name']) && empty($regular_fields['name'])) || !isset($regular_fields['name'])) {
                         $regular_fields['name'] = 'Unknown';
@@ -491,7 +492,7 @@ class Forms extends ClientsController
 
                     if ($this->input->post('key') == '347f376295d303a60c2c662263a1bc0b') {
                         $regular_fields['projects'] = 1;
-
+                        $assigned = 13;
                         $phone = $regular_fields['phonenumber'];
                         $message = 'welcomereminderclone154';
                         $var1 = 'Thankyou for contacting us at Kautilya One54 - 3BHK Club class living with 2 allotted car parking and 100% loan papers.';
@@ -540,6 +541,7 @@ class Forms extends ClientsController
                         curl_close($ch);
                     } elseif ($this->input->post('key') == '297b1a90ba97a2f497c068b45d91a630') {
                         $regular_fields['projects']  = 2;
+                        $assigned = 16;
                         $phone = $regular_fields['phonenumber'];
                         $message = 'welcomereminder220';
                         $var1 = 'Project Highlights:';
@@ -588,21 +590,38 @@ class Forms extends ClientsController
                         curl_close($ch);
                     } elseif ($this->input->post('key') == '7764a894c046848bfdaadf403ae7816c') {
                         $regular_fields['projects']  = 3;
-                    } elseif ($this->input->post('key') == 'dcf1d870f5a9bb632c5e3468d0aeb3d6') {
+                        $assigned = 20;
+                    } elseif ($this->input->post('key') == 'c4d03cf1c434fbc47064572d7e8affb1') {
                         $regular_fields['projects']  = $this->input->post('project');
 
                         if ($this->input->post('project') == 1) {
-                            $regular_fields['assigned'] = 8;
+                            $regular_fields['assigned'] = 13;
+                            $assigned = 13;
                         } elseif ($this->input->post('project') == 2) {
-                            $regular_fields['assigned']  = 3;
+                            $assigned = 16;
+                            $regular_fields['assigned']  = 16;
                         } elseif ($this->input->post('project') == 3) {
-                            $regular_fields['assigned']  = 6;
+                            $regular_fields['assigned']  = 20;
+                            $assigned = 20;
                         }
                     }
 
                     $this->db->insert(db_prefix() . 'leads', $regular_fields);
                     $lead_id = $this->db->insert_id();
-
+                    if (isset($lead_id)) {
+                       
+                        $taskData = [
+                            'name' => $regular_fields['name'],
+                            'is_public' => 1,
+                            'startdate' => _d(date('Y-m-d')),
+                            'duedate' => _d(date('Y-m-d')),
+                            'priority' => 3,
+                            'rel_type' => 'lead',
+                            'rel_id' => $lead_id,
+                            'assignees' => [$assigned],
+                        ];
+                        $task_id = $this->tasks_model->add($taskData);
+                    }
                     hooks()->do_action('lead_created', [
                         'lead_id'          => $lead_id,
                         'web_to_lead_form' => true,
