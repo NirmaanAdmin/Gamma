@@ -590,6 +590,53 @@ class Forms extends ClientsController
                         curl_close($ch);
                     } elseif ($this->input->post('key') == '7764a894c046848bfdaadf403ae7816c') {
                         $regular_fields['projects']  = 3;
+
+                        $phone = $regular_fields['phonenumber'];
+                        $message = 'webtoleadnilay';
+                        $var1 = 'Thank you for inquiring at Kautilya Nilay with Lavish and Elegant 3 and 4 BHK in Naranpura';
+                        $var2 = 'The dream of a happy life is fulfilled in a happy home. The finest amenities where you and your loved ones have the opportunity to thrive';
+                        $var3 = 'Special features:';
+                        $var4 = '0% Commercial';
+                        $var5 = '3314 Sq. Ft. Garden on Front Building approach';
+                        $var6 = '11\' All Floor Height & 13\' Ground floor height for Lavish Foyer and Amenities';
+                        $var7 = '2/3 Allotted Ground Floor Parking';
+                        $var8 = 'Call us at : +919825015121, +919879545223';
+                        $mediaLink = 'https://kautilya.n360.site/assets/images/nilay.png';
+
+                        // Build the URL with proper encoding
+                        $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?' . http_build_query([
+                            'number' => '91' . $phone,
+                            'message' => $message,
+                            'var1' => $var1,
+                            'var2' => $var2,
+                            'var3' => $var3,
+                            'var4' => $var4,
+                            'var5' => $var5,
+                            'var6' => $var6,
+                            'var7' => $var7,
+                            'var8' => $var8,
+                            'medialink' => $mediaLink
+                        ]);
+
+                        // Initialize cURL
+                        $ch = curl_init();
+                        curl_setopt_array($ch, [
+                            CURLOPT_URL => $url,
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 30,
+                            CURLOPT_SSL_VERIFYPEER => true, // Set to false if you have SSL issues
+                            CURLOPT_HTTPHEADER => [
+                                'Accept: application/json'
+                            ]
+                        ]);
+
+                        // Execute and handle response
+                        $response = curl_exec($ch);
+                        $error = curl_error($ch);
+                        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                        curl_close($ch);
                         $assigned = 20;
                     } elseif ($this->input->post('key') == 'c4d03cf1c434fbc47064572d7e8affb1') {
                         $regular_fields['projects']  = $this->input->post('project');
@@ -597,19 +644,158 @@ class Forms extends ClientsController
                         if ($this->input->post('project') == 1) {
                             $regular_fields['assigned'] = 13;
                             $assigned = 13;
+
+                            $phone = $regular_fields['phonenumber'];
+                            $message = 'welcomereminderclone154';
+                            $var1 = 'Thankyou for contacting us at Kautilya One54 - 3BHK Club class living with 2 allotted car parking and 100% loan papers.';
+                            $var2 = 'Possession Soon';
+                            $var3 = 'Project Highlights:';
+                            $var4 = '- 100% loan papers';
+                            $var5 = "- 16' Long Bedroom";
+                            $var6 = '- No-vehicle Zone';
+                            $var7 = '- Exclusive Home Theatre';
+                            $var8 = 'Youtube video link: https://shorturl.at/iTB79 Location Link: https://shorturl.at/visC4';
+                            $mediaLink = 'https://kautilya.n360.site/assets/images/whatimg.png';
+
+                            // Build the URL with proper encoding
+                            $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?' . http_build_query([
+                                'number' => '91' . $phone,
+                                'message' => $message,
+                                'var1' => $var1,
+                                'var2' => $var2,
+                                'var3' => $var3,
+                                'var4' => $var4,
+                                'var5' => $var5,
+                                'var6' => $var6,
+                                'var7' => $var7,
+                                'var8' => $var8,
+                                'medialink' => $mediaLink
+                            ]);
+
+                            // Initialize cURL
+                            $ch = curl_init();
+                            curl_setopt_array($ch, [
+                                CURLOPT_URL => $url,
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_TIMEOUT => 30,
+                                CURLOPT_SSL_VERIFYPEER => true, // Set to false if you have SSL issues
+                                CURLOPT_HTTPHEADER => [
+                                    'Accept: application/json'
+                                ]
+                            ]);
+
+                            // Execute and handle response
+                            $response = curl_exec($ch);
+                            $error = curl_error($ch);
+                            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                            curl_close($ch);
                         } elseif ($this->input->post('project') == 2) {
                             $assigned = 16;
                             $regular_fields['assigned']  = 16;
+                            $phone = $regular_fields['phonenumber'];
+                            $message = 'welcomereminder220';
+                            $var1 = 'Project Highlights:';
+                            $var2 = '- 2 allotted car parking spaces';
+                            $var3 = '- 16-feet long master bedroom';
+                            $var4 = '- Taj-facing apartments and SP Ring Road view';
+                            $var5 = '- Standing balcony in every room';
+                            $var6 = '- SP Ring Road touch project';
+                            $var7 = '- Amenities such as a gym, yoga-meditation room, indoor game zone, party hall, home theatre, etc.';
+                            $var8 = 'Enquire: https://kautilyadevelopers.in/project/kautilya-two20/';
+                            $mediaLink = 'https://kautilya.n360.site/assets/pdf/Kautilya_Two20_Brochure.pdf';
+
+                            // Build the URL with proper encoding
+                            $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?' . http_build_query([
+                                'number' => '91' . $phone,
+                                'message' => $message,
+                                'var1' => $var1,
+                                'var2' => $var2,
+                                'var3' => $var3,
+                                'var4' => $var4,
+                                'var5' => $var5,
+                                'var6' => $var6,
+                                'var7' => $var7,
+                                'var8' => $var8,
+                                'medialink' => $mediaLink
+                            ]);
+
+                            // Initialize cURL
+                            $ch = curl_init();
+                            curl_setopt_array($ch, [
+                                CURLOPT_URL => $url,
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_TIMEOUT => 30,
+                                CURLOPT_SSL_VERIFYPEER => true, // Set to false if you have SSL issues
+                                CURLOPT_HTTPHEADER => [
+                                    'Accept: application/json'
+                                ]
+                            ]);
+
+                            // Execute and handle response
+                            $response = curl_exec($ch);
+                            $error = curl_error($ch);
+                            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                            curl_close($ch);
                         } elseif ($this->input->post('project') == 3) {
                             $regular_fields['assigned']  = 20;
                             $assigned = 20;
+                            $phone = $regular_fields['phonenumber'];
+                            $message = 'welcomereminderclone154';
+                            $var1 = 'Thankyou for contacting us at Kautilya One54 - 3BHK Club class living with 2 allotted car parking and 100% loan papers.';
+                            $var2 = 'Possession Soon';
+                            $var3 = 'Project Highlights:';
+                            $var4 = '- 100% loan papers';
+                            $var5 = "- 16' Long Bedroom";
+                            $var6 = '- No-vehicle Zone';
+                            $var7 = '- Exclusive Home Theatre';
+                            $var8 = 'Youtube video link: https://shorturl.at/iTB79 Location Link: https://shorturl.at/visC4';
+                            $mediaLink = 'https://kautilya.n360.site/assets/images/whatimg.png';
+
+                            // Build the URL with proper encoding
+                            $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?' . http_build_query([
+                                'number' => '91' . $phone,
+                                'message' => $message,
+                                'var1' => $var1,
+                                'var2' => $var2,
+                                'var3' => $var3,
+                                'var4' => $var4,
+                                'var5' => $var5,
+                                'var6' => $var6,
+                                'var7' => $var7,
+                                'var8' => $var8,
+                                'medialink' => $mediaLink
+                            ]);
+
+                            // Initialize cURL
+                            $ch = curl_init();
+                            curl_setopt_array($ch, [
+                                CURLOPT_URL => $url,
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_TIMEOUT => 30,
+                                CURLOPT_SSL_VERIFYPEER => true, // Set to false if you have SSL issues
+                                CURLOPT_HTTPHEADER => [
+                                    'Accept: application/json'
+                                ]
+                            ]);
+
+                            // Execute and handle response
+                            $response = curl_exec($ch);
+                            $error = curl_error($ch);
+                            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                            curl_close($ch);
                         }
                     }
 
                     $this->db->insert(db_prefix() . 'leads', $regular_fields);
                     $lead_id = $this->db->insert_id();
                     if (isset($lead_id)) {
-                       
+
                         $taskData = [
                             'name' => $regular_fields['name'],
                             'is_public' => 1,
