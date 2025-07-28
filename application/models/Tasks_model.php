@@ -408,7 +408,7 @@ class Tasks_model extends App_Model
 
     public function get_tasks_by_staff_id($id, $where = [])
     {
-        $this->db->where($where); 
+        $this->db->where($where);
         $this->db->where('(id IN (SELECT taskid FROM ' . db_prefix() . 'task_assigned WHERE staffid=' . $this->db->escape_str($id) . '))');
 
         return $this->db->get(db_prefix() . 'tasks')->result_array();
@@ -1518,6 +1518,66 @@ class Tasks_model extends App_Model
      * @param  mixed $task_id task id
      * @return boolean
      */
+    // public function mark_as($status, $task_id)
+    // { 
+    //     $this->db->select('rel_type,rel_id,name,visible_to_client,status');
+    //     $this->db->where('id', $task_id);
+    //     $task = $this->db->get(db_prefix() . 'tasks')->row();
+
+    //     if ($task->status == static::STATUS_COMPLETE) {
+    //         return $this->unmark_complete($task_id, $status);
+    //     }
+
+    //     $update = ['status' => $status];
+
+    //     if ($status == static::STATUS_COMPLETE) {
+    //         $update['datefinished'] = date('Y-m-d H:i:s');
+    //     }
+
+    //     $this->db->where('id', $task_id);
+    //     $this->db->update(db_prefix() . 'tasks', $update);
+    //     if ($this->db->affected_rows() > 0) {
+    //         $description = 'not_task_status_changed';
+
+    //         $not_data = [
+    //             $task->name,
+    //             format_task_status($status, false, true),
+    //         ];
+
+    //         if ($status == static::STATUS_COMPLETE) {
+    //             $description = 'not_task_marked_as_complete';
+    //             unset($not_data[1]);
+
+    //             $this->db->where('end_time IS NULL');
+    //             $this->db->where('task_id', $task_id);
+    //             $this->db->update(db_prefix() . 'taskstimers', [
+    //                 'end_time' => time(),
+    //             ]);
+    //         }
+
+    //         if ($task->rel_type == 'project') {
+    //             $project_activity_log = $status == static::STATUS_COMPLETE ? 'project_activity_task_marked_complete' : 'not_project_activity_task_status_changed';
+
+    //             $project_activity_desc = $task->name;
+
+    //             if ($status != static::STATUS_COMPLETE) {
+    //                 $project_activity_desc .= ' - ' . format_task_status($status);
+    //             }
+
+    //             $this->projects_model->log_activity($task->rel_id, $project_activity_log, $project_activity_desc, $task->visible_to_client);
+    //         }
+
+    //         $this->_send_task_responsible_users_notification($description, $task_id, false, 'task_status_changed_to_staff', serialize($not_data));
+
+    //         $this->_send_customer_contacts_notification($task_id, 'task_status_changed_to_customer');
+    //         hooks()->do_action('task_status_changed', ['status' => $status, 'task_id' => $task_id]);
+
+    //         return true;
+    //     }
+
+    //     return false;
+    // }
+
     public function mark_as($status, $task_id)
     {
         $this->db->select('rel_type,rel_id,name,visible_to_client,status');
@@ -1536,6 +1596,7 @@ class Tasks_model extends App_Model
 
         $this->db->where('id', $task_id);
         $this->db->update(db_prefix() . 'tasks', $update);
+
         if ($this->db->affected_rows() > 0) {
             $description = 'not_task_status_changed';
 
@@ -1553,6 +1614,49 @@ class Tasks_model extends App_Model
                 $this->db->update(db_prefix() . 'taskstimers', [
                     'end_time' => time(),
                 ]);
+
+                // Check if this is a lead task and lead status is not 1 or 11
+                if ($task->rel_type == 'lead') {
+                    $this->db->select('status');
+                    $this->db->where('id', $task->rel_id);
+                    $lead = $this->db->get(db_prefix() . 'leads')->row();
+
+                    if ($lead && !in_array($lead->status, [1, 11])) {
+                        // Get existing assignees for this task
+                        $this->db->select('staffid');
+                        $this->db->where('taskid', $task_id);
+                        $assignees = $this->db->get(db_prefix() . 'task_assigned')->result_array();
+                        $assigned = array_column($assignees, 'staffid');
+
+                        if (!empty($assigned)) {
+                            // Count existing completed tasks for this lead
+                            $this->db->where('rel_type', 'lead');
+                            $this->db->where('rel_id', $task->rel_id);
+                            $this->db->where('status', static::STATUS_COMPLETE);
+                            $completed_tasks = $this->db->count_all_results(db_prefix() . 'tasks');
+
+                            if ($completed_tasks < 5) {
+                                // Create new task
+                                $taskData = [
+                                    'name' => $task->name . ' (Follow-up ' . ($completed_tasks + 1) . ')',
+                                    'is_public' => 1,
+                                    'startdate' => date('Y-m-d', strtotime('+3 days')),
+                                    'duedate' => date('Y-m-d', strtotime('+3 days')),
+                                    'priority' => 3,
+                                    'rel_type' => 'lead',
+                                    'rel_id' => $task->rel_id,
+                                    'assignees' => $assigned,
+                                ];
+
+                                $new_task_id = $this->tasks_model->add($taskData);
+
+                                if ($new_task_id) {
+                                    log_activity('New Follow-up Task Created [ID: ' . $new_task_id . '] for Lead [ID: ' . $task->rel_id . ']');
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             if ($task->rel_type == 'project') {
