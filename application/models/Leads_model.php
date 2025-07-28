@@ -235,6 +235,53 @@ class Leads_model extends App_Model
                 $error = curl_error($ch);
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
+            } elseif ($data['projects'] == 3) {
+                $phone = $phonenumber_without_code;
+                $message = 'webtoleadnilay';
+                $var1 = 'Thank you for inquiring at Kautilya Nilay with Lavish and Elegant 3 and 4 BHK in Naranpura';
+                $var2 = 'The dream of a happy life is fulfilled in a happy home. The finest amenities where you and your loved ones have the opportunity to thrive';
+                $var3 = 'Special features:';
+                $var4 = '0% Commercial';
+                $var5 = '3314 Sq. Ft. Garden on Front Building approach';
+                $var6 = '11\' All Floor Height & 13\' Ground floor height for Lavish Foyer and Amenities';
+                $var7 = '2/3 Allotted Ground Floor Parking';
+                $var8 = 'Call us at : +919825015121, +919879545223';
+                $mediaLink = 'https://kautilya.n360.site/assets/images/nilay.png';
+
+                // Build the URL with proper encoding
+                $url = 'https://webhooks.whatapi.in/webhook/685e76df1d1fd0c920b52928?' . http_build_query([
+                    'number' => '91' . $phone,
+                    'message' => $message,
+                    'var1' => $var1,
+                    'var2' => $var2,
+                    'var3' => $var3,
+                    'var4' => $var4,
+                    'var5' => $var5,
+                    'var6' => $var6,
+                    'var7' => $var7,
+                    'var8' => $var8,
+                    'medialink' => $mediaLink
+                ]);
+
+                // Initialize cURL
+                $ch = curl_init();
+                curl_setopt_array($ch, [
+                    CURLOPT_URL => $url,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 30,
+                    CURLOPT_SSL_VERIFYPEER => true, // Set to false if you have SSL issues
+                    CURLOPT_HTTPHEADER => [
+                        'Accept: application/json'
+                    ]
+                ]);
+
+                // Execute and handle response
+                $response = curl_exec($ch);
+                $error = curl_error($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
             }
             if (isset($data['assigned'])) {
                 $taskData = [
