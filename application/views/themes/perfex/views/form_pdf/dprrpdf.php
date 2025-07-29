@@ -122,3 +122,66 @@ if ($form_data->message != '') {
 
     $pdf->writeHTML($noteContent, true, false, false, false, '');
 }
+
+if (!empty($form_attachments)) {
+    $formhtml = '';
+    // Add page break before the image grid starts
+    $formhtml .= '<div style="page-break-before: always;"></div>';
+    $formhtml .= '<h2>Photos</h2>';
+
+    // Split into groups of 4 (2x2 grid per page)
+    $chunks = array_chunk($form_attachments, 4);
+
+    foreach ($chunks as $chunk_index => $chunk) {
+        // Add page break for all chunks except the first one
+        if ($chunk_index > 0) {
+            $formhtml .= '<div style="page-break-before: always;"></div>';
+        }
+
+        $formhtml .= '<table width="100%" cellspacing="10" cellpadding="0" border="1" style="margin-top: 10px;">';
+
+        // Process images in 2 rows of 2 columns each
+        for ($row = 0; $row < 2; $row++) {
+            $formhtml .= '<tr>';
+
+            for ($col = 0; $col < 2; $col++) {
+                $index = $row * 2 + $col;
+                $formhtml .= '<td width="50%" style="text-align: center; vertical-align: middle; height: 400px; padding: 10px;">';
+
+                if (isset($chunk[$index])) {
+                    $file_path = 'uploads/form_attachments/' . $chunk[$index]['formid'] . '/' . $chunk[$index]['file_name'];
+
+                    if (file_exists(FCPATH . $file_path)) {
+                        $file_ext = strtolower(pathinfo($chunk[$index]['file_name'], PATHINFO_EXTENSION));
+                        $full_path = FCPATH . $file_path;
+
+                        // Check if it's an image
+                        if (in_array($file_ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+                            try {
+                                $base64 = base64_encode(file_get_contents($full_path));
+                                $mime_type = mime_content_type($full_path);
+                                $formhtml .= '<img src="data:' . $mime_type . ';base64,' . $base64 . '" style="max-width: 100%; max-height: 350px; display: block; margin: 0 auto;">';
+                            } catch (Exception $e) {
+                                $formhtml .= '<div style="color: red;">Error loading image: ' . htmlspecialchars($chunk[$index]['file_name']) . '</div>';
+                            }
+                        } else {
+                            $formhtml .= '<div style="padding: 10px; border: 1px solid #ccc;">File: ' . htmlspecialchars($chunk[$index]['file_name']) . '</div>';
+                        }
+                    } else {
+                        $formhtml .= '<div style="color: red;">File not found: ' . htmlspecialchars($chunk[$index]['file_name']) . '</div>';
+                    }
+                } else {
+                    $formhtml .= '&nbsp;';
+                }
+
+                $formhtml .= '</td>';
+            }
+
+            $formhtml .= '</tr>';
+        }
+
+        $formhtml .= '</table>';
+    }
+}
+
+$pdf->writeHTML($formhtml, true, false, false, false, '');
