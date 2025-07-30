@@ -192,7 +192,7 @@ function warehouse_module_init_menu_items()
     if (has_permission('warehouse', '', 'view')) {
 
        $CI->app_menu->add_sidebar_menu_item('warehouse', [
-            'name'     => _l('warehouse'),
+            'name'     => _l('Booking'),
             'icon'     => 'fas fa-snowflake',
             'position' => 30,
         ]);
@@ -200,7 +200,7 @@ function warehouse_module_init_menu_items()
 
         $CI->app_menu->add_sidebar_children_item('warehouse', [
             'slug'     => 'wa_commodity_list',
-            'name'     => _l('items'),
+            'name'     => _l('Units'),
             'icon'     => 'fa fa-clone menu-icon',
             'href'     => admin_url('warehouse/commodity_list'),
             'position' => 1,

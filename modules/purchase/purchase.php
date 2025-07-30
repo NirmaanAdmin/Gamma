@@ -169,7 +169,7 @@ register_language_files(PURCHASE_MODULE_NAME, [PURCHASE_MODULE_NAME]);
 function purchase_module_init_menu_items() {
 
     $CI = &get_instance();
-    if (has_permission('purchase_items', '', 'view') || has_permission('purchase_vendors', '', 'view') || has_permission('purchase_vendor_items', '', 'view') || has_permission('purchase_request', '', 'view') || has_permission('purchase_quotations', '', 'view') || has_permission('purchase_orders', '', 'view') || has_permission('purchase_contracts', '', 'view') || has_permission('purchase_invoices', '', 'view') || has_permission('purchase_reports', '', 'view') || has_permission('purchase_debit_notes', '', 'view') || has_permission('purchase_settings', '', 'edit') || has_permission('purchase_vendors', '', 'view_own') || has_permission('purchase_vendor_items', '', 'view_own') || has_permission('purchase_request', '', 'view_own') || has_permission('purchase_quotations', '', 'view_own') || has_permission('purchase_orders', '', 'view_own') || has_permission('purchase_contracts', '', 'view_own') || has_permission('purchase_invoices', '', 'view_own') || has_permission('purchase_debit_notes', '', 'view_own') || has_permission('purchase_order_return', '', 'view_own') || has_permission('purchase_order_return', '', 'view') ) {
+    if (has_permission('purchase_items', '', 'view') || has_permission('purchase_vendors', '', 'view') || has_permission('purchase_customers', '', 'view') || has_permission('purchase_vendor_items', '', 'view') || has_permission('purchase_request', '', 'view') || has_permission('purchase_quotations', '', 'view') || has_permission('purchase_orders', '', 'view') || has_permission('purchase_contracts', '', 'view') || has_permission('purchase_invoices', '', 'view') || has_permission('purchase_reports', '', 'view') || has_permission('purchase_debit_notes', '', 'view') || has_permission('purchase_settings', '', 'edit') || has_permission('purchase_vendors', '', 'view_own') || has_permission('purchase_customers', '', 'view_own') || has_permission('purchase_vendor_items', '', 'view_own') || has_permission('purchase_request', '', 'view_own') || has_permission('purchase_quotations', '', 'view_own') || has_permission('purchase_orders', '', 'view_own') || has_permission('purchase_contracts', '', 'view_own') || has_permission('purchase_invoices', '', 'view_own') || has_permission('purchase_debit_notes', '', 'view_own') || has_permission('purchase_order_return', '', 'view_own') || has_permission('purchase_order_return', '', 'view') ) {
         $CI->app_menu->add_sidebar_menu_item('purchase', [
             'name' => _l('purchase'),
             'icon' => 'fa fa-shopping-cart',
@@ -198,6 +198,15 @@ function purchase_module_init_menu_items() {
                 'name' => _l('vendor'),
                 'icon' => 'fa fa-users',
                 'href' => admin_url('purchase/vendors'),
+                'position' => 2,
+            ]);
+        }
+        if(has_permission('purchase_customers', '', 'view') || has_permission('purchase_customers', '', 'view_own')){
+            $CI->app_menu->add_sidebar_children_item('purchase', [
+                'slug' => 'purchase-customers',
+                'name' => _l('Customer'),
+                'icon' => 'fa fa-users',
+                'href' => admin_url('purchase/customers'),
                 'position' => 2,
             ]);
         }
@@ -418,6 +427,9 @@ function purchase_add_footer_components() {
     $viewuri = $_SERVER['REQUEST_URI'];
     if(!(strpos($viewuri, '/admin/purchase/vendors') === false)){
         echo '<script src="' . module_dir_url(PURCHASE_MODULE_NAME, 'assets/js/vendor_manage.js') .'?v=' . PURCHASE_REVISION.'"></script>';
+    }
+    if(!(strpos($viewuri, '/admin/purchase/customers') === false)){
+        echo '<script src="' . module_dir_url(PURCHASE_MODULE_NAME, 'assets/js/customer_manage.js') .'?v=' . PURCHASE_REVISION.'"></script>';
     }
     if(!(strpos($viewuri, '/admin/purchase/purchase_request') === false)){    
         echo '<script src="' . module_dir_url(PURCHASE_MODULE_NAME, 'assets/js/pur_request_manage.js') .'?v=' . PURCHASE_REVISION.'"></script>';

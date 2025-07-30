@@ -11,7 +11,7 @@ $aColumns = [
 	db_prefix() . 'items.id',
 	'commodity_code',
 	'description',
-	'sku_code',
+	// 'sku_code',
 	db_prefix() . 'items_groups.name as group_name',
 	db_prefix() . 'wh_sub_group.sub_group_name as sub_group_name',
 	db_prefix() . 'items.warehouse_id',
@@ -19,10 +19,10 @@ $aColumns = [
 	'commodity_barcode',
 	'unit_id',
 	'origin',
-	'rate',
-	'purchase_price',
-	't1.taxrate as taxrate_1',
-	't2.taxrate as taxrate_2',
+	// 'rate',
+	// 'purchase_price',
+	// 't1.taxrate as taxrate_1',
+	// 't2.taxrate as taxrate_2',
 
 	// '2',	//minimum stock
 	// '3',	//maximum stock

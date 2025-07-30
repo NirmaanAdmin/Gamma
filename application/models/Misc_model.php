@@ -286,6 +286,12 @@ class Misc_model extends App_Model
     public function add_note($data, $rel_type, $rel_id)
     {
         $this->load->model('tasks_model');
+
+        // Initialize variables
+        $get_task_id = [];
+        $get_task_assignee = [];
+
+        // Prepare note data
         $data['dateadded']   = date('Y-m-d H:i:s');
         $data['addedfrom']   = get_staff_user_id();
         $data['rel_type']    = $rel_type;
@@ -294,50 +300,57 @@ class Misc_model extends App_Model
 
         $data = hooks()->apply_filters('create_note_data', $data, $rel_type, $rel_id);
 
-        $get_task_id = get_task_by_id_for_notes($rel_id);
-        $get_task_assignee = get_task_assignee($rel_id);
-        
-        if (count($get_task_id) > 0) {
-            $taskcomment_data = [
-                'taskid' => $get_task_id['id'],
-                'content' => $data['description'],
-            ];
-            $this->tasks_model->add_task_comment($taskcomment_data);
+        // Get task info if this is a lead note
+        if ($rel_type == 'lead') {
+            $get_task_id = get_task_by_id_for_notes($rel_id);
+            $get_task_assignee = get_task_assignee($rel_id);
+
+            // Add task comment if task exists
+            if (!empty($get_task_id)) {
+                $taskcomment_data = [
+                    'taskid' => $get_task_id['id'],
+                    'content' => $data['description'],
+                ];
+                $this->tasks_model->add_task_comment($taskcomment_data);
+            }
         }
 
+        // Insert the note
         $this->db->insert(db_prefix() . 'notes', $data);
         $insert_id = $this->db->insert_id();
-        
-        if ($insert_id && $data['next_followup_date'] != '') {
-            if (isset($get_task_id['id'])) {
-                $taskData = [
-                    'name' => 'Lead FollowUp ('. $get_task_id['name'] .')',
-                    'is_public' => 1,
-                    'startdate' => _d($data['next_followup_date']),
-                    'duedate' => _d($data['next_followup_date']),
-                    'priority' => 3,
-                    'rel_type' => 'lead',
-                    'rel_id' => $get_task_id['rel_id'],
-                ];
 
-                $task_id = $this->tasks_model->add($taskData);
+        if (!$insert_id) {
+            return false;
+        }
+
+        // Handle follow-up task creation if needed
+        if (!empty($data['next_followup_date']) && $rel_type == 'lead' && !empty($get_task_id)) {
+            $taskData = [
+                'name' => 'Lead FollowUp (' . $get_task_id['name'] . ')',
+                'is_public' => 1,
+                'startdate' => _d($data['next_followup_date']),
+                'duedate' => _d($data['next_followup_date']),
+                'priority' => 3,
+                'rel_type' => 'lead',
+                'rel_id' => $get_task_id['rel_id'],
+            ];
+
+            $task_id = $this->tasks_model->add($taskData);
+
+            if ($task_id && !empty($get_task_assignee)) {
                 foreach ($get_task_assignee as $assignee) {
                     $assignss = [
                         'staffid' => $assignee,
-                        'taskid'  =>  $task_id
+                        'taskid'  => $task_id
                     ];
                     $this->db->insert('tbltask_assigned', $assignss);
                 }
-
             }
-
-
-            hooks()->do_action('note_created', $insert_id, $data);
-
-            return $insert_id;
         }
 
-        return false;
+        hooks()->do_action('note_created', $insert_id, $data);
+
+        return $insert_id;
     }
 
     public function edit_note($data, $id)

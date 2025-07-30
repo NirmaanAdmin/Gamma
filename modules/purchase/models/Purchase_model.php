@@ -4464,7 +4464,7 @@ class Purchase_model extends App_Model
         if (get_option('smtp_email')) {
             $email = '<span><b>Email :</b> ' . get_option('smtp_email') . '<br /></span>';
         }
-        if(get_option('main_domain')){
+        if (get_option('main_domain')) {
             $domain = '<span><b>Website :</b> ' . get_option('main_domain') . '<br /></span>';
         }
 
@@ -14242,5 +14242,329 @@ class Purchase_model extends App_Model
         $this->db->where('id', $id);
         $this->db->delete(db_prefix() . 'cron_email');
         return true;
+    }
+
+    public function add_customer($data, $client_id = null, $client_or_lead_convert_request = false)
+    {
+
+        if (isset($data['balance'])) {
+            $data['balance'] = str_replace(',', '', $data['balance']);
+            if ($data['balance'] != '' && $data['balance'] > 0) {
+                if ($data['balance_as_of'] != '') {
+                    $data['balance_as_of'] = to_sql_date($data['balance_as_of']);
+                } else {
+                    $data['balance_as_of'] = date('Y-m-d');
+                }
+            } else {
+                unset($data['balance']);
+                unset($data['balance_as_of']);
+            }
+        }
+
+        $contact_data = [];
+        foreach ($this->contact_columns as $field) {
+            if (isset($data[$field])) {
+                $contact_data[$field] = $data[$field];
+                // Phonenumber is also used for the company profile
+                if ($field != 'phonenumber') {
+                    unset($data[$field]);
+                }
+            }
+        }
+        // From customer profile register
+        if (isset($data['contact_phonenumber'])) {
+            $contact_data['phonenumber'] = $data['contact_phonenumber'];
+            unset($data['contact_phonenumber']);
+        }
+
+        if (isset($data['is_primary'])) {
+            $contact_data['is_primary'] = $data['is_primary'];
+            unset($data['is_primary']);
+        }
+
+        if (isset($data['custom_fields'])) {
+            $custom_fields = $data['custom_fields'];
+            unset($data['custom_fields']);
+        }
+
+        if (isset($data['category']) && count($data['category']) > 0) {
+            $data['category'] = implode(',', $data['category']);
+        }
+
+        if (isset($data['groups_in'])) {
+            $groups_in = $data['groups_in'];
+            unset($data['groups_in']);
+        }
+
+        $data = $this->check_zero_columns($data);
+
+        $data['datecreated'] = date('Y-m-d H:i:s');
+
+        if (is_staff_logged_in()) {
+            $data['addedfrom'] = get_staff_user_id();
+        }
+
+        // New filter action
+
+
+        if (isset($client_id) && $client_id > 0) {
+            $userid = $client_id;
+        } else {
+            $this->db->insert(db_prefix() . 'pur_customer', $data);
+            $userid = $this->db->insert_id();
+
+            hooks()->do_action('after_pur_customer_created', [
+                'id'            => $userid,
+                'data'          => $data,
+            ]);
+        }
+
+        if ($userid) {
+            if (isset($custom_fields)) {
+                $_custom_fields = $custom_fields;
+                // Possible request from the register area with 2 types of custom fields for contact and for comapny/customer
+                if (count($custom_fields) == 1) {
+                    unset($custom_fields);
+                    $custom_fields['vendors']                = $_custom_fields['vendors'];
+                }
+
+                handle_custom_fields_post($userid, $custom_fields);
+            }
+
+            /**
+             * Used in Import, Lead Convert, Register
+             */
+            if ($client_or_lead_convert_request == true) {
+                $contact_id = $this->add_customer_contact($contact_data, $userid, $client_or_lead_convert_request);
+            }
+
+            /**
+             * Used in Import, Lead Convert, Register
+             */
+
+            $log = 'ID: ' . $userid;
+
+            $isStaff = null;
+            if (!is_vendor_logged_in() && is_staff_logged_in()) {
+                $log .= ', From Staff: ' . get_staff_user_id();
+                $isStaff = get_staff_user_id();
+            }
+        }
+
+        return $userid;
+    }
+
+    public function add_customer_contact($data, $customer_id, $not_manual_request = false)
+    {
+        $send_set_password_email = isset($data['send_set_password_email']) ? true : false;
+
+        if (isset($data['custom_fields'])) {
+            $custom_fields = $data['custom_fields'];
+            unset($data['custom_fields']);
+        }
+
+        if (isset($data['permissions'])) {
+            $permissions = $data['permissions'];
+            unset($data['permissions']);
+        }
+
+        $data['email_verified_at'] = date('Y-m-d H:i:s');
+
+        if (isset($data['fakeusernameremembered'])) {
+            unset($data['fakeusernameremembered']);
+        }
+        if (isset($data['fakepasswordremembered'])) {
+            unset($data['fakepasswordremembered']);
+        }
+
+        if (isset($data['is_primary'])) {
+            $data['is_primary'] = 1;
+            $this->db->where('userid', $customer_id);
+            $this->db->update(db_prefix() . 'pur_customer_contacts', [
+                'is_primary' => 0,
+            ]);
+        } else {
+            $data['is_primary'] = 0;
+        }
+
+        $password_before_hash = '';
+        $data['userid']       = $customer_id;
+        if (isset($data['password'])) {
+            $password_before_hash = $data['password'];
+            $data['password'] = app_hash_password($data['password']);
+        }
+
+        $data['datecreated'] = date('Y-m-d H:i:s');
+
+        $data['email'] = trim($data['email']);
+
+
+        $this->db->insert(db_prefix() . 'pur_customer_contacts', $data);
+        $contact_id = $this->db->insert_id();
+
+        if ($contact_id) {
+
+            if (isset($custom_fields)) {
+                handle_custom_fields_post($contact_id, $custom_fields);
+            }
+
+            if (get_option('send_email_welcome_for_new_contact') == 1) {
+                $this->send_contact_welcome_mail($data, $password_before_hash, $contact_id);
+            }
+
+            return $contact_id;
+        }
+
+        return false;
+    }
+
+    public function get_pur_customer($id = '', $where = [])
+    {
+        $this->db->select(implode(',', prefixed_table_fields_array(db_prefix() . 'pur_customer')) . ',' . get_sql_select_customer_company());
+
+
+
+        if (is_numeric($id)) {
+
+            $this->db->join(db_prefix() . 'countries', '' . db_prefix() . 'countries.country_id = ' . db_prefix() . 'pur_customer.country', 'left');
+            $this->db->join(db_prefix() . 'pur_customer_contacts', '' . db_prefix() . 'pur_customer_contacts.userid = ' . db_prefix() . 'pur_customer.userid AND is_primary = 1', 'left');
+
+            if ((is_array($where) && count($where) > 0) || (is_string($where) && $where != '')) {
+                $this->db->where($where);
+            }
+
+            $this->db->where(db_prefix() . 'pur_customer.userid', $id);
+            $vendor = $this->db->get(db_prefix() . 'pur_customer')->row();
+
+            if ($vendor && get_option('company_requires_vat_number_field') == 0) {
+                $vendor->vat = null;
+            }
+
+
+            return $vendor;
+        } else {
+
+
+            if (!has_permission('purchase_customers', '', 'view') && is_staff_logged_in()) {
+
+                $this->db->join(db_prefix() . 'countries', '' . db_prefix() . 'countries.country_id = ' . db_prefix() . 'pur_customer.country', 'left');
+                $this->db->join(db_prefix() . 'pur_customer_contacts', '' . db_prefix() . 'pur_customer_contacts.userid = ' . db_prefix() . 'pur_customer.userid AND is_primary = 1', 'left');
+
+                if ((is_array($where) && count($where) > 0) || (is_string($where) && $where != '')) {
+                    $this->db->where($where);
+                }
+
+                $this->db->where(db_prefix() . 'pur_customer.userid IN (SELECT vendor_id FROM ' . db_prefix() . 'pur_vendor_admin WHERE staff_id=' . get_staff_user_id() . ')');
+            } else {
+                $this->db->join(db_prefix() . 'countries', '' . db_prefix() . 'countries.country_id = ' . db_prefix() . 'pur_customer.country', 'left');
+                $this->db->join(db_prefix() . 'pur_customer_contacts', '' . db_prefix() . 'pur_customer_contacts.userid = ' . db_prefix() . 'pur_customer.userid AND is_primary = 1', 'left');
+
+                if ((is_array($where) && count($where) > 0) || (is_string($where) && $where != '')) {
+                    $this->db->where($where);
+                }
+            }
+        }
+
+        $this->db->order_by('company', 'asc');
+
+        return $this->db->get(db_prefix() . 'pur_customer')->result_array();
+    }
+
+    public function delete_customer($id)
+    {
+        $affectedRows = 0;
+
+        hooks()->do_action('before_client_deleted', $id);
+
+        $last_activity = get_last_system_activity_id();
+        $company       = get_company_name($id);
+
+        $this->db->where('userid', $id);
+        $this->db->delete(db_prefix() . 'pur_customer');
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
+            // Delete all user contacts
+            $this->db->where('userid', $id);
+            $contacts = $this->db->get(db_prefix() . 'pur_contacts')->result_array();
+            foreach ($contacts as $contact) {
+                $this->delete_contact($contact['id']);
+            }
+
+            $this->db->where('relid', $id);
+            $this->db->where('fieldto', 'customer');
+            $this->db->delete(db_prefix() . 'customfieldsvalues');
+
+            $this->db->where('vendor_id', $id);
+            $this->db->delete(db_prefix() . 'pur_customer_admin');
+
+            $this->db->where('rel_id', $id);
+            $this->db->where('rel_type', 'pur_customer');
+            $this->db->delete(db_prefix() . 'files');
+            if ($this->db->affected_rows() > 0) {
+                $affectedRows++;
+            }
+
+            if (is_dir(PURCHASE_MODULE_UPLOAD_FOLDER . '/pur_customer/' . $id)) {
+                delete_dir(PURCHASE_MODULE_UPLOAD_FOLDER . '/pur_customer/' . $id);
+            }
+
+            $this->db->where('rel_type', 'pur_customer');
+            $this->db->where('rel_id', $id);
+            $this->db->delete(db_prefix() . 'notes');
+        }
+        if ($affectedRows > 0) {
+            hooks()->do_action('after_client_deleted', $id);
+
+            return true;
+        }
+
+        return false;
+    }
+
+
+
+    public function delete_pc_attachment($id)
+    {
+        $attachment = $this->get_pc_attachments('', $id);
+        $deleted    = false;
+        if ($attachment) {
+            if (empty($attachment->external)) {
+                unlink(PURCHASE_MODULE_UPLOAD_FOLDER . '/pur_customer/' . $attachment->rel_id . '/' . $attachment->file_name);
+            }
+            $this->db->where('id', $attachment->id);
+            $this->db->delete('tblfiles');
+            if ($this->db->affected_rows() > 0) {
+                $deleted = true;
+            }
+
+            if (is_dir(PURCHASE_MODULE_UPLOAD_FOLDER . '/pur_customer/' . $attachment->rel_id)) {
+                // Check if no attachments left, so we can delete the folder also
+                $other_attachments = list_files(PURCHASE_MODULE_UPLOAD_FOLDER . '/pur_customer/' . $attachment->rel_id);
+                if (count($other_attachments) == 0) {
+                    // okey only index.html so we can delete the folder also
+                    delete_dir(PURCHASE_MODULE_UPLOAD_FOLDER . '/pur_customer/' . $attachment->rel_id);
+                }
+            }
+        }
+
+        return $deleted;
+    }
+
+
+    public function get_pc_attachments($assets, $id = '')
+    {
+        // If is passed id get return only 1 attachment
+        if (is_numeric($id)) {
+            $this->db->where('id', $id);
+        } else {
+            $this->db->where('rel_id', $assets);
+        }
+        $this->db->where('rel_type', 'pur_customer');
+        $result = $this->db->get('tblfiles');
+        if (is_numeric($id)) {
+            return $result->row();
+        }
+
+        return $result->result_array();
     }
 }
