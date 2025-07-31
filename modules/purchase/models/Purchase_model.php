@@ -14567,4 +14567,195 @@ class Purchase_model extends App_Model
 
         return $result->result_array();
     }
+
+
+    public function update_customer($data, $id, $client_request = false)
+    {
+        if (isset($data['DataTables_Table_0_length'])) {
+            unset($data['DataTables_Table_0_length']);
+        }
+
+        $sale_agreements = [];
+        if (isset($data['sale_agreements'])) {
+            $sale_agreements['sale_agreements'] = $data['sale_agreements'];
+            unset($data['sale_agreements']);
+        }
+
+        if (isset($data['date'])) {
+            $sale_agreements['date'] = $data['date'];
+            unset($data['date']);
+        }
+
+        if (isset($data['month'])) {
+            $sale_agreements['month'] = $data['month'];
+            unset($data['month']);
+        }
+
+        if (isset($data['years'])) {
+            $sale_agreements['year'] = $data['years'];
+            unset($data['years']);
+        }
+
+        if (isset($data['pan_no'])) {
+            $sale_agreements['pan_no'] = $data['pan_no'];
+            unset($data['pan_no']);
+        }
+
+        if (isset($data['aadhar_no'])) {
+            $sale_agreements['aadhar_no'] = $data['aadhar_no'];
+            unset($data['aadhar_no']);
+        }
+
+        if (isset($data['pan_no2'])) {
+            $sale_agreements['pan_no2'] = $data['pan_no2'];
+            unset($data['pan_no2']);
+        }
+
+        if (isset($data['aadhar_no2'])) {
+            $sale_agreements['aadhar_no2'] = $data['aadhar_no2'];
+            unset($data['aadhar_no2']);
+        }
+
+        if (isset($data['commencement_letter_no'])) {
+            $sale_agreements['commencement_letter_no'] = $data['commencement_letter_no'];
+            unset($data['commencement_letter_no']);
+        }
+
+        if (isset($data['flat_no'])) {
+            $sale_agreements['flat_no'] = $data['flat_no'];
+            unset($data['flat_no']);
+        }
+
+        if (isset($data['block'])) {
+            $sale_agreements['block'] = $data['block'];
+            unset($data['block']);
+        }
+
+        if (isset($data['area'])) {
+            $sale_agreements['area'] = $data['area'];
+            unset($data['area']);
+        }
+
+        if (isset($data['floor_no'])) {
+            $sale_agreements['floor_no'] = $data['floor_no'];
+            unset($data['floor_no']);
+        }
+
+        if (isset($data['price_in_rupees'])) {
+            $sale_agreements['price_in_rupees'] = $data['price_in_rupees'];
+            unset($data['price_in_rupees']);
+        }
+
+        if (isset($data['price_in_words'])) {
+            $sale_agreements['price_in_words'] = $data['price_in_words'];
+            unset($data['price_in_words']);
+        }
+
+        if (isset($data['flat_no2'])) {
+            $sale_agreements['flat_no2'] = $data['flat_no2'];
+            unset($data['flat_no2']);
+        }
+
+        if (isset($data['block2'])) {
+            $sale_agreements['block2'] = $data['block2'];
+            unset($data['block2']);
+        }
+
+        if (isset($data['area2'])) {
+            $sale_agreements['area2'] = $data['area2'];
+            unset($data['area2']);
+        }
+
+        if (isset($data['floor2'])) {
+            $sale_agreements['floor2'] = $data['floor2'];
+            unset($data['floor2']);
+        }
+
+        if (isset($data['area3'])) {
+            $sale_agreements['area3'] = $data['area3'];
+            unset($data['area3']);
+        }
+
+        if (isset($data['balance'])) {
+            $data['balance'] = str_replace(',', '', $data['balance']);
+            if ($data['balance'] != '' && $data['balance'] > 0) {
+                if ($data['balance_as_of'] != '') {
+                    $data['balance_as_of'] = to_sql_date($data['balance_as_of']);
+                } else {
+                    $data['balance_as_of'] = date('Y-m-d');
+                }
+            } else {
+                unset($data['balance']);
+                unset($data['balance_as_of']);
+            }
+        }
+
+        if (isset($data['update_all_other_transactions'])) {
+            $update_all_other_transactions = true;
+            unset($data['update_all_other_transactions']);
+        }
+
+        if (isset($data['update_credit_notes'])) {
+            $update_credit_notes = true;
+            unset($data['update_credit_notes']);
+        }
+
+        $affectedRows = 0;
+        if (isset($data['custom_fields'])) {
+            $custom_fields = $data['custom_fields'];
+            if (handle_custom_fields_post($id, $custom_fields)) {
+                $affectedRows++;
+            }
+            unset($data['custom_fields']);
+        }
+
+        if (isset($data['category']) && count($data['category']) > 0) {
+            $data['category'] = implode(',', $data['category']);
+        }
+
+        $data = $this->check_zero_columns($data);
+
+        $data = hooks()->apply_filters('before_pur_customer_updated', $data, $id);
+
+        $this->db->where('userid', $id);
+        $this->db->update(db_prefix() . 'pur_customer', $data);
+
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
+        }
+
+        if ($sale_agreements['sale_agreements'] == 1) {
+            $sale_agreements['custumer_id'] = $id;
+            $sale_agreements['create_at'] = date('Y-m-d');
+           
+            unset($sale_agreements['sale_agreements']);
+            // Check if customer_id already exists in the table
+            $existing_record = $this->db->get_where(db_prefix() . 'sales_agreement', ['custumer_id' => $id])->row_array();
+
+            if ($existing_record) {
+                // Update existing record
+                $this->db->where('custumer_id', $id);
+                $this->db->update(db_prefix() . 'sales_agreement', $sale_agreements);
+            } else {
+                // Insert new record
+                $this->db->insert(db_prefix() . 'sales_agreement', $sale_agreements);
+            }
+        }
+        if ($affectedRows > 0) {
+            hooks()->do_action('after_pur_customer_updated', $id);
+
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function get_documentation($cust_id){
+        $this->db->select('*');
+        $this->db->from(db_prefix() . 'sales_agreement');
+        $this->db->where('custumer_id', $cust_id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 }

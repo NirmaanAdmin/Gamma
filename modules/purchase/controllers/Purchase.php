@@ -8853,12 +8853,16 @@ class purchase extends AdminController
                         access_denied('purchase');
                     }
                 }
-
-                $success = $this->purchase_model->update_customer($this->input->post(), $id);
+                $data = $this->input->post();
+                $success = $this->purchase_model->update_customer($data, $id);
                 if ($success == true) {
                     set_alert('success', _l('updated_successfully', _l('customer')));
                 }
-                redirect(admin_url('purchase/customer/' . $id));
+                if ($data['sale_agreements'] == 1) {
+                    redirect(admin_url('purchase/customer/' . $id . '?group=documentation'));
+                } else {
+                    redirect(admin_url('purchase/customer/' . $id));
+                }
             }
         }
 
@@ -8928,6 +8932,8 @@ class purchase extends AdminController
             } elseif ($group == 'expenses') {
                 $this->load->model('expenses_model');
                 $data['expenses'] = $this->expenses_model->get('', ['vendor' =>  $id]);
+            } elseif ($group == 'documentation') {
+                $data['documentation'] = $this->purchase_model->get_documentation($id);
             }
 
             $data['staff'] = $this->staff_model->get('', ['active' => 1]);
