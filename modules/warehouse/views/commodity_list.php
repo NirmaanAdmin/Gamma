@@ -979,7 +979,7 @@
       // Loop through each row in the table
       $('#table-table_commodity_list tbody tr').each(function() {
         // Find the status column (12th column, index 11)
-        var statusCell = $(this).find('td:eq(11)');
+        var statusCell = $(this).find('td:eq(10)');
         var statusText = statusCell.text().toLowerCase().trim();
 
         // Apply background color based on status
