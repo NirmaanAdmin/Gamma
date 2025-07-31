@@ -14,6 +14,7 @@ $lang['unit_name']  = 'Unit name';
 $lang['approval']  = 'Approval';
 $lang['profile']  = 'Profile';
 $lang['contacts']  = 'Contacts';
+$lang['documentation']  = 'Documentation';
 $lang['vendor_add_edit_profile']  = 'Profile';
 $lang['vendor_admins']  = 'Vendor admins';
 $lang['new_vendor']  = 'New vendor';

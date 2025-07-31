@@ -8880,7 +8880,6 @@ class purchase extends AdminController
 
             $client                = $this->purchase_model->get_pur_customer($id);
             $data['customer_tabs'] = get_customer_profile_tabs();
-
             if (!$client) {
                 show_404();
             }
@@ -8896,6 +8895,7 @@ class purchase extends AdminController
             $data['title']                 = _l('setting');
             $data['tab'][] = ['name' => 'profile', 'icon' => '<i class="fa fa-user-circle menu-icon"></i>'];
             $data['tab'][] = ['name' => 'contacts', 'icon' => '<i class="fa fa-users menu-icon"></i>'];
+            $data['tab'][] = ['name' => 'documentation', 'icon' => '<i class="fa fa-file-text menu-icon"></i>'];
             // $data['tab'][] = ['name' => 'quotations','icon' => '<i class="fa fa-file-powerpoint menu-icon"></i>'];
             // $data['tab'][] = ['name' => 'contracts', 'icon' => '<i class="fa fa-file-text menu-icon"></i>'];
             // $data['tab'][] = ['name' => 'purchase_order', 'icon' => '<i class="fa fa-cart-plus menu-icon"></i>'];
@@ -8938,13 +8938,13 @@ class purchase extends AdminController
             // Get all active staff members (used to add reminder)
             $data['members'] = $data['staff'];
 
-            if (!empty($data['client']->company)) {
-                // Check if is realy empty client company so we can set this field to empty
-                // The query where fetch the client auto populate firstname and lastname if company is empty
-                if (is_empty_vendor_company($data['client']->userid)) {
-                    $data['client']->company = '';
-                }
-            }
+            // if (!empty($data['client']->company)) {
+            //     // Check if is realy empty client company so we can set this field to empty
+            //     // The query where fetch the client auto populate firstname and lastname if company is empty
+            //     if (is_empty_customer_company($data['client']->userid)) {
+            //         $data['client']->company = '';
+            //     }
+            // }
         }
 
         $this->load->model('currencies_model');
@@ -8979,7 +8979,6 @@ class purchase extends AdminController
         $data['bodyclass'] = 'customer-profile dynamic-create-groups';
         $data['vendor_categories'] = $this->purchase_model->get_vendor_category();
         $data['title']     = $title;
-
         $this->load->view('customers/vendor', $data);
     }
 
@@ -9129,7 +9128,7 @@ class purchase extends AdminController
 
     public function form_contact_customer($customer_id, $contact_id = '')
     {
-        if (!has_permission('purchase_vendors', '', 'view') && !has_permission('purchase_vendors', '', 'view_own')) {
+        if (!has_permission('purchase_customers', '', 'view') && !has_permission('purchase_customers', '', 'view_own')) {
             if (!is_vendor_admin($customer_id)) {
                 echo _l('access_denied');
                 die;
@@ -9143,7 +9142,7 @@ class purchase extends AdminController
 
             unset($data['contactid']);
             if ($contact_id == '') {
-                if (!has_permission('purchase_vendors', '', 'create')) {
+                if (!has_permission('purchase_customers', '', 'create')) {
                     if (!is_vendor_admin($customer_id)) {
                         header('HTTP/1.0 400 Bad error');
                         echo json_encode([
@@ -9169,7 +9168,7 @@ class purchase extends AdminController
                 ]);
                 die;
             }
-            if (!has_permission('purchase_vendors', '', 'edit')) {
+            if (!has_permission('purchase_customers', '', 'edit')) {
                 if (!is_vendor_admin($customer_id)) {
                     header('HTTP/1.0 400 Bad error');
                     echo json_encode([
