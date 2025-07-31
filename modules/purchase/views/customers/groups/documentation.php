@@ -214,7 +214,7 @@
             <p>Signature, Photograph and Thumb Impression of Second Part:-</p><br><br><br><br><br><br>
             <br><br><br><br><br>
             <br>
-            <button type="submit" class="btn btn-primary">Save Agreement</button>
+            
          </div>
          <?php if (isset($client)) { ?>
             <div role="tabpanel" class="tab-pane" id="vendor_admins">
