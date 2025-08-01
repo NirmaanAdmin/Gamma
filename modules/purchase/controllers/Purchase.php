@@ -8933,7 +8933,7 @@ class purchase extends AdminController
                 $this->load->model('expenses_model');
                 $data['expenses'] = $this->expenses_model->get('', ['vendor' =>  $id]);
             } elseif ($group == 'documentation') {
-                $data['documentation'] = $this->purchase_model->get_documentation($id);
+                $data['sale_agreements'] = $this->purchase_model->get_sale_agreements($id);
             }
 
             $data['staff'] = $this->staff_model->get('', ['active' => 1]);
@@ -9232,5 +9232,41 @@ class purchase extends AdminController
 
         $data['title']                = $title;
         $this->load->view('vendors/modals/contact', $data);
+    }
+
+    public function sale_agreements($id)
+    {
+        $data['title'] = _l('Sale Agreement');
+        $data['customer_id'] = $id;
+        $data['customer'] = $this->purchase_model->get_pur_customer($id);
+        // echo '<pre>'; print_r($data); exit;
+        $this->load->view('customers/sale_agreements', $data);
+    }
+
+    public function delete_sale_agreement($id)
+    {
+        // Call the model function which now returns customer_id or false
+        $customer_id = $this->purchase_model->delete_sale_agreement($id);
+
+        if ($customer_id !== false) {
+            set_alert('success', _l('deleted', _l('sale_agreement')));
+            // Redirect to the customer profile with the correct customer_id
+            redirect(admin_url('purchase/customer/' . $customer_id . '?group=documentation'));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('sale_agreement')));
+            // If deletion failed but we have the original $id (customer_id), redirect back
+            // Otherwise redirect to general purchase page as fallback
+            redirect(admin_url('purchase' . (is_numeric($id) ? '/customer/' . $id . '?group=documentation' : '')));
+        }
+    }
+
+    public function edit_sale_agreements($id)
+    {
+        $data['title'] = _l('Sale Agreement');
+        $data['master_id'] = $id;
+        $data['customer'] = $this->purchase_model->get_customer_data($id);
+        $data['documentation'] = $this->purchase_model->get_all_sale_agreements($id);
+        // echo '<pre>'; print_r($data); exit;
+        $this->load->view('customers/edit_sale_agreements', $data);
     }
 }

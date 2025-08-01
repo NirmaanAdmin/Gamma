@@ -14574,7 +14574,6 @@ class Purchase_model extends App_Model
         if (isset($data['DataTables_Table_0_length'])) {
             unset($data['DataTables_Table_0_length']);
         }
-
         $sale_agreements = [];
         if (isset($data['sale_agreements'])) {
             $sale_agreements['sale_agreements'] = $data['sale_agreements'];
@@ -14676,6 +14675,21 @@ class Purchase_model extends App_Model
             unset($data['area3']);
         }
 
+        if (isset($data['agreement_name'])) {
+            $sale_agreements['agreement_name'] = $data['agreement_name'];
+            unset($data['agreement_name']);
+        }
+
+        if (isset($data['customer_id'])) {
+            $sale_agreements['customer_id'] = $data['customer_id'];
+            unset($data['customer_id']);
+        }
+
+        if(isset($data['agreement_master_id'])) {
+            $sale_agreements['agreement_master_id'] = $data['agreement_master_id'];
+            unset($data['agreement_master_id']);
+        }
+
         if (isset($data['balance'])) {
             $data['balance'] = str_replace(',', '', $data['balance']);
             if ($data['balance'] != '' && $data['balance'] > 0) {
@@ -14725,36 +14739,133 @@ class Purchase_model extends App_Model
         }
 
         if ($sale_agreements['sale_agreements'] == 1) {
-            $sale_agreements['custumer_id'] = $id;
-            $sale_agreements['create_at'] = date('Y-m-d');
-           
-            unset($sale_agreements['sale_agreements']);
-            // Check if customer_id already exists in the table
-            $existing_record = $this->db->get_where(db_prefix() . 'sales_agreement', ['custumer_id' => $id])->row_array();
+            
+               
+            // Check if this is an update or new record
+            $is_update = isset($sale_agreements['agreement_master_id']) && !empty($sale_agreements['agreement_master_id']);
+            
+            if ($is_update) {
+                // UPDATE EXISTING AGREEMENT
+                $master_id = $sale_agreements['agreement_master_id'];
+                // Update master agreement record
+                $this->db->where('id', $master_id);
+                $this->db->update(db_prefix() . 'agreements_master', [
+                    'customer_id' => $sale_agreements['customer_id'],
+                    'agreement_name' => $sale_agreements['agreement_name'],
+                    'updated_at' => date('Y-m-d')
+                ]);
 
-            if ($existing_record) {
-                // Update existing record
-                $this->db->where('custumer_id', $id);
+                // Prepare sales agreement data for update
+                unset($sale_agreements['sale_agreements']);
+                unset($sale_agreements['customer_id']);
+                unset($sale_agreements['agreement_name']);
+                unset($sale_agreements['agreement_master_id']);
+                $sale_agreements['updated_at'] = date('Y-m-d');
+
+                // Update sales agreement
+                $this->db->where('agreement_master_id', $master_id);
                 $this->db->update(db_prefix() . 'sales_agreement', $sale_agreements);
             } else {
-                // Insert new record
+                // CREATE NEW AGREEMENT
+                // First, handle the master agreement record
+                $master_agreement_data = [
+                    'customer_id' => $sale_agreements['customer_id'],
+                    'agreement_name' => $sale_agreements['agreement_name'],
+                    'create_at' => date('Y-m-d')
+                ];
+
+                // Insert new master record
+                $this->db->insert(db_prefix() . 'agreements_master', $master_agreement_data);
+                $master_id = $this->db->insert_id();
+
+                // Prepare sales agreement data
+                unset($sale_agreements['sale_agreements']);
+                unset($sale_agreements['customer_id']);
+                unset($sale_agreements['agreement_name']);
+                $sale_agreements['agreement_master_id'] = $master_id;
+                $sale_agreements['create_at'] = date('Y-m-d');
+
+                // Insert new sales agreement
                 $this->db->insert(db_prefix() . 'sales_agreement', $sale_agreements);
             }
+            return true;
         }
+
         if ($affectedRows > 0) {
             hooks()->do_action('after_pur_customer_updated', $id);
-
-
             return true;
         }
 
         return false;
     }
 
-    public function get_documentation($cust_id){
+    public function get_documentation($cust_id)
+    {
         $this->db->select('*');
         $this->db->from(db_prefix() . 'sales_agreement');
         $this->db->where('custumer_id', $cust_id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+
+    public function get_sale_agreements($cust_id)
+    {
+        $this->db->select('*');
+        $this->db->from(db_prefix() . 'agreements_master');
+        $this->db->where('customer_id', $cust_id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function delete_sale_agreement($id)
+    {
+        // First get the customer_id from the master record
+        $this->db->select('customer_id');
+        $this->db->where('id', $id);
+        $master_record = $this->db->get(db_prefix() . 'agreements_master')->row();
+
+        if (!$master_record) {
+            return false; // Record not found
+        }
+
+        $customer_id = $master_record->customer_id;
+
+        // Delete from sales_agreement table first (child table)
+        $this->db->where('agreement_master_id', $id);
+        $this->db->delete(db_prefix() . 'sales_agreement');
+
+        // Then delete from master table
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'agreements_master');
+
+        if ($this->db->affected_rows() > 0) {
+            return $customer_id; // Return customer_id on successful deletion
+        }
+
+        return false;
+    }
+
+    public function get_customer_data($master_id)
+    {
+        $this->db->select(db_prefix() . 'pur_customer.*, ' . db_prefix() . 'agreements_master.agreement_name');  // Select only pur_customer columns
+        $this->db->from(db_prefix() . 'agreements_master');
+        $this->db->join(
+            db_prefix() . 'pur_customer',
+            db_prefix() . 'pur_customer.userid = ' . db_prefix() . 'agreements_master.customer_id',
+            'left'
+        );
+        $this->db->where(db_prefix() . 'agreements_master.id', $master_id);
+        $query = $this->db->get();
+
+        return $query->row_array();  // Returns only pur_customer fields
+    }
+
+    public function get_all_sale_agreements($master_id)
+    {
+        $this->db->select('*');
+        $this->db->from(db_prefix() . 'sales_agreement');
+        $this->db->where('agreement_master_id', $master_id);
         $query = $this->db->get();
         return $query->result_array();
     }
