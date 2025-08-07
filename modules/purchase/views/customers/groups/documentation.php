@@ -23,6 +23,11 @@
                      <?php echo _l('Cost Certificate'); ?>
                   </a>
                </li>
+               <li role="presentation">
+                  <a href="#builder_noc" aria-controls="builder_noc" role="tab" data-toggle="tab">
+                     <?php echo _l('Builder NOC'); ?>
+                  </a>
+               </li>
             </ul>
          </div>
       </div>
@@ -100,40 +105,43 @@
          </div>
 
 
+         <div role="tabpanel" class="tab-pane" id="builder_noc">
+            <a href="<?php echo admin_url('purchase/bulder_noc/' . $client->userid); ?>" class="btn btn-info new-contact mbot25 pull-right"><?php echo _l('New Builder NOC'); ?></a>
+
+            <!-- <table class="table dt-table">
+               <thead>
+                  <tr>
+                     <th>#</th>
+                     <th><?php echo _l('Certificate Name'); ?></th>
+                     <th><?php echo _l('Certificate Date'); ?></th>
+                     <th class="text-right"><?php echo _l('options'); ?></th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <?php if (isset($cost_certificates) && count($cost_certificates) > 0) {
+                     $sr = 1; ?>
+                     <?php foreach ($cost_certificates as $certificate) { ?>
+                        <tr>
+                           <td><?php echo $sr++; ?></td>
+                           <td><?php echo $certificate['cost_certificate_name']; ?></td>
+                           <td data-order="<?php echo pur_html_entity_decode($certificate['create_at']); ?>"><?php echo date('d M, Y', strtotime($certificate['create_at'])); ?></td>
+                           <td class="text-right">
+                              <div class="btn-group">
+                                 <a href="<?php echo admin_url('purchase/edit_cost_certificates/' . $certificate['id']); ?>" class="btn btn-default btn-icon"><i class="fa fa-pencil-square"></i></a>
+                                 <a href="<?php echo admin_url('purchase/delete_cost_certificates/' . $certificate['id']); ?>" class="btn btn-danger _delete btn-icon"><i class="fa fa-remove"></i></a>
+                              </div>
+                           </td>
+                        </tr>
+                     <?php } ?>
+                  <?php } ?>
+               </tbody>
+            </table> -->
+         </div>
+
+
 
 
       </div>
    </div>
    <?php echo form_close(); ?>
 </div>
-<?php if (isset($client)) { ?>
-   <?php if (has_permission('purchase_vendors', '', 'create') || has_permission('purchase_vendors', '', 'edit')) { ?>
-      <div class="modal fade" id="customer_admins_assign" tabindex="-1" role="dialog">
-         <div class="modal-dialog">
-            <?php echo form_open(admin_url('purchase/assign_vendor_admins/' . $client->userid)); ?>
-            <div class="modal-content">
-               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title"><?php echo _l('assign_admin'); ?></h4>
-               </div>
-               <div class="modal-body">
-                  <?php
-                  $selected = array();
-                  foreach ($customer_admins as $c_admin) {
-                     array_push($selected, $c_admin['staff_id']);
-                  }
-                  echo render_select('customer_admins[]', $staff, array('staffid', array('firstname', 'lastname')), '', $selected, array('multiple' => true), array(), '', '', false); ?>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo _l('close'); ?></button>
-                  <button type="submit" class="btn btn-info"><?php echo _l('submit'); ?></button>
-               </div>
-            </div>
-            <!-- /.modal-content -->
-            <?php echo form_close(); ?>
-         </div>
-         <!-- /.modal-dialog -->
-      </div>
-      <!-- /.modal -->
-   <?php } ?>
-<?php } ?>

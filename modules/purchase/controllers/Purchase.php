@@ -9310,4 +9310,13 @@ class purchase extends AdminController
         }
     }
 
+    public function bulder_noc($id)
+    {
+        $data['title'] = _l('Builder NOC');
+        $data['customer_id'] = $id;
+        $data['customer'] = $this->purchase_model->get_pur_customer($id);
+
+        $this->load->view('customers/bulder_noc', $data);
+    }
+
 }
