@@ -8858,7 +8858,7 @@ class purchase extends AdminController
                 if ($success == true) {
                     set_alert('success', _l('updated_successfully', _l('customer')));
                 }
-                if ($data['sale_agreements'] == 1) {
+                if ($data['sale_agreements'] == 1 || $data['cost_certificates'] == 1) {
                     redirect(admin_url('purchase/customer/' . $id . '?group=documentation'));
                 } else {
                     redirect(admin_url('purchase/customer/' . $id));
@@ -8934,6 +8934,7 @@ class purchase extends AdminController
                 $data['expenses'] = $this->expenses_model->get('', ['vendor' =>  $id]);
             } elseif ($group == 'documentation') {
                 $data['sale_agreements'] = $this->purchase_model->get_sale_agreements($id);
+                $data['cost_certificates'] = $this->purchase_model->get_cost_certificates($id);
             }
 
             $data['staff'] = $this->staff_model->get('', ['active' => 1]);
@@ -9269,4 +9270,44 @@ class purchase extends AdminController
         // echo '<pre>'; print_r($data); exit;
         $this->load->view('customers/edit_sale_agreements', $data);
     }
+
+
+    public function cost_certificates($id)
+    {
+        $data['title'] = _l('Cost Certificate');
+        $data['customer_id'] = $id;
+        $data['customer'] = $this->purchase_model->get_pur_customer($id);
+        // echo '<pre>'; print_r($data); exit;
+        $this->load->view('customers/cost_certificates', $data);
+    }
+
+
+    public function edit_cost_certificates($id)
+    {
+        $data['title'] = _l('Cost Certificate');
+        $data['master_id'] = $id;
+        $data['customer'] = $this->purchase_model->get_customer_cost_cert_data($id);
+        $data['documentation'] = $this->purchase_model->get_all_cost_cert($id);
+        // echo '<pre>'; print_r($data); exit;
+        $this->load->view('customers/edit_cost_certificates', $data);
+    }
+
+
+    public function delete_cost_certificates($id)
+    {
+        // Call the model function which now returns customer_id or false
+        $customer_id = $this->purchase_model->delete_cost_certificates($id);
+
+        if ($customer_id !== false) {
+            set_alert('success', _l('deleted', _l('Cost Certificate')));
+            // Redirect to the customer profile with the correct customer_id
+            redirect(admin_url('purchase/customer/' . $customer_id . '?group=documentation'));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('Cost Certificate')));
+            // If deletion failed but we have the original $id (customer_id), redirect back
+            // Otherwise redirect to general purchase page as fallback
+            redirect(admin_url('purchase' . (is_numeric($id) ? '/customer/' . $id . '?group=documentation' : '')));
+        }
+    }
+
 }

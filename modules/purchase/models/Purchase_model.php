@@ -14574,7 +14574,7 @@ class Purchase_model extends App_Model
         if (isset($data['DataTables_Table_0_length'])) {
             unset($data['DataTables_Table_0_length']);
         }
-        $sale_agreements = [];
+        $sale_agreements = $cost_certificates = [];
         if (isset($data['sale_agreements'])) {
             $sale_agreements['sale_agreements'] = $data['sale_agreements'];
             unset($data['sale_agreements']);
@@ -14582,16 +14582,19 @@ class Purchase_model extends App_Model
 
         if (isset($data['date'])) {
             $sale_agreements['date'] = $data['date'];
+            $cost_certificates['date'] = $data['date'];
             unset($data['date']);
         }
 
         if (isset($data['month'])) {
             $sale_agreements['month'] = $data['month'];
+            $cost_certificates['month'] = $data['month'];
             unset($data['month']);
         }
 
         if (isset($data['years'])) {
             $sale_agreements['year'] = $data['years'];
+            $cost_certificates['year'] = $data['years'];
             unset($data['years']);
         }
 
@@ -14682,14 +14685,79 @@ class Purchase_model extends App_Model
 
         if (isset($data['customer_id'])) {
             $sale_agreements['customer_id'] = $data['customer_id'];
+            $cost_certificates['customer_id'] = $data['customer_id'];
             unset($data['customer_id']);
         }
 
-        if(isset($data['agreement_master_id'])) {
+        if (isset($data['agreement_master_id'])) {
             $sale_agreements['agreement_master_id'] = $data['agreement_master_id'];
             unset($data['agreement_master_id']);
         }
 
+        if (isset($data['cost_certificates'])) {
+            $cost_certificates['cost_certificates'] = $data['cost_certificates'];
+            unset($data['cost_certificates']);
+        }
+
+        if (isset($data['cost_certificate_name'])) {
+            $cost_certificates['cost_certificate_name'] = $data['cost_certificate_name'];
+            unset($data['cost_certificate_name']);
+        }
+
+        if (isset($data['unit_name'])) {
+            $cost_certificates['unit_name'] = $data['unit_name'];
+            unset($data['unit_name']);
+        }
+
+        if (isset($data['basic_cost'])) {
+            $cost_certificates['basic_cost'] = $data['basic_cost'];
+            unset($data['basic_cost']);
+        }
+
+        if (isset($data['stamp_duty'])) {
+            $cost_certificates['stamp_duty'] = $data['stamp_duty'];
+            unset($data['stamp_duty']);
+        }
+
+        if (isset($data['maintenance_deposit'])) {
+            $cost_certificates['maintenance_deposit'] = $data['maintenance_deposit'];
+            unset($data['maintenance_deposit']);
+        }
+
+        if (isset($data['gst'])) {
+            $cost_certificates['gst'] = $data['gst'];
+            unset($data['gst']);
+        }
+
+        if (isset($data['registration_charge'])) {
+            $cost_certificates['registration_charge'] = $data['registration_charge'];
+            unset($data['registration_charge']);
+        }
+
+        if (isset($data['total_cost'])) {
+            $cost_certificates['total_cost'] = $data['total_cost'];
+            unset($data['total_cost']);
+        }
+
+        if (isset($data['date2'])) {
+            $cost_certificates['date2'] = $data['date2'];
+            unset($data['date2']);
+        }
+
+        if (isset($data['month2'])) {
+            $cost_certificates['month2'] = $data['month2'];
+            unset($data['month2']);
+        }
+
+        if (isset($data['years2'])) {
+            $cost_certificates['years2'] = $data['years2'];
+            unset($data['years2']);
+        }
+        
+        if (isset($data['certificates_master_id'])) {
+            $cost_certificates['certificates_master_id'] = $data['certificates_master_id'];
+            unset($data['certificates_master_id']);
+        }
         if (isset($data['balance'])) {
             $data['balance'] = str_replace(',', '', $data['balance']);
             if ($data['balance'] != '' && $data['balance'] > 0) {
@@ -14739,11 +14807,11 @@ class Purchase_model extends App_Model
         }
 
         if ($sale_agreements['sale_agreements'] == 1) {
-            
-               
+
+
             // Check if this is an update or new record
             $is_update = isset($sale_agreements['agreement_master_id']) && !empty($sale_agreements['agreement_master_id']);
-            
+
             if ($is_update) {
                 // UPDATE EXISTING AGREEMENT
                 $master_id = $sale_agreements['agreement_master_id'];
@@ -14790,6 +14858,61 @@ class Purchase_model extends App_Model
             }
             return true;
         }
+
+
+        if ($cost_certificates['cost_certificates'] == 1) {
+            
+
+            // Check if this is an update or new record
+            $is_update = isset($cost_certificates['certificates_master_id']) && !empty($cost_certificates['certificates_master_id']);
+
+            if ($is_update) {
+                // UPDATE EXISTING AGREEMENT
+                $master_id = $cost_certificates['certificates_master_id'];
+                // Update master agreement record
+                $this->db->where('id', $master_id);
+                $this->db->update(db_prefix() . 'cost_certificates_master', [
+                    'customer_id' => $cost_certificates['customer_id'],
+                    'cost_certificate_name' => $cost_certificates['cost_certificate_name'],
+                    'updated_at' => date('Y-m-d')
+                ]);
+
+                // Prepare sales agreement data for update
+                unset($cost_certificates['cost_certificates']);
+                unset($cost_certificates['customer_id']);
+                unset($cost_certificates['cost_certificate_name']);
+                unset($cost_certificates['certificates_master_id']);
+                $cost_certificates['updated_at'] = date('Y-m-d');
+
+                // Update sales agreement
+                $this->db->where('cost_master_id', $master_id);
+                $this->db->update(db_prefix() . 'cost_certificates', $cost_certificates);
+            } else {
+                // CREATE NEW AGREEMENT
+                // First, handle the master agreement record
+                $cost_certificates_master_data = [
+                    'customer_id' => $cost_certificates['customer_id'],
+                    'cost_certificate_name' => $cost_certificates['cost_certificate_name'],
+                    'create_at' => date('Y-m-d')
+                ];
+
+                // Insert new master record
+                $this->db->insert(db_prefix() . 'cost_certificates_master', $cost_certificates_master_data);
+                $master_id = $this->db->insert_id();
+
+                // Prepare sales agreement data
+                unset($cost_certificates['cost_certificates']);
+                unset($cost_certificates['customer_id']);
+                unset($cost_certificates['cost_certificate_name']);
+                $cost_certificates['cost_master_id'] = $master_id;
+                $cost_certificates['create_at'] = date('Y-m-d');
+
+                // Insert new sales agreement
+                $this->db->insert(db_prefix() . 'cost_certificates', $cost_certificates);
+            }
+            return true;
+        }
+
 
         if ($affectedRows > 0) {
             hooks()->do_action('after_pur_customer_updated', $id);
@@ -14860,7 +14983,7 @@ class Purchase_model extends App_Model
 
         return $query->row_array();  // Returns only pur_customer fields
     }
-
+    
     public function get_all_sale_agreements($master_id)
     {
         $this->db->select('*');
@@ -14869,4 +14992,67 @@ class Purchase_model extends App_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    public function get_customer_cost_cert_data($master_id)
+    {
+        $this->db->select(db_prefix() . 'pur_customer.*, ' . db_prefix() . 'cost_certificates_master.cost_certificate_name');  
+        $this->db->from(db_prefix() . 'cost_certificates_master');
+        $this->db->join(
+            db_prefix() . 'pur_customer',
+            db_prefix() . 'pur_customer.userid = ' . db_prefix() . 'cost_certificates_master.customer_id',
+            'left'
+        );
+        $this->db->where(db_prefix() . 'cost_certificates_master.id', $master_id);
+        $query = $this->db->get();
+
+        return $query->row_array();  
+    }
+
+    public function get_all_cost_cert($master_id)
+    {
+        $this->db->select('*');
+        $this->db->from(db_prefix() . 'cost_certificates');
+        $this->db->where('cost_master_id', $master_id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+
+    public function get_cost_certificates($cust_id)
+    {
+        $this->db->select('*');
+        $this->db->from(db_prefix() . 'cost_certificates_master');
+        $this->db->where('customer_id', $cust_id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function delete_cost_certificates($id)
+    {
+        // First get the customer_id from the master record
+        $this->db->select('customer_id');
+        $this->db->where('id', $id);
+        $master_record = $this->db->get(db_prefix() . 'cost_certificates_master')->row();
+
+        if (!$master_record) {
+            return false; // Record not found
+        }
+
+        $customer_id = $master_record->customer_id;
+
+        // Delete from sales_agreement table first (child table)
+        $this->db->where('cost_master_id', $id);
+        $this->db->delete(db_prefix() . 'cost_certificates');
+
+        // Then delete from master table
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'cost_certificates_master');
+
+        if ($this->db->affected_rows() > 0) {
+            return $customer_id; // Return customer_id on successful deletion
+        }
+
+        return false;
+    }
+
 }
