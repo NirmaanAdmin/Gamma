@@ -1168,14 +1168,14 @@
 
                     // For other statuses, validate followup date
                     let next_followup_date = $('#next_followup_date').val();
-                    if (!next_followup_date) {
-                        alert_float('danger', 'Please select a follow-up date');
-                        $submitButton.prop('disabled', false); // Re-enable button
-                        return false;
-                    } else {
+                    // if (!next_followup_date) {
+                    //     alert_float('danger', 'Please select a follow-up date');
+                    //     $submitButton.prop('disabled', false); // Re-enable button
+                    //     return false;
+                    // } else {
                         // If date is provided, submit the form
                         $form.submit();
-                    }
+                    // }
                 } else {
                     // Lead status check failed
                     alert_float('danger', response.message || 'Invalid lead status');
