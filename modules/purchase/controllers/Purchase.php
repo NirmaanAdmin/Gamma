@@ -8858,7 +8858,7 @@ class purchase extends AdminController
                 if ($success == true) {
                     set_alert('success', _l('updated_successfully', _l('customer')));
                 }
-                if ($data['sale_agreements'] == 1 || $data['cost_certificates'] == 1) {
+                if ($data['sale_agreements'] == 1 || $data['cost_certificates'] == 1 || $data['builder_noc'] == 1) {
                     redirect(admin_url('purchase/customer/' . $id . '?group=documentation'));
                 } else {
                     redirect(admin_url('purchase/customer/' . $id));
@@ -8935,6 +8935,7 @@ class purchase extends AdminController
             } elseif ($group == 'documentation') {
                 $data['sale_agreements'] = $this->purchase_model->get_sale_agreements($id);
                 $data['cost_certificates'] = $this->purchase_model->get_cost_certificates($id);
+                $data['builder_noc'] = $this->purchase_model->get_builder_noc($id);
             }
 
             $data['staff'] = $this->staff_model->get('', ['active' => 1]);
@@ -9317,6 +9318,16 @@ class purchase extends AdminController
         $data['customer'] = $this->purchase_model->get_pur_customer($id);
 
         $this->load->view('customers/bulder_noc', $data);
+    }
+
+    public function edit_builder_noc($id)
+    {
+        $data['title'] = _l('Builder NOC');
+        $data['master_id'] = $id;
+        $data['customer'] = $this->purchase_model->get_customer_builder_noc_data($id);
+        $data['documentation'] = $this->purchase_model->get_all_builder_noc($id);
+        // echo '<pre>'; print_r($data); exit;
+        $this->load->view('customers/edit_builder_noc', $data);
     }
 
 }

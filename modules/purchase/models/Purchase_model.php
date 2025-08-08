@@ -14574,7 +14574,7 @@ class Purchase_model extends App_Model
         if (isset($data['DataTables_Table_0_length'])) {
             unset($data['DataTables_Table_0_length']);
         }
-        $sale_agreements = $cost_certificates = [];
+        $sale_agreements = $cost_certificates = $builder_noc =[];
         if (isset($data['sale_agreements'])) {
             $sale_agreements['sale_agreements'] = $data['sale_agreements'];
             unset($data['sale_agreements']);
@@ -14583,18 +14583,21 @@ class Purchase_model extends App_Model
         if (isset($data['date'])) {
             $sale_agreements['date'] = $data['date'];
             $cost_certificates['date'] = $data['date'];
+            $builder_noc['date'] = $data['date'];
             unset($data['date']);
         }
 
         if (isset($data['month'])) {
             $sale_agreements['month'] = $data['month'];
             $cost_certificates['month'] = $data['month'];
+            $builder_noc['month'] = $data['month'];
             unset($data['month']);
         }
 
         if (isset($data['years'])) {
             $sale_agreements['year'] = $data['years'];
             $cost_certificates['year'] = $data['years'];
+            $builder_noc['year'] = $data['years'];
             unset($data['years']);
         }
 
@@ -14686,6 +14689,7 @@ class Purchase_model extends App_Model
         if (isset($data['customer_id'])) {
             $sale_agreements['customer_id'] = $data['customer_id'];
             $cost_certificates['customer_id'] = $data['customer_id'];
+            $builder_noc['customer_id'] = $data['customer_id'];
             unset($data['customer_id']);
         }
 
@@ -14741,16 +14745,19 @@ class Purchase_model extends App_Model
 
         if (isset($data['date2'])) {
             $cost_certificates['date2'] = $data['date2'];
+            $builder_noc['date2'] = $data['date2'];
             unset($data['date2']);
         }
 
         if (isset($data['month2'])) {
             $cost_certificates['month2'] = $data['month2'];
+            $builder_noc['month2'] = $data['month2'];
             unset($data['month2']);
         }
 
         if (isset($data['years2'])) {
             $cost_certificates['years2'] = $data['years2'];
+            $builder_noc['years2'] = $data['years2'];
             unset($data['years2']);
         }
         
@@ -14758,6 +14765,122 @@ class Purchase_model extends App_Model
             $cost_certificates['certificates_master_id'] = $data['certificates_master_id'];
             unset($data['certificates_master_id']);
         }
+
+        if(isset($data['builder_noc'])){
+            $builder_noc['builder_noc'] = $data['builder_noc'];
+            unset($data['builder_noc']);
+        }
+
+        if(isset($data['builder_noc_name'])){
+            $builder_noc['builder_noc_name'] = $data['builder_noc_name'];
+            unset($data['builder_noc_name']);
+        }
+
+        if(isset($data['unit_no'])){
+            $builder_noc['unit_no'] = $data['unit_no'];
+            unset($data['unit_no']);
+        }
+        
+        if(isset($data['bn_floor_no'])){
+            $builder_noc['bn_floor_no'] = $data['bn_floor_no'];
+            unset($data['bn_floor_no']);
+        }
+
+        if(isset($data['scheme'])){
+            $builder_noc['scheme'] = $data['scheme'];
+            unset($data['scheme']);
+        }
+
+        if(isset($data['project_name'])){
+            $builder_noc['project_name'] = $data['project_name'];
+            unset($data['project_name']);
+        }
+
+        if(isset($data['rs_no'])){
+            $builder_noc['rs_no'] = $data['rs_no'];
+            unset($data['rs_no']);
+        }
+
+        if(isset($data['tp_no'])){
+            $builder_noc['tp_no'] = $data['tp_no'];
+            unset($data['tp_no']);
+        }
+
+        if(isset($data['fp_no'])){
+            $builder_noc['fp_no'] = $data['fp_no'];
+            unset($data['fp_no']);
+        }
+
+        if(isset($data['total_no_of_flats'])){
+            $builder_noc['total_no_of_flats'] = $data['total_no_of_flats'];
+            unset($data['total_no_of_flats']);
+        }
+
+        if(isset($data['unit_no2'])){
+            $builder_noc['unit_no2'] = $data['unit_no2'];
+            unset($data['unit_no2']);
+        }
+
+        if(isset($data['total_consideration'])){
+            $builder_noc['total_consideration'] = $data['total_consideration'];
+            unset($data['total_consideration']);
+        }
+
+        if(isset($data['total_project_cost'])){
+            $builder_noc['total_project_cost'] = $data['total_project_cost'];
+            unset($data['total_project_cost']);
+        }
+
+        if(isset($data['sanction_letter'])){
+            $builder_noc['sanction_letter'] = $data['sanction_letter'];
+            unset($data['sanction_letter']);
+        }
+
+        if(isset($data['date3'])){
+            $builder_noc['date3'] = $data['date3'];
+            unset($data['date3']);
+        }
+
+        if(isset($data['month3'])){
+            $builder_noc['month3'] = $data['month3'];
+            unset($data['month3']);
+        }
+
+        if(isset($data['years3'])){
+            $builder_noc['years3'] = $data['years3'];
+            unset($data['years3']);
+        }
+
+        if(isset($data['subject_to_charge'])){
+            $builder_noc['subject_to_charge'] = $data['subject_to_charge'];
+            unset($data['subject_to_charge']);
+        }
+
+        if(isset($data['provisional_noc'])){
+            $builder_noc['provisional_noc'] = $data['provisional_noc'];
+            unset($data['provisional_noc']);
+        }
+
+        if(isset($data['date4'])){
+            $builder_noc['date4'] = $data['date4'];
+            unset($data['date4']);
+        }
+
+        if(isset($data['month4'])){
+            $builder_noc['month4'] = $data['month4'];
+            unset($data['month4']);
+        }
+
+        if(isset($data['years4'])){
+            $builder_noc['years4'] = $data['years4'];
+            unset($data['years4']);
+        }
+
+        if(isset($data['builder_master_id'])){
+            $builder_noc['builder_master_id'] = $data['builder_master_id'];
+            unset($data['builder_master_id']);
+        }
+        
         if (isset($data['balance'])) {
             $data['balance'] = str_replace(',', '', $data['balance']);
             if ($data['balance'] != '' && $data['balance'] > 0) {
@@ -14913,6 +15036,59 @@ class Purchase_model extends App_Model
             return true;
         }
 
+        if ($builder_noc['builder_noc'] == 1) {
+            
+           
+            // Check if this is an update or new record
+            $is_update = isset($builder_noc['builder_master_id']) && !empty($builder_noc['builder_master_id']);
+
+            if ($is_update) {
+                // UPDATE EXISTING AGREEMENT
+                $master_id = $builder_noc['builder_master_id'];
+                // Update master agreement record
+                $this->db->where('id', $master_id);
+                $this->db->update(db_prefix() . 'builder_noc_master', [
+                    'customer_id' => $builder_noc['customer_id'],
+                    'builder_noc_name' => $builder_noc['builder_noc_name'],
+                    'updated_at' => date('Y-m-d')
+                ]);
+
+                // Prepare sales agreement data for update
+                unset($builder_noc['builder_noc']);
+                unset($builder_noc['customer_id']);
+                unset($builder_noc['builder_noc_name']);
+                unset($builder_noc['builder_master_id']);
+                $builder_noc['updated_at'] = date('Y-m-d');
+
+                // Update sales agreement
+                $this->db->where('builder_master_id', $master_id);
+                $this->db->update(db_prefix() . 'builder_noc', $builder_noc);
+            } else {
+                // CREATE NEW AGREEMENT
+                // First, handle the master agreement record
+                $builder_noc_master_data = [
+                    'customer_id' => $builder_noc['customer_id'],
+                    'builder_noc_name' => $builder_noc['builder_noc_name'],
+                    'create_at' => date('Y-m-d')
+                ];
+
+                // Insert new master record
+                $this->db->insert(db_prefix() . 'builder_noc_master', $builder_noc_master_data);
+                $master_id = $this->db->insert_id();
+
+                // Prepare sales agreement data
+                unset($builder_noc['builder_noc']);
+                unset($builder_noc['customer_id']);
+                unset($builder_noc['builder_noc_name']);
+                $builder_noc['builder_master_id'] = $master_id;
+                $builder_noc['create_at'] = date('Y-m-d');
+                // Insert new sales agreement
+                $this->db->insert(db_prefix() . 'builder_noc', $builder_noc);
+            }
+            return true;
+        }
+
+
 
         if ($affectedRows > 0) {
             hooks()->do_action('after_pur_customer_updated', $id);
@@ -15053,6 +15229,41 @@ class Purchase_model extends App_Model
         }
 
         return false;
+    }
+
+    public function get_builder_noc($cust_id)
+    {
+        $this->db->select('*');
+        $this->db->from(db_prefix() . 'builder_noc_master');
+        $this->db->where('customer_id', $cust_id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+
+    public function get_customer_builder_noc_data($master_id)
+    {
+        $this->db->select(db_prefix() . 'pur_customer.*, ' . db_prefix() . 'builder_noc_master.builder_noc_name');  
+        $this->db->from(db_prefix() . 'builder_noc_master');
+        $this->db->join(
+            db_prefix() . 'pur_customer',
+            db_prefix() . 'pur_customer.userid = ' . db_prefix() . 'builder_noc_master.customer_id',
+            'left'
+        );
+        $this->db->where(db_prefix() . 'builder_noc_master.id', $master_id);
+        $query = $this->db->get();
+
+        return $query->row_array();  
+    }
+
+
+    public function get_all_builder_noc($master_id)
+    {
+        $this->db->select('*');
+        $this->db->from(db_prefix() . 'builder_noc');
+        $this->db->where('builder_master_id', $master_id);
+        $query = $this->db->get();
+        return $query->result_array();
     }
 
 }
