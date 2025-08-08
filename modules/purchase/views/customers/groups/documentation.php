@@ -28,6 +28,11 @@
                      <?php echo _l('Builder NOC'); ?>
                   </a>
                </li>
+               <li role="presentation">
+                  <a href="#allotment_letter" aria-controls="allotment_letter" role="tab" data-toggle="tab">
+                     <?php echo _l('Allotment Letter'); ?>
+                  </a>
+               </li>
             </ul>
          </div>
       </div>
@@ -138,6 +143,38 @@
             </table>
          </div>
 
+         <div role="tabpanel" class="tab-pane" id="allotment_letter">
+            <a href="<?php echo admin_url('purchase/allotment_letter/' . $client->userid); ?>" class="btn btn-info new-contact mbot25 pull-right"><?php echo _l('New Allotment Letter'); ?></a>
+
+            <table class="table dt-table">
+               <thead>
+                  <tr>
+                     <th>#</th>
+                     <th><?php echo _l('Allotment Letter Name'); ?></th>
+                     <th><?php echo _l('Latter Date'); ?></th>
+                     <th class="text-right"><?php echo _l('options'); ?></th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <?php if (isset($alloment_letter) && count($alloment_letter) > 0) {
+                     $sr = 1; ?>
+                     <?php foreach ($alloment_letter as $letter) { ?>
+                        <tr>
+                           <td><?php echo $sr++; ?></td>
+                           <td><?php echo $letter['allotment_letter_name']; ?></td>
+                           <td data-order="<?php echo pur_html_entity_decode($letter['create_at']); ?>"><?php echo date('d M, Y', strtotime($letter['create_at'])); ?></td>
+                           <td class="text-right">
+                              <div class="btn-group">
+                                 <a href="<?php echo admin_url('purchase/edit_allotment_letter/' . $letter['id']); ?>" class="btn btn-default btn-icon"><i class="fa fa-pencil-square"></i></a>
+                                 <a href="<?php echo admin_url('purchase/delete_allotment_letter/' . $letter['id']); ?>" class="btn btn-danger _delete btn-icon"><i class="fa fa-remove"></i></a>
+                              </div>
+                           </td>
+                        </tr>
+                     <?php } ?>
+                  <?php } ?>
+               </tbody>
+            </table>
+         </div>
 
 
 

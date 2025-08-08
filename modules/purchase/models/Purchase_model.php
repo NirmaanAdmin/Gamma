@@ -14571,10 +14571,11 @@ class Purchase_model extends App_Model
 
     public function update_customer($data, $id, $client_request = false)
     {
+        echo '<pre>'; print_r($data);
         if (isset($data['DataTables_Table_0_length'])) {
             unset($data['DataTables_Table_0_length']);
         }
-        $sale_agreements = $cost_certificates = $builder_noc =[];
+        $sale_agreements = $cost_certificates = $builder_noc = $allotment_letter = [];
         if (isset($data['sale_agreements'])) {
             $sale_agreements['sale_agreements'] = $data['sale_agreements'];
             unset($data['sale_agreements']);
@@ -14584,6 +14585,7 @@ class Purchase_model extends App_Model
             $sale_agreements['date'] = $data['date'];
             $cost_certificates['date'] = $data['date'];
             $builder_noc['date'] = $data['date'];
+            $allotment_letter['date'] = $data['date'];
             unset($data['date']);
         }
 
@@ -14591,6 +14593,7 @@ class Purchase_model extends App_Model
             $sale_agreements['month'] = $data['month'];
             $cost_certificates['month'] = $data['month'];
             $builder_noc['month'] = $data['month'];
+            $allotment_letter['month'] = $data['month'];
             unset($data['month']);
         }
 
@@ -14598,6 +14601,7 @@ class Purchase_model extends App_Model
             $sale_agreements['year'] = $data['years'];
             $cost_certificates['year'] = $data['years'];
             $builder_noc['year'] = $data['years'];
+            $allotment_letter['year'] = $data['years'];
             unset($data['years']);
         }
 
@@ -14690,6 +14694,7 @@ class Purchase_model extends App_Model
             $sale_agreements['customer_id'] = $data['customer_id'];
             $cost_certificates['customer_id'] = $data['customer_id'];
             $builder_noc['customer_id'] = $data['customer_id'];
+            $allotment_letter['customer_id'] = $data['customer_id'];
             unset($data['customer_id']);
         }
 
@@ -14778,6 +14783,7 @@ class Purchase_model extends App_Model
 
         if(isset($data['unit_no'])){
             $builder_noc['unit_no'] = $data['unit_no'];
+            $allotment_letter['unit_no'] = $data['unit_no'];
             unset($data['unit_no']);
         }
         
@@ -14880,7 +14886,56 @@ class Purchase_model extends App_Model
             $builder_noc['builder_master_id'] = $data['builder_master_id'];
             unset($data['builder_master_id']);
         }
-        
+
+        if(isset($data['allotment_letter'])){
+            $allotment_letter['allotment_letter'] = $data['allotment_letter'];
+            unset($data['allotment_letter']);
+        }
+
+        if(isset($data['allotment_letter_name'])){
+            $allotment_letter['allotment_letter_name'] = $data['allotment_letter_name'];
+            unset($data['allotment_letter_name']);
+        }
+
+        if(isset($data['carpet_area'])){
+            $allotment_letter['carpet_area'] = $data['carpet_area'];
+            unset($data['carpet_area']);
+        }
+
+        if(isset($data['balcony_wash_area'])){
+            $allotment_letter['balcony_wash_area'] = $data['balcony_wash_area'];
+            unset($data['balcony_wash_area']);
+        }
+
+        if(isset($data['total_carpet_area'])){
+            $allotment_letter['total_carpet_area'] = $data['total_carpet_area'];
+            unset($data['total_carpet_area']);
+        }
+
+        if(isset($data['undivided_share'])){
+            $allotment_letter['undivided_share'] = $data['undivided_share'];
+            unset($data['undivided_share']);
+        }
+
+        if(isset($data['facing'])){
+            $allotment_letter['facing'] = $data['facing'];
+            unset($data['facing']);
+        }
+
+        if(isset($data['making_payment'])){
+            $allotment_letter['making_payment'] = $data['making_payment'];
+            unset($data['making_payment']);
+        }
+
+        if(isset($data['total_sale_consideration'])){
+            $allotment_letter['total_sale_consideration'] = $data['total_sale_consideration'];
+            unset($data['total_sale_consideration']);
+        }
+
+        if(isset($data['allotment_master_id'])){
+            $allotment_letter['allotment_master_id'] = $data['allotment_master_id'];
+            unset($data['allotment_master_id']);
+        }
         if (isset($data['balance'])) {
             $data['balance'] = str_replace(',', '', $data['balance']);
             if ($data['balance'] != '' && $data['balance'] > 0) {
@@ -15084,6 +15139,59 @@ class Purchase_model extends App_Model
                 $builder_noc['create_at'] = date('Y-m-d');
                 // Insert new sales agreement
                 $this->db->insert(db_prefix() . 'builder_noc', $builder_noc);
+            }
+            return true;
+        }
+
+
+         if ($allotment_letter['allotment_letter'] == 1) {
+            
+           
+            // Check if this is an update or new record
+            $is_update = isset($allotment_letter['allotment_master_id']) && !empty($allotment_letter['allotment_master_id']);
+
+            if ($is_update) {
+                // UPDATE EXISTING AGREEMENT
+                $master_id = $allotment_letter['allotment_master_id'];
+                // Update master agreement record
+                $this->db->where('id', $master_id);
+                $this->db->update(db_prefix() . 'allotment_letter_master', [
+                    'customer_id' => $allotment_letter['customer_id'],
+                    'allotment_letter_name' => $allotment_letter['allotment_letter_name'],
+                    'updated_at' => date('Y-m-d')
+                ]);
+
+                // Prepare sales agreement data for update
+                unset($allotment_letter['allotment_letter']);
+                unset($allotment_letter['customer_id']);
+                unset($allotment_letter['allotment_letter_name']);
+                unset($allotment_letter['allotment_master_id']);
+                $allotment_letter['updated_at'] = date('Y-m-d');
+
+                // Update sales agreement
+                $this->db->where('allotment_master_id', $master_id);
+                $this->db->update(db_prefix() . 'allotment_letter', $allotment_letter);
+            } else {
+                // CREATE NEW AGREEMENT
+                // First, handle the master agreement record
+                $allotment_letter_master_data = [
+                    'customer_id' => $allotment_letter['customer_id'],
+                    'allotment_letter_name' => $allotment_letter['allotment_letter_name'],
+                    'create_at' => date('Y-m-d')
+                ];
+
+                // Insert new master record
+                $this->db->insert(db_prefix() . 'allotment_letter_master', $allotment_letter_master_data);
+                $master_id = $this->db->insert_id();
+
+                // Prepare sales agreement data
+                unset($allotment_letter['allotment_letter']);
+                unset($allotment_letter['customer_id']);
+                unset($allotment_letter['allotment_letter_name']);
+                $allotment_letter['allotment_master_id'] = $master_id;
+                $allotment_letter['create_at'] = date('Y-m-d');
+                // Insert new sales agreement
+                $this->db->insert(db_prefix() . 'allotment_letter', $allotment_letter);
             }
             return true;
         }
@@ -15293,5 +15401,67 @@ class Purchase_model extends App_Model
 
         return false;
     }
+
+    public function get_alloment_letter($cust_id)
+    {
+        $this->db->select('*');
+        $this->db->from(db_prefix() . 'allotment_letter_master');
+        $this->db->where('customer_id', $cust_id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function get_customer_allotment_letter_data($master_id)
+    {
+        $this->db->select(db_prefix() . 'pur_customer.*, ' . db_prefix() . 'allotment_letter_master.allotment_letter_name');  
+        $this->db->from(db_prefix() . 'allotment_letter_master');
+        $this->db->join(
+            db_prefix() . 'pur_customer',
+            db_prefix() . 'pur_customer.userid = ' . db_prefix() . 'allotment_letter_master.customer_id',
+            'left'
+        );
+        $this->db->where(db_prefix() . 'allotment_letter_master.id', $master_id);
+        $query = $this->db->get();
+
+        return $query->row_array();  
+    }
+
+    public function get_all_allotment_letter($master_id)
+    {
+        $this->db->select('*');
+        $this->db->from(db_prefix() . 'allotment_letter');
+        $this->db->where('allotment_master_id', $master_id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function delete_allotment_letter($id)
+    {
+        // First get the customer_id from the master record
+        $this->db->select('customer_id');
+        $this->db->where('id', $id);
+        $master_record = $this->db->get(db_prefix() . 'allotment_letter_master')->row();
+
+        if (!$master_record) {
+            return false; // Record not found
+        }
+
+        $customer_id = $master_record->customer_id;
+
+        // Delete from sales_agreement table first (child table)
+        $this->db->where('allotment_master_id', $id);
+        $this->db->delete(db_prefix() . 'allotment_letter');
+
+        // Then delete from master table
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'allotment_letter_master');
+
+        if ($this->db->affected_rows() > 0) {
+            return $customer_id; // Return customer_id on successful deletion
+        }
+
+        return false;
+    }
+
 
 }
