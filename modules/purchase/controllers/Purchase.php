@@ -9330,4 +9330,21 @@ class purchase extends AdminController
         $this->load->view('customers/edit_builder_noc', $data);
     }
 
+    public function delete_builder_noc($id)
+    {
+        // Call the model function which now returns customer_id or false
+        $customer_id = $this->purchase_model->delete_builder_noc($id);
+
+        if ($customer_id !== false) {
+            set_alert('success', _l('deleted', _l('Builder NOC')));
+            // Redirect to the customer profile with the correct customer_id
+            redirect(admin_url('purchase/customer/' . $customer_id . '?group=documentation'));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('Builder NOC ')));
+            // If deletion failed but we have the original $id (customer_id), redirect back
+            // Otherwise redirect to general purchase page as fallback
+            redirect(admin_url('purchase' . (is_numeric($id) ? '/customer/' . $id . '?group=documentation' : '')));
+        }
+    }
+
 }

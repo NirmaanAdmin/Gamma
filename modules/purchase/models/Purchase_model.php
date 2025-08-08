@@ -15266,4 +15266,32 @@ class Purchase_model extends App_Model
         return $query->result_array();
     }
 
+    public function delete_builder_noc($id)
+    {
+        // First get the customer_id from the master record
+        $this->db->select('customer_id');
+        $this->db->where('id', $id);
+        $master_record = $this->db->get(db_prefix() . 'builder_noc_master')->row();
+
+        if (!$master_record) {
+            return false; // Record not found
+        }
+
+        $customer_id = $master_record->customer_id;
+
+        // Delete from sales_agreement table first (child table)
+        $this->db->where('builder_master_id', $id);
+        $this->db->delete(db_prefix() . 'builder_noc');
+
+        // Then delete from master table
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'builder_noc_master');
+
+        if ($this->db->affected_rows() > 0) {
+            return $customer_id; // Return customer_id on successful deletion
+        }
+
+        return false;
+    }
+
 }
