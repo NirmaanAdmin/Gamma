@@ -378,6 +378,7 @@ function purchase_permissions() {
 
     register_staff_capabilities('purchase_items', $capabilities, _l('purchase_items'));
     register_staff_capabilities('purchase_vendors', $capabilities_own, _l('purchase_vendors'));
+    register_staff_capabilities('purchase_customers', $capabilities_own, _l('purchase_customers'));
     register_staff_capabilities('purchase_vendor_items', $capabilities_own, _l('purchase_vendor_items'));
     register_staff_capabilities('purchase_request', $capabilities_own, _l('purchase_request'));
     register_staff_capabilities('purchase_quotations', $capabilities_own, _l('purchase_quotations'));

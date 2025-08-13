@@ -699,3 +699,4 @@ $lang['convert_to_po'] = 'Convert to PO';
 $lang['delivery_person'] = 'Delivered by';
 $lang['signature_pur_order'] = 'Signature';
 $lang['tax_percentage'] = 'Tax %';
+$lang['purchase_customers'] = 'Purchase Customers';
