@@ -31,26 +31,26 @@
                      </a>
                   </li>
                <?php } ?>
-               <li role="presentation">
+               <!-- <li role="presentation">
                   <a href="#billing_and_shipping" aria-controls="billing_and_shipping" role="tab" data-toggle="tab">
                      <?php echo _l('billing_shipping'); ?>
                   </a>
-               </li>
+               </li> -->
 
-               <li role="presentation">
+               <!-- <li role="presentation">
                   <a href="#return_policies" aria-controls="return_policies" role="tab" data-toggle="tab">
                      <?php echo _l('pur_return_policies'); ?>
                   </a>
-               </li>
+               </li> -->
 
-               <?php if (isset($client)) { ?>
+               <!-- <?php if (isset($client)) { ?>
                   <li role="presentation">
                      <a href="#vendor_admins" aria-controls="vendor_admins" role="tab" data-toggle="tab">
                         <?php echo _l('vendor_admins'); ?>
                      </a>
                   </li>
 
-               <?php } ?>
+               <?php } ?> -->
             </ul>
          </div>
       </div>
@@ -179,7 +179,7 @@
             </div>
          </div>
          <?php if (isset($client)) { ?>
-            <div role="tabpanel" class="tab-pane" id="vendor_admins">
+            <!-- <div role="tabpanel" class="tab-pane" id="vendor_admins">
                <?php if (has_permission('purchase_vendors', '', 'create') || has_permission('purchase_vendors', '', 'edit')) { ?>
                   <a href="#" data-toggle="modal" data-target="#customer_admins_assign" class="btn btn-info mbot30"><?php echo _l('assign_admin'); ?></a>
                <?php } ?>
@@ -213,9 +213,9 @@
                      <?php } ?>
                   </tbody>
                </table>
-            </div>
+            </div> -->
          <?php } ?>
-         <div role="tabpanel" class="tab-pane" id="billing_and_shipping">
+         <!-- <div role="tabpanel" class="tab-pane" id="billing_and_shipping">
             <div class="row">
                <div class="col-md-12">
                   <div class="row">
@@ -275,9 +275,9 @@
                   </div>
                </div>
             </div>
-         </div>
+         </div> -->
 
-         <div role="tabpanel" class="tab-pane" id="return_policies">
+         <!-- <div role="tabpanel" class="tab-pane" id="return_policies">
             <div class="row">
                <div class="col-md-6">
                   <?php $return_within_day = (isset($client->return_within_day) &&  $client->return_within_day != null) ? $client->return_within_day : get_option('pur_return_request_within_x_day');
@@ -292,7 +292,7 @@
                   echo render_textarea('return_policies', 'pur_return_policies_information', $return_policies, array(), array()); ?>
                </div>
             </div>
-         </div>
+         </div> -->
 
       </div>
    </div>
