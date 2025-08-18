@@ -9410,4 +9410,52 @@ class purchase extends AdminController
         $pdf->Output('sale_agreement.pdf', $type);
     }
 
+    public function cost_certificate_pdf($id)
+    { 
+        $cost_certificate = $this->purchase_model->get_cost_certificate_pdf_html($id);
+
+        try {
+            $pdf = $this->purchase_model->cost_certificate_pdf($cost_certificate);
+        } catch (Exception $e) {
+            echo pur_html_entity_decode($e->getMessage());
+            die;
+        }
+
+        $type = 'D';
+
+        if ($this->input->get('output_type')) {
+            $type = $this->input->get('output_type');
+        }
+
+        if ($this->input->get('print')) {
+            $type = 'I';
+        }
+
+        $pdf->Output('cost_certificate.pdf', $type);
+    }
+
+
+    public function allotment_letter_pdf($id)
+    { 
+        $allotment_letter = $this->purchase_model->get_allotment_letter_pdf_html($id);
+        try {
+            $pdf = $this->purchase_model->allotment_letter_pdf($allotment_letter);
+        } catch (Exception $e) {
+            echo pur_html_entity_decode($e->getMessage());
+            die;
+        }
+
+        $type = 'D';
+
+        if ($this->input->get('output_type')) {
+            $type = $this->input->get('output_type');
+        }
+
+        if ($this->input->get('print')) {
+            $type = 'I';
+        }
+
+        $pdf->Output('allotment_letter.pdf', $type);
+    }
+
 }

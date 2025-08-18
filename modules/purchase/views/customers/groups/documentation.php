@@ -66,14 +66,14 @@
                                  <a href="<?php echo admin_url('purchase/edit_sale_agreements/' . $agreement['id']); ?>" class="btn btn-default btn-icon" style="padding: 10px !important"><i class="fa fa-pencil-square"></i></a>
                                  <a href="<?php echo admin_url('purchase/delete_sale_agreement/' . $agreement['id']); ?>" class="btn btn-danger _delete btn-icon" style="padding: 10px !important"><i class="fa fa-remove"></i></a>
                                  <a href="javascript:void(0)" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 7px !important"><i class="fa fa-file-pdf"></i><?php if (is_mobile()) {
-                                                                                                                                                                                                         echo ' PDF';
-                                                                                                                                                                                                      } ?> <span class="caret"></span></a>
+                                                                                                                                                                                                                                          echo ' PDF';
+                                                                                                                                                                                                                                       } ?> <span class="caret"></span></a>
                                  <ul class="dropdown-menu dropdown-menu-right">
                                     <li class="hidden-xs"><a href="<?php echo admin_url('purchase/sale_agreement_pdf/' . $agreement['id'] . '?output_type=I'); ?>"><?php echo _l('view_pdf'); ?></a></li>
                                     <li class="hidden-xs"><a href="<?php echo admin_url('purchase/sale_agreement_pdf/' . $agreement['id'] . '?output_type=I'); ?>" target="_blank"><?php echo _l('view_pdf_in_new_window'); ?></a></li>
                                     <li><a href="<?php echo admin_url('purchase/sale_agreement_pdf/' . $agreement['id']); ?>"><?php echo _l('download'); ?></a></li>
                                     <li>
-                                       <a href="<?php echo admin_url('purchase/sale_agreement_pdf/' . $agreement['id']. '?print=true'); ?>" target="_blank">
+                                       <a href="<?php echo admin_url('purchase/sale_agreement_pdf/' . $agreement['id'] . '?print=true'); ?>" target="_blank">
                                           <?php echo _l('print'); ?>
                                        </a>
                                     </li>
@@ -112,8 +112,22 @@
                            <td data-order="<?php echo pur_html_entity_decode($certificate['create_at']); ?>"><?php echo date('d M, Y', strtotime($certificate['create_at'])); ?></td>
                            <td class="text-right">
                               <div class="btn-group">
-                                 <a href="<?php echo admin_url('purchase/edit_cost_certificates/' . $certificate['id']); ?>" class="btn btn-default btn-icon"><i class="fa fa-pencil-square"></i></a>
-                                 <a href="<?php echo admin_url('purchase/delete_cost_certificates/' . $certificate['id']); ?>" class="btn btn-danger _delete btn-icon"><i class="fa fa-remove"></i></a>
+                                 <a href="<?php echo admin_url('purchase/edit_cost_certificates/' . $certificate['id']); ?>" class="btn btn-default btn-icon" style="padding: 10px !important"><i class="fa fa-pencil-square"></i></a>
+                                 <a href="<?php echo admin_url('purchase/delete_cost_certificates/' . $certificate['id']); ?>" class="btn btn-danger _delete btn-icon" style="padding: 10px !important"><i class="fa fa-remove"></i></a>
+                                 <a href="javascript:void(0)" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 7px !important"><i class="fa fa-file-pdf"></i><?php if (is_mobile()) {
+                                                                                                                                                                                                                                          echo ' PDF';
+                                                                                                                                                                                                                                       } ?> <span class="caret"></span></a>
+                                 <ul class="dropdown-menu dropdown-menu-right">
+                                    <li class="hidden-xs"><a href="<?php echo admin_url('purchase/cost_certificate_pdf/' . $certificate['id'] . '?output_type=I'); ?>"><?php echo _l('view_pdf'); ?></a></li>
+                                    <li class="hidden-xs"><a href="<?php echo admin_url('purchase/cost_certificate_pdf/' . $certificate['id'] . '?output_type=I'); ?>" target="_blank"><?php echo _l('view_pdf_in_new_window'); ?></a></li>
+                                    <li><a href="<?php echo admin_url('purchase/cost_certificate_pdf/' . $certificate['id']); ?>"><?php echo _l('download'); ?></a></li>
+                                    <li>
+                                       <a href="<?php echo admin_url('purchase/cost_certificate_pdf/' . $certificate['id'] . '?print=true'); ?>" target="_blank">
+                                          <?php echo _l('print'); ?>
+                                       </a>
+                                    </li>
+                                 </ul>
+
                               </div>
                            </td>
                         </tr>
@@ -179,8 +193,22 @@
                            <td data-order="<?php echo pur_html_entity_decode($letter['create_at']); ?>"><?php echo date('d M, Y', strtotime($letter['create_at'])); ?></td>
                            <td class="text-right">
                               <div class="btn-group">
-                                 <a href="<?php echo admin_url('purchase/edit_allotment_letter/' . $letter['id']); ?>" class="btn btn-default btn-icon"><i class="fa fa-pencil-square"></i></a>
-                                 <a href="<?php echo admin_url('purchase/delete_allotment_letter/' . $letter['id']); ?>" class="btn btn-danger _delete btn-icon"><i class="fa fa-remove"></i></a>
+                                 <a href="<?php echo admin_url('purchase/edit_allotment_letter/' . $letter['id']); ?>" class="btn btn-default btn-icon" style="padding: 10px !important"><i class="fa fa-pencil-square"></i></a>
+                                 <a href="<?php echo admin_url('purchase/delete_allotment_letter/' . $letter['id']); ?>" class="btn btn-danger _delete btn-icon" style="padding: 10px !important"><i class="fa fa-remove"></i></a>
+                                 <a href="javascript:void(0)" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 7px !important"><i class="fa fa-file-pdf"></i><?php if (is_mobile()) {
+                                                                                                                                                                                                                                          echo ' PDF';
+                                                                                                                                                                                                                                       } ?> <span class="caret"></span></a>
+                                 <ul class="dropdown-menu dropdown-menu-right">
+                                    <li class="hidden-xs"><a href="<?php echo admin_url('purchase/allotment_letter_pdf/' . $letter['id'] . '?output_type=I'); ?>"><?php echo _l('view_pdf'); ?></a></li>
+                                    <li class="hidden-xs"><a href="<?php echo admin_url('purchase/allotment_letter_pdf/' . $letter['id'] . '?output_type=I'); ?>" target="_blank"><?php echo _l('view_pdf_in_new_window'); ?></a></li>
+                                    <li><a href="<?php echo admin_url('purchase/allotment_letter_pdf/' . $letter['id']); ?>"><?php echo _l('download'); ?></a></li>
+                                    <li>
+                                       <a href="<?php echo admin_url('purchase/allotment_letter_pdf/' . $letter['id'] . '?print=true'); ?>" target="_blank">
+                                          <?php echo _l('print'); ?>
+                                       </a>
+                                    </li>
+                                 </ul>
+
                               </div>
                            </td>
                         </tr>
