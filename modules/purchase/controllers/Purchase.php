@@ -2671,7 +2671,7 @@ class purchase extends AdminController
      * @return pdf output
      */
     public function purorder_pdf($id)
-    {
+    { 
         if (!$id) {
             redirect(admin_url('purchase/purchase_request'));
         }
@@ -9385,4 +9385,29 @@ class purchase extends AdminController
             redirect(admin_url('purchase' . (is_numeric($id) ? '/customer/' . $id . '?group=documentation' : '')));
         }
     }
+
+    public function sale_agreement_pdf($id)
+    { 
+        $sale_agreement = $this->purchase_model->get_sale_agreement_pdf_html($id);
+       
+        try {
+            $pdf = $this->purchase_model->sale_agreement_pdf($sale_agreement);
+        } catch (Exception $e) {
+            echo pur_html_entity_decode($e->getMessage());
+            die;
+        }
+
+        $type = 'D';
+
+        if ($this->input->get('output_type')) {
+            $type = $this->input->get('output_type');
+        }
+
+        if ($this->input->get('print')) {
+            $type = 'I';
+        }
+
+        $pdf->Output('sale_agreement.pdf', $type);
+    }
+
 }

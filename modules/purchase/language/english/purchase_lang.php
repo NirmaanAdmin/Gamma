@@ -700,3 +700,4 @@ $lang['delivery_person'] = 'Delivered by';
 $lang['signature_pur_order'] = 'Signature';
 $lang['tax_percentage'] = 'Tax %';
 $lang['purchase_customers'] = 'Purchase Customers';
+$lang['sale_agreement'] = 'Sale Agreement';
