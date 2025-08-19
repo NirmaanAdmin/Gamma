@@ -703,3 +703,4 @@ $lang['purchase_customers'] = 'Purchase Customers';
 $lang['sale_agreement'] = 'Sale Agreement';
 $lang['cost_certificate'] = 'Cost Certificate';
 $lang['allotment_letter'] = 'Allotment Letter';
+$lang['builder_noc'] = 'Builder NOC';

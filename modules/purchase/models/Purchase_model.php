@@ -15904,4 +15904,149 @@ class Purchase_model extends App_Model
     {
         return app_pdf('allotment_letter', module_dir_path(PURCHASE_MODULE_NAME, 'libraries/pdf/Allotment_letter_pdf'), $allotment_letter);
     }
+
+    public function get_builder_noc_pdf_html($builder_noc_id)
+    {
+        $company_logo = get_option('company_logo_dark');
+        if (!empty($company_logo)) {
+            $logo = '<img src="' . base_url('uploads/company/' . $company_logo) . '" width="230" height="100">';
+        }
+        // Fetch data
+        $documentation =  $this->get_all_builder_noc($builder_noc_id) ?? [];
+        // Expect these arrays inside $sale_agreement; adjust to your actual shape
+        $customer      = $this->get_customer_builder_noc_data($builder_noc_id) ?? [];
+        // Helpers
+        $esc = static function ($v) {
+            return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+        };
+        $fmtAmt = static function ($v) use ($esc) {
+            if ($v === '' || $v === null) return '';
+            $out = is_numeric($v) ? number_format((float)$v, 2) : (string)$v;
+            return $esc($out);
+        };
+
+        // Dates
+        $DATE  = $esc($documentation[0]['date']  ?? '');
+        $MONTH = $esc($documentation[0]['month'] ?? '');
+        $YEAR  = $esc($documentation[0]['year']  ?? '');
+
+        $DATE2  = $esc($documentation[0]['date2']  ?? '');
+        $MONTH2 = $esc($documentation[0]['month2'] ?? '');
+        $YEAR2  = $esc($documentation[0]['year2']  ?? ($documentation[0]['years2'] ?? ''));
+
+        $DATE3  = $esc($documentation[0]['date3']  ?? '');
+        $MONTH3 = $esc($documentation[0]['month3'] ?? '');
+        $YEAR3  = $esc($documentation[0]['year3']  ?? ($documentation[0]['years3'] ?? ''));
+
+        $DATE4  = $esc($documentation[0]['date4']  ?? '');
+        $MONTH4 = $esc($documentation[0]['month4'] ?? '');
+        $YEAR4  = $esc($documentation[0]['year4']  ?? ($documentation[0]['years4'] ?? ''));
+
+        // Parties / Project / Unit
+        $CUSTOMER_COMPANY   = $esc($customer['company'] ?? '');
+        $UNIT_NO            = $esc($documentation[0]['unit_no'] ?? '');
+        $BN_FLOOR_NO        = $esc($documentation[0]['bn_floor_no'] ?? '');
+        $SCHEME             = $esc($documentation[0]['scheme'] ?? '');
+
+        $PROJECT_NAME       = $esc($documentation[0]['project_name'] ?? '');
+        $RS_NO              = $esc($documentation[0]['rs_no'] ?? '');
+        $TP_NO              = $esc($documentation[0]['tp_no'] ?? '');
+        $FP_NO              = $esc($documentation[0]['fp_no'] ?? '');
+        $TOTAL_NO_OF_FLATS  = $esc($documentation[0]['total_no_of_flats'] ?? '');
+
+        $UNIT_NO2           = $esc($documentation[0]['unit_no2'] ?? '');
+        $TOTAL_CONSIDERATION = $fmtAmt($documentation[0]['total_consideration'] ?? '');
+
+        $TOTAL_PROJECT_COST = $fmtAmt($documentation[0]['total_project_cost'] ?? ''); // in Cr.
+        $SANCTION_LETTER    = $esc($documentation[0]['sanction_letter'] ?? '');
+
+        $SUBJECT_TO_CHARGE  = $esc($documentation[0]['subject_to_charge'] ?? '');
+        $PROVISIONAL_NOC    = $esc($documentation[0]['provisional_noc'] ?? '');
+
+        // Build HTML (no inputs, all values injected and escaped)
+        $html = <<<HTML
+        <p style="text-align:center;margin:0px">{$logo}</p>
+
+        <p>To,</p>
+        <p>Housing Development Finance Corporation Bank Limited,</p>
+        <p>Ahmedabad</p>
+
+        <p><strong>Date:</strong> {$DATE} day of {$MONTH}, {$YEAR}</p>
+
+        <br><br>
+        <p>Dear Sirs,</p>
+        <br>
+
+        <p>
+        Ref: Loan to Mr./Ms. <strong>{$CUSTOMER_COMPANY}</strong> &mdash; Flat / Unit No. <strong>{$UNIT_NO}</strong> on
+         <strong>{$BN_FLOOR_NO}</strong> floor in the Scheme <strong>{$SCHEME}</strong>.
+        </p>
+
+        <br>
+
+        <p>
+        This is to confirm that we have undertaken a Project called <strong>{$PROJECT_NAME}</strong> constructed on land bearing
+        R.S. No. <strong>{$RS_NO}</strong>, T.P. No. <strong>{$TP_NO}</strong>, F.P. No. <strong>{$FP_NO}</strong> having total number of
+         <strong>{$TOTAL_NO_OF_FLATS}</strong> flats / duplex / tenements / plots.
+        </p>
+
+        <br>
+
+        <p>
+        This is to confirm that in the above mentioned scheme, the Flat / Unit No. <strong>{$UNIT_NO2}</strong> has been allocated to the above
+        purchaser for a total consideration of Rs. <strong>{$TOTAL_CONSIDERATION}</strong>/- vide Agreement for Sale dated
+         <strong>{$DATE2}</strong> day of <strong>{$MONTH2}</strong>, <strong>{$YEAR2}</strong>.
+        </p>
+
+        <br>
+
+        <p>
+        We confirm that we have obtained necessary permission / approvals / sanctions for construction of the said Project from all the concerned
+        competent authorities and the construction of the Project as well as of the flats / duplex / tenements / plots in the Project is in accordance
+        with the approved plans.
+        </p>
+
+        <br>
+
+        <p>
+        We would like to confirm that we have taken a construction finance on the said Project of Rs. <strong>{$TOTAL_PROJECT_COST}</strong> Cr.
+        from <strong>{$SANCTION_LETTER}</strong> via Sanction Letter dated <strong>{$DATE3}</strong> day of <strong>{$MONTH3}</strong>, <strong>{$YEAR3}</strong>.
+        </p>
+
+        <br>
+
+        <p>
+        We hereby also confirm that the said flats / duplex / tenements / plots are subject to the charge of <strong>{$SUBJECT_TO_CHARGE}</strong>
+        and as per the Provisional NOC of <strong>{$PROVISIONAL_NOC}</strong> dated <strong>{$DATE4}</strong> day of <strong>{$MONTH4}</strong>,
+        <strong>{$YEAR4}</strong>, the charge would be released after the payment of the consideration amount into the account mentioned as per the
+        Provisional NOC / Sanction Letter.
+        </p>
+
+        <br>
+
+        <p>
+        We have no objection to your giving loans to the buyers in the above stated Project and to his / her / their mortgaging the said
+        flats / duplex / tenements / plots by way of security for repayment, notwithstanding anything to the contrary contained in the Agreement.
+        </p>
+
+        <br>
+
+        <p>
+        We also undertake to inform, and give proper notice to the Co-operative Housing Society as and when formed, about the Unit being so
+        mortgaged. We shall not cancel, re-allot, or transfer the said property hereafter without HDFC's consent.
+        </p>
+
+        <br><br>
+
+        <p>Yours faithfully,</p>
+        <p><strong>For, KAUTILYA DEVELOPERS</strong></p>
+        HTML;
+
+        return $html;
+    }
+
+    public function builder_noc_pdf($builder_noc)
+    {
+        return app_pdf('builder_noc', module_dir_path(PURCHASE_MODULE_NAME, 'libraries/pdf/Builder_noc_pdf'), $builder_noc);
+    }
 }

@@ -9458,4 +9458,28 @@ class purchase extends AdminController
         $pdf->Output('allotment_letter.pdf', $type);
     }
 
+
+     public function builder_noc_pdf($id)
+    { 
+        $builder_noc = $this->purchase_model->get_builder_noc_pdf_html($id);
+        try {
+            $pdf = $this->purchase_model->builder_noc_pdf($builder_noc);
+        } catch (Exception $e) {
+            echo pur_html_entity_decode($e->getMessage());
+            die;
+        }
+
+        $type = 'D';
+
+        if ($this->input->get('output_type')) {
+            $type = $this->input->get('output_type');
+        }
+
+        if ($this->input->get('print')) {
+            $type = 'I';
+        }
+
+        $pdf->Output('builder_noc.pdf', $type);
+    }
+
 }
