@@ -12,7 +12,7 @@ class Tasks extends AdminController
         parent::__construct();
         $this->load->model('projects_model');
         $this->load->model('leads_model');
-    }
+    } 
 
     /* Open also all taks if user access this /tasks url */
     public function index($id = '')

@@ -248,10 +248,10 @@
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->company != '' ? e($lead->company) : '-') ?></dd> -->
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_address'); ?>
+                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_address'); ?>
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->address != '' ? process_text_content_for_display($lead->address) : '-') ?></dd>
+                        <?php echo (isset($lead) && $lead->address != '' ? process_text_content_for_display($lead->address) : '-') ?></dd> -->
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Broker Name'); ?>
                     </dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
@@ -811,10 +811,20 @@
                 $selected                 = (isset($lead) ? $lead->projects : '');
                 echo render_select('projects', $projects, ['id', ['name']], 'Projects', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
                 ?>
+                <div class="form-group">
+                    <label for="alt_phonenumber"><?php echo _l('Alt PhoneNumber'); ?></label>
+                    <div class="input-group" style="width: 100%;">
+
+                        <input type="text" id="alt_phonenumber" name="alt_phonenumber" data-id="<?= isset($lead) ?? $lead->alt_phonenumber ?>" class="form-control"
+                            value="<?php echo e($lead->alt_phonenumber); ?>">
+                    </div>
+                </div>
                 <?php $value = (isset($lead) ? $lead->email : ''); ?>
                 <?php echo render_input('email', 'lead_add_edit_email', $value); ?>
+                
                 <?php $value = (isset($lead) ? $lead->address : ''); ?>
-                <?php echo render_textarea('address', 'Current Residence', $value, ['rows' => 1, 'style' => 'height:36px;font-size:100%;']); ?>
+                <!-- <?php echo render_textarea('address', 'Current Residence', $value, ['rows' => 1, 'style' => 'height:36px;font-size:100%;']); ?> -->
+                
                 <?php $value = (isset($lead) ? $lead->firm : ''); ?>
                 <?php echo render_input('firm', 'Firm Name', $value); ?>
                 <!-- <?php
@@ -859,8 +869,8 @@
                 <?php } ?>
             </div>
             <div class="col-md-12">
-                <?php $value = (isset($lead) ? $lead->description : ''); ?>
-                <?php echo render_textarea('description', 'lead_description', $value); ?>
+                <!-- <?php $value = (isset($lead) ? $lead->description : ''); ?>
+                <?php echo render_textarea('description', 'lead_description', $value); ?> -->
                 <div class="row">
                     <div class="col-md-12">
                         <?php if (!isset($lead)) { ?>
@@ -906,10 +916,10 @@
             </div>
             <div role="tabpanel" class="tab-pane" id="lead_notes_inner">
                 <?php echo form_open(admin_url('leads/add_note/' . $lead->id), ['id' => 'lead-notes']); ?>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <textarea id="lead_note_description" name="lead_note_description" class="form-control"
                         rows="4"></textarea>
-                </div>
+                </div> -->
                 <div class="lead-select-date-contacted hide">
                     <?php echo render_datetime_input('custom_contact_date', 'lead_add_edit_datecontacted', '', ['data-date-end-date' => date('Y-m-d')]); ?>
                 </div>
@@ -1173,8 +1183,8 @@
                     //     $submitButton.prop('disabled', false); // Re-enable button
                     //     return false;
                     // } else {
-                        // If date is provided, submit the form
-                        $form.submit();
+                    // If date is provided, submit the form
+                    $form.submit();
                     // }
                 } else {
                     // Lead status check failed

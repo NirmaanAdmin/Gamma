@@ -7,7 +7,7 @@ $module_name = 'leads'; ?>
         z-index: 999;
         left: 289px
     }
-</style>
+</style> 
 <div id="wrapper">
     <div class="content">
         <div class="row">
@@ -358,10 +358,10 @@ $module_name = 'leads'; ?>
                                             'name'     => _l('leads_dt_datecreated'),
                                             'th_attrs' => ['class' => 'date-created toggleable', 'id' => 'th-date-created'],
                                         ];
-                                        $_table_data[] = [
-                                            'name'     => _l('leads_dt_last_contact'),
-                                            'th_attrs' => ['class' => 'toggleable', 'id' => 'th-last-contact'],
-                                        ];
+                                        // $_table_data[] = [
+                                        //     'name'     => _l('leads_dt_last_contact'),
+                                        //     'th_attrs' => ['class' => 'toggleable', 'id' => 'th-last-contact'],
+                                        // ];
                                         $_table_data[] = [
                                             'name'     => 'Broker Name',
                                             'th_attrs' => ['class' => 'toggleable', 'id' => 'th-broker-name'],
@@ -396,7 +396,7 @@ $module_name = 'leads'; ?>
                                         ?>
                                         <div class="panel-table-full">
                                             <?php
-                                            render_datatable(
+                                            render_datatable( 
                                                 $table_data,
                                                 'leads',
                                                 ['customizable-table number-index-2'],

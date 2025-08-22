@@ -85,6 +85,7 @@ if ($CI->input->post('lead_status') && count($CI->input->post('lead_status')) > 
 // Period filter options (for the select dropdown)
 $period_type_filter_val = [
     ['id' => 'today', 'name' => _l('today')],
+    ['id' => '3_day', 'name' => _l('last_3_days')],
     ['id' => '7_day', 'name' => _l('last_7_days')],
     ['id' => 'this_week', 'name' => _l('this_week')],
     // Add more period options as needed
@@ -97,7 +98,7 @@ if ($CI->input->post('period') && is_array($CI->input->post('period')) && count(
 
     $periodConditions = [];
 
-    foreach ($periods as $period) {
+    foreach ($periods as $period) { 
         switch ($period) {
             case 'today':
                 // Get tasks from today (00:00:00 to now) AND last 12 hours
@@ -108,6 +109,10 @@ if ($CI->input->post('period') && is_array($CI->input->post('period')) && count(
 
             case '7_day':
                 $periodConditions[] = "$dateField BETWEEN '" . date('Y-m-d', strtotime('-7 days')) . "' AND '" . date('Y-m-d') . "'";
+                break;
+
+             case '3_day':
+                $periodConditions[] = "$dateField BETWEEN '" . date('Y-m-d', strtotime('-3 days')) . "' AND '" . date('Y-m-d') . "'";
                 break;
 
             case 'this_week':

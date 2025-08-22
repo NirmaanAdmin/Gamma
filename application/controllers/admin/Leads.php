@@ -89,7 +89,7 @@ class Leads extends AdminController
 
                 echo json_encode([
                     'success'  => $id ? true : false,
-                    'id'       => $id,
+                    'id'       => $id, 
                     'message'  => $message,
                     'leadView' => $id ? $this->_get_lead_data($id) : [],
                 ]);

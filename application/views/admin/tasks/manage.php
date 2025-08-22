@@ -95,6 +95,7 @@ $module_name = 'tasks'; ?>
                             <?php
                             $period = [
                                 ['id' => 'today', 'name' => 'Today'],
+                                ['id' => '3_day', 'name' => '3 Days'],
                                 ['id' => '7_day', 'name' => '7 Days'],
                                 ['id' => 'this_week', 'name' => 'This Week'],
                             ];

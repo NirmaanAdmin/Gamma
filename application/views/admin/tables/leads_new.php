@@ -35,7 +35,7 @@ $aColumns = [
     db_prefix() . 'leads_status.name as status_name',
     db_prefix() . 'leads_sources.name as source_name',
     db_prefix() . 'leads.dateadded as dateadded',
-    db_prefix() . 'leads.lastcontact as lastcontact',
+    // db_prefix() . 'leads.lastcontact as lastcontact',
     db_prefix() . 'leads.broker as broker',
     db_prefix() . 'leads.contact_details as contact_details',
     db_prefix() . 'leads.duplicate as duplicate',
@@ -175,7 +175,8 @@ foreach ($rResult as $aRow) {
     $name     = preg_match('/[a-zA-Z0-9]/', $aRow['name'])
         ? e($aRow['name'])
         : 'No Name';
-    $nameRow  = '<a ' . $href . '>' . $name . '</a><div class="row-options">'
+    $nameRow  = '<a href="' . admin_url('leads/index/' . $aRow['id'] . '?edit=true')
+            . '" onclick="init_lead(' . $aRow['id'] . ', true);return false;">' . $name . '</a><div class="row-options">'
         . '<a ' . $href . '>' . _l('view') . '</a>';
     $locked   = ($aRow['is_converted'] > 0
         && !is_admin()
@@ -279,7 +280,7 @@ foreach ($rResult as $aRow) {
 
     $row[] = e($aRow['source_name']);
     $row[] = '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['dateadded'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['dateadded'])) . '</span>';
-    $row[] = ($aRow['lastcontact'] == '0000-00-00 00:00:00' || !is_date($aRow['lastcontact']) ? '' : '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['lastcontact'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['lastcontact'])) . '</span>');
+    // $row[] = ($aRow['lastcontact'] == '0000-00-00 00:00:00' || !is_date($aRow['lastcontact']) ? '' : '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['lastcontact'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['lastcontact'])) . '</span>');
     $row[]        = e($aRow['broker']);
     $row[]        = e($aRow['contact_details']);
     $check_double_entry = $aRow['duplicate'];
