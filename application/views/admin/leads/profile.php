@@ -916,10 +916,10 @@
             </div>
             <div role="tabpanel" class="tab-pane" id="lead_notes_inner">
                 <?php echo form_open(admin_url('leads/add_note/' . $lead->id), ['id' => 'lead-notes']); ?>
-                <!-- <div class="form-group">
+                <div class="form-group">
                     <textarea id="lead_note_description" name="lead_note_description" class="form-control"
                         rows="4"></textarea>
-                </div> -->
+                </div>
                 <div class="lead-select-date-contacted hide">
                     <?php echo render_datetime_input('custom_contact_date', 'lead_add_edit_datecontacted', '', ['data-date-end-date' => date('Y-m-d')]); ?>
                 </div>
