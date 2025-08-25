@@ -283,9 +283,9 @@
                     </dd>
 
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('leads_dt_last_contact'); ?></dt>
-                    <dd class="tw-text-neutral-900 tw-mt-1">
+                    <!-- <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->lastcontact != '' ? '<span class="text-has-action" data-toggle="tooltip" data-title="' . e(_dt($lead->lastcontact)) . '">' . e(time_ago($lead->lastcontact)) . '</span>' : '-') ?>
-                    </dd>
+                    </dd> -->
 
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_public'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1 mbot15">
@@ -759,15 +759,15 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-12">
-                        <?php if (!isset($lead)) { ?>
+                        <!-- <?php if (!isset($lead)) { ?>
                             <div class="lead-select-date-contacted hide">
                                 <?php echo render_datetime_input('custom_contact_date', 'lead_add_edit_datecontacted', _dt($lead->lastcontact), ['data-date-end-date' => date('Y-m-d')]); ?>
                             </div>
                         <?php } else { ?>
                             <?php echo render_datetime_input('lastcontact', 'leads_dt_last_contact', _dt($lead->lastcontact), ['data-date-end-date' => date('Y-m-d')]); ?>
-                        <?php } ?>
+                        <?php } ?> -->
 
-                        <div class="checkbox-inline checkbox checkbox-primary<?php if (isset($lead)) {
+                        <!-- <div class="checkbox-inline checkbox checkbox-primary<?php if (isset($lead)) {
                                                                                     echo ' hide';
                                                                                 } ?><?php if (isset($lead) && (is_lead_creator($lead->id) || staff_can('edit', 'leads'))) {
                                                                                         echo ' lead-edit';
@@ -776,7 +776,7 @@
                                                                         echo 'checked';
                                                                     } ?> id="lead_public">
                             <label for="lead_public"><?php echo _l('lead_public'); ?></label>
-                        </div>
+                        </div> -->
 
                         <?php if (!isset($lead)) { ?>
                             <div class="checkbox-inline checkbox checkbox-primary">
@@ -798,7 +798,9 @@
                                 <textarea id="lead_note_description" name="lead_note_description" class="form-control" rows="4"></textarea>
                             </div>
                             <div class="lead-select-date-contacted ">
-                                <?php echo render_datetime_input('custom_contact_date', 'lead_add_edit_datecontacted', _dt($lead->lastcontact), ['data-date-end-date' => date('Y-m-d')]); ?>
+                                <?php 
+                                $cruntDate = date('Y-m-d H:i');
+                                echo render_datetime_input('custom_contact_date', 'lead_add_edit_datecontacted', $cruntDate, ['data-date-end-date' => date('Y-m-d')]); ?>
                             </div>
 
                             <div class="form-group col-md-6">
