@@ -89,7 +89,7 @@ class Leads extends AdminController
 
                 echo json_encode([
                     'success'  => $id ? true : false,
-                    'id'       => $id, 
+                    'id'       => $id,
                     'message'  => $message,
                     'leadView' => $id ? $this->_get_lead_data($id) : [],
                 ]);
@@ -97,6 +97,7 @@ class Leads extends AdminController
                 $emailOriginal   = $this->db->select('email')->where('id', $id)->get(db_prefix() . 'leads')->row()->email;
                 $proposalWarning = false;
                 $message         = '';
+                $this->add_note($this->input->post(), $id);
                 $success         = $this->leads_model->update($this->input->post(), $id);
 
                 if ($success) {
@@ -1048,15 +1049,31 @@ class Leads extends AdminController
     }
 
     /* Add new lead note */
-    public function add_note($rel_id)
+    public function add_note($data, $rel_id)
     {
         if (!is_staff_member() || !$this->leads_model->staff_can_access_lead($rel_id)) {
             ajax_access_denied();
         }
 
-        if ($this->input->post()) {
-            $data = $this->input->post();
-
+        if ($data) {
+            unset(
+                $data['status'],
+                $data['source'],
+                $data['assigned'],
+                $data['tags'],
+                $data['name'],
+                $data['country_code'],
+                $data['phonenumber'],
+                $data['lead_value'],
+                $data['broker'],
+                $data['contact_details'],
+                $data['projects'],
+                $data['alt_phonenumber'],
+                $data['email'],
+                $data['firm'],
+                $data['note'],
+                $data['lastcontact']
+            );
             if ($data['contacted_indicator'] == 'yes') {
                 $contacted_date         = to_sql_date($data['custom_contact_date'], true);
                 $data['date_contacted'] = $contacted_date;
@@ -1089,7 +1106,7 @@ class Leads extends AdminController
                 }
             }
         }
-        echo json_encode(['leadView' => $this->_get_lead_data($rel_id), 'id' => $rel_id]);
+        return true;
     }
 
     public function email_integration_folders()

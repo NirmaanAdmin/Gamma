@@ -383,7 +383,14 @@ class Leads_model extends App_Model
      */
     public function update($data, $id)
     {
-
+        unset(
+            $data['note'],
+            $data['lastcontact'],
+            $data['lead_note_description'],
+            $data['custom_contact_date'],
+            $data['contacted_indicator'],
+            $data['next_followup_date'],
+        );
         $current_lead_data = $this->get($id);
         $current_status    = $this->get_status($current_lead_data->status);
         if ($current_status) {
@@ -449,8 +456,14 @@ class Leads_model extends App_Model
 
         $data['address'] = trim($data['address']);
         $data['address'] = nl2br($data['address']);
+        // Check if the phone number already starts with +91
+        if (strpos($data['phonenumber'], '+91') !== 0) {
+            // Only add country code if it's not already present
+            $data['phonenumber'] = $data['country_code'] . $data['phonenumber'];
+        }
+
+        // Store the original phone number without code
         $phonenumber_without_code = $data['phonenumber'];
-        $data['phonenumber'] = $data['country_code'] . $data['phonenumber'];
         unset($data['country_code']);
         $data['email'] = trim($data['email']);
 

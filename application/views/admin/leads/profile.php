@@ -1,7 +1,6 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <style>
     .bootstrap-select.form-control.input-group-btn {
-
         width: 18%;
     }
 
@@ -13,73 +12,59 @@
     }
 </style>
 
-<div class="<?php if ($openEdit == true) {
-                echo 'open-edit ';
-            } ?>lead-wrapper" <?php if (isset($lead) && ($lead->junk == 1 || $lead->lost == 1)) {
-                                    echo 'lead-is-junk-or-lost';
-                                } ?>>
+<div class="lead-wrapper<?php echo !empty($openEdit) ? ' open-edit' : ''; ?><?php echo (isset($lead) && ($lead->junk == 1 || $lead->lost == 1)) ? ' lead-is-junk-or-lost' : ''; ?>">
 
     <?php if (isset($lead)) { ?>
         <div class="btn-group pull-right mleft5" id="lead-more-btn">
-            <a href="#" class="btn btn-default dropdown-toggle lead-top-btn" data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">
-                <?php echo _l('more'); ?>
-                <span class="caret"></span>
+            <a href="#" class="btn btn-default dropdown-toggle lead-top-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?php echo _l('more'); ?> <span class="caret"></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-left" id="lead-more-dropdown">
                 <?php if ($lead->junk == 0) {
                     if ($lead->lost == 0 && (total_rows(db_prefix() . 'clients', ['leadid' => $lead->id]) == 0)) { ?>
                         <li>
                             <a href="#" onclick="lead_mark_as_lost(<?php echo e($lead->id); ?>); return false;">
-                                <i class="fa fa-mars"></i>
-                                <?php echo _l('lead_mark_as_lost'); ?>
+                                <i class="fa fa-mars"></i> <?php echo _l('lead_mark_as_lost'); ?>
                             </a>
                         </li>
                     <?php } elseif ($lead->lost == 1) { ?>
                         <li>
                             <a href="#" onclick="lead_unmark_as_lost(<?php echo e($lead->id); ?>); return false;">
-                                <i class="fa fa-smile-o"></i>
-                                <?php echo _l('lead_unmark_as_lost'); ?>
+                                <i class="fa fa-smile-o"></i> <?php echo _l('lead_unmark_as_lost'); ?>
                             </a>
                         </li>
                     <?php } ?>
-                <?php
-                } ?>
-                <!-- mark as junk -->
+                <?php } ?>
+
                 <?php if ($lead->lost == 0) {
                     if ($lead->junk == 0 && (total_rows(db_prefix() . 'clients', ['leadid' => $lead->id]) == 0)) { ?>
                         <li>
                             <a href="#" onclick="lead_mark_as_junk(<?php echo e($lead->id); ?>); return false;">
-                                <i class="fa fa fa-times"></i>
-                                <?php echo _l('lead_mark_as_junk'); ?>
+                                <i class="fa fa-times"></i> <?php echo _l('lead_mark_as_junk'); ?>
                             </a>
                         </li>
                     <?php } elseif ($lead->junk == 1) { ?>
                         <li>
                             <a href="#" onclick="lead_unmark_as_junk(<?php echo e($lead->id); ?>); return false;">
-                                <i class="fa fa-smile-o"></i>
-                                <?php echo _l('lead_unmark_as_junk'); ?>
+                                <i class="fa fa-smile-o"></i> <?php echo _l('lead_unmark_as_junk'); ?>
                             </a>
                         </li>
                     <?php } ?>
                 <?php } ?>
-                <?php if ((staff_can('delete',  'leads') && $lead_locked == false) || is_admin()) { ?>
+
+                <?php if ((staff_can('delete', 'leads') && $lead_locked == false) || is_admin()) { ?>
                     <li>
-                        <a href="<?php echo admin_url('leads/delete/' . $lead->id); ?>" class="text-danger delete-text _delete"
-                            data-toggle="tooltip" title="">
-                            <i class="fa fa-remove"></i>
-                            <?php echo _l('lead_edit_delete_tooltip'); ?>
+                        <a href="<?php echo admin_url('leads/delete/' . $lead->id); ?>" class="text-danger delete-text _delete" data-toggle="tooltip" title="">
+                            <i class="fa fa-remove"></i> <?php echo _l('lead_edit_delete_tooltip'); ?>
                         </a>
                     </li>
                 <?php } ?>
             </ul>
-
         </div>
 
         <div class="pull-right mleft5">
             <a data-toggle="tooltip" class="btn btn-default lead-print-btn lead-top-btn lead-view"
-                onclick="print_lead_information(); return false;" data-placement="top" title="<?php echo _l('print'); ?>"
-                href="#">
+                onclick="print_lead_information(); return false;" data-placement="top" title="<?php echo _l('print'); ?>" href="#">
                 <i class="fa fa-print"></i>
             </a>
         </div>
@@ -87,7 +72,6 @@
         <div class="mleft5 pull-right<?php echo $lead_locked == true ? ' hide' : ''; ?>">
             <a href="#" lead-edit data-toggle="tooltip" id="lead-edit-square" data-title="<?php echo _l('edit'); ?>"
                 class="btn btn-default lead-top-btn">
-
                 <i class="fa-regular fa-pen-to-square"></i>
             </a>
         </div>
@@ -97,7 +81,7 @@
         $convert_to_client_tooltip_email_exists = '';
         if (total_rows(db_prefix() . 'contacts', ['email' => $lead->email]) > 0 && total_rows(db_prefix() . 'clients', ['leadid' => $lead->id]) == 0) {
             $convert_to_client_tooltip_email_exists = _l('lead_email_already_exists');
-            $text                                   = _l('lead_convert_to_client');
+            $text = _l('lead_convert_to_client');
         } elseif (total_rows(db_prefix() . 'clients', ['leadid' => $lead->id])) {
             $client = true;
         } else {
@@ -115,28 +99,27 @@
                 </button>
             </div>
         <?php } ?>
-        <?php if ($client && (staff_can('view',  'customers') || is_customer_admin(get_client_id_by_lead_id($lead->id)))) { ?>
+
+        <?php if ($client && (staff_can('view', 'customers') || is_customer_admin(get_client_id_by_lead_id($lead->id)))) { ?>
             <a data-toggle="tooltip" class="btn btn-success pull-right lead-top-btn lead-view" data-placement="top"
                 title="<?php echo _l('lead_converted_edit_client_profile'); ?>"
                 href="<?php echo admin_url('clients/client/' . get_client_id_by_lead_id($lead->id)); ?>">
                 <i class="fa-regular fa-user"></i>
             </a>
         <?php } ?>
+
         <?php if (total_rows(db_prefix() . 'clients', ['leadid' => $lead->id]) == 0) { ?>
             <a href="#" data-toggle="tooltip" data-title="<?php echo e($convert_to_client_tooltip_email_exists); ?>"
                 class="btn btn-success pull-right lead-convert-to-customer lead-top-btn lead-view"
                 onclick="convert_lead_to_customer(<?php echo e($lead->id); ?>); return false;">
-                <i class="fa-regular fa-user"></i>
-                <?php echo e($text); ?>
+                <i class="fa-regular fa-user"></i> <?php echo e($text); ?>
             </a>
         <?php } ?>
-
     <?php } ?>
 
     <div class="clearfix no-margin"></div>
 
     <?php if (isset($lead)) { ?>
-
         <div class="row mbot15" style="margin-top:12px;">
             <hr class="no-margin" />
         </div>
@@ -153,6 +136,7 @@
             </a>
         </div>
     <?php } ?>
+
     <?php echo form_open((isset($lead) ? admin_url('leads/lead/' . $lead->id) : admin_url('leads/lead')), ['id' => 'lead_form']); ?>
     <div class="row">
         <div class="lead-view<?php if (!isset($lead)) {
@@ -160,17 +144,15 @@
                                 } ?>" id="leadViewWrapper">
             <div class="col-md-4 col-xs-12 lead-information-col">
                 <div class="lead-info-heading">
-                    <h4>
-                        <?php echo _l('lead_info'); ?>
-                    </h4>
+                    <h4><?php echo _l('lead_info'); ?></h4>
                 </div>
                 <dl>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                        <?php echo _l('lead_add_edit_name'); ?></dt>
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_add_edit_name'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1 lead-name">
-                        <?php echo (isset($lead) && $lead->name != '' ? e($lead->name) : '-') ?></dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">Project
-                    </dt>
+                        <?php echo (isset($lead) && $lead->name != '' ? e($lead->name) : '-') ?>
+                    </dd>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">Project</dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php
                         if (isset($lead) && !empty($lead->projects)) {
@@ -181,49 +163,18 @@
                         }
                         ?>
                     </dd>
-                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">Interested In
-                    </dt>
-                    <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php
-                        if (isset($lead) && !empty($lead->interested_in)) {
-                            $interested_in = get_interested_in($lead->interested_in);
-                            echo $interested_in ? e($interested_in) : '-';
-                        } else {
-                            echo '-';
-                        }
-                        ?>
-                    </dd> -->
-                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">Facing Preference
-                    </dt>
-                    <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php
-                        if (isset($lead) && !empty($lead->facing_preference)) {
-                            $facing_preference = get_facing_preference($lead->facing_preference);
-                            echo $facing_preference ? e($facing_preference) : '-';
-                        } else {
-                            echo '-';
-                        }
-                        ?>
-                    </dd> -->
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                        <?php echo _l('lead_add_edit_email'); ?></dt>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_add_edit_email'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->email != '' ? '<a href="mailto:' . e($lead->email) . '">' . e($lead->email) . '</a>' : '-') ?>
                     </dd>
-                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_website'); ?>
-                    </dt>
-                    <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->website != '' ? '<a href="' . e(maybe_add_http($lead->website)) . '" target="_blank">' . e($lead->website) . '</a>' : '-') ?>
-                    </dd> -->
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                        <?php echo _l('lead_add_edit_phonenumber'); ?></dt>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_add_edit_phonenumber'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php
                         if (isset($lead) && $lead->phonenumber != '') {
                             $phone = trim($lead->phonenumber);
-                            // Check if the phone number already starts with +91 or +1
                             if (strpos($phone, '+91') !== 0 && strpos($phone, '+1') !== 0) {
-                                // If the phone number starts with "1", add +1; otherwise, add +91.
                                 if (strpos($phone, '1') === 0) {
                                     $phone = '+1' . $phone;
                                 } else {
@@ -237,62 +188,34 @@
                         ?>
                     </dd>
 
-
-
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_value'); ?>
-                    </dt>
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_value'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->lead_value != 0 ? e(app_format_money($lead->lead_value, $base_currency->id)) : '-') ?>
                     </dd>
-                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_company'); ?>
-                    </dt>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Broker Name'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->company != '' ? e($lead->company) : '-') ?></dd> -->
-                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_address'); ?>
-                    </dt>
+                        <?php echo (isset($lead) && $lead->broker != '' ? process_text_content_for_display($lead->broker) : '-') ?>
+                    </dd>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Firm Name'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->address != '' ? process_text_content_for_display($lead->address) : '-') ?></dd> -->
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Broker Name'); ?>
-                    </dt>
+                        <?php echo (isset($lead) && $lead->firm != '' ? process_text_content_for_display($lead->firm) : '-') ?>
+                    </dd>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Broker Contact Details'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->broker != '' ? process_text_content_for_display($lead->broker) : '-') ?></dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Firm Name'); ?>
-                    </dt>
-                    <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->firm != '' ? process_text_content_for_display($lead->firm) : '-') ?></dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Broker Contact Details'); ?>
-                    </dt>
-                    <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->contact_details != '' ? $lead->contact_details : '-') ?></dd>
-                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_city'); ?>
-                    </dt>
-                    <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->city != '' ? e($lead->city) : '-') ?></dd> -->
-                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_state'); ?>
-                    </dt>
-                    <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->state != '' ? e($lead->state) : '-') ?>
-                    </dd> -->
-                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_country'); ?>
-                    </dt>
-                    <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->country != 0 ? e(get_country($lead->country)->short_name) : '-') ?>
-                    </dd> -->
-                    <!-- <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_zip'); ?></dt>
-                    <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->zip != '' ? e($lead->zip) : '-') ?></dd> -->
+                        <?php echo (isset($lead) && $lead->contact_details != '' ? $lead->contact_details : '-') ?>
+                    </dd>
                 </dl>
             </div>
+
             <div class="col-md-4 col-xs-12 lead-information-col">
                 <div class="lead-info-heading">
-                    <h4>
-                        <?php echo _l('lead_general_info'); ?>
-                    </h4>
+                    <h4><?php echo _l('lead_general_info'); ?></h4>
                 </div>
                 <dl>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500 no-mtop">
-                        <?php echo _l('lead_add_edit_status'); ?>
-                    </dt>
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500 no-mtop"><?php echo _l('lead_add_edit_status'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-2 mbot15">
                         <?php
                         if (isset($lead)) {
@@ -302,34 +225,32 @@
                         }
                         ?>
                     </dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                        <?php echo _l('lead_add_edit_source'); ?></dt>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_add_edit_source'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1 mbot15">
-                        <?php echo (isset($lead) && $lead->source_name != '' ? e($lead->source_name) : '-') ?></dd>
+                        <?php echo (isset($lead) && $lead->source_name != '' ? e($lead->source_name) : '-') ?>
+                    </dd>
+
                     <?php if (!is_language_disabled()) { ?>
-                        <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                            <?php echo _l('localization_default_language'); ?>
-                        </dt>
+                        <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('localization_default_language'); ?></dt>
                         <dd class="tw-text-neutral-900 tw-mt-1 mbot15">
                             <?php echo (isset($lead) && $lead->default_language != '' ? e(ucfirst($lead->default_language)) : _l('system_default_string')) ?>
                         </dd>
                     <?php } ?>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                        <?php echo _l('lead_add_edit_assigned'); ?></dt>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_add_edit_assigned'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1 mbot15">
                         <?php echo (isset($lead) && $lead->assigned != 0 ? e(get_staff_full_name($lead->assigned)) : '-') ?>
                     </dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                        <?php echo _l('Alt Phonenumber'); ?></dt>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Alt Phonenumber'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php
                         if (isset($lead) && $lead->alt_phonenumber != '') {
                             $alt_phonenumber = trim($lead->alt_phonenumber);
-                            // Check if the phone number already starts with +91 or +1
                             if (strpos($alt_phonenumber, '+91') !== 0 && strpos($alt_phonenumber, '+1') !== 0) {
-                                // If the phone number starts with "1", add +1; otherwise, add +91.
                                 if (strpos($alt_phonenumber, '1') === 0) {
-                                    $alt_phonenumber = '+1' . $phone;
+                                    $alt_phonenumber = '+1' . $alt_phonenumber;
                                 } else {
                                     $alt_phonenumber = '+91' . $alt_phonenumber;
                                 }
@@ -340,6 +261,7 @@
                         }
                         ?>
                     </dd>
+
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('tags'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1 mbot10">
                         <?php
@@ -354,82 +276,69 @@
                         }
                         ?>
                     </dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                        <?php echo _l('leads_dt_datecreated'); ?></dt>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('leads_dt_datecreated'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->dateadded != '' ? '<span class="text-has-action" data-toggle="tooltip" data-title="' . e(_dt($lead->dateadded)) . '">' . e(time_ago($lead->dateadded)) . '</span>' : '-') ?>
                     </dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                        <?php echo _l('leads_dt_last_contact'); ?></dt>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('leads_dt_last_contact'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->lastcontact != '' ? '<span class="text-has-action" data-toggle="tooltip" data-title="' . e(_dt($lead->lastcontact)) . '">' . e(time_ago($lead->lastcontact)) . '</span>' : '-') ?>
                     </dd>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_public'); ?>
-                    </dt>
+
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_public'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1 mbot15">
                         <?php if (isset($lead)) {
-                            if ($lead->is_public == 1) {
-                                echo _l('lead_is_public_yes');
-                            } else {
-                                echo _l('lead_is_public_no');
-                            }
+                            echo ($lead->is_public == 1) ? _l('lead_is_public_yes') : _l('lead_is_public_no');
                         } else {
                             echo '-';
-                        }
-                        ?>
+                        } ?>
                     </dd>
+
                     <?php if (isset($lead) && $lead->from_form_id != 0) { ?>
-                        <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                            <?php echo _l('web_to_lead_form'); ?></dt>
+                        <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('web_to_lead_form'); ?></dt>
                         <dd class="tw-text-neutral-900 tw-mt-1 mbot15"><?php echo e($lead->form_data->name); ?></dd>
                     <?php } ?>
                 </dl>
             </div>
+
             <div class="col-md-4 col-xs-12 lead-information-col">
                 <?php if (total_rows(db_prefix() . 'customfields', ['fieldto' => 'leads', 'active' => 1]) > 0 && isset($lead)) { ?>
                     <div class="lead-info-heading">
-                        <h4>
-                            <?php echo _l('custom_fields'); ?>
-                        </h4>
+                        <h4><?php echo _l('custom_fields'); ?></h4>
                     </div>
                     <dl>
                         <?php
                         $custom_fields = get_custom_fields('leads');
                         foreach ($custom_fields as $field) {
                             $value = get_custom_field_value($lead->id, $field['id'], 'leads'); ?>
-                            <dt class="lead-field-heading tw-font-medium tw-text-neutral-500 no-mtop">
-                                <?php echo e($field['name']); ?></dt>
-                            <dd class="tw-text-neutral-900 tw-mt-1 tw-break-words"><?php echo ($value != '' ? $value : '-') ?>
-                            </dd>
-                        <?php
-                        } ?>
-                    <?php } ?>
+                            <dt class="lead-field-heading tw-font-medium tw-text-neutral-500 no-mtop"><?php echo e($field['name']); ?></dt>
+                            <dd class="tw-text-neutral-900 tw-mt-1 tw-break-words"><?php echo ($value != '' ? $value : '-') ?></dd>
+                        <?php } ?>
                     </dl>
+                <?php } ?>
             </div>
+
             <div class="clearfix"></div>
+
             <div class="col-md-12">
                 <dl>
-                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500">
-                        <?php echo _l('lead_description'); ?></dt>
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_description'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo process_text_content_for_display((isset($lead) && $lead->description != '' ? $lead->description : '-')); ?></dd>
+                        <?php echo process_text_content_for_display((isset($lead) && $lead->description != '' ? $lead->description : '-')); ?>
+                    </dd>
                 </dl>
             </div>
         </div>
+
         <div class="clearfix"></div>
+
         <div class="lead-edit<?php if (isset($lead)) {
                                     echo ' hide';
                                 } ?>">
             <div class="col-md-4">
                 <?php
-                $selected = '';
-                // if (isset($lead)) {
-                //     $selected = $lead->status;
-                // } elseif (isset($status_id)) {
-                //     $selected = $status_id;
-                // } else{
-                //     $selected = 18;
-                // }
                 if (isset($lead)) {
                     $selected = $lead->status;
                 } else {
@@ -457,30 +366,28 @@
                 ) {
                     $assigned_attrs['disabled'] = true;
                 }
-                echo render_select('assigned', $members, ['staffid', ['firstname', 'lastname']], 'lead_add_edit_assigned', $selected, $assigned_attrs); ?>
+                echo render_select('assigned', $members, ['staffid', ['firstname', 'lastname']], 'lead_add_edit_assigned', $selected, $assigned_attrs);
+                ?>
             </div>
+
             <div class="clearfix"></div>
             <hr class="mtop5 mbot10" />
+
             <div class="col-md-12">
                 <div class="form-group no-mbot" id="inputTagsWrapper">
-                    <label for="tags" class="control-label"><i class="fa fa-tag" aria-hidden="true"></i>
-                        <?php echo _l('tags'); ?></label>
+                    <label for="tags" class="control-label"><i class="fa fa-tag" aria-hidden="true"></i> <?php echo _l('tags'); ?></label>
                     <input type="text" class="tagsinput" id="tags" name="tags"
                         value="<?php echo (isset($lead) ? prep_tags_input(get_tags_in($lead->id, 'lead')) : ''); ?>"
                         data-role="tagsinput">
                 </div>
             </div>
+
             <div class="clearfix"></div>
             <hr class="no-mtop mbot15" />
+
             <div class="col-md-6">
                 <?php $value = (isset($lead) ? $lead->name : ''); ?>
                 <?php echo render_input('name', 'lead_add_edit_name', $value); ?>
-                <!-- <?php
-                        $interested_in                = get_interested_in();
-                        $selected                 = (isset($lead) ? $lead->interested_in : '');
-                        echo render_select('interested_in', $interested_in, ['id', ['name']], 'Interested In', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
-                        ?> -->
-
 
                 <?php
                 $phone = isset($lead) ? $lead->phonenumber : '';
@@ -731,7 +638,7 @@
                     '+967',
                     '+260',
                     '+263'
-                ];;
+                ];
 
                 // To ensure we match the longer codes first (so +91 is not confused with +9...),
                 usort($country_codes, function ($a, $b) {
@@ -805,93 +712,72 @@
                 <!-- <?php $value = (isset($lead) ? $lead->company : ''); ?>
                 <?php echo render_input('company', 'lead_company', $value); ?> -->
             </div>
+
             <div class="col-md-6">
                 <?php
-                $projects              = get_projects();
-                $selected                 = (isset($lead) ? $lead->projects : '');
+                $projects = get_projects();
+                $selected = (isset($lead) ? $lead->projects : '');
                 echo render_select('projects', $projects, ['id', ['name']], 'Projects', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
                 ?>
+
                 <div class="form-group">
                     <label for="alt_phonenumber"><?php echo _l('Alt PhoneNumber'); ?></label>
                     <div class="input-group" style="width: 100%;">
-
-                        <input type="text" id="alt_phonenumber" name="alt_phonenumber" data-id="<?= isset($lead) ?? $lead->alt_phonenumber ?>" class="form-control"
-                            value="<?php echo e($lead->alt_phonenumber); ?>">
+                        <input type="text"
+                            id="alt_phonenumber"
+                            name="alt_phonenumber"
+                            data-id="<?php echo isset($lead) ? e($lead->id) : ''; ?>"
+                            class="form-control"
+                            value="<?php echo isset($lead) ? e($lead->alt_phonenumber) : ''; ?>">
                     </div>
                 </div>
-                <?php $value = (isset($lead) ? $lead->email : ''); ?>
-                <?php echo render_input('email', 'lead_add_edit_email', $value); ?>
-                
-                <?php $value = (isset($lead) ? $lead->address : ''); ?>
-                <!-- <?php echo render_textarea('address', 'Current Residence', $value, ['rows' => 1, 'style' => 'height:36px;font-size:100%;']); ?> -->
-                
-                <?php $value = (isset($lead) ? $lead->firm : ''); ?>
-                <?php echo render_input('firm', 'Firm Name', $value); ?>
-                <!-- <?php
-                        $facing_preference                = get_facing_preference();
-                        $selected                 = (isset($lead) ? $lead->facing_preference : '');
-                        echo render_select('facing_preference', $facing_preference, ['id', ['name']], 'Facing Preference', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
-                        ?> -->
 
-                <?php $value = (isset($lead) ? $lead->city : ''); ?>
-                <!-- <?php echo render_input('city', 'lead_city', $value); ?> -->
-                <?php $value = (isset($lead) ? $lead->state : ''); ?>
-                <!-- <?php echo render_input('state', 'lead_state', $value); ?> -->
-                <!-- <?php
-                        $countries                = get_all_countries();
-                        $customer_default_country = get_option('customer_default_country');
-                        $selected                 = (isset($lead) ? $lead->country : $customer_default_country);
-                        echo render_select('country', $countries, ['country_id', ['short_name']], 'lead_country', $selected, ['data-none-selected-text' => _l('dropdown_non_selected_tex')]);
-                        ?> -->
-                <?php $value = (isset($lead) ? $lead->zip : ''); ?>
-                <!-- <?php echo render_input('zip', 'lead_zip', $value); ?> -->
+                <?php echo render_input('email', 'lead_add_edit_email', isset($lead) ? $lead->email : ''); ?>
+                <?php echo render_input('firm', 'Firm Name', isset($lead) ? $lead->firm : ''); ?>
+
                 <?php if (!is_language_disabled()) { ?>
                     <div class="form-group">
-                        <label for="default_language"
-                            class="control-label"><?php echo _l('localization_default_language'); ?></label>
+                        <label for="default_language" class="control-label"><?php echo _l('localization_default_language'); ?></label>
                         <select name="default_language" data-live-search="true" id="default_language"
                             class="form-control selectpicker"
                             data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
                             <option value=""><?php echo _l('system_default_string'); ?></option>
                             <?php foreach ($this->app->get_available_languages() as $availableLanguage) {
                                 $selected = '';
-                                if (isset($lead)) {
-                                    if ($lead->default_language == $availableLanguage) {
-                                        $selected = 'selected';
-                                    }
+                                if (isset($lead) && $lead->default_language == $availableLanguage) {
+                                    $selected = 'selected';
                                 } ?>
                                 <option value="<?php echo e($availableLanguage); ?>" <?php echo e($selected); ?>>
-                                    <?php echo e(ucfirst($availableLanguage)); ?></option>
-                            <?php
-                            } ?>
+                                    <?php echo e(ucfirst($availableLanguage)); ?>
+                                </option>
+                            <?php } ?>
                         </select>
                     </div>
                 <?php } ?>
             </div>
+
             <div class="col-md-12">
-                <!-- <?php $value = (isset($lead) ? $lead->description : ''); ?>
-                <?php echo render_textarea('description', 'lead_description', $value); ?> -->
                 <div class="row">
                     <div class="col-md-12">
                         <?php if (!isset($lead)) { ?>
                             <div class="lead-select-date-contacted hide">
-                                <?php echo render_datetime_input('custom_contact_date', 'lead_add_edit_datecontacted', '', ['data-date-end-date' => date('Y-m-d')]); ?>
+                                <?php echo render_datetime_input('custom_contact_date', 'lead_add_edit_datecontacted', _dt($lead->lastcontact), ['data-date-end-date' => date('Y-m-d')]); ?>
                             </div>
                         <?php } else { ?>
                             <?php echo render_datetime_input('lastcontact', 'leads_dt_last_contact', _dt($lead->lastcontact), ['data-date-end-date' => date('Y-m-d')]); ?>
                         <?php } ?>
+
                         <div class="checkbox-inline checkbox checkbox-primary<?php if (isset($lead)) {
                                                                                     echo ' hide';
-                                                                                } ?><?php if (isset($lead) && (is_lead_creator($lead->id) || staff_can('edit',  'leads'))) {
+                                                                                } ?><?php if (isset($lead) && (is_lead_creator($lead->id) || staff_can('edit', 'leads'))) {
                                                                                         echo ' lead-edit';
                                                                                     } ?>">
-                            <input type="checkbox" name="is_public" <?php if (isset($lead)) {
-                                                                        if ($lead->is_public == 1) {
-                                                                            echo 'checked';
-                                                                        }
-                                                                    }; ?> id="lead_public">
+                            <input type="checkbox" name="is_public" <?php if (isset($lead) && $lead->is_public == 1) {
+                                                                        echo 'checked';
+                                                                    } ?> id="lead_public">
                             <label for="lead_public"><?php echo _l('lead_public'); ?></label>
                         </div>
+
                         <?php if (!isset($lead)) { ?>
                             <div class="checkbox-inline checkbox checkbox-primary">
                                 <input type="checkbox" name="contacted_today" id="contacted_today" checked>
@@ -900,139 +786,196 @@
                         <?php } ?>
                     </div>
                 </div>
+
+                <?php if (!empty($lead)) { ?>
+                    <div class="lead-latest-activity tw-mb-3 ">
+                        <div class="lead-info-heading">
+                            <h4><?php echo _l('notes'); ?></h4>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="lead_notes_inner">
+                            <?php echo form_open(admin_url('leads/add_note/' . $lead->id), ['id' => 'lead-notes']); ?>
+                            <div class="form-group">
+                                <textarea id="lead_note_description" name="lead_note_description" class="form-control" rows="4"></textarea>
+                            </div>
+                            <div class="lead-select-date-contacted ">
+                                <?php echo render_datetime_input('custom_contact_date', 'lead_add_edit_datecontacted', _dt($lead->lastcontact), ['data-date-end-date' => date('Y-m-d')]); ?>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <div class="radio radio-primary">
+                                    <input type="radio" name="contacted_indicator" id="contacted_indicator_yes" value="yes" checked>
+                                    <label for="contacted_indicator_yes"><?php echo _l('lead_add_edit_contacted_this_lead'); ?></label>
+                                </div>
+                                <div class="radio radio-primary">
+                                    <input type="radio" name="contacted_indicator" id="contacted_indicator_no" value="no">
+                                    <label for="contacted_indicator_no"><?php echo _l('lead_not_contacted'); ?></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="next_followup_date"><?php echo _l('Next Follow Up Date'); ?></label><small class="req text-danger">* </small>
+                                <input type="date" class="form-control pull-right" name="next_followup_date" id="next_followup_date">
+                            </div>
+
+                            <button type="submit" form="lead-notes" id="lead-notes-submit" class="btn btn-primary pull-right hide">
+                                <?php echo _l('lead_add_edit_add_note'); ?>
+                            </button>
+                            <?php echo form_close(); ?>
+
+                            <div class="clearfix"></div>
+                            <hr />
+
+                            <!-- <?php
+                            $len = count($notes);
+                            $i   = 0;
+                            foreach ($notes as $note) { ?>
+                                <div class="media lead-note">
+                                    <a href="<?php echo admin_url('profile/' . $note['addedfrom']); ?>" target="_blank">
+                                        <?php echo staff_profile_image($note['addedfrom'], ['staff-profile-image-small', 'pull-left mright10']); ?>
+                                    </a>
+                                    <div class="media-body">
+                                        <?php if ($note['addedfrom'] == get_staff_user_id() || is_admin()) { ?>
+                                            <a href="#" class="pull-right text-danger" onclick="delete_lead_note(this,<?php echo e($note['id']); ?>, <?php echo e($lead->id); ?>);return false;">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                            <a href="#" class="pull-right mright5" onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;">
+                                                <i class="fa-regular fa-pen-to-square"></i>
+                                            </a>
+                                        <?php } ?>
+
+                                        <a href="<?php echo admin_url('profile/' . $note['addedfrom']); ?>" target="_blank">
+                                            <h5 class="media-heading tw-font-semibold tw-mb-0">
+                                                <?php if (!empty($note['date_contacted'])) { ?>
+                                                    <span data-toggle="tooltip" data-title="<?php echo e(_dt($note['date_contacted'])); ?>">
+                                                        <i class="fa fa-phone-square text-success" aria-hidden="true"></i>
+                                                    </span>
+                                                <?php } ?>
+                                                <?php echo e(get_staff_full_name($note['addedfrom'])); ?>
+                                            </h5>
+                                            <span class="tw-text-sm tw-text-neutral-500">
+                                                <?php echo e(_l('lead_note_date_added', _dt($note['dateadded']))); ?>
+                                            </span><br>
+                                            <?php if ($note['next_followup_date'] != '0000-00-00' && $note['next_followup_date'] != '') { ?>
+                                                <span class="tw-text-sm tw-text-neutral-500">
+                                                    Next Follow Up Date: <?php echo date('d-m-Y', strtotime($note['next_followup_date'])); ?>
+                                                </span>
+                                            <?php } ?>
+                                        </a>
+
+                                        <div data-note-description="<?php echo e($note['id']); ?>" class="text-muted mtop10">
+                                            <?php echo process_text_content_for_display($note['description']); ?>
+                                        </div>
+                                        <div data-note-edit-textarea="<?php echo e($note['id']); ?>" class="hide mtop15">
+                                            <?php echo render_textarea('note', '', $note['description']); ?>
+                                            <div class="text-right">
+                                                <button type="button" class="btn btn-default" onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;"><?php echo _l('cancel'); ?></button>
+                                                <button type="button" class="btn btn-primary" onclick="edit_note(<?php echo e($note['id']); ?>);"><?php echo _l('update_note'); ?></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php if ($i >= 0 && $i != $len - 1) {
+                                        echo '<hr />';
+                                    } ?>
+                                </div>
+                            <?php $i++;
+                            } ?> -->
+                        </div>
+                    </div>
+
+                    <div class="lead-latest-activity tw-mb-3 lead-view">
+                        <div class="lead-info-heading">
+                            <h4><?php echo _l('lead_latest_activity'); ?></h4>
+                        </div>
+                        <div id="lead-latest-activity" class="pleft5"></div>
+                    </div>
+                <?php } ?>
             </div>
+
             <div class="col-md-12 mtop15">
                 <?php $rel_id = (isset($lead) ? $lead->id : false); ?>
                 <?php echo render_custom_fields('leads', $rel_id); ?>
             </div>
+
             <div class="clearfix"></div>
         </div>
     </div>
-    <?php echo form_close(); ?>
+
     <?php if (isset($lead)) { ?>
-        <div class="lead-latest-activity tw-mb-3 lead-view">
-            <div class="lead-info-heading">
-                <h4><?php echo _l('notes'); ?></h4>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="lead_notes_inner">
-                <?php echo form_open(admin_url('leads/add_note/' . $lead->id), ['id' => 'lead-notes']); ?>
-                <div class="form-group">
-                    <textarea id="lead_note_description" name="lead_note_description" class="form-control"
-                        rows="4"></textarea>
-                </div>
-                <div class="lead-select-date-contacted hide">
-                    <?php echo render_datetime_input('custom_contact_date', 'lead_add_edit_datecontacted', '', ['data-date-end-date' => date('Y-m-d')]); ?>
-                </div>
-
-                <div class="form-group col-md-6">
-                    <div class="radio radio-primary">
-                        <input type="radio" name="contacted_indicator" id="contacted_indicator_yes" value="yes">
-                        <label
-                            for="contacted_indicator_yes"><?php echo _l('lead_add_edit_contacted_this_lead'); ?></label>
-                    </div>
-                    <div class="radio radio-primary">
-                        <input type="radio" name="contacted_indicator" id="contacted_indicator_no" value="no" checked>
-                        <label for="contacted_indicator_no"><?php echo _l('lead_not_contacted'); ?></label>
-                    </div>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="next_followup_date"><?php echo _l('Next Follow Up Date'); ?></label><small class="req text-danger">* </small>
-                    <input type="date" class="form-control pull-right" name="next_followup_date" id="next_followup_date">
-                </div>
-                <button type="submit" form="lead-notes" id="lead-notes-submit"
-                    class="btn btn-primary pull-right"><?php echo _l('lead_add_edit_add_note'); ?></button>
-                <?php echo form_close(); ?>
-                <div class="clearfix"></div>
-                <hr />
-                <?php
-                $len = count($notes);
-                $i   = 0;
-                foreach ($notes as $note) { ?>
-                    <div class="media lead-note">
-                        <a href="<?php echo admin_url('profile/' . $note['addedfrom']); ?>" target="_blank">
-                            <?php echo staff_profile_image($note['addedfrom'], ['staff-profile-image-small', 'pull-left mright10']); ?>
+        <?php
+        $len = count($notes);
+        $i   = 0;
+        foreach ($notes as $note) { ?>
+            <div class="media lead-note">
+                <a href="<?php echo admin_url('profile/' . $note['addedfrom']); ?>" target="_blank">
+                    <?php echo staff_profile_image($note['addedfrom'], ['staff-profile-image-small', 'pull-left mright10']); ?>
+                </a>
+                <div class="media-body">
+                    <?php if ($note['addedfrom'] == get_staff_user_id() || is_admin()) { ?>
+                        <a href="#" class="pull-right text-danger" onclick="delete_lead_note(this,<?php echo e($note['id']); ?>, <?php echo e($lead->id); ?>);return false;">
+                            <i class="fa fa-times"></i>
                         </a>
-                        <div class="media-body">
-                            <?php if ($note['addedfrom'] == get_staff_user_id() || is_admin()) { ?>
-                                <a href="#" class="pull-right text-danger"
-                                    onclick="delete_lead_note(this,<?php echo e($note['id']); ?>, <?php echo e($lead->id); ?>);return false;">
+                        <a href="#" class="pull-right mright5" onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                        </a>
+                    <?php } ?>
 
-                                    <i class="fa fa fa-times"></i></a>
-                                <a href="#" class="pull-right mright5"
-                                    onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;">
-                                    <i class="fa-regular fa-pen-to-square"></i>
-                                <?php } ?>
+                    <a href="<?php echo admin_url('profile/' . $note['addedfrom']); ?>" target="_blank">
+                        <h5 class="media-heading tw-font-semibold tw-mb-0">
+                            <?php if (!empty($note['date_contacted'])) { ?>
+                                <span data-toggle="tooltip" data-title="<?php echo e(_dt($note['date_contacted'])); ?>">
+                                    <i class="fa fa-phone-square text-success" aria-hidden="true"></i>
+                                </span>
+                            <?php } ?>
+                            <?php echo e(get_staff_full_name($note['addedfrom'])); ?>
+                        </h5>
+                        <span class="tw-text-sm tw-text-neutral-500">
+                            <?php echo e(_l('lead_note_date_added', _dt($note['dateadded']))); ?>
+                        </span><br>
+                        <?php if ($note['next_followup_date'] != '0000-00-00' && $note['next_followup_date'] != '') { ?>
+                            <span class="tw-text-sm tw-text-neutral-500">
+                                Next Follow Up Date: <?php echo date('d-m-Y', strtotime($note['next_followup_date'])); ?>
+                            </span>
+                        <?php } ?>
+                    </a>
 
-                                <a href="<?php echo admin_url('profile/' . $note['addedfrom']); ?>" target="_blank">
-                                    <h5 class="media-heading tw-font-semibold tw-mb-0">
-                                        <?php if (!empty($note['date_contacted'])) { ?>
-                                            <span data-toggle="tooltip"
-                                                data-title="<?php echo e(_dt($note['date_contacted'])); ?>">
-                                                <i class="fa fa-phone-square text-success" aria-hidden="true"></i>
-                                            </span>
-                                        <?php } ?>
-                                        <?php echo e(get_staff_full_name($note['addedfrom'])); ?>
-                                    </h5>
-                                    <span class="tw-text-sm tw-text-neutral-500">
-                                        <?php echo e(_l('lead_note_date_added', _dt($note['dateadded']))); ?>
-                                    </span><br>
-                                    <?php
-                                    if ($note['next_followup_date'] != '0000-00-00' && $note['next_followup_date'] != '') { ?>
-                                        <span class="tw-text-sm tw-text-neutral-500">
-
-                                            Next Follow Up Date: <?php echo date('d-m-Y', strtotime($note['next_followup_date'])); ?>
-
-                                        </span>
-                                    <?php }
-                                    ?>
-
-                                </a>
-
-                                <div data-note-description="<?php echo e($note['id']); ?>" class="text-muted mtop10"><?php echo process_text_content_for_display($note['description']); ?></div>
-                                <div data-note-edit-textarea="<?php echo e($note['id']); ?>" class="hide mtop15">
-                                    <?php echo render_textarea('note', '', $note['description']); ?>
-                                    <div class="text-right">
-                                        <button type="button" class="btn btn-default"
-                                            onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;"><?php echo _l('cancel'); ?></button>
-                                        <button type="button" class="btn btn-primary"
-                                            onclick="edit_note(<?php echo e($note['id']); ?>);"><?php echo _l('update_note'); ?></button>
-                                    </div>
-                                </div>
-                        </div>
-                        <?php if ($i >= 0 && $i != $len - 1) {
-                            echo '<hr />';
-                        }
-                        ?>
+                    <div data-note-description="<?php echo e($note['id']); ?>" class="text-muted mtop10">
+                        <?php echo process_text_content_for_display($note['description']); ?>
                     </div>
-                <?php $i++;
+                    <div data-note-edit-textarea="<?php echo e($note['id']); ?>" class="hide mtop15">
+                        <?php echo render_textarea('note', '', $note['description']); ?>
+                        <div class="text-right">
+                            <button type="button" class="btn btn-default" onclick="toggle_edit_note(<?php echo e($note['id']); ?>);return false;"><?php echo _l('cancel'); ?></button>
+                            <button type="button" class="btn btn-primary" onclick="edit_note(<?php echo e($note['id']); ?>);"><?php echo _l('update_note'); ?></button>
+                        </div>
+                    </div>
+                </div>
+                <?php if ($i >= 0 && $i != $len - 1) {
+                    echo '<hr />';
                 } ?>
             </div>
-        </div>
+        <?php $i++;
+        } ?>
 
-        <div class="lead-latest-activity tw-mb-3 lead-view">
-            <div class="lead-info-heading">
-                <h4><?php echo _l('lead_latest_activity'); ?></h4>
-            </div>
-            <div id="lead-latest-activity" class="pleft5"></div>
-        </div>
     <?php } ?>
+
     <?php if ($lead_locked == false) { ?>
         <div class="lead-edit<?php echo isset($lead) ? ' hide' : ''; ?>">
             <hr class="-tw-mx-4 tw-border-neutral-200" />
             <button type="submit" class="btn btn-primary pull-right lead-save-btn" id="lead-form-submit" form="lead_form">
                 <?php echo _l('submit'); ?>
             </button>
-            <button type=" button" class="btn btn-default pull-right mright5" data-dismiss="modal">
+            <button type="button" class="btn btn-default pull-right mright5" data-dismiss="modal">
                 <?php echo _l('close'); ?>
             </button>
         </div>
     <?php } ?>
+
     <div class="clearfix"></div>
 </div>
+
 <?php if (isset($lead) && $lead_locked == true) { ?>
     <script>
         $(function() {
-            // Set all fields to disabled if lead is locked
             $.each($('.lead-wrapper').find('input, select, textarea'), function() {
                 $(this).attr('disabled', true);
                 if ($(this).is('select')) {
@@ -1044,7 +987,7 @@
 <?php } ?>
 
 <script>
-    $(document).ready(function() {
+    $(function() {
         function populateCountryCodes(selectedCode = "+91") {
             let countryCodeSelect = $("#countryCode");
             countryCodeSelect.empty();
@@ -1109,93 +1052,78 @@
             }, 500);
         });
 
-    });
+        // MAIN FORM SUBMIT - validate and combine phone number
+        $('#lead-form-submit').on('click', function(e) {
+            const $form = $('#lead_form');
+            const $cc = $('#countryCode');
+            const $num = $('#phonenumber');
 
-    $('#lead-form-submit').on('click', function(e) {
-        // Get the trimmed value of the phone number input
-        let phoneNumber = $('#phonenumber').val().trim();
+            // clear old errors
+            $num.removeClass('is-invalid');
+            $num.closest('.form-group').find('label').removeClass('text-danger');
+            $num.next('.invalid-feedback').remove();
 
-        // Remove any previous error states
-        $('#phonenumber').removeClass('is-invalid');
-        $('#phonenumber').closest('.form-group').find('label').removeClass('text-danger');
-        $('#phonenumber').next('.invalid-feedback').remove();
-
-        // Validate: Check if the field is empty
-        if (phoneNumber === '') {
-            e.preventDefault(); // Prevent form submission
-
-            $('#phonenumber').addClass('is-invalid');
-            $('#phonenumber').closest('.form-group').find('label').addClass('text-danger');
-
-            // Display error message for required field if not already present
-            if ($('#phonenumber').next('.invalid-feedback').length === 0) {
-                $('#phonenumber').after('<div class="invalid-feedback">This field is required</div>');
+            let local = ($num.val() || '').trim();
+            if (local === '') {
+                e.preventDefault();
+                $num.addClass('is-invalid');
+                $num.closest('.form-group').find('label').addClass('text-danger');
+                $num.after('<div class="invalid-feedback">This field is required</div>');
+                return false;
             }
-            return false;
-        }
-
-        // Validate: Check if the phone number contains only numbers
-        if (!/^\d+$/.test(phoneNumber)) {
-            e.preventDefault(); // Prevent form submission
-
-            $('#phonenumber').addClass('is-invalid');
-            $('#phonenumber').closest('.form-group').find('label').addClass('text-danger');
-
-            // Display error message for numeric-only input if not already present
-            if ($('#phonenumber').next('.invalid-feedback').length === 0) {
-                $('#phonenumber').after('<div class="invalid-feedback">Please enter only numbers</div>');
+            if (!/^\d+$/.test(local)) {
+                e.preventDefault();
+                $num.addClass('is-invalid');
+                $num.closest('.form-group').find('label').addClass('text-danger');
+                $num.after('<div class="invalid-feedback">Please enter only numbers</div>');
+                return false;
             }
-            return false;
-        }
+
+            // combine country code + local
+            const code = ($cc.val() || '').trim();
+            if (code) {
+                $num.val(code + local);
+            } else {
+                $num.val('+91' + local);
+            }
+
+            $form.submit();
+        });
     });
 </script>
+
 <script>
     $('#lead-notes-submit').on('click', function(e) {
-        e.preventDefault(); // Always prevent default first
+        e.preventDefault();
 
-        let leadId = '<?php echo $lead->id; ?>';
-        let $submitButton = $(this);
-        let $form = $('#lead-notes');
+        const leadId = '<?php echo isset($lead) ? (int)$lead->id : 0; ?>';
+        const $btn = $(this);
+        const $form = $('#lead-notes');
 
-        // Disable button to prevent multiple clicks
-        $submitButton.prop('disabled', true);
+        $btn.prop('disabled', true);
 
-        // First check lead status - this runs every click
         $.ajax({
             url: '<?php echo admin_url("leads/get_lead_status"); ?>',
             type: 'POST',
             data: {
                 id: leadId
             },
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    // For status 1, 6, or 11 (skip_date_check = true), submit immediately
-                    if (response.skip_date_check) {
-                        $form.submit();
-                        return;
-                    }
-
-                    // For other statuses, validate followup date
-                    let next_followup_date = $('#next_followup_date').val();
-                    // if (!next_followup_date) {
-                    //     alert_float('danger', 'Please select a follow-up date');
-                    //     $submitButton.prop('disabled', false); // Re-enable button
-                    //     return false;
-                    // } else {
-                    // If date is provided, submit the form
+            dataType: 'json'
+        }).done(function(resp) {
+            if (resp && resp.success) {
+                if (resp.skip_date_check) {
                     $form.submit();
-                    // }
                 } else {
-                    // Lead status check failed
-                    alert_float('danger', response.message || 'Invalid lead status');
-                    $submitButton.prop('disabled', false); // Re-enable button
+                    // If you want to enforce next_followup_date, add validation here
+                    $form.submit();
                 }
-            },
-            error: function() {
-                alert_float('danger', 'Error checking lead status');
-                $submitButton.prop('disabled', false); // Re-enable button
+            } else {
+                alert_float('danger', (resp && resp.message) || 'Invalid lead status');
+                $btn.prop('disabled', false);
             }
+        }).fail(function() {
+            alert_float('danger', 'Error checking lead status');
+            $btn.prop('disabled', false);
         });
     });
 </script>
