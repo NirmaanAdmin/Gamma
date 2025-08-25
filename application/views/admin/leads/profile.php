@@ -826,9 +826,9 @@
                             <hr />
 
                             <!-- <?php
-                            $len = count($notes);
-                            $i   = 0;
-                            foreach ($notes as $note) { ?>
+                                    $len = count($notes);
+                                    $i   = 0;
+                                    foreach ($notes as $note) { ?>
                                 <div class="media lead-note">
                                     <a href="<?php echo admin_url('profile/' . $note['addedfrom']); ?>" target="_blank">
                                         <?php echo staff_profile_image($note['addedfrom'], ['staff-profile-image-small', 'pull-left mright10']); ?>
@@ -874,20 +874,15 @@
                                         </div>
                                     </div>
                                     <?php if ($i >= 0 && $i != $len - 1) {
-                                        echo '<hr />';
-                                    } ?>
+                                            echo '<hr />';
+                                        } ?>
                                 </div>
                             <?php $i++;
-                            } ?> -->
+                                    } ?> -->
                         </div>
                     </div>
 
-                    <div class="lead-latest-activity tw-mb-3 lead-view">
-                        <div class="lead-info-heading">
-                            <h4><?php echo _l('lead_latest_activity'); ?></h4>
-                        </div>
-                        <div id="lead-latest-activity" class="pleft5"></div>
-                    </div>
+
                 <?php } ?>
             </div>
 
@@ -955,7 +950,12 @@
             </div>
         <?php $i++;
         } ?>
-
+        <div class="lead-latest-activity tw-mb-3 lead-view">
+            <div class="lead-info-heading">
+                <h4><?php echo _l('lead_latest_activity'); ?></h4>
+            </div>
+            <div id="lead-latest-activity" class="pleft5"></div>
+        </div>
     <?php } ?>
 
     <?php if ($lead_locked == false) { ?>
