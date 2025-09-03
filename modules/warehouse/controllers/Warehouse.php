@@ -9297,4 +9297,15 @@ if(strlen($data['inventory_filter']) > 0){
 
 		$pdf->Output('booking_chart.pdf', $type);
 	}
+
+	public function banakhat_details(){
+		$data['banakhat']  = $this->warehouse_model->get_banakhat_details();
+		$data['warehouses'] = $this->warehouse_model->get_warehouse();
+		$this->load->view('banakhat_details',$data);
+	}
+
+	public function table_banakhat_details()
+    {
+		$this->app->get_table_data(module_views_path('warehouse', 'table_banakhat_details'));
+    }
 }

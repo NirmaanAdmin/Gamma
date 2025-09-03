@@ -31,13 +31,13 @@
                   <div class="_buttons">
                      <?php if (has_permission('purchase_customers','','create')) { ?>
                      <a href="<?php echo admin_url('purchase/customer'); ?>" class="btn btn-info mright5 test pull-left display-block">
-                     <?php echo _l('New Customer'); ?></a>
+                     <?php echo _l('New Booking Form'); ?></a>
 
-                     <a href="<?php echo admin_url('purchase/vendor_import'); ?>" class="btn btn-info mright5 test pull-left display-block">
+                     <!-- <a href="<?php echo admin_url('purchase/vendor_import'); ?>" class="btn btn-info mright5 test pull-left display-block">
                      <?php echo _l('Import Customers'); ?></a>
 
                      <a href="<?php echo admin_url('purchase/all_contacts'); ?>" class="btn btn-info pull-left display-block mright5">
-                     <?php echo _l('Customer Contacts'); ?></a>
+                     <?php echo _l('Customer Contacts'); ?></a> -->
 
                      
                   <?php } ?>
@@ -143,7 +143,7 @@
                          'th_attrs'=>array('class'=>'toggleable', 'id'=>'th-number')
                         ),
                          array(
-                         'name'=>_l('clients_list_company'),
+                         'name'=>_l('Customer Name'),
                          'th_attrs'=>array('class'=>'toggleable', 'id'=>'th-company')
                         ),
                          array(
@@ -158,10 +158,10 @@
                          'name'=>_l('clients_list_phone'),
                          'th_attrs'=>array('class'=>'toggleable', 'id'=>'th-phone')
                         ),
-                        array(
-                         'name'=>_l('vendor_category'),
-                         'th_attrs'=>array('class'=>'toggleable', 'id'=>'th-groups')
-                        ),
+                        // array(
+                        //  'name'=>_l('vendor_category'),
+                        //  'th_attrs'=>array('class'=>'toggleable', 'id'=>'th-groups')
+                        // ),
                          array(
                          'name'=>_l('customer_active'),
                          'th_attrs'=>array('class'=>'toggleable', 'id'=>'th-active')

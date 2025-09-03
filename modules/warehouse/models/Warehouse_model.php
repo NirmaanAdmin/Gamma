@@ -20192,4 +20192,11 @@ class Warehouse_model extends App_Model
 	{
 		return app_pdf('booking_chart', module_dir_path(WAREHOUSE_MODULE_NAME, 'libraries/pdf/Booking_chart_pdf.php'), $booking_chart);
 	}
+
+	public function get_banakhat_details(){
+		$this->db->select('*');
+		$this->db->from(db_prefix().'banakhat_properties');
+		$query = $this->db->get();
+		return $query->result_array();
+	}
 }

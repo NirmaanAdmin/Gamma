@@ -204,7 +204,7 @@ function purchase_module_init_menu_items() {
         if(has_permission('purchase_customers', '', 'view') || has_permission('purchase_customers', '', 'view_own')){
             $CI->app_menu->add_sidebar_children_item('purchase', [
                 'slug' => 'purchase-customers',
-                'name' => _l('Customer'),
+                'name' => _l('Booking Form'),
                 'icon' => 'fa fa-users',
                 'href' => admin_url('purchase/customers'),
                 'position' => 2,

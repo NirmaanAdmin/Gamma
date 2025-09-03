@@ -1,5 +1,5 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
-<h4 class="mtop5"><?php echo _l('pur_vendor_add_edit_profile'); ?></h4>
+<h4 class="mtop5"><?php echo _l('Booking Form'); ?></h4>
 <hr />
 <div class="row">
    <?php echo form_hidden('userid', (isset($client) ? $client->userid : '')); ?>

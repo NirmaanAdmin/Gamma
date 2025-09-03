@@ -15,7 +15,7 @@ $aColumns = [
     'email',
     db_prefix().'pur_customer.phonenumber as phonenumber',
     db_prefix().'pur_customer.active',
-    db_prefix().'pur_customer.category',
+    // db_prefix().'pur_customer.category',
     db_prefix().'pur_customer.datecreated as datecreated',
 ];
 
@@ -166,15 +166,15 @@ foreach ($rResult as $key => $aRow) {
     // Primary contact phone
     $row[] = ($aRow['phonenumber'] ? '<a href="tel:' . $aRow['phonenumber'] . '">' . $aRow['phonenumber'] . '</a>' : '');
 
-    $groupsRow = '';
-    if ($aRow[db_prefix().'pur_customer.category']) {
-        $groups = explode(',', $aRow[db_prefix().'pur_customer.category']);
-        foreach ($groups as $group) {
-            $groupsRow .= '<span class="label label-default mleft5 inline-block">' . get_vendor_cate_name_by_id($group) . '</span>';
-        }
-    }
+    // $groupsRow = '';
+    // if ($aRow[db_prefix().'pur_customer.category']) {
+    //     $groups = explode(',', $aRow[db_prefix().'pur_customer.category']);
+    //     foreach ($groups as $group) {
+    //         $groupsRow .= '<span class="label label-default mleft5 inline-block">' . get_vendor_cate_name_by_id($group) . '</span>';
+    //     }
+    // }
 
-    $row[] = $groupsRow;
+    // $row[] = $groupsRow;
 
     // Toggle active/inactive customer
     $toggleActive = '<div class="onoffswitch" data-toggle="tooltip" data-title="' . _l('customer_active_inactive_help') . '">
