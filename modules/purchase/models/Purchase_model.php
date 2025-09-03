@@ -14306,7 +14306,7 @@ class Purchase_model extends App_Model
 
         // New filter action
 
-
+        
         if (isset($client_id) && $client_id > 0) {
             $userid = $client_id;
         } else {
@@ -16048,5 +16048,18 @@ class Purchase_model extends App_Model
     public function builder_noc_pdf($builder_noc)
     {
         return app_pdf('builder_noc', module_dir_path(PURCHASE_MODULE_NAME, 'libraries/pdf/Builder_noc_pdf'), $builder_noc);
+    }
+
+    public function get_booking_next_number()
+    {
+        $this->db->select('MAX(CAST(vendor_code AS UNSIGNED)) as max_number');
+        $this->db->from('tblpur_customer');
+        $result = $this->db->get()->row();
+
+        // Handle case when table is empty
+        $next_number = ($result->max_number === null) ? 1 : $result->max_number + 1;
+
+        // Format with leading zeros to make it 4 digits
+        return str_pad($next_number, 4, '0', STR_PAD_LEFT);
     }
 }

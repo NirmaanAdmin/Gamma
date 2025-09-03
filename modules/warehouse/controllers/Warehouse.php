@@ -575,7 +575,7 @@ class warehouse extends AdminController {
 		//filter
 		$data['warehouse_filter'] = $this->warehouse_model->get_warehouse();
 		// $data['commodity_filter'] = $this->warehouse_model->get_commodity_active();
-
+ 
 		$data['sub_groups'] = $this->warehouse_model->get_sub_group();
 		$data['colors'] = $this->warehouse_model->get_color_add_commodity();
 		$data['item_tags'] = $this->warehouse_model->get_item_tag_filter();

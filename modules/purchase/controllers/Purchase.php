@@ -2671,7 +2671,7 @@ class purchase extends AdminController
      * @return pdf output
      */
     public function purorder_pdf($id)
-    { 
+    {
         if (!$id) {
             redirect(admin_url('purchase/purchase_request'));
         }
@@ -8811,7 +8811,6 @@ class purchase extends AdminController
 
     public function customers()
     {
-
         $data['title']          = _l('vendor');
         $data['vendor_categorys'] = $this->purchase_model->get_vendor_category();
         $this->load->view('customers/manage', $data);
@@ -8820,7 +8819,7 @@ class purchase extends AdminController
 
     public function customer($id = '')
     {
-
+        $this->load->model('warehouse/warehouse_model');
         if ($this->input->post() && !$this->input->is_ajax_request()) {
             if ($id == '') {
 
@@ -8988,6 +8987,11 @@ class purchase extends AdminController
         $data['bodyclass'] = 'customer-profile dynamic-create-groups';
         $data['vendor_categories'] = $this->purchase_model->get_vendor_category();
         $data['title']     = $title;
+
+        $data['warehouses'] = $this->warehouse_model->get_warehouse();
+        $data['commodity_groups'] = $this->warehouse_model->get_commodity_group_add_commodity();
+        $data['sub_groups'] = $this->warehouse_model->get_sub_group();
+        $data['next_number'] = $this->purchase_model->get_booking_next_number();
         $this->load->view('customers/vendor', $data);
     }
 
@@ -9367,7 +9371,7 @@ class purchase extends AdminController
         // echo '<pre>'; print_r($data); exit;
         $this->load->view('customers/edit_allotment_letter', $data);
     }
-    
+
 
     public function delete_allotment_letter($id)
     {
@@ -9387,9 +9391,9 @@ class purchase extends AdminController
     }
 
     public function sale_agreement_pdf($id)
-    { 
+    {
         $sale_agreement = $this->purchase_model->get_sale_agreement_pdf_html($id);
-       
+
         try {
             $pdf = $this->purchase_model->sale_agreement_pdf($sale_agreement);
         } catch (Exception $e) {
@@ -9411,7 +9415,7 @@ class purchase extends AdminController
     }
 
     public function cost_certificate_pdf($id)
-    { 
+    {
         $cost_certificate = $this->purchase_model->get_cost_certificate_pdf_html($id);
 
         try {
@@ -9436,7 +9440,7 @@ class purchase extends AdminController
 
 
     public function allotment_letter_pdf($id)
-    { 
+    {
         $allotment_letter = $this->purchase_model->get_allotment_letter_pdf_html($id);
         try {
             $pdf = $this->purchase_model->allotment_letter_pdf($allotment_letter);
@@ -9459,8 +9463,8 @@ class purchase extends AdminController
     }
 
 
-     public function builder_noc_pdf($id)
-    { 
+    public function builder_noc_pdf($id)
+    {
         $builder_noc = $this->purchase_model->get_builder_noc_pdf_html($id);
         try {
             $pdf = $this->purchase_model->builder_noc_pdf($builder_noc);
@@ -9481,5 +9485,4 @@ class purchase extends AdminController
 
         $pdf->Output('builder_noc.pdf', $type);
     }
-
 }

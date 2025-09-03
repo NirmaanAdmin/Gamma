@@ -73,70 +73,56 @@
                                     } else {
                                        echo ' hide';
                                     } ?>" id="client-show-primary-contact-wrapper">
-                  <div class="checkbox checkbox-info mbot20 no-mtop">
+                  <!-- <div class="checkbox checkbox-info mbot20 no-mtop">
                      <input type="checkbox" name="show_primary_contact" <?php if (isset($client) && $client->show_primary_contact == 1) {
                                                                            echo ' checked';
                                                                         } ?> value="1" id="show_primary_contact">
                      <label for="show_primary_contact"><?php echo _l('show_primary_contact', _l('invoices') . ', ' . _l('estimates') . ', ' . _l('payments') . ', ' . _l('credit_notes')); ?></label>
-                  </div>
+                  </div> -->
                </div>
                <div class="col-md-6">
-                  <?php  $vendor_code = (isset($client) ? $client->vendor_code : '');
-                  echo render_input('vendor_code', 'Customer Code', $vendor_code, 'text'); ?>
+                  <?php $vendor_code = (isset($client) ? $client->vendor_code : $next_number);
+                  echo render_input('vendor_code', 'Customer Code', $vendor_code, 'text', array('readonly' => true)); ?>
                   <?php $value = (isset($client) ? $client->company : ''); ?>
                   <?php $attrs = (isset($client) ? array() : array('autofocus' => true)); ?>
                   <?php echo render_input('company', 'Customer Name', $value, 'text', $attrs); ?>
                   <div id="company_exists_info" class="hide"></div>
                   <?php hooks()->do_action('after_pur_customer_profile_company_field', $client ?? null); ?>
-                  <?php
-                  $value = (isset($client) ? $client->vat : '');
-                  echo render_input('vat', 'vendor_vat', $value);
-                  ?>
-                  <?php $value = (isset($client) ? $client->phonenumber : ''); ?>
-                  <?php echo render_input('phonenumber', 'client_phonenumber', $value); ?>
-                  <?php if ((isset($client) && empty($client->website)) || !isset($client)) {
-                     $value = (isset($client) ? $client->website : '');
-                     echo render_input('website', 'client_website', $value);
-                  } else { ?>
-                     <div class="form-group">
-                        <label for="website"><?php echo _l('client_website'); ?></label>
-                        <div class="input-group">
-                           <input type="text" name="website" id="website" value="<?php echo pur_html_entity_decode($client->website); ?>" class="form-control">
-                           <div class="input-group-addon">
-                              <span><a href="<?php echo maybe_add_http($client->website); ?>" target="_blank" tabindex="-1"><i class="fa fa-globe"></i></a></span>
-                           </div>
-                        </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->phonenumber : ''); ?>
+                        <?php echo render_input('phonenumber', 'client_phonenumber', $value); ?>
                      </div>
-                  <?php } ?>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->pan_card : ''); ?>
+                        <?php echo render_input('pan_card', 'Pan Card', $value); ?>
+                     </div>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->adhar_card : ''); ?>
+                        <?php echo render_input('adhar_card', 'Adhar Card', $value); ?>
+                     </div>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->election_card : ''); ?>
+                        <?php echo render_input('election_card', 'Election Card', $value); ?>
+                     </div>
 
-                  <div class="form-group">
+                     <div class="col-md-6">
+                        <?php echo render_select('property_id', $warehouses, array('warehouse_code', 'warehouse_name'), 'Property Name') ?>
+                     </div>
 
-                     <label for="category"><?php echo _l('vendor_category'); ?></label>
-                     <select name="category[]" id="category" class="selectpicker" data-live-search="true" multiple data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
-                        <?php foreach ($vendor_categories as $vc) { ?>
-                           <option value="<?php echo pur_html_entity_decode($vc['id']); ?>" <?php if (isset($client) && in_array($vc['id'], explode(',', $client->category))) {
-                                                                                                echo 'selected';
-                                                                                             } ?>><?php echo pur_html_entity_decode($vc['category_name']); ?></option>
-                        <?php } ?>
-                     </select>
+                     <div class="col-md-6">
+                        <?php echo render_select('block_id', $commodity_groups, array('id', 'name'), 'Block Name') ?>
+                     </div>
+                     <div class="col-md-6">
+                        <?php echo render_select('floor_id', $sub_groups, array('id', 'sub_group_name'), 'Floor Name') ?>
+                     </div>
+
+                     <div class="col-md-6">
+                        <?php echo render_select('flat_id', [], [], 'Flat Name') ?>
+                     </div>
+
+
                   </div>
-
-                  <?php if (!isset($client)) { ?>
-                     <i class="fa fa-question-circle pull-left" data-toggle="tooltip" data-title="<?php echo _l('customer_currency_change_notice'); ?>"></i>
-                  <?php }
-                  $s_attrs = array('data-none-selected-text' => _l('system_default_string'));
-                  $selected = '';
-
-                  foreach ($currencies as $currency) {
-                     if (isset($client)) {
-                        if ($currency['id'] == $client->default_currency) {
-                           $selected = $currency['id'];
-                        }
-                     }
-                  }
-                  // Do not remove the currency field from the customer profile!
-                  echo render_select('default_currency', $currencies, array('id', 'name', 'symbol'), 'invoice_add_edit_currency', $selected, $s_attrs); 
-                  ?>
                   <?php if (get_option('disable_language') == 0) { ?>
                      <div class="form-group select-placeholder">
                         <label for="default_language" class="control-label"><?php echo _l('localization_default_language'); ?>
@@ -158,19 +144,19 @@
                   <?php } ?>
                </div>
                <div class="col-md-6">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->tokan_amount : ''); ?>
+                        <?php echo render_input('tokan_amount', 'Token Amount(₹)', $value, 'number'); ?>
+                     </div>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->final_amount : ''); ?>
+                        <?php echo render_input('final_amount', 'Final Amount(₹)', $value, 'number'); ?>
+                     </div>
+                  </div>
                   <?php $value = (isset($client) ? $client->address : ''); ?>
                   <?php echo render_textarea('address', 'client_address', $value); ?>
-                  <?php $value = (isset($client) ? $client->city : ''); ?>
-                  <?php echo render_input('city', 'client_city', $value); ?>
-                  <?php $value = (isset($client) ? $client->state : ''); ?>
-                  <?php echo render_input('state', 'client_state', $value); ?>
-                  <?php $value = (isset($client) ? $client->zip : ''); ?>
-                  <?php echo render_input('zip', 'client_postal_code', $value); ?>
-                  <?php $countries = get_all_countries();
-                  $customer_default_country = get_option('customer_default_country');
-                  $selected = (isset($client) ? $client->country : $customer_default_country);
-                  echo render_select('country', $countries, array('country_id', array('short_name')), 'clients_country', $selected, array('data-none-selected-text' => _l('dropdown_non_selected_tex')));
-                  ?>
+
                   <?php $bank_detail = (isset($client) ? $client->bank_detail : ''); ?>
                   <?php echo render_textarea('bank_detail', 'bank_detail', $bank_detail); ?>
                   <?php $payment_terms = (isset($client) ? $client->payment_terms : ''); ?>
@@ -178,121 +164,9 @@
                </div>
             </div>
          </div>
-         <?php if (isset($client)) { ?>
-            <!-- <div role="tabpanel" class="tab-pane" id="vendor_admins">
-               <?php if (has_permission('purchase_vendors', '', 'create') || has_permission('purchase_vendors', '', 'edit')) { ?>
-                  <a href="#" data-toggle="modal" data-target="#customer_admins_assign" class="btn btn-info mbot30"><?php echo _l('assign_admin'); ?></a>
-               <?php } ?>
-               <table class="table dt-table">
-                  <thead>
-                     <tr>
-                        <th><?php echo _l('staff_member'); ?></th>
-                        <th><?php echo _l('customer_admin_date_assigned'); ?></th>
-                        <?php if (has_permission('purchase_vendors', '', 'create') || has_permission('purchase_vendors', '', 'edit')) { ?>
-                           <th><?php echo _l('options'); ?></th>
-                        <?php } ?>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <?php foreach ($customer_admins as $c_admin) { ?>
-                        <tr>
-                           <td><a href="<?php echo admin_url('profile/' . $c_admin['staff_id']); ?>">
-                                 <?php echo staff_profile_image($c_admin['staff_id'], array(
-                                    'staff-profile-image-small',
-                                    'mright5'
-                                 ));
-                                 echo get_staff_full_name($c_admin['staff_id']); ?></a>
-                           </td>
-                           <td data-order="<?php echo pur_html_entity_decode($c_admin['date_assigned']); ?>"><?php echo _dt($c_admin['date_assigned']); ?></td>
-                           <?php if (has_permission('purchase_vendors', '', 'create') || has_permission('purchase_vendors', '', 'edit')) { ?>
-                              <td>
-                                 <a href="<?php echo admin_url('purchase/delete_vendor_admin/' . $client->userid . '/' . $c_admin['staff_id']); ?>" class="btn btn-danger _delete btn-icon"><i class="fa fa-remove"></i></a>
-                              </td>
-                           <?php } ?>
-                        </tr>
-                     <?php } ?>
-                  </tbody>
-               </table>
-            </div> -->
-         <?php } ?>
-         <!-- <div role="tabpanel" class="tab-pane" id="billing_and_shipping">
-            <div class="row">
-               <div class="col-md-12">
-                  <div class="row">
-                     <div class="col-md-6">
-                        <h4 class="no-mtop"><?php echo _l('billing_address'); ?> <a href="#" class="pull-right billing-same-as-customer"><small class="font-medium-xs"><?php echo _l('customer_billing_same_as_profile'); ?></small></a></h4>
-                        <hr />
-                        <?php $value = (isset($client) ? $client->billing_street : ''); ?>
-                        <?php echo render_textarea('billing_street', 'billing_street', $value); ?>
-                        <?php $value = (isset($client) ? $client->billing_city : ''); ?>
-                        <?php echo render_input('billing_city', 'billing_city', $value); ?>
-                        <?php $value = (isset($client) ? $client->billing_state : ''); ?>
-                        <?php echo render_input('billing_state', 'billing_state', $value); ?>
-                        <?php $value = (isset($client) ? $client->billing_zip : ''); ?>
-                        <?php echo render_input('billing_zip', 'billing_zip', $value); ?>
-                        <?php $selected = (isset($client) ? $client->billing_country : ''); ?>
-                        <?php echo render_select('billing_country', $countries, array('country_id', array('short_name')), 'billing_country', $selected, array('data-none-selected-text' => _l('dropdown_non_selected_tex'))); ?>
-                     </div>
-                     <div class="col-md-6">
-                        <h4 class="no-mtop">
-                           <i class="fa fa-question-circle" data-toggle="tooltip" data-title="<?php echo _l('customer_shipping_address_notice'); ?>"></i>
-                           <?php echo _l('shipping_address'); ?> <a href="#" class="pull-right customer-copy-billing-address"><small class="font-medium-xs"><?php echo _l('customer_billing_copy'); ?></small></a>
-                        </h4>
-                        <hr />
-                        <?php $value = (isset($client) ? $client->shipping_street : ''); ?>
-                        <?php echo render_textarea('shipping_street', 'shipping_street', $value); ?>
-                        <?php $value = (isset($client) ? $client->shipping_city : ''); ?>
-                        <?php echo render_input('shipping_city', 'shipping_city', $value); ?>
-                        <?php $value = (isset($client) ? $client->shipping_state : ''); ?>
-                        <?php echo render_input('shipping_state', 'shipping_state', $value); ?>
-                        <?php $value = (isset($client) ? $client->shipping_zip : ''); ?>
-                        <?php echo render_input('shipping_zip', 'shipping_zip', $value); ?>
-                        <?php $selected = (isset($client) ? $client->shipping_country : ''); ?>
-                        <?php echo render_select('shipping_country', $countries, array('country_id', array('short_name')), 'shipping_country', $selected, array('data-none-selected-text' => _l('dropdown_non_selected_tex'))); ?>
-                     </div>
-                     <?php if (
-                        isset($client) &&
-                        (total_rows(db_prefix() . 'invoices', array('clientid' => $client->userid)) > 0 || total_rows(db_prefix() . 'estimates', array('clientid' => $client->userid)) > 0 || total_rows(db_prefix() . 'creditnotes', array('clientid' => $client->userid)) > 0)
-                     ) { ?>
-                        <div class="col-md-12">
-                           <div class="alert alert-warning">
-                              <div class="checkbox checkbox-default">
-                                 <input type="checkbox" name="update_all_other_transactions" id="update_all_other_transactions">
-                                 <label for="update_all_other_transactions">
-                                    <?php echo _l('customer_update_address_info_on_invoices'); ?><br />
-                                 </label>
-                              </div>
-                              <b><?php echo _l('customer_update_address_info_on_invoices_help'); ?></b>
-                              <div class="checkbox checkbox-default">
-                                 <input type="checkbox" name="update_credit_notes" id="update_credit_notes">
-                                 <label for="update_credit_notes">
-                                    <?php echo _l('customer_profile_update_credit_notes'); ?><br />
-                                 </label>
-                              </div>
-                           </div>
-                        </div>
-                     <?php } ?>
-                  </div>
-               </div>
-            </div>
-         </div> -->
 
-         <!-- <div role="tabpanel" class="tab-pane" id="return_policies">
-            <div class="row">
-               <div class="col-md-6">
-                  <?php $return_within_day = (isset($client->return_within_day) &&  $client->return_within_day != null) ? $client->return_within_day : get_option('pur_return_request_within_x_day');
-                  echo render_input('return_within_day', 'pur_return_request_within_x_day', $return_within_day, 'number', ['min' => 1]); ?>
-               </div>
-               <div class="col-md-6">
-                  <?php $return_order_fee = (isset($client) ? $client->return_order_fee : '');
-                  echo render_input('return_order_fee', 'pur_fee_for_return_order', $return_order_fee, 'number'); ?>
-               </div>
-               <div class="col-md-12">
-                  <?php $return_policies = (isset($client) ? $client->return_policies : '');
-                  echo render_textarea('return_policies', 'pur_return_policies_information', $return_policies, array(), array()); ?>
-               </div>
-            </div>
-         </div> -->
+
+
 
       </div>
    </div>
@@ -329,3 +203,33 @@
       <!-- /.modal -->
    <?php } ?>
 <?php } ?>
+
+
+<script>
+   $('select[name="group_id"]').on('change', function() {
+
+      var data_select = {}
+
+      ;
+      data_select.group_id = $('select[name="group_id"]').val();
+
+
+      $.post(admin_url + 'warehouse/get_subgroup_fill_data', data_select).done(function(response) {
+         response = JSON.parse(response);
+         $("select[name='sub_group']").html('');
+
+         $("select[name='sub_group']").append(response.subgroup);
+         $("select[name='sub_group']").selectpicker('refresh');
+
+         if (sub_group_value != '') {
+
+            $("select[name='sub_group']").val(sub_group_value).change();
+            sub_group_value = '';
+         }
+
+
+
+      });
+
+   });
+</script>
