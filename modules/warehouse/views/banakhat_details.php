@@ -18,7 +18,7 @@
                             <table class="table table-banakhat-details table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Sr. NO.</th>
+                                        <th>#</th>
                                         <th>Flat No</th>
                                         <th>Block</th>
                                         <th>Floor</th>
