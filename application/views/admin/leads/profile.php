@@ -778,12 +778,12 @@
                             <label for="lead_public"><?php echo _l('lead_public'); ?></label>
                         </div> -->
 
-                        <?php if (!isset($lead)) { ?>
+                        <!-- <?php if (!isset($lead)) { ?>
                             <div class="checkbox-inline checkbox checkbox-primary">
                                 <input type="checkbox" name="contacted_today" id="contacted_today" checked>
                                 <label for="contacted_today"><?php echo _l('lead_add_edit_contacted_today'); ?></label>
                             </div>
-                        <?php } ?>
+                        <?php } ?> -->
                     </div>
                 </div>
 
@@ -1082,14 +1082,14 @@
             }
 
             // combine country code + local
-            const code = ($cc.val() || '').trim();
-            if (code) {
-                $num.val(code + local);
-            } else {
-                $num.val('+91' + local);
-            }
+            // const code = ($cc.val() || '').trim();
+            // if (code) {
+            //     $num.val(code + local);
+            // } else {
+            //     $num.val('+91' + local);
+            // }
 
-            $form.submit();
+            // $form.submit();
         });
     });
 </script>
@@ -1114,10 +1114,10 @@
         }).done(function(resp) {
             if (resp && resp.success) {
                 if (resp.skip_date_check) {
-                    $form.submit();
+                    // $form.submit();
                 } else {
                     // If you want to enforce next_followup_date, add validation here
-                    $form.submit();
+                    // $form.submit();
                 }
             } else {
                 alert_float('danger', (resp && resp.message) || 'Invalid lead status');
