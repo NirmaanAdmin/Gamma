@@ -11,7 +11,7 @@
                         <hr class="hr-panel-heading" />
                         <div class="row">
                             <div class="col-md-2">
-                                <?php echo render_select('warehouse_id', $warehouses, array('warehouse_id', array('warehouse_code', 'warehouse_name')), 'warehouse_name',1); ?>
+                                <?php echo render_select('warehouse_id', $warehouses, array('warehouse_id', array('warehouse_code', 'warehouse_name')), 'warehouse_name',2); ?>
                             </div>
                         </div>
                         <div class="table-responsive">
