@@ -31,26 +31,7 @@
                      </a>
                   </li>
                <?php } ?>
-               <!-- <li role="presentation">
-                  <a href="#billing_and_shipping" aria-controls="billing_and_shipping" role="tab" data-toggle="tab">
-                     <?php echo _l('billing_shipping'); ?>
-                  </a>
-               </li> -->
 
-               <!-- <li role="presentation">
-                  <a href="#return_policies" aria-controls="return_policies" role="tab" data-toggle="tab">
-                     <?php echo _l('pur_return_policies'); ?>
-                  </a>
-               </li> -->
-
-               <!-- <?php if (isset($client)) { ?>
-                  <li role="presentation">
-                     <a href="#vendor_admins" aria-controls="vendor_admins" role="tab" data-toggle="tab">
-                        <?php echo _l('vendor_admins'); ?>
-                     </a>
-                  </li>
-
-               <?php } ?> -->
             </ul>
          </div>
       </div>
@@ -73,52 +54,102 @@
                                     } else {
                                        echo ' hide';
                                     } ?>" id="client-show-primary-contact-wrapper">
-                  <!-- <div class="checkbox checkbox-info mbot20 no-mtop">
-                     <input type="checkbox" name="show_primary_contact" <?php if (isset($client) && $client->show_primary_contact == 1) {
-                                                                           echo ' checked';
-                                                                        } ?> value="1" id="show_primary_contact">
-                     <label for="show_primary_contact"><?php echo _l('show_primary_contact', _l('invoices') . ', ' . _l('estimates') . ', ' . _l('payments') . ', ' . _l('credit_notes')); ?></label>
-                  </div> -->
+
                </div>
                <div class="col-md-6">
                   <?php $vendor_code = (isset($client) ? $client->vendor_code : $next_number);
                   echo render_input('vendor_code', 'Customer Code', $vendor_code, 'text', array('readonly' => true)); ?>
-                  <?php $value = (isset($client) ? $client->company : ''); ?>
-                  <?php $attrs = (isset($client) ? array() : array('autofocus' => true)); ?>
-                  <?php echo render_input('company', 'Customer Name', $value, 'text', $attrs); ?>
-                  <div id="company_exists_info" class="hide"></div>
-                  <?php hooks()->do_action('after_pur_customer_profile_company_field', $client ?? null); ?>
                   <div class="row">
+                     <div class="col-md-12">
+                        <?php $value = (isset($client) ? $client->company : ''); ?>
+                        <?php $attrs = (isset($client) ? array() : array('autofocus' => true)); ?>
+                        <?php echo render_input('company', 'Customer Name', $value, 'text', $attrs); ?>
+                        <div id="company_exists_info" class="hide"></div>
+                        <!-- Container for dynamic fields -->
+                        <?php
+                        if ($client2->company2) { ?>
+                           <?php $value = (isset($client2) ? $client2->company2 : ''); ?>
+                           <?php echo render_input('company2', '', $value, 'text', ['placeholder' => 'Customer Name']); ?>
+                        <?php } else { ?>
+                           <div id="extra_customers"></div>
+                           <span>
+                              <i class="fa fa-plus pull-right" title="Add New Customer" id="add_new_customer" style="cursor:pointer;"></i>
+                           </span>
+                        <?php }
+                        ?>
+
+                     </div>
+
+
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->phonenumber : ''); ?>
                         <?php echo render_input('phonenumber', 'client_phonenumber', $value); ?>
+
                      </div>
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->pan_card : ''); ?>
                         <?php echo render_input('pan_card', 'Pan Card', $value); ?>
+                        <?php
+                        if ($client2->pan_card_2) { ?>
+                           <?php $value = (isset($client2) ? $client2->pan_card_2 : ''); ?>
+                           <?php echo render_input('pan_card_2', '', $value, 'text', ['placeholder' => 'Pan Card 2']); ?>
+                        <?php } else { ?>
+                           <div id="extra_pan_card"></div>
+                           <span>
+                              <i class="fa fa-plus pull-right" title="Add Pan Card" id="add_new_pan_card" style="cursor:pointer;"></i>
+                           </span>
+                        <?php } ?>
+
                      </div>
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->adhar_card : ''); ?>
                         <?php echo render_input('adhar_card', 'Adhar Card', $value); ?>
+
+                        <?php
+                        if ($client2->adhar_card_2) { ?>
+                           <?php $value = (isset($client2) ? $client2->adhar_card_2 : ''); ?>
+                           <?php echo render_input('adhar_card_2', '', $value, 'text', ['placeholder' => 'Adhar Card']); ?>
+                        <?php } else { ?>
+                           <div id="extra_adhar_card"></div>
+                           <span>
+                              <i class="fa fa-plus pull-right" title="Add Adhar Card" id="add_new_adhar_card" style="cursor:pointer;"></i>
+                           </span>
+                        <?php } ?>
+
                      </div>
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->election_card : ''); ?>
                         <?php echo render_input('election_card', 'Election Card', $value); ?>
+                        <?php
+                        if ($client2->election_card_2) { ?>
+                           <?php $value = (isset($client2) ? $client2->election_card_2 : ''); ?>
+                           <?php echo render_input('election_card_2', '', $value, 'text', ['placeholder' => 'Election Card 2']); ?>
+                        <?php } else { ?>
+                           <div id="extra_election_card"></div>
+                           <span>
+                              <i class="fa fa-plus pull-right" title="Add Election Card" id="add_new_election_card" style="cursor:pointer;"></i>
+                           </span>
+                        <?php } ?>
+
+                     </div>
+
+                     <div class="col-md-6" style="    clear: both;">
+                        <?php $value = (isset($client) ? $client->property_id : ''); ?>
+                        <?php echo render_select('property_id', $warehouses, array('warehouse_code', 'warehouse_name'), 'Property Name', $value) ?>
                      </div>
 
                      <div class="col-md-6">
-                        <?php echo render_select('property_id', $warehouses, array('warehouse_code', 'warehouse_name'), 'Property Name') ?>
+                        <?php $value = (isset($client) ? $client->block_id : ''); ?>
+                        <?php echo render_select('block_id', $commodity_groups, array('id', 'name'), 'Block Name', $value) ?>
+                     </div>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->floor_id : ''); ?>
+                        <?php echo render_select('floor_id', $sub_groups, array('id', 'sub_group_name'), 'Floor Name', $value) ?>
                      </div>
 
                      <div class="col-md-6">
-                        <?php echo render_select('block_id', $commodity_groups, array('id', 'name'), 'Block Name') ?>
-                     </div>
-                     <div class="col-md-6">
-                        <?php echo render_select('floor_id', $sub_groups, array('id', 'sub_group_name'), 'Floor Name') ?>
-                     </div>
-
-                     <div class="col-md-6">
-                        <?php echo render_select('flat_id', [], [], 'Flat Name') ?>
+                        <?php $value = (isset($client) ? $client->flat_id : ''); ?>
+                        <?php echo render_select('flat_id', [], [], 'Flat Name', $value) ?>
                      </div>
 
 
@@ -203,33 +234,3 @@
       <!-- /.modal -->
    <?php } ?>
 <?php } ?>
-
-
-<script>
-   $('select[name="group_id"]').on('change', function() {
-
-      var data_select = {}
-
-      ;
-      data_select.group_id = $('select[name="group_id"]').val();
-
-
-      $.post(admin_url + 'warehouse/get_subgroup_fill_data', data_select).done(function(response) {
-         response = JSON.parse(response);
-         $("select[name='sub_group']").html('');
-
-         $("select[name='sub_group']").append(response.subgroup);
-         $("select[name='sub_group']").selectpicker('refresh');
-
-         if (sub_group_value != '') {
-
-            $("select[name='sub_group']").val(sub_group_value).change();
-            sub_group_value = '';
-         }
-
-
-
-      });
-
-   });
-</script>

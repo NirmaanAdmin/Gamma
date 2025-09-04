@@ -8882,6 +8882,7 @@ class purchase extends AdminController
             }
 
             $client                = $this->purchase_model->get_pur_customer($id);
+            $client2               = $this->purchase_model->get_pur_customer2($id);
             $data['customer_tabs'] = get_customer_profile_tabs();
             if (!$client) {
                 show_404();
@@ -8941,6 +8942,7 @@ class purchase extends AdminController
             $data['staff'] = $this->staff_model->get('', ['active' => 1]);
 
             $data['client'] = $client;
+            $data['client2'] = $client2;
             $title          = $client->company;
 
             // Get all active staff members (used to add reminder)

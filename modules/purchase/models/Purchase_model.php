@@ -14246,6 +14246,26 @@ class Purchase_model extends App_Model
 
     public function add_customer($data, $client_id = null, $client_or_lead_convert_request = false)
     {
+        $data2 = [];
+        if (isset($data['company2'])) {
+            $data2['company2'] = $data['company2'];
+            unset($data['company2']);
+        }
+
+        if (isset($data['pan_card_2'])) {
+            $data2['pan_card_2'] = $data['pan_card_2'];
+            unset($data['pan_card_2']);
+        }
+
+        if (isset($data['adhar_card_2'])) {
+            $data2['adhar_card_2'] = $data['adhar_card_2'];
+            unset($data['adhar_card_2']);
+        }
+
+        if (isset($data['election_card_2'])) {
+            $data2['election_card_2'] = $data['election_card_2'];
+            unset($data['election_card_2']);
+        }
 
         if (isset($data['balance'])) {
             $data['balance'] = str_replace(',', '', $data['balance']);
@@ -14306,12 +14326,17 @@ class Purchase_model extends App_Model
 
         // New filter action
 
-        
+
         if (isset($client_id) && $client_id > 0) {
             $userid = $client_id;
         } else {
             $this->db->insert(db_prefix() . 'pur_customer', $data);
             $userid = $this->db->insert_id();
+
+            if (isset($data2)) {
+                $data2['userid'] = $userid;
+                $this->db->insert(db_prefix() . 'pur_customer_new', $data2);
+            }
 
             hooks()->do_action('after_pur_customer_created', [
                 'id'            => $userid,
@@ -14571,8 +14596,27 @@ class Purchase_model extends App_Model
 
     public function update_customer($data, $id, $client_request = false)
     {
-        echo '<pre>';
-        print_r($data);
+        $data2 = [];
+        if (isset($data['company2'])) {
+            $data2['company2'] = $data['company2'];
+            unset($data['company2']);
+        }
+
+        if (isset($data['pan_card_2'])) {
+            $data2['pan_card_2'] = $data['pan_card_2'];
+            unset($data['pan_card_2']);
+        }
+
+        if (isset($data['adhar_card_2'])) {
+            $data2['adhar_card_2'] = $data['adhar_card_2'];
+            unset($data['adhar_card_2']);
+        }
+
+        if (isset($data['election_card_2'])) {
+            $data2['election_card_2'] = $data['election_card_2'];
+            unset($data['election_card_2']);
+        }
+
         if (isset($data['DataTables_Table_0_length'])) {
             unset($data['DataTables_Table_0_length']);
         }
@@ -14981,6 +15025,18 @@ class Purchase_model extends App_Model
         $this->db->where('userid', $id);
         $this->db->update(db_prefix() . 'pur_customer', $data);
 
+        if(isset($data2)) {
+            $this->db->where('userid', $id);
+            $total = $this->db->get(db_prefix() . 'pur_customer_new')->num_rows();
+            if ($total > 0) {
+                $this->db->where('userid', $id);
+                $this->db->update(db_prefix() . 'pur_customer_new', $data2);
+            } else {
+                $data2['userid'] = $id;
+                $this->db->insert(db_prefix() . 'pur_customer_new', $data2);
+            }
+
+        }
         if ($this->db->affected_rows() > 0) {
             $affectedRows++;
         }
@@ -16061,5 +16117,11 @@ class Purchase_model extends App_Model
 
         // Format with leading zeros to make it 4 digits
         return str_pad($next_number, 4, '0', STR_PAD_LEFT);
+    }
+
+    public function get_pur_customer2($id)
+    {
+        $this->db->where('userid', $id);
+        return $this->db->get(db_prefix() . 'pur_customer_new')->row();
     }
 }
