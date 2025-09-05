@@ -149,6 +149,7 @@
 
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->flat_id : ''); ?>
+                        <input type="hidden" id="flat_id_hidden" value="<?php echo $value; ?>">
                         <?php echo render_select('flat_id', [], [], 'Flat Name', $value) ?>
                      </div>
 

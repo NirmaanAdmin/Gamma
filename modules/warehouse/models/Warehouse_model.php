@@ -2469,7 +2469,7 @@ class Warehouse_model extends App_Model
 		$data_update = [];
 
 		switch ($rel_type) {
-				//case 1: stock_import
+			//case 1: stock_import
 			case '1':
 				$data_update['approval'] = $status;
 				$this->db->where('id', $rel_id);
@@ -3245,7 +3245,7 @@ class Warehouse_model extends App_Model
 		$additional_data = $data['rel_type'];
 		$object_type = $data['rel_type'];
 		switch ($data['rel_type']) {
-				// case '1 : stock_import':
+			// case '1 : stock_import':
 			case '1':
 				$type = _l('stock_import');
 				$staff_addedfrom = $this->get_goods_receipt($data['rel_id'])->addedfrom;
@@ -20193,10 +20193,32 @@ class Warehouse_model extends App_Model
 		return app_pdf('booking_chart', module_dir_path(WAREHOUSE_MODULE_NAME, 'libraries/pdf/Booking_chart_pdf.php'), $booking_chart);
 	}
 
-	public function get_banakhat_details(){
+	public function get_banakhat_details()
+	{
 		$this->db->select('*');
-		$this->db->from(db_prefix().'banakhat_properties');
+		$this->db->from(db_prefix() . 'banakhat_properties');
 		$query = $this->db->get();
 		return $query->result_array();
+	}
+
+	public function get_flat_fill_data($data)
+	{
+
+		$this->db->where('warehouse_id', ltrim($data['property_id'], '0'));
+		$this->db->where('group_id', $data['block_id']);
+		$this->db->where('sub_group', $data['floor_id']);
+		$arr_flat = $this->db->get(db_prefix() . 'items')->result_array();
+		$options = '<option value=""></option>';
+		if (count($arr_flat) > 0) {
+			foreach ($arr_flat as $value) {
+				$selected = '';
+
+				if ($data['flat_id_hidden'] == $value['id']) {
+					$selected = 'selected';
+				}
+				$options .= '<option value="' . $value['id'] . '" ' . $selected . '>' . $value['description'] . '</option>';
+			}
+		}
+		return $options;
 	}
 }

@@ -9308,4 +9308,16 @@ if(strlen($data['inventory_filter']) > 0){
     {
 		$this->app->get_table_data(module_views_path('warehouse', 'table_banakhat_details'));
     }
+
+	 public function get_flat_fill_data()
+    {
+    	$data = $this->input->post();
+
+    	$flats = $this->warehouse_model->get_flat_fill_data($data);
+
+    	echo json_encode([
+    		'flats' => $flats
+    	]);
+
+    }
 }

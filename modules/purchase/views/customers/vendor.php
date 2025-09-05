@@ -23,7 +23,7 @@
                <button class="btn btn-info only-save customer-form-submiter">
                   <?php echo _l('submit'); ?>
                </button>
-              
+
             </div>
          <?php } ?>
          <?php if (isset($client)) { ?>
@@ -74,30 +74,65 @@
 
 </html>
 <script>
-   $('select[name="group_id"]').on('change', function() {
+   $('select[name="block_id"]').on('change', function() {
 
-      var data_select = {}
+      var data_select = {};
 
-      ;
-      data_select.group_id = $('select[name="group_id"]').val();
+      data_select.group_id = $('select[name="block_id"]').val();
 
 
       $.post(admin_url + 'warehouse/get_subgroup_fill_data', data_select).done(function(response) {
          response = JSON.parse(response);
-         $("select[name='sub_group']").html('');
+         $("select[name='floor_id']").html('');
 
-         $("select[name='sub_group']").append(response.subgroup);
-         $("select[name='sub_group']").selectpicker('refresh');
+         $("select[name='floor_id']").append(response.subgroup);
+         $("select[name='floor_id']").selectpicker('refresh');
 
          if (sub_group_value != '') {
 
-            $("select[name='sub_group']").val(sub_group_value).change();
+            $("select[name='floor_id']").val(sub_group_value).change();
             sub_group_value = '';
          }
 
 
 
       });
+
+   });
+
+   $('select[name="property_id"]').on('change', function() {
+      $("select[name='block_id']").val('').change();
+      $("select[name='floor_id']").val('').change();
+      $("select[name='flat_id']").val('').change();
+   });
+
+   $(document).ready(function() {
+      // Check if floor_id has a value on page load
+      var floor_id = $("select[name='floor_id']").val();
+
+      if (floor_id && floor_id != '') {
+         $('select[name="floor_id"]').trigger('change');
+      }
+   });
+   $('select[name="floor_id"]').on('change', function() {
+      var block_id = $("select[name='block_id']").val();
+      var property_id = $("select[name='property_id']").val();
+      var floor_id = $("select[name='floor_id']").val();
+      var flat_id_hidden = $('#flat_id_hidden').val();
+      if (floor_id != '') {
+
+         var data_select = {};
+         data_select.block_id = block_id;
+         data_select.property_id = property_id;
+         data_select.floor_id = floor_id;
+         data_select.flat_id_hidden = flat_id_hidden;
+         $.post(admin_url + 'warehouse/get_flat_fill_data', data_select).done(function(response) {
+            response = JSON.parse(response);
+            $("select[name='flat_id']").html('');
+            $("select[name='flat_id']").append(response.flats);
+            $("select[name='flat_id']").selectpicker('refresh');
+         });
+      }
 
    });
    $(document).ready(function() {
