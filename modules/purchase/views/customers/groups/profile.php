@@ -135,22 +135,22 @@
 
                      <div class="col-md-6" style="    clear: both;">
                         <?php $value = (isset($client) ? $client->property_id : ''); ?>
-                        <?php echo render_select('property_id', $warehouses, array('warehouse_code', 'warehouse_name'), 'Property Name', $value) ?>
+                        <?php echo render_select('property_id', $warehouses, array('warehouse_code', 'warehouse_name'), 'Property Name', $value,['required' => true]) ?>
                      </div>
 
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->block_id : ''); ?>
-                        <?php echo render_select('block_id', $commodity_groups, array('id', 'name'), 'Block Name', $value) ?>
+                        <?php echo render_select('block_id', $commodity_groups, array('id', 'name'), 'Block Name', $value,['required' => true]) ?>
                      </div>
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->floor_id : ''); ?>
-                        <?php echo render_select('floor_id', $sub_groups, array('id', 'sub_group_name'), 'Floor Name', $value) ?>
+                        <?php echo render_select('floor_id', $sub_groups, array('id', 'sub_group_name'), 'Floor Name', $value,['required' => true]) ?>
                      </div>
 
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->flat_id : ''); ?>
                         <input type="hidden" id="flat_id_hidden" value="<?php echo $value; ?>">
-                        <?php echo render_select('flat_id', [], [], 'Flat Name', $value) ?>
+                        <?php echo render_select('flat_id', [], [], 'Flat Name', $value,['required' => true]) ?>
                      </div>
 
 
