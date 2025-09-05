@@ -3286,7 +3286,7 @@ function format_pdf_vendor_info($vendor_id)
         $path           = PURCHASE_MODULE_UPLOAD_FOLDER . '/pur_customer/' . $id . '/';
         $CI            = &get_instance();
         $totalUploaded = 0;
-        
+
         if (
             isset($_FILES['file']['name'])
             && ($_FILES['file']['name'] != '' || is_array($_FILES['file']['name']) && count($_FILES['file']['name']) > 0)
@@ -3343,4 +3343,44 @@ function format_pdf_vendor_info($vendor_id)
 
         return (bool) $totalUploaded;
     }
+}
+
+function get_property_name($property_id)
+{
+    $CI = &get_instance();
+    $CI->db->where('warehouse_id', $property_id);
+    $property = $CI->db->get(db_prefix() . 'warehouse')->row();
+
+    if ($property) {
+        return $property->warehouse_name;
+    }
+
+    return '';
+}
+
+function get_flat_name($flat_id)
+{
+    $CI = &get_instance();
+    $CI->db->where('id', $flat_id);
+    $flat = $CI->db->get(db_prefix() . 'items')->row();
+
+    if ($flat) {
+        // Extract only numbers from the description
+        return preg_replace('/[^0-9]/', '', $flat->description);
+    }
+
+    return '';
+}
+
+function get_block_name($block_id)
+{
+    $CI = &get_instance();
+    $CI->db->where('id', $block_id);
+    $block = $CI->db->get(db_prefix() . 'items_groups')->row();
+
+    if ($block) {
+        return str_replace('Block', '', $block->name);
+    }
+
+    return '';
 }

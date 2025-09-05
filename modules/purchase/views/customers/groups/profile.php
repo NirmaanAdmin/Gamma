@@ -60,7 +60,7 @@
                   <?php $vendor_code = (isset($client) ? $client->vendor_code : $next_number);
                   echo render_input('vendor_code', 'Customer Code', $vendor_code, 'text', array('readonly' => true)); ?>
                   <div class="row">
-                     <div class="col-md-12">
+                     <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->company : ''); ?>
                         <?php $attrs = (isset($client) ? array() : array('autofocus' => true)); ?>
                         <?php echo render_input('company', 'Customer Name', $value, 'text', $attrs); ?>
@@ -79,9 +79,13 @@
                         ?>
 
                      </div>
-
-
                      <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->email : ''); ?>
+                        <?php echo render_input('email', 'email', $value,'email'); ?>
+
+                     </div>
+
+                     <div class="col-md-6" style="clear: both;">
                         <?php $value = (isset($client) ? $client->phonenumber : ''); ?>
                         <?php echo render_input('phonenumber', 'client_phonenumber', $value); ?>
 
@@ -135,22 +139,22 @@
 
                      <div class="col-md-6" style="    clear: both;">
                         <?php $value = (isset($client) ? $client->property_id : ''); ?>
-                        <?php echo render_select('property_id', $warehouses, array('warehouse_code', 'warehouse_name'), 'Property Name', $value,['required' => true]) ?>
+                        <?php echo render_select('property_id', $warehouses, array('warehouse_code', 'warehouse_name'), 'Property Name', $value, ['required' => true]) ?>
                      </div>
 
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->block_id : ''); ?>
-                        <?php echo render_select('block_id', $commodity_groups, array('id', 'name'), 'Block Name', $value,['required' => true]) ?>
+                        <?php echo render_select('block_id', $commodity_groups, array('id', 'name'), 'Block Name', $value, ['required' => true]) ?>
                      </div>
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->floor_id : ''); ?>
-                        <?php echo render_select('floor_id', $sub_groups, array('id', 'sub_group_name'), 'Floor Name', $value,['required' => true]) ?>
+                        <?php echo render_select('floor_id', $sub_groups, array('id', 'sub_group_name'), 'Floor Name', $value, ['required' => true]) ?>
                      </div>
 
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->flat_id : ''); ?>
                         <input type="hidden" id="flat_id_hidden" value="<?php echo $value; ?>">
-                        <?php echo render_select('flat_id', [], [], 'Flat Name', $value,['required' => true]) ?>
+                        <?php echo render_select('flat_id', [], [], 'Flat Name', $value, ['required' => true]) ?>
                      </div>
 
 
