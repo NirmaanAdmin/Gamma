@@ -261,7 +261,7 @@
             <div role="tabpanel" class="tab-pane<?php if (!$this->input->get('tab')) {
                                                    echo ' active';
                                                 }; ?>" id="sale_agreement2">
-               <a href="<?php echo admin_url('purchase/sale_agreements/' . $client->userid); ?>" class="btn btn-info new-contact mbot25 pull-right"><?php echo _l('New Agreement'); ?></a>
+               <a href="<?php echo admin_url('purchase/sale_agreements2/' . $client->userid); ?>" class="btn btn-info new-contact mbot25 pull-right"><?php echo _l('New Agreement'); ?></a>
 
                <table class="table dt-table">
                   <thead>
@@ -282,17 +282,17 @@
                               <td data-order="<?php echo pur_html_entity_decode($agreement['create_at']); ?>"><?php echo date('d M, Y', strtotime($agreement['create_at'])); ?></td>
                               <td class="text-right">
                                  <div class="btn-group">
-                                    <a href="<?php echo admin_url('purchase/edit_sale_agreements/' . $agreement['id']); ?>" class="btn btn-default btn-icon" style="padding: 10px !important"><i class="fa fa-pencil-square"></i></a>
+                                    <a href="<?php echo admin_url('purchase/edit_sale_agreements2/' . $agreement['id']); ?>" class="btn btn-default btn-icon" style="padding: 10px !important"><i class="fa fa-pencil-square"></i></a>
                                     <a href="<?php echo admin_url('purchase/delete_sale_agreement/' . $agreement['id']); ?>" class="btn btn-danger _delete btn-icon" style="padding: 10px !important"><i class="fa fa-remove"></i></a>
                                     <a href="javascript:void(0)" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 7px !important"><i class="fa fa-file-pdf"></i><?php if (is_mobile()) {
                                                                                                                                                                                                                                              echo ' PDF';
                                                                                                                                                                                                                                           } ?> <span class="caret"></span></a>
                                     <ul class="dropdown-menu dropdown-menu-right">
-                                       <li class="hidden-xs"><a href="<?php echo admin_url('purchase/sale_agreement_pdf/' . $agreement['id'] . '?output_type=I'); ?>"><?php echo _l('view_pdf'); ?></a></li>
-                                       <li class="hidden-xs"><a href="<?php echo admin_url('purchase/sale_agreement_pdf/' . $agreement['id'] . '?output_type=I'); ?>" target="_blank"><?php echo _l('view_pdf_in_new_window'); ?></a></li>
-                                       <li><a href="<?php echo admin_url('purchase/sale_agreement_pdf/' . $agreement['id']); ?>"><?php echo _l('download'); ?></a></li>
+                                       <li class="hidden-xs"><a href="<?php echo admin_url('purchase/sale_agreement2_pdf/' . $agreement['id'] . '?output_type=I'); ?>"><?php echo _l('view_pdf'); ?></a></li>
+                                       <li class="hidden-xs"><a href="<?php echo admin_url('purchase/sale_agreement2_pdf/' . $agreement['id'] . '?output_type=I'); ?>" target="_blank"><?php echo _l('view_pdf_in_new_window'); ?></a></li>
+                                       <li><a href="<?php echo admin_url('purchase/sale_agreement2_pdf/' . $agreement['id']); ?>"><?php echo _l('download'); ?></a></li>
                                        <li>
-                                          <a href="<?php echo admin_url('purchase/sale_agreement_pdf/' . $agreement['id'] . '?print=true'); ?>" target="_blank">
+                                          <a href="<?php echo admin_url('purchase/sale_agreement2_pdf/' . $agreement['id'] . '?print=true'); ?>" target="_blank">
                                              <?php echo _l('print'); ?>
                                           </a>
                                        </li>

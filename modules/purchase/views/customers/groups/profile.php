@@ -81,7 +81,7 @@
                      </div>
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->email : ''); ?>
-                        <?php echo render_input('email', 'email', $value,'email'); ?>
+                        <?php echo render_input('email', 'email', $value, 'email'); ?>
 
                      </div>
 
@@ -156,6 +156,14 @@
                         <input type="hidden" id="flat_id_hidden" value="<?php echo $value; ?>">
                         <?php echo render_select('flat_id', [], [], 'Flat Name', $value, ['required' => true]) ?>
                      </div>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->age : ''); ?>
+                        <?php echo render_input('age', 'Age', $value, 'text'); ?>
+                     </div>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->occupation : ''); ?>
+                        <?php echo render_input('occupation', 'Occupation', $value, 'text'); ?>
+                     </div>
 
 
                   </div>
@@ -189,14 +197,40 @@
                         <?php $value = (isset($client) ? $client->final_amount : ''); ?>
                         <?php echo render_input('final_amount', 'Final Amount(₹)', $value, 'number'); ?>
                      </div>
-                  </div>
-                  <?php $value = (isset($client) ? $client->address : ''); ?>
-                  <?php echo render_textarea('address', 'client_address', $value); ?>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->bank_name : ''); ?>
+                        <?php echo render_input('bank_name', 'Bank Name', $value, 'text'); ?>
+                     </div>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->cheque_no : ''); ?>
+                        <?php echo render_input('cheque_no', 'Cheque No. / UTR', $value, 'text'); ?>
+                     </div>
+                     <div class="col-md-12">
+                        <?php $value = (isset($client) ? $client->payment_date : ''); ?>
+                        <?php echo render_input('payment_date', 'Payment Date', $value, 'date'); ?>
+                     </div>
 
+                     <div class="col-md-12">
+                        <?php $value = (isset($client) ? $client->address : ''); ?>
+                        <?php echo render_textarea('address', 'client_address', $value); ?>
+                        <?php
+                        if ($client2->address_2) { ?>
+                           <?php $value = (isset($client2) ? $client2->address_2 : ''); ?>
+                           <?php echo render_textarea('address_2', '', $value, ['placeholder' => 'Address 2']); ?>
+                        <?php } else { ?>
+                           <div id="extra_address"></div>
+                           <span>
+                              <i class="fa fa-plus pull-right" title="Add Address" id="add_new_address" style="cursor:pointer;"></i>
+                           </span>
+                        <?php } ?>
+                     </div>
+
+                  </div>
                   <?php $bank_detail = (isset($client) ? $client->bank_detail : ''); ?>
                   <?php echo render_textarea('bank_detail', 'bank_detail', $bank_detail); ?>
                   <?php $payment_terms = (isset($client) ? $client->payment_terms : ''); ?>
                   <?php echo render_textarea('payment_terms', 'payment_terms', $payment_terms); ?>
+
                </div>
             </div>
          </div>

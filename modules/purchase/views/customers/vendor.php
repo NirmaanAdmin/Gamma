@@ -226,5 +226,26 @@
          $('#add_new_election_card').removeClass('hide');
       });
 
+      $('#add_new_address').on('click', function() {
+         var html = `
+            <div class="col-md-12 customer-field" style="margin:10px 0px; padding:0px !important;position:relative;">
+                <textarea name="address_2" class="form-control" id="address_2" rows="4" placeholder="Address 2"></textarea>
+               <span>
+                    <i class="fa fa-times pull-right text-danger remove_address" title="Remove" style="cursor:pointer;position:absolute;top:-4px;right:-4px;"></i>
+               </span>
+            </div>
+
+        `;
+         $('#extra_address').append(html);
+         $('#add_new_address').addClass('hide');
+      });
+
+      // Remove on click
+      $(document).on('click', '.remove_address', function() {
+         $('#address_2').val('');
+         $(this).closest('.customer-field').remove();
+
+         $('#add_new_address').removeClass('hide');
+      });
    });
 </script>

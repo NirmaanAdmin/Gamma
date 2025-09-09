@@ -3384,3 +3384,137 @@ function get_block_name($block_id)
 
     return '';
 }
+
+
+function get_floor_name($floor_id)
+{
+    $CI = &get_instance();
+    $CI->db->where('id', $floor_id);
+    $floor = $CI->db->get(db_prefix() . 'wh_sub_group')->row();
+
+    if ($floor) {
+        // Extract only numbers from the floor name
+        return $floor->sub_group_name;
+    }
+
+    return '';
+}
+
+
+function get_banakhat_details($property_id, $flat_no, $block_no, $floor_name)
+{
+    $CI = &get_instance();
+
+    // Clean the block value
+    $clean_block = trim($block_no); // Remove spaces
+    $clean_block = strtoupper($clean_block); // Convert to uppercase
+
+    $floor_number = convert_floor_name_to_number($floor_name);
+
+    $CI->db->where('project_id', $property_id);
+    $CI->db->where('flat_no', $flat_no);
+    $CI->db->where('UPPER(TRIM(block))', $clean_block); // Match cleaned value
+    $CI->db->where('floor', $floor_number);
+
+    $banakhat_data = $CI->db->get(db_prefix() . 'banakhat_properties')->row();
+
+    return $banakhat_data;
+}
+
+function convert_floor_name_to_number($floor_name)
+{
+    // Remove any extra spaces and convert to lowercase for consistent matching
+    $floor_name = strtolower(trim($floor_name));
+
+    // Remove "floor" from the string if it exists
+    $floor_name = str_replace('floor', '', $floor_name);
+    $floor_name = trim($floor_name);
+
+    // Map written numbers to numeric values
+    $floor_map = [
+        'ground' => 0,
+        'first' => 1,
+        'second' => 2,
+        'third' => 3,
+        'fourth' => 4,
+        'fifth' => 5,
+        'sixth' => 6,
+        'seventh' => 7,
+        'eighth' => 8,
+        'ninth' => 9,
+        'tenth' => 10,
+        'eleventh' => 11,
+        'twelfth' => 12,
+        'thirteenth' => 13,
+        'fourteenth' => 14,
+        'fifteenth' => 15,
+        'sixteenth' => 16,
+        'seventeenth' => 17,
+        'eighteenth' => 18,
+        'nineteenth' => 19,
+        'twentieth' => 20,
+        'twenty-first' => 21,
+        'twenty-second' => 22,
+        'twenty-third' => 23,
+        'twenty-fourth' => 24,
+        'twenty-fifth' => 25
+    ];
+
+    // Check if the floor name exists in our map
+    if (isset($floor_map[$floor_name])) {
+        return $floor_map[$floor_name];
+    }
+
+    // If it's already a number, return it as integer
+    if (is_numeric($floor_name)) {
+        return (int)$floor_name;
+    }
+
+    // Default to original value if no match found
+    return $floor_name;
+}
+
+function convertToIndianCurrency($number) {
+    if($number > 0){
+
+        $decimal = round($number - ($no = floor($number)), 2) * 100;
+        $hundred = null;
+        $digits_length = strlen($no);
+        $i = 0;
+        $str = array();
+        $words = array(0 => '', 1 => 'one', 2 => 'two',
+            3 => 'three', 4 => 'four', 5 => 'five', 6 => 'six',
+            7 => 'seven', 8 => 'eight', 9 => 'nine',
+            10 => 'ten', 11 => 'eleven', 12 => 'twelve',
+            13 => 'thirteen', 14 => 'fourteen', 15 => 'fifteen',
+            16 => 'sixteen', 17 => 'seventeen', 18 => 'eighteen',
+            19 => 'nineteen', 20 => 'twenty', 30 => 'thirty',
+            40 => 'forty', 50 => 'fifty', 60 => 'sixty',
+            70 => 'seventy', 80 => 'eighty', 90 => 'ninety');
+        $digits = array('', 'hundred','thousand','lakh', 'crore');
+        
+        while( $i < $digits_length ) {
+            $divider = ($i == 2) ? 10 : 100;
+            $number = floor($no % $divider);
+            $no = floor($no / $divider);
+            $i += $divider == 10 ? 1 : 2;
+            if ($number) {
+                $plural = (($counter = count($str)) && $number > 9) ? 's' : null;
+                $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+                $str [] = ($number < 21) ? $words[$number].' '. $digits[$counter]. $plural.' '.$hundred : $words[floor($number / 10) * 10].' '.$words[$number % 10]. ' '.$digits[$counter].$plural.' '.$hundred;
+            } else $str[] = null;
+        }
+        
+        $Rupees = implode('', array_reverse($str));
+        $paise = ($decimal > 0) ? " and " . ($words[(int)($decimal / 10) * 10] . " " . $words[$decimal % 10]) . ' Paise' : '';
+        
+        // Clean up any extra spaces
+        $output = trim(($Rupees ? $Rupees . 'Rupees' : '') . $paise);
+        $output = preg_replace('/\s+/', ' ', $output); // Replace multiple spaces with one
+        
+        return ucfirst($output);
+    }else{
+        return "";
+    }
+}
+?>

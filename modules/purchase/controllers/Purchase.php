@@ -9252,6 +9252,16 @@ class purchase extends AdminController
         $this->load->view('customers/sale_agreements', $data);
     }
 
+    public function sale_agreements2($id)
+    {
+        $data['title'] = _l('Sale Agreement');
+        $data['customer_id'] = $id;
+        $data['customer'] = $this->purchase_model->get_pur_customer($id);
+        $data['customer2'] = $this->purchase_model->get_pur_customer2($id);
+        // echo '<pre>'; print_r($data); exit;
+        $this->load->view('customers/sale_agreements2', $data);
+    }
+
     public function delete_sale_agreement($id)
     {
         // Call the model function which now returns customer_id or false
@@ -9277,6 +9287,17 @@ class purchase extends AdminController
         $data['documentation'] = $this->purchase_model->get_all_sale_agreements($id);
         // echo '<pre>'; print_r($data); exit;
         $this->load->view('customers/edit_sale_agreements', $data);
+    }
+
+    public function edit_sale_agreements2($id)
+    {
+        $data['title'] = _l('Agreement Of Sale');
+        $data['master_id'] = $id;
+        $data['customer'] = $this->purchase_model->get_customer_data($id);
+        $data['customer2'] = $this->purchase_model->get_pur_customer2($data['customer']['userid']);
+        $data['documentation'] = $this->purchase_model->get_all_sale_agreements($id);
+        // echo '<pre>'; print_r($data); exit;
+        $this->load->view('customers/edit_sale_agreements2', $data);
     }
 
 
