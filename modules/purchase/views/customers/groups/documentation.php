@@ -68,7 +68,7 @@
             <div role="tabpanel" class="tab-pane<?php if (!$this->input->get('tab')) {
                                                    echo ' active';
                                                 }; ?>" id="sale_agreement">
-               <a href="<?php echo admin_url('purchase/sale_agreements/' . $client->userid); ?>" class="btn btn-info new-contact mbot25 pull-right"><?php echo _l('New Agreement'); ?></a>
+               <!-- <a href="<?php echo admin_url('purchase/sale_agreements/' . $client->userid); ?>" class="btn btn-info new-contact mbot25 pull-right"><?php echo _l('New Agreement'); ?></a> -->
 
                <table class="table dt-table">
                   <thead>
@@ -90,7 +90,7 @@
                               <td class="text-right">
                                  <div class="btn-group">
                                     <a href="<?php echo admin_url('purchase/edit_sale_agreements/' . $agreement['id']); ?>" class="btn btn-default btn-icon" style="padding: 10px !important"><i class="fa fa-pencil-square"></i></a>
-                                    <a href="<?php echo admin_url('purchase/delete_sale_agreement/' . $agreement['id']); ?>" class="btn btn-danger _delete btn-icon" style="padding: 10px !important"><i class="fa fa-remove"></i></a>
+                                    <!-- <a href="<?php echo admin_url('purchase/delete_sale_agreement/' . $agreement['id']); ?>" class="btn btn-danger _delete btn-icon" style="padding: 10px !important"><i class="fa fa-remove"></i></a> -->
                                     <a href="javascript:void(0)" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 7px !important"><i class="fa fa-file-pdf"></i><?php if (is_mobile()) {
                                                                                                                                                                                                                                              echo ' PDF';
                                                                                                                                                                                                                                           } ?> <span class="caret"></span></a>
@@ -261,7 +261,7 @@
             <div role="tabpanel" class="tab-pane<?php if (!$this->input->get('tab')) {
                                                    echo ' active';
                                                 }; ?>" id="sale_agreement2">
-               <a href="<?php echo admin_url('purchase/sale_agreements2/' . $client->userid); ?>" class="btn btn-info new-contact mbot25 pull-right"><?php echo _l('New Agreement'); ?></a>
+               <!-- <a href="<?php echo admin_url('purchase/sale_agreements2/' . $client->userid); ?>" class="btn btn-info new-contact mbot25 pull-right"><?php echo _l('New Agreement'); ?></a> -->
 
                <table class="table dt-table">
                   <thead>
@@ -283,7 +283,7 @@
                               <td class="text-right">
                                  <div class="btn-group">
                                     <a href="<?php echo admin_url('purchase/edit_sale_agreements2/' . $agreement['id']); ?>" class="btn btn-default btn-icon" style="padding: 10px !important"><i class="fa fa-pencil-square"></i></a>
-                                    <a href="<?php echo admin_url('purchase/delete_sale_agreement/' . $agreement['id']); ?>" class="btn btn-danger _delete btn-icon" style="padding: 10px !important"><i class="fa fa-remove"></i></a>
+                                    <!-- <a href="<?php echo admin_url('purchase/delete_sale_agreement/' . $agreement['id']); ?>" class="btn btn-danger _delete btn-icon" style="padding: 10px !important"><i class="fa fa-remove"></i></a> -->
                                     <a href="javascript:void(0)" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 7px !important"><i class="fa fa-file-pdf"></i><?php if (is_mobile()) {
                                                                                                                                                                                                                                              echo ' PDF';
                                                                                                                                                                                                                                           } ?> <span class="caret"></span></a>

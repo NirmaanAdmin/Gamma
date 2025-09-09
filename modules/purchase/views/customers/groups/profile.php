@@ -205,9 +205,13 @@
                         <?php $value = (isset($client) ? $client->cheque_no : ''); ?>
                         <?php echo render_input('cheque_no', 'Cheque No. / UTR', $value, 'text'); ?>
                      </div>
-                     <div class="col-md-12">
+                     <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->payment_date : ''); ?>
                         <?php echo render_input('payment_date', 'Payment Date', $value, 'date'); ?>
+                     </div>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->amount : ''); ?>
+                        <?php echo render_input('amount', 'Amount', $value, 'number'); ?>
                      </div>
 
                      <div class="col-md-12">

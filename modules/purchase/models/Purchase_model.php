@@ -14338,13 +14338,15 @@ class Purchase_model extends App_Model
             $this->db->insert(db_prefix() . 'pur_customer', $data);
             $userid = $this->db->insert_id();
 
-            if (isset($data2)) {
+            if (isset($data2) && count($data2) > 0) {
+                
                 $data2['userid'] = $userid;
                 $this->db->insert(db_prefix() . 'pur_customer_new', $data2);
             }
             if($userid){
                 $sale_master_data['customer_id'] = $userid;
                 $sale_master_data['create_at'] = date('Y-m-d');
+                $sale_master_data['agreement_name'] = 'Agreement Of Sales';
                 $this->db->insert(db_prefix() . 'agreements_master', $sale_master_data);
                 $sales_master_id = $this->db->insert_id();
 

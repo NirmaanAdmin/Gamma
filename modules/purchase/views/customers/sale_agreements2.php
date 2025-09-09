@@ -202,8 +202,8 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><?= $customer->tokan_amount ?></td>
-                                            <td><?= convertToIndianCurrency($customer->tokan_amount) ?></td>
+                                            <td><?= $customer->amount ?></td>
+                                            <td><?= convertToIndianCurrency($customer->amount) ?></td>
                                             <td><?= $customer->bank_name ?></td>
                                             <td><?= $customer->cheque_no ?></td>
                                             <td>
@@ -217,7 +217,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="5"><strong>Total:</strong> <?= $customer->tokan_amount ?>/- (<?= convertToIndianCurrency($customer->tokan_amount) ?> only)</td>
+                                            <td colspan="5"><strong>Total:</strong> <?= $customer->amount ?>/- (<?= convertToIndianCurrency($customer->amount) ?> only)</td>
                                         </tr>
                                     </tbody>
                                 </table>
