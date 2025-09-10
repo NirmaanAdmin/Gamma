@@ -16415,7 +16415,7 @@ class Purchase_model extends App_Model
                     </ol>
 
                     <h1 class="section-title">Schedule "A"</h1>
-                    <p>All that piece or parcel of immovable property being Flat No. {$flat_name}, on the {$floor_name} Floor of Block "{$block_name}", admeasuring {$CARPET_AREA} sq.mtrs.carpet area; including net carpet area of balcony admeasuring {$BALCONY} sq.mtrs.; wash area admeasuring {$WASH_YARD} sq.mtrs.; in the scheme known as <strong>"Kautilya Two20"</strong>; together with undivided proportionate share admeasuring {$UNDIVIDED_LAND_SHARE} sq.mtrs. in the Freehold Non-agricultural land for Multipurpose use bearing Final Plot No.17 admeasuring 5227 sq.mtrs of preliminary Town Planning Scheme No.216 (Shilaj) comprised of Block No.519 admeasuring 7466 sq.mtrs, situate, lying and being at Mouje SHILAJ, Taluka Ghatlodia in the Registration District of Ahmedabad and Sub-District of Ahmedabad-9 (Bopal) together with a right to use common facilities and amenities of the scheme and Said flat is bounded as follows : - </p>
+                    <p>All that piece or parcel of immovable property being <strong>Flat No. {$flat_name}</strong>, on the <strong>{$floor_name}</strong> of <strong>Block "{$block_name}"</strong>, admeasuring <strong>{$CARPET_AREA} sq.mtrs.carpet area;</strong> including net carpet area of <strong>balcony admeasuring {$BALCONY} sq.mtrs.</strong>; <strong>wash area admeasuring {$WASH_YARD} sq.mtrs.</strong>; in the scheme known as <strong>"Kautilya Two20"</strong>; together with <strong>undivided proportionate share admeasuring {$UNDIVIDED_LAND_SHARE} sq.mtrs.</strong> in the Freehold Non-agricultural land for Multipurpose use bearing Final Plot No.17 admeasuring 5227 sq.mtrs of preliminary Town Planning Scheme No.216 (Shilaj) comprised of Block No.519 admeasuring 7466 sq.mtrs, situate, lying and being at Mouje SHILAJ, Taluka Ghatlodia in the Registration District of Ahmedabad and Sub-District of Ahmedabad-9 (Bopal) together with a right to use common facilities and amenities of the scheme and Said flat is bounded as follows : - </p>
                     <div class="pair small">
                         <div><strong>On or towards the East :</strong> {$EAST}<br><strong>On or towards the West :</strong> {$WEST}<br><strong>On or towards the North :</strong> {$NORTH}<br><strong>On or towards the South :</strong> {$SOUTH}</div>
                     </div>
@@ -16424,10 +16424,10 @@ class Purchase_model extends App_Model
 
                     <h1 style="text-align: center;">Annexure "A"</h1>
                     <p style="text-align: center;">Copy of approved lay-out plan</p>
-
+                            
                     <h1 style="text-align: center;">Annexure "B"</h1>
                     <p style="text-align: center;">Registration Certificate of RERA</p>
-
+                        <div style="page-break-after:always"></div>
                     <h1 class="section-title" style="text-align: center;">Annexure "C"</h1>
                     <p>Description of Common Assets in proportion with right to use common amenities and facilities provided for the flat/apartment of the said building and to be used in common with other Allottee of flats and which shall be limited to :-</p>
                     <ol type="i">
@@ -16444,8 +16444,8 @@ class Purchase_model extends App_Model
 
                     <p>Received of and from the Allottee above named the sum of Rupees <strong>{$FINAL_AMOUNT_WORDS} only</strong> on execution of this agreement towards Earnest Money Deposit or application fee.</p>
 
-                    <div class="sign-grid">
-                        <div class="sign-box">
+                    <div >
+                        <div >
                             <p><strong>Signed, Sealed and Delivered by the "Promoter"</strong></p>
                             <p><strong>Kautilya Properties LLP</strong><br />through its authorized partner<br />Mr. Kiran Kamdar</p>
                             <p>______________________</p>
