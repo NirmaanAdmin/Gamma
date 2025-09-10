@@ -9508,4 +9508,28 @@ class purchase extends AdminController
 
         $pdf->Output('builder_noc.pdf', $type);
     }
+
+    public function sale_agreement2_pdf($id)
+    {
+        $sale_agreement = $this->purchase_model->get_sale_agreement2_pdf_html($id);
+
+        try {
+            $pdf = $this->purchase_model->sale_agreement2_pdf($sale_agreement);
+        } catch (Exception $e) {
+            echo pur_html_entity_decode($e->getMessage());
+            die;
+        }
+
+        $type = 'D';
+
+        if ($this->input->get('output_type')) {
+            $type = $this->input->get('output_type');
+        }
+
+        if ($this->input->get('print')) {
+            $type = 'I';
+        }
+
+        $pdf->Output('sale_agreement.pdf', $type);
+    }
 }
