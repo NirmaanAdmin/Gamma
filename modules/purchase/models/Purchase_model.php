@@ -15045,13 +15045,14 @@ class Purchase_model extends App_Model
         $data = $this->check_zero_columns($data);
 
         $data = hooks()->apply_filters('before_pur_customer_updated', $data, $id);
-
+        
         $this->db->where('userid', $id);
         $this->db->update(db_prefix() . 'pur_customer', $data);
 
-        if (isset($data2)) {
+        if (isset($data2) && count($data2) > 0) {
             $this->db->where('userid', $id);
             $total = $this->db->get(db_prefix() . 'pur_customer_new')->num_rows();
+            // echo $total; exit;
             if ($total > 0) {
                 $this->db->where('userid', $id);
                 $this->db->update(db_prefix() . 'pur_customer_new', $data2);
@@ -15060,6 +15061,7 @@ class Purchase_model extends App_Model
                 $this->db->insert(db_prefix() . 'pur_customer_new', $data2);
             }
         }
+       
         if ($this->db->affected_rows() > 0) {
             $affectedRows++;
         }
@@ -15078,7 +15080,7 @@ class Purchase_model extends App_Model
                 $this->db->where('id', $master_id);
                 $this->db->update(db_prefix() . 'agreements_master', [
                     'customer_id' => $sale_agreements['customer_id'],
-                    'agreement_name' => isset($sale_agreements['agreement_name']) ? $sale_agreements['agreement_name'] : '',
+                    
                     'updated_at' => date('Y-m-d')
                 ]);
                 // Prepare sales agreement data for update
@@ -15090,6 +15092,7 @@ class Purchase_model extends App_Model
                 // Update sales agreement
                 $this->db->where('agreement_master_id', $master_id);
                 $this->db->update(db_prefix() . 'sales_agreement', $sale_agreements);
+                
             } else {
                 // CREATE NEW AGREEMENT
                 // First, handle the master agreement record
