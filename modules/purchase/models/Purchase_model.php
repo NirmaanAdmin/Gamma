@@ -16427,7 +16427,7 @@ class Purchase_model extends App_Model
                             
                     <h1 style="text-align: center;">Annexure "B"</h1>
                     <p style="text-align: center;">Registration Certificate of RERA</p>
-                        <div style="page-break-after:always"></div>
+                        
                     <h1 class="section-title" style="text-align: center;">Annexure "C"</h1>
                     <p>Description of Common Assets in proportion with right to use common amenities and facilities provided for the flat/apartment of the said building and to be used in common with other Allottee of flats and which shall be limited to :-</p>
                     <ol type="i">
@@ -16470,6 +16470,7 @@ class Purchase_model extends App_Model
                             <p><strong>________________</strong></p>
                         </div>
                     </div> -->
+                    <div style="page-break-after:always"></div>
                     <h2 style="text-align:center; text-transform:uppercase; margin-bottom:4px;">
                         Schedule
                     </h2>
