@@ -10,7 +10,7 @@
                         <?php echo form_open(admin_url('purchase/customer/'.$customer_id), array('id'=>'sale-agreement-form')); ?>
                         <input type="hidden" name="customer_id" value="<?php echo $customer_id; ?>">
                         <input type="hidden" name="sale_agreements" value="1">
-                        <input type="text" name="agreement_name" class="form-control " placeholder="Agreement Name">
+                        <!-- <input type="text" name="agreement_name" class="form-control " placeholder="Agreement Name"> -->
                         <br><br>
                         <p>AGREEMENT FOR SALE</p>
                         <p>(Without Possession)</p><br>

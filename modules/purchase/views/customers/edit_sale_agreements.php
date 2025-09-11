@@ -1,17 +1,21 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <?php init_head(); ?>
-
+<style>
+    strong {
+        font-weight: 600;
+    }
+</style>
 <div id="wrapper">
     <div class="content">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel_s">
                     <div class="panel-body">
-                        <?php echo form_open(admin_url('purchase/customer/'.$customer['userid']), array('id'=>'sale-agreement-form')); ?>
+                        <?php echo form_open(admin_url('purchase/customer/' . $customer['userid']), array('id' => 'sale-agreement-form')); ?>
                         <input type="hidden" name="customer_id" value="<?php echo $customer['userid']; ?>">
                         <input type="hidden" name="sale_agreements" value="1">
                         <input type="hidden" name="agreement_master_id" value="<?php echo isset($master_id) ? $master_id : ''; ?>">
-                        <input type="text" name="agreement_name" class="form-control " placeholder="Agreement Name" value="<?php echo isset($customer) ? $customer['agreement_name'] : ''; ?>">
+                        <!-- <input type="text" name="agreement_name" class="form-control " placeholder="Agreement Name" value="<?php echo isset($customer) ? $customer['agreement_name'] : ''; ?>"> -->
                         <br><br>
                         <p>AGREEMENT FOR SALE</p>
                         <p>(Without Possession)</p><br>
@@ -24,12 +28,21 @@
                         <p>A Partnership Firm, having its Registered office at : 16, Dena Bank Society, Near Kiran Park, Nava Vadaj, Ahmedabad - 380013 & having site office at, "Kautilya One-54", located at Opp. Swaminarayan Temple, B/h. Omkar Lotus, Chandkheda, Ahmedabad.</p><br>
                         <p>Hereinafter referred to as the “ Vendor ” and/or “ Developer ” (which expression shall, unless it be repugnant to the context or the meaning thereof, be deemed to mean and include its present and future partner, executors, administrators, legal representatives and permitted assigns etc.) of the FIRST PART;</p><br>
                         <p>AND</p><br>
-                        <?php $pan_no_value = (isset($documentation) ? $documentation[0]['pan_no'] : '') ?>
-                        <?php $aadhar_no_value = (isset($documentation) ? $documentation[0]['aadhar_no'] : '') ?>
                         <p>(1) <?= $customer['company']; ?></p>
-                        <p><input type="text" name="pan_no" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="PAN" value="<?php echo $pan_no_value; ?>" /> <input type="text" name="aadhar_no" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Aadhar" value="<?php echo $aadhar_no_value; ?>" /></p>
+                        <p>PAN No :- <?= $customer['pan_card'] ?><br>Aadhar No :- <?= $customer['adhar_card'] ?></p>
 
-                        <p>Both Adult Residing at -</p><br><br><br><br>
+                        <p>Adult Residing at -<?= $customer['address'] ?></p><br>
+                        <?php
+                        if (!empty($customer2)) { ?>
+
+                            <p>(2) <?= $customer2->company2; ?></p>
+                            <p>PAN No :- <?= $customer2->pan_card_2 ?><br>Aadhar No :- <?= $customer2->adhar_card_2 ?></p>
+
+                            <p>Adult Residing at -<?= $customer2->address_2 ?></p><br>
+                        <?php }
+                        ?>
+
+                        <br>
                         <p>Hereinafter referred to as the “PURCHASER” (Which expression shall unless repugnant to the context and meaning thereof shall mean and include his / her / their / its heirs, legal representatives, executors, successors and assigns) of the SECOND PART.</p><br>
                         <p>The Vendor and Purchaser are hereinafter individually referred to as the ‘Party’ and collectively referred to as the ‘Parties’.</p><br>
                         <p>WHEREAS-</p><br>
@@ -57,7 +70,13 @@
                         <?php $floor_no_value = (isset($documentation) ? $documentation[0]['floor_no'] : '') ?>
                         <?php $price_in_rupees_value = (isset($documentation) ? $documentation[0]['price_in_rupees'] : '') ?>
                         <?php $price_in_words_value = (isset($documentation) ? $documentation[0]['price_in_words'] : '') ?>
-                        <p>(H) The Party of the Second Part has visited the said scheme and has shown his / her / their / its willingness to purchase Flat No. <input type="text" name="flat_no" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Flat No" value="<?php echo $flat_no_value; ?>" /> in Wing “ <input type="text" name="block" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Block" value="<?php echo $block_value; ?>" /> ” having Carpet Area (“Carpet Area” means the net usable floor area of an Property, excluding the area covered by the external walls, areas under services shafts, exclusive balcony or verandah area and exclusive open terrace area but includes the area covered by the internal partition walls of the Property) admeasuring about 80.60 sq.mtrs. (i.e. <input type="text" name="area" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Area in sq.mtrs" value="<?php echo $area_value; ?>" /> sq.mtrs. Built up area) situated on <input type="text" name="floor_no" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Floor No" value="<?php echo $floor_no_value; ?>" /> Floor of the said Scheme along with (i) Wash Area admeasuring 2.42 sq.mtrs.. (ii) Balcony admeasuring about 3.21 sq.mtrs.. in the scheme known as “ KAUTILYA ONE-54 ” together with undivided share in the said land admeasuring about 34.17 Sq.Mtrs. (for the sake of convenience hereinafter referred to as the “Said Property”) from the “Said Developer” at lump sum consideration amount of the said property is fixed for Rs.<input type="text" name="price_in_rupees" class="form-control input-sm" style="display:inline-block; width:auto;" value="<?php echo $price_in_rupees_value; ?>" />/- Rupees <input type="text" name="price_in_words" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Price in words" value="<?php echo $price_in_words_value; ?>" /> Only.</p><br>
+                        <?php
+                        $block_name = get_block_name($customer['block_id']);
+                        $flat_name = get_flat_name($customer['flat_id']);
+                        $floor_name = get_floor_name($customer['floor_id']);
+                        $banakhat_details = get_banakhat_details($customer['property_id'], $flat_name, $block_name, $floor_name);
+                        ?>
+                        <p>(H) The Party of the Second Part has visited the said scheme and has shown his / her / their / its willingness to purchase <strong> Flat No. <?php echo $flat_name; ?></strong> in <strong>Wing “<?php echo $block_name; ?>”</strong> having Carpet Area (“Carpet Area” means the net usable floor area of an Property, excluding the area covered by the external walls, areas under services shafts, exclusive balcony or verandah area and exclusive open terrace area but includes the area covered by the internal partition walls of the Property) admeasuring about 80.60 sq.mtrs. (i.e. <input type="text" name="area" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Area in sq.mtrs" value="<?php echo $area_value; ?>" /> sq.mtrs. Built up area) situated on <strong><?= $floor_name ?></strong> of the said Scheme along with (i) Wash Area admeasuring 2.42 sq.mtrs.. (ii) Balcony admeasuring about 3.21 sq.mtrs.. in the scheme known as “ KAUTILYA ONE-54 ” together with undivided share in the said land admeasuring about 34.17 Sq.Mtrs. (for the sake of convenience hereinafter referred to as the “Said Property”) from the “Said Developer” at lump sum consideration amount of the said property is fixed for Rs. <?= $customer['final_amount']?>/- Rupees <?= convertToIndianCurrency($customer['final_amount']) ?> Only.</p><br>
                         <p>(I) The said entire consideration amount is included of the carpet area of the Unit, Wash Area & Balcony.</p><br>
                         <p>(J) The Vendor has provided the copies of Approved Lay-Out Plan, Key-Plan, Building Plan, Elevation Plan, Section Plan etc., N.A. permission, Sale Deed, 7/12 Extracts, all Mutation Entries No. 6, necessary orders/permissions, Loan Papers, Receipts of the Land Revenue, Title Clearance Certificate / Search Report etc. to the Party of the Second Part and after getting it verified through the Advocate / Solicitor / Legal Expert and after being satisfied with the same the Party of the Second Part has agreed to purchase the Said Property from the Vendor.</p><br>
                         <p>(K) The Vendor has given all the information about quality of the materials and goods used in the said scheme to the purchaser, which the Purchaser has got verified through their experts of the respective fields and the Purchaser is fully satisfied with same.</p><br>
@@ -130,12 +149,12 @@
                         <?php $floor2_value = (isset($documentation) ? $documentation[0]['floor2'] : '') ?>
                         <?php $area2_value = (isset($documentation) ? $documentation[0]['area2'] : '') ?>
                         <?php $area3_value = (isset($documentation) ? $documentation[0]['area3'] : '') ?>
-                        <p>All That piece & parcel of Immovable property bearing Flat No. <input type="text" name="flat_no2" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Flat No" value="<?php echo $flat_no2_value; ?>" /> in Wing “ <input type="text" name="block2" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Block" value="<?php echo $block2_value; ?>" /> ” having total Carpet Area admeasuring about <input type="text" name="area2" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Area in sq.mtrs" value="<?php echo $area2_value; ?>" /> sq.mtrs. situated on <input type="text" name="floor2" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Floor" value="<?php echo $floor2_value; ?>" /> Floor of the said Scheme along with (i) Wash Area admeasuring 2.42 sq.mtrs.. (ii) Balcony admeasuring about 3.21 sq.mtrs.. in the scheme known as “ KAUTILYA ONE-54 ” together with undivided share in the said land admeasuring about <input type="text" name="area3" class="form-control input-sm" style="display:inline-block; width:auto;" placeholder="Area in sq.mtrs" value="<?php echo $area3_value; ?>" /> Sq.Mtrs. bearing A) Final Plot No. 321, admeasuring 3400 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/3 admeasuring 5666 sq.mtrs. & B) Final Plot No. 322, admeasuring 2125 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/4 admeasuring 3541 sq.mtrs. situated within the village limits of Chandkheda, Taluka - Sabarmati in the Registration Sub - District of Ahmedabad - 2 (Vadaj) of District Ahmedabad.</p><br><br>
+                        <p>All That piece & parcel of Immovable property bearing <strong>Flat No. <?= $flat_name ?></strong> in <strong> Wing “<?= $block_name ?>”</strong> having total <strong>Carpet Area admeasuring about <?= $banakhat_details->carpet_area ?> sq.mtrs.</strong> situated on <strong><?= $floor_name ?></strong> of the said Scheme along with (i) <strong>Wash Area admeasuring <?= $banakhat_details->wash_yard ?> sq.mtrs</strong>. (ii) <strong>Balcony admeasuring about  <?= $banakhat_details->balcony ?> sq.mtrs</strong>.. in the scheme known as “ KAUTILYA ONE-54 ” together with <strong>undivided share in the said land admeasuring about  <?= round($banakhat_details->undivided_land_share, 2) ?> sq.mtrs</strong> bearing A) Final Plot No. 321, admeasuring 3400 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/3 admeasuring 5666 sq.mtrs. & B) Final Plot No. 322, admeasuring 2125 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/4 admeasuring 3541 sq.mtrs. situated within the village limits of Chandkheda, Taluka - Sabarmati in the Registration Sub - District of Ahmedabad - 2 (Vadaj) of District Ahmedabad.</p><br><br>
                         <p>DETAILS OF THE FOUR CORNERS OF THE SAID FLAT PROPERTY</p><br>
-                        <p>East: 40 FT T.P Road</p>
-                        <p>West : Flat No - A/404</p>
-                        <p>North: Flat No - A/402</p>
-                        <p>South: Block B</p><br><br>
+                        <p>East: <?= $banakhat_details->east ?></p>
+                        <p>West : <?= $banakhat_details->west ?></p>
+                        <p>North: <?= $banakhat_details->north ?></p>
+                        <p>South: <?= $banakhat_details->south ?></p><br><br>
                         <p>IN WITNESS WHEREOF the “Said Developer” hereto through its authorized Partner has hereunto executed this Agreement on the Day Month and year herein above written.</p><br>
                         <p>SIGNED AND DELIVERED BY THE</p>
                         <p>PARTY OF THE FIRST PART :-</p><br>

@@ -9284,6 +9284,7 @@ class purchase extends AdminController
         $data['title'] = _l('Sale Agreement');
         $data['master_id'] = $id;
         $data['customer'] = $this->purchase_model->get_customer_data($id);
+        $data['customer2'] = $this->purchase_model->get_pur_customer2($data['customer']['userid']);
         $data['documentation'] = $this->purchase_model->get_all_sale_agreements($id);
         // echo '<pre>'; print_r($data); exit;
         $this->load->view('customers/edit_sale_agreements', $data);
