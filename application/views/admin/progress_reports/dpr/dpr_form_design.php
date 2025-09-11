@@ -167,6 +167,26 @@
             </tbody>
         </table>
         <div id="removed-items"></div>
+        <table class="table dpr-department-labour-table items  has-calculations no-mtop">
+            <thead>
+                <tr>
+                    <th colspan="5" class="daily_report_title">DEPARTMENT LABOUR</th>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Attendance</th>
+                    <th>Over Time</th>
+                    <th>Kharchi</th>
+                    <th class="daily_report_head daily_center">
+                        <span class="daily_report_label"><i class="fa fa-cog"></i></span>
+                    </th>
+                </tr>
+            </thead>
+             <tbody class="dpr_department_body">
+                <?php echo pur_html_entity_decode($dpr_department_row_template); ?>
+            </tbody>
+        </table>
+        <div id="removed-department-items"></div>
     </div>
 </div>
 
@@ -291,4 +311,86 @@
             $(parent + ' #removed-items').append(hidden_input('removed_items[]', itemid));
         }
     }
+
+
+    $(document).on('click', '.dpr-department-add-item-to-table', function(event) {
+        "use strict";
+
+        var data = 'undefined';
+        data = typeof(data) == 'undefined' || data == 'undefined' ? dpr_department_get_item_preview_values() : data;
+        var table_row = '';
+        var item_key = lastAddedItemKey ? lastAddedItemKey += 1 : $("body").find('.dpr-department-labour-table tbody .item').length + 1;
+        lastAddedItemKey = item_key;
+
+        dpr_department_get_item_row_template('newitemsdept[' + item_key + ']', data.staff, data.attendance, data.over_time, data.kharchi, item_key).done(function(output) {
+            table_row += output;
+
+            $('.dpr_department_body').append(table_row);
+
+
+
+            init_selectpicker();
+            pur_department_clear_item_preview_values();
+            $('body').find('#items-warning').remove();
+            $("body").find('.dt-loader').remove();
+            $('#item_select').selectpicker('val', '');
+
+            return true;
+        });
+        return false;
+    });
+
+    function dpr_department_get_item_preview_values() {
+        "use strict";
+
+        var response = {};
+        response.staff = $('.dpr-department-labour-table select[name="staff"]').selectpicker('val');
+        response.attendance = $('.dpr-department-labour-table input[name="attendance"]').val();
+        response.over_time = $('.dpr-department-labour-table input[name="over_time"]').val();
+        response.kharchi = $('.dpr-department-labour-table input[name="kharchi"]').val();
+        return response;
+    }
+
+    function dpr_department_get_item_row_template(name, staff, attendance, over_time, kharchi, item_key) {
+        "use strict";
+
+        jQuery.ajaxSetup({
+            async: false
+        });
+
+        var d = $.post(admin_url + 'forms/get_department_dpr_row_template', {
+            name: name,
+            staff: staff,
+            attendance: attendance,
+            over_time: over_time,
+            kharchi: kharchi,
+            item_key: item_key
+        });
+        jQuery.ajaxSetup({
+            async: true
+        });
+        return d;
+    }
+    function pur_department_clear_item_preview_values() {
+        "use strict";
+
+        var previewArea = $('.dpr_department_body .main');
+        previewArea.find('input').val('');
+        previewArea.find('textarea').val('');
+        previewArea.find('select').val('').selectpicker('refresh');
+    }
+
+    function dpr_department_delete_item(row, itemid, parent) {
+        "use strict";
+
+        $(row).parents('tr').addClass('animated fadeOut', function() {
+            setTimeout(function() {
+                $(row).parents('tr').remove();
+            }, 50);
+        });
+        if (itemid && $('input[name="isedit"]').length > 0) {
+            $(parent + ' #removed-department-items').append(hidden_input('removed_department_items[]', itemid));
+        }
+    }
+
 </script>

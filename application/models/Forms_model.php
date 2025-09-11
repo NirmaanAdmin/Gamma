@@ -867,10 +867,19 @@ class Forms_model extends App_Model
                 unset($data['total']);
                 unset($data['machinery']);
                 unset($data['total_machinery']);
+                unset($data['staff']);
+                unset($data['attendance']);
+                unset($data['over_time']);
+                unset($data['kharchi']);
                 $new_order = [];
                 if (isset($data['newitems'])) {
                     $new_order = $data['newitems'];
                     unset($data['newitems']);
+                }
+                $new_order_dept = [];
+                if (isset($data['newitemsdept'])) {
+                    $new_order_dept = $data['newitemsdept'];
+                    unset($data['newitemsdept']);
                 }
             } elseif ($data['form_type'] == "apc") {
                 $apc_form = [];
@@ -1079,6 +1088,19 @@ class Forms_model extends App_Model
                             $dt_data['machinery'] = $value['machinery'];
                             $dt_data['total_machinery'] = $value['total_machinery'];
                             $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
+                        }
+                    }
+                }
+                if (isset($new_order_dept)) {
+                    if (!empty($new_order_dept)) {
+                        foreach ($new_order_dept as $key => $value) {
+                            $dt_data = [];
+                            $dt_data['form_id'] = $formid;
+                            $dt_data['staff'] = $value['staff'];
+                            $dt_data['attendance'] = $value['attendance'];
+                            $dt_data['over_time'] = $value['over_time'];
+                            $dt_data['kharchi'] = $value['kharchi'];
+                            $this->db->insert(db_prefix() . $data['form_type'] . '_dept_form_detail', $dt_data);
                         }
                     }
                 }
@@ -1777,11 +1799,21 @@ class Forms_model extends App_Model
             unset($data['machinery']);
             unset($data['total_machinery']);
             unset($data['isedit']);
+            unset($data['staff']);
+            unset($data['attendance']);
+            unset($data['over_time']);
+            unset($data['kharchi']);
             $new_order = [];
             if (isset($data['newitems'])) {
 
                 $new_order = $data['newitems'];
                 unset($data['newitems']);
+            }
+
+            $new_order_dept = [];
+            if (isset($data['newitemsdept'])) {
+                $new_order_dept = $data['newitemsdept'];
+                unset($data['newitemsdept']);
             }
 
             $update_order = [];
@@ -1790,10 +1822,22 @@ class Forms_model extends App_Model
                 unset($data['items']);
             }
 
+            $update_order_dept = [];
+            if (isset($data['itemsdepartment'])) {
+                $update_order_dept = $data['itemsdepartment'];
+                unset($data['itemsdepartment']);
+            }
+
             $remove_order = [];
             if (isset($data['removed_items'])) {
                 $remove_order = $data['removed_items'];
                 unset($data['removed_items']);
+            }
+
+            $remove_order_dept = [];
+            if (isset($data['removed_department_items'])) {
+                $remove_order_dept = $data['removed_department_items'];
+                unset($data['removed_department_items']);
             }
         } elseif ($formBeforeUpdate->form_type == "apc") {
             $apc_form = [];
@@ -2019,6 +2063,24 @@ class Forms_model extends App_Model
                 }
             }
 
+            if (isset($new_order_dept)) {
+                if (!empty($new_order_dept)) {
+                    foreach ($new_order_dept as $key => $value) {
+                        $dt_data = [];
+                        $dt_data['form_id'] = $data['formid'];
+                        $dt_data['staff'] = $value['staff'];
+                        $dt_data['attendance'] = $value['attendance'];
+                        $dt_data['over_time'] = $value['over_time'];
+                        $dt_data['kharchi'] = $value['kharchi'];
+                        $this->db->insert(db_prefix() . $formBeforeUpdate->form_type . '_dept_form_detail', $dt_data);
+                        $new_insert_id = $this->db->insert_id();
+                        if ($new_insert_id) {
+                            $affectedRows++;
+                        }
+                    }
+                }
+            }
+
             if (isset($update_order)) {
                 if (!empty($update_order)) {
                     foreach ($update_order as $key => $value) {
@@ -2044,11 +2106,40 @@ class Forms_model extends App_Model
                 }
             }
 
+            if (isset($update_order_dept)) {
+                if (!empty($update_order_dept)) {
+                    foreach ($update_order_dept as $key => $value) {
+                        $dt_data = [];
+                        $dt_data['form_id'] = $data['formid'];
+                        $dt_data['staff'] = $value['staff'];
+                        $dt_data['attendance'] = $value['attendance'];
+                        $dt_data['over_time'] = $value['over_time'];
+                        $dt_data['kharchi'] = $value['kharchi'];
+                        $this->db->where('id', $value['id']);
+                        $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_dept_form_detail', $dt_data);
+                        if ($this->db->affected_rows() > 0) {
+                            $affectedRows++;
+                        }
+                    }
+                }
+            }
+
             if (isset($remove_order)) {
                 if (!empty($remove_order)) {
                     foreach ($remove_order as $key => $value) {
                         $this->db->where('id', $value);
                         if ($this->db->delete(db_prefix() . $formBeforeUpdate->form_type . '_form_detail')) {
+                            $affectedRows++;
+                        }
+                    }
+                }
+            }
+
+            if (isset($remove_order_dept)) {
+                if (!empty($remove_order_dept)) {
+                    foreach ($remove_order_dept as $key => $value) {
+                        $this->db->where('id', $value);
+                        if ($this->db->delete(db_prefix() . $formBeforeUpdate->form_type . '_dept_form_detail')) {
                             $affectedRows++;
                         }
                     }
@@ -3309,6 +3400,12 @@ class Forms_model extends App_Model
         return $this->db->get(db_prefix() . 'dpr_form_detail')->result_array();
     }
 
+    public function get_dpr_department_form_detail($form_id)
+    {
+        $this->db->where('form_id', $form_id);
+        return $this->db->get(db_prefix() . 'dpr_dept_form_detail')->result_array();
+    }
+
 
     public function get_apc_form($form_id)
     {
@@ -4314,5 +4411,43 @@ class Forms_model extends App_Model
             ]);
             return true;
         }
+    }
+
+    public function create_dpr_department_row_template($name = '', $staff = '', $attendance = '', $over_time = '', $kharchi = '', $is_edit = false, $item_key = '')
+    {
+        $row = '';
+
+        $name_staff = 'staff';
+        $name_attendance = 'attendance';
+        $name_over_time = 'over_time';
+        $name_kharchi = 'kharchi';
+
+        if ($name == '') {
+            $row .= '<tr class="main">';
+            $manual = true;
+        } else {
+            $manual = false;
+            $row .= '<tr class="item"><input type="hidden" class="ids" name="' . $name . '[id]" value="' . $item_key . '">';
+            $name_staff = $name . '[staff]';
+            $name_attendance = $name . '[attendance]';
+            $name_over_time = $name . '[over_time]';
+            $name_kharchi = $name . '[kharchi]';
+        }
+
+
+        $row .= '<td class="staff">' . render_select($name_staff, $this->staff_model->get('', ['active' => 1]), ['staffid', 'firstname', 'lastname'], '', $staff, ['data-none-selected-text' => _l('dropdown_non_selected_tex'), 'data-width' => '100%']) . '</td>';
+        $row .= '<td class="attendance">' . render_input($name_attendance, '', $attendance) . '</td>';
+        $row .= '<td class="over_time">' . render_input($name_over_time, '', $over_time) . '</td>';
+        $row .= '<td class="kharchi">' . render_input($name_kharchi, '', $kharchi) . '</td>';
+
+
+        if ($name == '') {
+            $row .= '<td><button type="button" class="btn pull-right btn-info dpr-department-add-item-to-table"><i class="fa fa-check"></i></button></td>';
+        } else {
+            $row .= '<td><a href="#" class="btn btn-danger pull-right" onclick="dpr_department_delete_item(this,' . $item_key . ',\'.invoice-item\'); return false;"><i class="fa fa-trash"></i></a></td>';
+        }
+
+        $row .= '</tr>';
+        return $row;
     }
 }

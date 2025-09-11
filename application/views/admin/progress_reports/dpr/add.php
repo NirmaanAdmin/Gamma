@@ -17,7 +17,7 @@
     .loader-gif {
         width: 100px;
         /* Adjust the size as needed */
-        height: 100px;
+        height: 100px; 
     }
 </style>
 <div id="wrapper">

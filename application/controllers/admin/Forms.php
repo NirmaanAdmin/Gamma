@@ -283,7 +283,7 @@ class Forms extends AdminController
             if ($this->db->affected_rows() > 0) {
                 set_alert('success', _l('form_message_updated_successfully'));
             }
-            redirect(admin_url('forms/view_edit_dpr/' . $data['main_form'].'?tab=settings'));
+            redirect(admin_url('forms/view_edit_dpr/' . $data['main_form'] . '?tab=settings'));
         }
     }
 
@@ -805,7 +805,7 @@ class Forms extends AdminController
 
     public function find_form_design($form_type, $form_id = 0)
     {
-        
+
         if ($form_type == "dpr") {
             $dpr_row_template = $this->forms_model->create_dpr_row_template();
             $data['isedit'] = false;
@@ -873,7 +873,7 @@ class Forms extends AdminController
         $form_items = $this->forms_model->get_form_items($form_type);
         $data = [];
         if ($form_id != 0) {
-            
+
             $getFormMethod = "get_{$form_type}_form";
             $data["{$form_type}_form"] = $this->forms_model->$getFormMethod($form_id);
 
@@ -886,8 +886,6 @@ class Forms extends AdminController
             }
 
             $data['form_id'] = $form_id;
-            
-
         }
         $data['form_items'] = $form_items;
         $this->load->view("admin/forms/form_design/{$form_type}", $data);
@@ -917,7 +915,7 @@ class Forms extends AdminController
     {
         $this->forms_model->delete_esc_attachment($id);
     }
-    
+
     public function delete_cfwas_attachment($id)
     {
         $this->forms_model->delete_cfwas_attachment($id);
@@ -944,7 +942,7 @@ class Forms extends AdminController
 
         $form_data = $this->forms_model->get_form_data($id);
 
-        if(!empty($form_data)) {
+        if (!empty($form_data)) {
             $pdf = create_form_pdf($form_data);
             $type = 'D';
             if ($this->input->get('output_type')) {
@@ -958,7 +956,7 @@ class Forms extends AdminController
             echo "PDF have not created yet.";
         }
     }
-    
+
     public function progress_report_listing($module = 'dpr')
     {
         $status = '';
@@ -1011,10 +1009,12 @@ class Forms extends AdminController
     public function find_dpr_design($form_id = 0)
     {
         $dpr_row_template = $this->forms_model->create_dpr_row_template();
+        $dpr_row_department_template = $this->forms_model->create_dpr_department_row_template();
         if ($form_id != 0) {
             $dpr_main_form = $this->forms_model->get_form($form_id);
             $dpr_form = $this->forms_model->get_dpr_form($form_id);
             $dpr_form_detail = $this->forms_model->get_dpr_form_detail($form_id);
+            $dpr_department_form_detail = $this->forms_model->get_dpr_department_form_detail($form_id);
             if (!empty($dpr_form_detail)) {
                 $index_order = 0;
                 foreach ($dpr_form_detail as $value) {
@@ -1037,10 +1037,27 @@ class Forms extends AdminController
                     );
                 }
             }
+
+            if (!empty($dpr_department_form_detail)) {
+                $index_order = 0;
+                foreach ($dpr_department_form_detail as $value) {
+                    $index_order++;
+                    $dpr_row_department_template .= $this->forms_model->create_dpr_department_row_template(
+                        'itemsdepartment[' . $index_order . ']',
+                        $value['staff'],
+                        $value['attendance'],
+                        $value['over_time'],
+                        $value['kharchi'],
+                        true,
+                        $value['id']
+                    );
+                }
+            }
             $data['dpr_form'] = $dpr_form;
             $data['dpr_main_form'] = $dpr_main_form;
         }
         $data['dpr_row_template'] = $dpr_row_template;
+        $data['dpr_department_row_template'] = $dpr_row_department_template;
         $this->load->view('admin/progress_reports/dpr/dpr_form_design', $data);
     }
 
@@ -1066,6 +1083,18 @@ class Forms extends AdminController
         echo $this->forms_model->create_dpr_row_template($name, $location, $agency, $type, $sub_type, $work_execute, $material_consumption, $male, $female, $total, $machinery, $total_machinery, false, $item_key);
     }
 
+    public function get_department_dpr_row_template()
+    {
+        $name = $this->input->post('name');
+        $staff = $this->input->post('staff');
+        $attendance = $this->input->post('attendance');
+        $over_time= $this->input->post('over_time');
+        $kharchi = $this->input->post('kharchi');
+        $item_key = $this->input->post('item_key');
+
+        echo $this->forms_model->create_dpr_department_row_template($name, $staff, $attendance, $over_time, $kharchi, false, $item_key);
+    }
+
     public function add_dpr($userid = false)
     {
         if ($this->input->post()) {
@@ -1076,7 +1105,7 @@ class Forms extends AdminController
             $id              = $this->forms_model->add($data, get_staff_user_id());
             if ($id) {
                 set_alert('success', _l('dpr_added_successfully', $id));
-                redirect(admin_url('forms/view_edit_dpr/' . $id.'?tab=settings'));
+                redirect(admin_url('forms/view_edit_dpr/' . $id . '?tab=settings'));
             }
         }
         if ($userid !== false) {
@@ -1165,7 +1194,7 @@ class Forms extends AdminController
                 set_alert('success', _l('Attachment Updated Successfully', $id));
             }
             if (!$returnToFormList) {
-                redirect(admin_url('forms/view_edit_dpr/' . $id.'/?tab=settings'));
+                redirect(admin_url('forms/view_edit_dpr/' . $id . '/?tab=settings'));
             } else {
                 set_form_open(0, $id);
                 redirect(admin_url('forms'));
@@ -1220,8 +1249,6 @@ class Forms extends AdminController
                     die();
                 }
             }
-            // $data = $this->input->post();
-            // dd($data);
             $success = $this->forms_model->update_single_form_settings($this->input->post());
             if ($success) {
                 $this->session->set_flashdata('active_tab', true);
@@ -1418,8 +1445,8 @@ class Forms extends AdminController
         }
 
         $form_drp_data = $this->forms_model->get_form_dpr_pdf_data($id);
-       
-        if(!empty($form_drp_data)) {
+
+        if (!empty($form_drp_data)) {
             $pdf = create_dpr_form_pdf($form_drp_data);
             $type = 'D';
             if ($this->input->get('output_type')) {
@@ -1428,7 +1455,7 @@ class Forms extends AdminController
             if ($this->input->get('print')) {
                 $type = 'I';
             }
-            $pdf->Output('DPR'.date('d-m').'.pdf', $type);
+            $pdf->Output('DPR' . date('d-m') . '.pdf', $type);
         } else {
             echo "PDF have not created yet.";
         }
@@ -1468,7 +1495,7 @@ class Forms extends AdminController
             die();
         }
     }
-    
+
 
     public function unlock_dpr()
     {
