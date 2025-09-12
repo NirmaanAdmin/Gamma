@@ -236,6 +236,21 @@
                                         </tbody>
                                     </table>
                                 </div>
+
+                                <div class="table-responsive s_table">
+                                    <table class="table items no-mtop" style="border: 1px solid #dee2e6;">
+                                        <thead>
+                                            <tr>
+                                                <th width="50%" align="">Name</th>
+                                                <th width="25%">Attendance</th>
+                                                <th width="25%">Over Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <div role="tabpanel" class="tab-pane" id="note">
                                 <hr class="no-mtop" />

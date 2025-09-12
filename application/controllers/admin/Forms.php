@@ -1225,6 +1225,7 @@ class Forms extends AdminController
         $data['form_listing'] = $this->forms_model->get_form_listing();
         $data['daily_labor_report'] = $this->forms_model->get_daily_labor_report($id);
         $data['labor_report_machinery'] = $this->forms_model->get_labor_report_machinery($id);
+        $data['dpr_department_labor_report'] = $this->forms_model->get_dpr_department_form_detail($id);
         add_admin_progress_reports_js_assets();
         $this->load->view('admin/progress_reports/dpr/view_edit', $data);
     }
@@ -1282,6 +1283,7 @@ class Forms extends AdminController
         $data['tab'][] = 'progress_report_type';
         // $data['tab'][] = 'progress_report_sub_type';
         $data['tab'][] = 'progress_report_machinary';
+         $data['tab'][] = 'progress_report_department_labor';
         if ($data['group'] == '') {
             $data['group'] = 'progress_report_type';
         }
@@ -1289,6 +1291,7 @@ class Forms extends AdminController
         $data['progress_report_type'] = $this->forms_model->get_progress_report_type();
         $data['progress_report_sub_type'] = $this->forms_model->get_progress_report_sub_type();
         $data['progress_report_machinary'] = $this->forms_model->get_progress_report_machinary();
+        $data['progress_report_department_labor'] = $this->forms_model->get_progress_report_department_labor();
 
         $this->load->view('admin/progress_reports/manage_setting', $data);
     }
@@ -1406,6 +1409,33 @@ class Forms extends AdminController
         }
     }
 
+    public function progress_report_dept_labor()
+    {
+        if ($this->input->post()) {
+            $message = '';
+            $data = $this->input->post();
+            if (!$this->input->post('id')) {
+                $id = $this->forms_model->add_progress_report_dept_labor($data);
+                if ($id) {
+                    $success = true;
+                    $message = _l('added_successfully', _l('progress_report_department_labor'));
+                    set_alert('success', $message);
+                }
+                redirect(admin_url('forms/progress_report_setting?group=progress_report_department_labor'));
+            } else {
+                $id = $data['id'];
+                unset($data['id']);
+                $success = $this->forms_model->update_progress_report_department_labor($data, $id);
+                if ($success) {
+                    $message = _l('updated_successfully', _l('progress_report_department_labor'));
+                    set_alert('success', $message);
+                }
+                redirect(admin_url('forms/progress_report_setting?group=progress_report_department_labor'));
+            }
+            die;
+        }
+    }
+
     public function delete_progress_report_machinary($id)
     {
         if (!$id) {
@@ -1420,6 +1450,22 @@ class Forms extends AdminController
             set_alert('warning', _l('problem_deleting', _l('progress_report_machinary')));
         }
         redirect(admin_url('forms/progress_report_setting?group=progress_report_machinary'));
+    }
+
+    public function delete_progress_report_department_labor($id)
+    {
+        if (!$id) {
+            redirect(admin_url('forms/progress_report_setting?group=progress_report_department_labor'));
+        }
+        $response = $this->forms_model->delete_progress_report_department_labor($id);
+        if (is_array($response) && isset($response['referenced'])) {
+            set_alert('warning', _l('is_referenced', _l('progress_report_department_labor')));
+        } elseif ($response == true) {
+            set_alert('success', _l('deleted', _l('progress_report_department_labor')));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('progress_report_department_labor')));
+        }
+        redirect(admin_url('forms/progress_report_setting?group=progress_report_department_labor'));
     }
 
     public function dpr_dashboard()

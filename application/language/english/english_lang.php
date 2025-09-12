@@ -4172,4 +4172,8 @@ $lang['monthly_progress_report'] = 'Monthly Progress Report';
 $lang['additional_notes'] = 'Additional Notes';
 $lang['save_report'] = 'Save Report';
 $lang['daily_labor_report'] = 'Daily Labor Report';
+$lang['progress_report_department_labor'] = 'Department Labor';
+$lang['edit_progress_report_dept_labor'] = 'Edit Department Labor';
+$lang['new_progress_report_dept_labor'] = 'Add Department Labor';
+$lang['progress_report_department_labor'] = 'Department Labor';
 

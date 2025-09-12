@@ -95,4 +95,23 @@
     $('#progress_report_machinary_modal input[name="name"]').val($(invoker).data('name'));
     $('#progress_report_machinary_modal').modal('show');
   }
+
+  function new_progress_report_department_labor() {
+    "use strict";
+    $('.edit-title').addClass('hide');
+    $('.add-title').removeClass('hide');
+    $('#progress_report_department_labor_modal').modal('show');
+    $('#additional_progress_report_department_labor').html('');
+  }
+
+  function edit_progress_report_department_labor(invoker,id) {
+    "use strict";
+    $('.edit-title').removeClass('hide');
+    $('.add-title').addClass('hide');
+    $('#additional_progress_report_department_labor').html('');
+    $('#additional_progress_report_department_labor').append(hidden_input('id',id));
+    $('#progress_report_department_labor_modal input[name="name"]').val($(invoker).data('name'));
+    $('#progress_report_department_labor_modal').modal('show');
+  }
+
 </script>

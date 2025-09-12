@@ -3959,6 +3959,13 @@ class Forms_model extends App_Model
         return $query->result_array();
     }
 
+    public function get_progress_report_department_labor()
+    {
+        $this->db->order_by('id', 'ASC');
+        $query = $this->db->get(db_prefix() . 'progress_report_dept_labor');
+        return $query->result_array();
+    }
+
     public function add_progress_report_type($data)
     {
         $this->db->insert(db_prefix() . 'progress_report_type', $data);
@@ -4028,6 +4035,15 @@ class Forms_model extends App_Model
         }
         return false;
     }
+    public function add_progress_report_dept_labor($data)
+    {
+        $this->db->insert(db_prefix() . 'progress_report_dept_labor', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            return $insert_id;
+        }
+        return false;
+    }   
 
     public function update_progress_report_machinary($data, $id)
     {
@@ -4039,10 +4055,30 @@ class Forms_model extends App_Model
         return false;
     }
 
+    public function update_progress_report_department_labor($data, $id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'progress_report_dept_labor', $data);
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public function delete_progress_report_machinary($id)
     {
         $this->db->where('id', $id);
         $this->db->delete(db_prefix() . 'progress_report_machinary');
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function delete_progress_report_department_labor($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'progress_report_dept_labor');
         if ($this->db->affected_rows() > 0) {
             return true;
         }
@@ -4433,9 +4469,9 @@ class Forms_model extends App_Model
             $name_over_time = $name . '[over_time]';
             $name_kharchi = $name . '[kharchi]';
         }
+        $get_labour_list = $this->get_progress_report_department_labor();
 
-
-        $row .= '<td class="staff">' . render_select($name_staff, $this->staff_model->get('', ['active' => 1]), ['staffid', 'firstname', 'lastname'], '', $staff, ['data-none-selected-text' => _l('dropdown_non_selected_tex'), 'data-width' => '100%']) . '</td>';
+        $row .= '<td class="staff">' . render_select($name_staff, $get_labour_list, ['id', 'name'], '', $staff, ['data-none-selected-text' => _l('dropdown_non_selected_tex'), 'data-width' => '100%']) . '</td>';
         $row .= '<td class="attendance">' . render_input($name_attendance, '', $attendance) . '</td>';
         $row .= '<td class="over_time">' . render_input($name_over_time, '', $over_time) . '</td>';
         $row .= '<td class="kharchi">' . render_input($name_kharchi, '', $kharchi) . '</td>';
