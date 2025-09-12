@@ -1130,3 +1130,26 @@ function get_task_assignee($task_id) {
     
     return $staff_ids;
 }
+
+function get_rmc_grade_name($grade_id) {
+    $CI = &get_instance();
+    $CI->db->select('name');
+    $CI->db->from('tblprogress_report_rmc_grade');
+    $CI->db->where('id', $grade_id);
+    $query = $CI->db->get();
+    $result = $query->row();
+    
+    return $result ? $result->name : null;
+}
+
+function get_dept_labour_name($dept_id) {
+    $CI = &get_instance();
+    $CI->db->select('name');
+    $CI->db->from('tblprogress_report_dept_labor');
+    $CI->db->where('id', $dept_id);
+    $query = $CI->db->get();
+    $result = $query->row();
+    
+    return $result ? $result->name : null;
+
+}

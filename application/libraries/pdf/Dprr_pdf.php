@@ -29,6 +29,9 @@ class Dprr_pdf extends App_pdf
             'form_data' => $this->form_data,
             'form_basic_info' => $this->get_dpr_form($this->formid),
             'form_rows_info' => $this->get_dpr_form_detail($this->formid),
+            'form_rmc_plant' => $this->get_progress_report_rmc_grade($this->formid),
+            'form_material_inward' => $this->get_progress_report_material_inward($this->formid),
+            'form_dept_labour' => $this->get_progress_report_dept_labour($this->formid),
             'form_attachments' => $this->get_form_attachments($this->formid),
         ]);
 
@@ -62,5 +65,23 @@ class Dprr_pdf extends App_pdf
     {
         $this->ci->db->where('formid', $form_id);
         return $this->ci->db->get(db_prefix() . 'form_attachments')->result_array();
+    }
+
+    private function get_progress_report_rmc_grade($form_id)
+    {
+        $this->ci->db->where('form_id', $form_id);
+        return $this->ci->db->get(db_prefix() . 'dpr_rmc_form_detail')->result_array();
+    }
+
+    private function get_progress_report_material_inward($form_id)
+    {
+        $this->ci->db->where('form_id', $form_id);
+        return $this->ci->db->get(db_prefix() . 'dpr_material_form_detail')->result_array();
+    }
+
+    private function get_progress_report_dept_labour($form_id)
+    {
+        $this->ci->db->where('form_id', $form_id);
+        return $this->ci->db->get(db_prefix() . 'dpr_dept_form_detail')->result_array();
     }
 }

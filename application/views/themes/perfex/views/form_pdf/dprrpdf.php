@@ -113,6 +113,115 @@ $formrowsinfo .= '</table>';
 $pdf->SetAutoPageBreak(true, 20);
 $pdf->writeHTML($formrowsinfo, true, false, false, false, '');
 
+
+$rcmplanttable = '';
+$rcmplanttable .= '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
+$rcmplanttable .= '<thead>';  // Changed from tbody to thead for header rows
+$rcmplanttable .= '
+    <tr style="font-size:20px;">
+        <td colspan="4" align="center"><b>RMC PLANT</b></td>
+    </tr>
+    <tr style="font-size:11px;">
+        <td align="center"><b>Sr. No.</b></td>
+        <td align="center"><b>Challan No</b></td>
+        <td align="center"><b>Grade</b></td>
+        <td align="center"><b>Quantity(CMT)</b></td>
+    </tr>
+    
+    ';
+$rcmplanttable .= '</thead>';
+
+$rcmplanttable .= '<tbody>';  // Start tbody for data rows
+if (!empty($form_rmc_plant)) {
+    foreach ($form_rmc_plant as $key => $value) {
+        $rcmplanttable .= '
+                <tr style="font-size:11px;">
+                    <td align="center" >' . ($key + 1) . '</td>
+                    <td align="center" >' . ($value['challan'] != '' ? $value['challan'] : '') . '</td>
+                    <td align="center" >' . ($value['grade'] != '' ? get_rmc_grade_name($value['grade']) : '') . '</td>
+                    <td align="center" >' . ($value['structure'] != '' ? $value['structure'] : '') . '</td>
+                    <td align="center" >' . ($value['quantity'] != '' ? $value['quantity'] : '') . '</td>
+                </tr>';
+    }
+}
+$rcmplanttable .= '</tbody>';
+$rcmplanttable .= '</table>';
+
+$materialinwardtable = '';
+$materialinwardtable = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
+$materialinwardtable .= '<thead>';  // Changed from tbody to thead for header rows
+$materialinwardtable .= '
+    <tr style="font-size:20px;">
+        <td colspan="5" align="center"><b>MATERIAL INWARD</b></td>
+    </tr>
+    <tr style="font-size:11px;">
+        <td align="center"><b>Sr. No.</b></td>
+        <td align="center"><b>Challan No/ Truck No</b></td>
+        <td align="center"><b>Supplier Name</b></td>
+        <td align="center"><b>Material Description</b></td>
+        <td align="center"><b>Total</b></td>
+    </tr>
+    
+    ';
+$materialinwardtable .= '</thead>';
+
+$materialinwardtable .= '<tbody>';  // Start tbody for data rows
+if (!empty($form_material_inward)) {
+    foreach ($form_material_inward as $key => $value) {
+        $materialinwardtable .= '
+                <tr style="font-size:11px;">
+                    <td align="center" >' . ($key + 1) . '</td>
+                    <td align="center" >' . ($value['challan'] != '' ? $value['challan'] : '') . '</td>
+                    <td align="center" >' . ($value['supplier'] != '' ? $value['supplier'] : '') . '</td>
+                    <td align="center" >' . ($value['material_description'] != '' ? $value['material_description'] : '') . '</td>
+                    <td align="center" >' . ($value['total'] != '' ? $value['total'] : '') . '</td>
+                </tr>';
+    }
+}
+$materialinwardtable .= '</tbody>';
+$materialinwardtable .= '</table>';
+
+
+$deprtmenttable = '';
+$deprtmenttable = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
+$deprtmenttable .= '<thead>';  // Changed from tbody to thead for header rows
+$deprtmenttable .= '
+    <tr style="font-size:20px;">
+        <td colspan="5" align="center"><b>DEPARTMENT LABOUR</b></td>
+    </tr>
+    <tr style="font-size:11px;">
+        <td align="center"><b>Sr. No.</b></td>
+        <td align="center"><b>Name</b></td>
+        <td align="center"><b>Attendance</b></td>
+        <td align="center"><b>Over Time</b></td>
+        <td align="center"><b>Kharchi</b></td>
+    </tr>
+    ';
+$deprtmenttable .= '</thead>';
+
+$deprtmenttable .= '<tbody>';  // Start tbody for data rows
+if (!empty($form_dept_labour)) {
+    foreach ($form_dept_labour as $key => $value) {
+        $deprtmenttable .= '
+                <tr style="font-size:11px;">
+                    <td align="center" >' . ($key + 1) . '</td>
+                    <td align="center" >' . ($value['staff'] != '' ? get_dept_labour_name($value['staff']) : '') . '</td>
+                    <td align="center" >' . ($value['attendance'] != '' ? $value['attendance'] : '') . '</td>
+                    <td align="center" >' . ($value['over_time'] != '' ? $value['over_time'] : '') . '</td>
+                    <td align="center" >' . ($value['kharchi'] != '' ? $value['kharchi'] : '') . '</td>
+                </tr>';
+    }
+}
+$deprtmenttable .= '</tbody>';
+$deprtmenttable .= '</table>';
+
+
+$pdf->AddPage();
+$pdf->writeHTML($rcmplanttable, true, false, false, false, '');
+$pdf->writeHTML($materialinwardtable, true, false, false, false, '');
+$pdf->writeHTML($deprtmenttable, true, false, false, false, '');
+
+
 // Add a page break before the note
 if ($form_data->message != '') {
     $pdf->AddPage(); // Add a new page
