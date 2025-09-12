@@ -871,6 +871,13 @@ class Forms_model extends App_Model
                 unset($data['attendance']);
                 unset($data['over_time']);
                 unset($data['kharchi']);
+                unset($data['challan']);
+                unset($data['grade']);
+                unset($data['structure']);
+                unset($data['quantity']);
+                unset($data['supplier']);
+                unset($data['material_description']);
+                unset($data['total']);
                 $new_order = [];
                 if (isset($data['newitems'])) {
                     $new_order = $data['newitems'];
@@ -880,6 +887,16 @@ class Forms_model extends App_Model
                 if (isset($data['newitemsdept'])) {
                     $new_order_dept = $data['newitemsdept'];
                     unset($data['newitemsdept']);
+                }
+                $new_order_rmc = [];
+                if (isset($data['newitemsrmc'])) {
+                    $new_order_rmc = $data['newitemsrmc'];
+                    unset($data['newitemsrmc']);
+                }
+                $new_order_material = [];
+                if (isset($data['newitemsmaterial'])) {
+                    $new_order_material = $data['newitemsmaterial'];
+                    unset($data['newitemsmaterial']);
                 }
             } elseif ($data['form_type'] == "apc") {
                 $apc_form = [];
@@ -1101,6 +1118,32 @@ class Forms_model extends App_Model
                             $dt_data['over_time'] = $value['over_time'];
                             $dt_data['kharchi'] = $value['kharchi'];
                             $this->db->insert(db_prefix() . $data['form_type'] . '_dept_form_detail', $dt_data);
+                        }
+                    }
+                }
+                if (isset($new_order_rmc)) {
+                    if (!empty($new_order_rmc)) {
+                        foreach ($new_order_rmc as $key => $value) {
+                            $dt_data = [];
+                            $dt_data['form_id'] = $formid;
+                            $dt_data['challan'] = $value['challan'];
+                            $dt_data['grade'] = $value['grade'];
+                            $dt_data['structure'] = $value['structure'];
+                            $dt_data['quantity'] = $value['quantity'];
+                            $this->db->insert(db_prefix() . $data['form_type'] . '_rmc_form_detail', $dt_data);
+                        }
+                    }
+                }
+                if (isset($new_order_material)) {
+                    if (!empty($new_order_material)) {
+                        foreach ($new_order_material as $key => $value) {
+                            $dt_data = [];
+                            $dt_data['form_id'] = $formid;
+                            $dt_data['challan'] = $value['challan'];
+                            $dt_data['supplier'] = $value['supplier'];
+                            $dt_data['material_description'] = $value['material_description'];
+                            $dt_data['total	'] = $value['total'];
+                            $this->db->insert(db_prefix() . $data['form_type'] . '_material_form_detail', $dt_data);
                         }
                     }
                 }
@@ -1803,6 +1846,13 @@ class Forms_model extends App_Model
             unset($data['attendance']);
             unset($data['over_time']);
             unset($data['kharchi']);
+            unset($data['challan']);
+            unset($data['grade']);
+            unset($data['structure']);
+            unset($data['quantity']);
+            unset($data['supplier']);
+            unset($data['material_description']);
+            unset($data['total']);
             $new_order = [];
             if (isset($data['newitems'])) {
 
@@ -1814,6 +1864,18 @@ class Forms_model extends App_Model
             if (isset($data['newitemsdept'])) {
                 $new_order_dept = $data['newitemsdept'];
                 unset($data['newitemsdept']);
+            }
+
+            $new_order_rmc = [];
+            if (isset($data['newitemsrmc'])) {
+                $new_order_rmc = $data['newitemsrmc'];
+                unset($data['newitemsrmc']);
+            }
+
+            $new_order_material = [];
+            if (isset($data['newitemsmaterial'])) {
+                $new_order_material = $data['newitemsmaterial'];
+                unset($data['newitemsmaterial']);
             }
 
             $update_order = [];
@@ -1828,6 +1890,18 @@ class Forms_model extends App_Model
                 unset($data['itemsdepartment']);
             }
 
+            $update_order_rmc = [];
+            if (isset($data['itemsrmc'])) {
+                $update_order_rmc = $data['itemsrmc'];
+                unset($data['itemsrmc']);
+            }
+
+            $update_order_material = [];
+            if (isset($data['itemsmaterial'])) {
+                $update_order_material = $data['itemsmaterial'];
+                unset($data['itemsmaterial']);
+            }
+
             $remove_order = [];
             if (isset($data['removed_items'])) {
                 $remove_order = $data['removed_items'];
@@ -1838,6 +1912,18 @@ class Forms_model extends App_Model
             if (isset($data['removed_department_items'])) {
                 $remove_order_dept = $data['removed_department_items'];
                 unset($data['removed_department_items']);
+            }
+
+            $remove_order_rmc = [];
+            if (isset($data['removed_rmc_items'])) {
+                $remove_order_rmc = $data['removed_rmc_items'];
+                unset($data['removed_rmc_items']);
+            }
+
+            $remove_order_material = [];
+            if (isset($data['removed_material_items'])) {
+                $remove_order_material = $data['removed_material_items'];
+                unset($data['removed_material_items']);
             }
         } elseif ($formBeforeUpdate->form_type == "apc") {
             $apc_form = [];
@@ -2081,6 +2167,42 @@ class Forms_model extends App_Model
                 }
             }
 
+            if (isset($new_order_rmc)) {
+                if (!empty($new_order_rmc)) {
+                    foreach ($new_order_rmc as $key => $value) {
+                        $dt_data = [];
+                        $dt_data['form_id'] = $data['formid'];
+                        $dt_data['challan'] = $value['challan'];
+                        $dt_data['grade'] = $value['grade'];
+                        $dt_data['structure'] = $value['structure'];
+                        $dt_data['quantity'] = $value['quantity'];
+                        $this->db->insert(db_prefix() . $formBeforeUpdate->form_type . '_rmc_form_detail', $dt_data);
+                        $new_insert_id = $this->db->insert_id();
+                        if ($new_insert_id) {
+                            $affectedRows++;
+                        }
+                    }
+                }
+            }
+
+            if (isset($new_order_material)) {
+                if (!empty($new_order_material)) {
+                    foreach ($new_order_material as $key => $value) {
+                        $dt_data = [];
+                        $dt_data['form_id'] = $data['formid'];
+                        $dt_data['challan'] = $value['challan'];
+                        $dt_data['supplier'] = $value['supplier'];
+                        $dt_data['material_description'] = $value['material_description'];
+                        $dt_data['total'] = $value['total'];
+                        $this->db->insert(db_prefix() . $formBeforeUpdate->form_type . '_material_form_detail', $dt_data);
+                        $new_insert_id = $this->db->insert_id();
+                        if ($new_insert_id) {
+                            $affectedRows++;
+                        }
+                    }
+                }
+            }
+
             if (isset($update_order)) {
                 if (!empty($update_order)) {
                     foreach ($update_order as $key => $value) {
@@ -2124,6 +2246,42 @@ class Forms_model extends App_Model
                 }
             }
 
+            if (isset($update_order_rmc)) {
+                if (!empty($update_order_rmc)) {
+                    foreach ($update_order_rmc as $key => $value) {
+                        $dt_data = [];
+                        $dt_data['form_id'] = $data['formid'];
+                        $dt_data['challan'] = $value['challan'];
+                        $dt_data['grade'] = $value['grade'];
+                        $dt_data['structure'] = $value['structure'];
+                        $dt_data['quantity'] = $value['quantity'];
+                        $this->db->where('id', $value['id']);
+                        $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_rmc_form_detail', $dt_data);
+                        if ($this->db->affected_rows() > 0) {
+                            $affectedRows++;
+                        }
+                    }
+                }
+            }
+
+            if (isset($update_order_material)) {
+                if (!empty($update_order_material)) {
+                    foreach ($update_order_material as $key => $value) {
+                        $dt_data = [];
+                        $dt_data['form_id'] = $data['formid'];
+                        $dt_data['challan'] = $value['challan'];
+                        $dt_data['supplier'] = $value['supplier'];
+                        $dt_data['material_description'] = $value['material_description'];
+                        $dt_data['total'] = $value['total'];
+                        $this->db->where('id', $value['id']);
+                        $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_material_form_detail', $dt_data);
+                        if ($this->db->affected_rows() > 0) {
+                            $affectedRows++;
+                        }
+                    }
+                }
+            }
+
             if (isset($remove_order)) {
                 if (!empty($remove_order)) {
                     foreach ($remove_order as $key => $value) {
@@ -2140,6 +2298,28 @@ class Forms_model extends App_Model
                     foreach ($remove_order_dept as $key => $value) {
                         $this->db->where('id', $value);
                         if ($this->db->delete(db_prefix() . $formBeforeUpdate->form_type . '_dept_form_detail')) {
+                            $affectedRows++;
+                        }
+                    }
+                }
+            }
+
+            if (isset($remove_order_rmc)) {
+                if (!empty($remove_order_rmc)) {
+                    foreach ($remove_order_rmc as $key => $value) {
+                        $this->db->where('id', $value);
+                        if ($this->db->delete(db_prefix() . $formBeforeUpdate->form_type . '_rmc_form_detail')) {
+                            $affectedRows++;
+                        }
+                    }
+                }
+            }
+
+            if (isset($remove_order_material)) {
+                if (!empty($remove_order_material)) {
+                    foreach ($remove_order_material as $key => $value) {
+                        $this->db->where('id', $value);
+                        if ($this->db->delete(db_prefix() . $formBeforeUpdate->form_type . '_material_form_detail')) {
                             $affectedRows++;
                         }
                     }
@@ -3406,6 +3586,18 @@ class Forms_model extends App_Model
         return $this->db->get(db_prefix() . 'dpr_dept_form_detail')->result_array();
     }
 
+    public function get_dpr_rmc_form_detail($form_id)
+    {
+        $this->db->where('form_id', $form_id);
+        return $this->db->get(db_prefix() . 'dpr_rmc_form_detail')->result_array();
+    }
+
+    public function get_dpr_material_form_detail($form_id)
+    {
+        $this->db->where('form_id', $form_id);
+        return $this->db->get(db_prefix() . 'dpr_material_form_detail')->result_array();
+    }
+
 
     public function get_apc_form($form_id)
     {
@@ -4050,7 +4242,7 @@ class Forms_model extends App_Model
             return $insert_id;
         }
         return false;
-    }   
+    }
 
     public function add_progress_report_rmc_grade($data)
     {
@@ -4060,7 +4252,7 @@ class Forms_model extends App_Model
             return $insert_id;
         }
         return false;
-    } 
+    }
 
     public function update_progress_report_machinary($data, $id)
     {
@@ -4082,7 +4274,7 @@ class Forms_model extends App_Model
         return false;
     }
 
-     public function update_progress_report_rmc_grade($data, $id)
+    public function update_progress_report_rmc_grade($data, $id)
     {
         $this->db->where('id', $id);
         $this->db->update(db_prefix() . 'progress_report_rmc_grade', $data);
@@ -4112,7 +4304,7 @@ class Forms_model extends App_Model
         return false;
     }
 
-     public function delete_progress_report_rmc_grade($id)
+    public function delete_progress_report_rmc_grade($id)
     {
         $this->db->where('id', $id);
         $this->db->delete(db_prefix() . 'progress_report_rmc_grade');
@@ -4518,6 +4710,78 @@ class Forms_model extends App_Model
             $row .= '<td><button type="button" class="btn pull-right btn-info dpr-department-add-item-to-table"><i class="fa fa-check"></i></button></td>';
         } else {
             $row .= '<td><a href="#" class="btn btn-danger pull-right" onclick="dpr_department_delete_item(this,' . $item_key . ',\'.invoice-item\'); return false;"><i class="fa fa-trash"></i></a></td>';
+        }
+
+        $row .= '</tr>';
+        return $row;
+    }
+
+    public function create_dpr_rmc_row_template($name = '', $challan = '', $grade = '', $structure = '', $quantity = '', $is_edit = false, $item_key = '')
+    {
+        $row = '';
+
+        $name_challan = 'challan';
+        $name_grade = 'grade';
+        $name_structure = 'structure';
+        $name_quantity = 'quantity';
+
+        if ($name == '') {
+            $row .= '<tr class="main">';
+            $manual = true;
+        } else {
+            $manual = false;
+            $row .= '<tr class="item"><input type="hidden" class="ids" name="' . $name . '[id]" value="' . $item_key . '">';
+            $name_challan = $name . '[challan]';
+            $name_grade = $name . '[grade]';
+            $name_structure = $name . '[structure]';
+            $name_quantity = $name . '[quantity]';
+        }
+        $get_grade_list = $this->get_progress_report_rmc_grade();
+        $row .= '<td class="challan">' . render_input($name_challan, '', $challan) . '</td>';
+        $row .= '<td class="grade">' . render_select($name_grade, $get_grade_list, ['id', 'name'], '', $grade, ['data-none-selected-text' => _l('dropdown_non_selected_tex'), 'data-width' => '100%']) . '</td>';
+        $row .= '<td class="structure">' . render_input($name_structure, '', $structure) . '</td>';
+        $row .= '<td class="quantity">' . render_input($name_quantity, '', $quantity) . '</td>';
+
+        if ($name == '') {
+            $row .= '<td><button type="button" class="btn pull-right btn-info dpr-rmc-add-item-to-table"><i class="fa fa-check"></i></button></td>';
+        } else {
+            $row .= '<td><a href="#" class="btn btn-danger pull-right" onclick="dpr_rmc_delete_item(this,' . $item_key . ',\'.invoice-item\'); return false;"><i class="fa fa-trash"></i></a></td>';
+        }
+
+        $row .= '</tr>';
+        return $row;
+    }
+
+    public function create_dpr_material_row_template($name = '', $challan = '', $supplier = '', $material_description = '', $total = '', $is_edit = false, $item_key = '')
+    {
+        $row = '';
+
+        $name_challan = 'challan';
+        $name_supplier = 'supplier';
+        $name_material_description = 'material_description';
+        $name_total = 'total';
+
+        if ($name == '') {
+            $row .= '<tr class="main">';
+            $manual = true;
+        } else {
+            $manual = false;
+            $row .= '<tr class="item"><input type="hidden" class="ids" name="' . $name . '[id]" value="' . $item_key . '">';
+            $name_challan = $name . '[challan]';
+            $name_supplier = $name . '[supplier]';
+            $name_material_description = $name . '[material_description]';
+            $name_total = $name . '[total]';
+        }
+
+        $row .= '<td class="challan">' . render_input($name_challan, '', $challan) . '</td>';
+        $row .= '<td class="supplier">' . render_input($name_supplier, '', $supplier) . '</td>';
+        $row .= '<td class="material_description">' . render_input($name_material_description, '', $material_description) . '</td>';
+        $row .= '<td class="total">' . render_input($name_total, '', $total) . '</td>';
+
+        if ($name == '') {
+            $row .= '<td><button type="button" class="btn pull-right btn-info dpr-material-add-item-to-table"><i class="fa fa-check"></i></button></td>';
+        } else {
+            $row .= '<td><a href="#" class="btn btn-danger pull-right" onclick="dpr_material_delete_item(this,' . $item_key . ',\'.invoice-item\'); return false;"><i class="fa fa-trash"></i></a></td>';
         }
 
         $row .= '</tr>';

@@ -1010,11 +1010,15 @@ class Forms extends AdminController
     {
         $dpr_row_template = $this->forms_model->create_dpr_row_template();
         $dpr_row_department_template = $this->forms_model->create_dpr_department_row_template();
+        $dpr_row_rmc_template = $this->forms_model->create_dpr_rmc_row_template();
+        $dpr_row_material_template = $this->forms_model->create_dpr_material_row_template();
         if ($form_id != 0) {
             $dpr_main_form = $this->forms_model->get_form($form_id);
             $dpr_form = $this->forms_model->get_dpr_form($form_id);
             $dpr_form_detail = $this->forms_model->get_dpr_form_detail($form_id);
             $dpr_department_form_detail = $this->forms_model->get_dpr_department_form_detail($form_id);
+            $dpr_rmc_form_detail = $this->forms_model->get_dpr_rmc_form_detail($form_id);
+            $dpr_material_form_detail = $this->forms_model->get_dpr_material_form_detail($form_id);
             if (!empty($dpr_form_detail)) {
                 $index_order = 0;
                 foreach ($dpr_form_detail as $value) {
@@ -1053,11 +1057,46 @@ class Forms extends AdminController
                     );
                 }
             }
+
+            if (!empty($dpr_rmc_form_detail)) {
+                $index_order = 0;
+                foreach ($dpr_rmc_form_detail as $value) {
+                    $index_order++;
+                    $dpr_row_rmc_template .= $this->forms_model->create_dpr_rmc_row_template(
+                        'itemsrmc[' . $index_order . ']',
+                        $value['challan'],
+                        $value['grade'],
+                        $value['structure'],
+                        $value['quantity'],
+                        true,
+                        $value['id']
+                    );
+                }
+            }
+
+            if(!empty($dpr_material_form_detail)) {
+                $index_order = 0;
+                foreach ($dpr_material_form_detail as $value) {
+                    $index_order++;
+                    $dpr_row_material_template .= $this->forms_model->create_dpr_material_row_template(
+                        'itemsmaterial[' . $index_order . ']',
+                        $value['challan'],
+                        $value['supplier'],
+                        $value['material_description'],
+                        $value['total'],
+                        true,
+                        $value['id']
+                    );
+                }
+
+            }
             $data['dpr_form'] = $dpr_form;
             $data['dpr_main_form'] = $dpr_main_form;
         }
         $data['dpr_row_template'] = $dpr_row_template;
         $data['dpr_department_row_template'] = $dpr_row_department_template;
+        $data['dpr_rmc_row_template'] = $dpr_row_rmc_template;
+        $data['dpr_material_row_template'] = $dpr_row_material_template;
         $this->load->view('admin/progress_reports/dpr/dpr_form_design', $data);
     }
 
@@ -1093,6 +1132,30 @@ class Forms extends AdminController
         $item_key = $this->input->post('item_key');
 
         echo $this->forms_model->create_dpr_department_row_template($name, $staff, $attendance, $over_time, $kharchi, false, $item_key);
+    }
+
+    public function get_rmc_dpr_row_template()
+    {
+        $name = $this->input->post('name');
+        $challan = $this->input->post('challan');
+        $grade = $this->input->post('grade');
+        $structure = $this->input->post('structure');
+        $quantity = $this->input->post('quantity');
+        $item_key = $this->input->post('item_key');
+
+        echo $this->forms_model->create_dpr_rmc_row_template($name, $challan, $grade, $structure, $quantity, false, $item_key);
+    }
+
+    public function get_material_dpr_row_template()
+    {
+        $name = $this->input->post('name');
+        $challan = $this->input->post('challan');
+        $supplier = $this->input->post('supplier');
+        $material_description = $this->input->post('material_description');
+        $total = $this->input->post('total');
+        $item_key = $this->input->post('item_key');
+
+        echo $this->forms_model->create_dpr_material_row_template($name, $challan, $supplier, $material_description, $total, false, $item_key);
     }
 
     public function add_dpr($userid = false)

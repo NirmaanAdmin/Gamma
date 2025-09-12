@@ -167,6 +167,46 @@
             </tbody>
         </table>
         <div id="removed-items"></div>
+        <table class="table dpr-rmc-table items  has-calculations no-mtop">
+            <thead>
+                <tr>
+                    <th colspan="5" class="daily_report_title">RMC PLANT</th>
+                </tr>
+                <tr>
+                    <th>Challan No</th>
+                    <th>Grade</th>
+                    <th>Structure Work</th>
+                    <th>Quantity(CMT)</th>
+                    <th class="daily_report_head daily_center">
+                        <span class="daily_report_label"><i class="fa fa-cog"></i></span>
+                    </th>
+                </tr>
+            </thead>
+             <tbody class="dpr_rmc_body">
+                <?php echo pur_html_entity_decode($dpr_rmc_row_template); ?>
+            </tbody>
+        </table>
+        <div id="removed-rmc-items"></div>
+         <table class="table dpr-material-table items  has-calculations no-mtop">
+            <thead>
+                <tr>
+                    <th colspan="5" class="daily_report_title">MATERIAL INWARD</th>
+                </tr>
+                <tr>
+                    <th>Challan No/ Truck No</th>
+                    <th>Supplier Name</th>
+                    <th>Material Description</th>
+                    <th>Total</th>
+                    <th class="daily_report_head daily_center">
+                        <span class="daily_report_label"><i class="fa fa-cog"></i></span>
+                    </th>
+                </tr>
+            </thead>
+             <tbody class="dpr_material_body">
+                <?php echo pur_html_entity_decode($dpr_material_row_template); ?>
+            </tbody>
+        </table>
+        <div id="removed-material-items"></div>
         <table class="table dpr-department-labour-table items  has-calculations no-mtop">
             <thead>
                 <tr>
@@ -392,5 +432,167 @@
             $(parent + ' #removed-department-items').append(hidden_input('removed_department_items[]', itemid));
         }
     }
+
+    $(document).on('click', '.dpr-rmc-add-item-to-table', function(event) {
+        "use strict";
+
+        var data = 'undefined';
+        data = typeof(data) == 'undefined' || data == 'undefined' ? dpr_rmc_get_item_preview_values() : data;
+        var table_row = '';
+        var item_key = lastAddedItemKey ? lastAddedItemKey += 1 : $("body").find('.dpr-department-labour-table tbody .item').length + 1;
+        lastAddedItemKey = item_key;
+
+        dpr_rmc_get_item_row_template('newitemsrmc[' + item_key + ']', data.challan, data.grade, data.structure, data.quantity, item_key).done(function(output) {
+            table_row += output;
+
+            $('.dpr_rmc_body').append(table_row);
+
+
+
+            init_selectpicker();
+            pur_rmc_clear_item_preview_values();
+            $('body').find('#items-warning').remove();
+            $("body").find('.dt-loader').remove();
+            $('#item_select').selectpicker('val', '');
+
+            return true;
+        });
+        return false;
+    });
+
+    function dpr_rmc_get_item_preview_values() {
+        "use strict";
+
+        var response = {};
+        response.challan = $('.dpr-rmc-table input[name="challan"]').val();
+        response.grade = $('.dpr-rmc-table select[name="grade"]').selectpicker('val');
+        response.structure = $('.dpr-rmc-table input[name="structure"]').val();
+        response.quantity = $('.dpr-rmc-table input[name="quantity"]').val();
+        return response;
+    }
+
+    function dpr_rmc_get_item_row_template(name, challan, grade, structure, quantity, item_key) {
+        "use strict";
+
+        jQuery.ajaxSetup({
+            async: false
+        });
+
+        var d = $.post(admin_url + 'forms/get_rmc_dpr_row_template', {
+            name: name,
+            challan: challan,
+            grade: grade,
+            structure: structure,
+            quantity: quantity,
+            item_key: item_key
+        });
+        jQuery.ajaxSetup({
+            async: true
+        });
+        return d;
+    }
+    function pur_rmc_clear_item_preview_values() {
+        "use strict";
+
+        var previewArea = $('.dpr_rmc_body .main');
+        previewArea.find('input').val('');
+        previewArea.find('textarea').val('');
+        previewArea.find('select').val('').selectpicker('refresh');
+    }
+
+    function dpr_rmc_delete_item(row, itemid, parent) {
+        "use strict";
+
+        $(row).parents('tr').addClass('animated fadeOut', function() {
+            setTimeout(function() {
+                $(row).parents('tr').remove();
+            }, 50);
+        });
+        if (itemid && $('input[name="isedit"]').length > 0) {
+            $(parent + ' #removed-rmc-items').append(hidden_input('removed_rmc_items[]', itemid));
+        }
+    }
+
+
+    $(document).on('click', '.dpr-material-add-item-to-table', function(event) {
+        "use strict";
+
+        var data = 'undefined';
+        data = typeof(data) == 'undefined' || data == 'undefined' ? dpr_material_get_item_preview_values() : data;
+        var table_row = '';
+        var item_key = lastAddedItemKey ? lastAddedItemKey += 1 : $("body").find('.dpr-department-labour-table tbody .item').length + 1;
+        lastAddedItemKey = item_key;
+
+        dpr_material_get_item_row_template('newitemsmaterial[' + item_key + ']', data.challan, data.supplier, data.material_description, data.total, item_key).done(function(output) {
+            table_row += output;
+
+            $('.dpr_material_body').append(table_row);
+
+
+
+            init_selectpicker();
+            pur_material_clear_item_preview_values();
+            $('body').find('#items-warning').remove();
+            $("body").find('.dt-loader').remove();
+            $('#item_select').selectpicker('val', '');
+
+            return true;
+        });
+        return false;
+    });
+
+    function dpr_material_get_item_preview_values() {
+        "use strict";
+
+        var response = {};
+        response.challan = $('.dpr-material-table input[name="challan"]').val();
+        response.supplier = $('.dpr-material-table input[name="supplier"]').val();
+        response.material_description = $('.dpr-material-table input[name="material_description"]').val();
+        response.total = $('.dpr-material-table input[name="total"]').val();
+        return response;
+    }
+
+    function dpr_material_get_item_row_template(name, challan, supplier, material_description, total, item_key) {
+        "use strict";
+
+        jQuery.ajaxSetup({
+            async: false
+        });
+
+        var d = $.post(admin_url + 'forms/get_material_dpr_row_template', {
+            name: name,
+            challan: challan,
+            supplier: supplier,
+            material_description: material_description,
+            total: total,
+            item_key: item_key
+        });
+        jQuery.ajaxSetup({
+            async: true
+        });
+        return d;
+    }
+    function pur_material_clear_item_preview_values() {
+        "use strict";
+
+        var previewArea = $('.dpr_material_body .main');
+        previewArea.find('input').val('');
+        previewArea.find('textarea').val('');
+        previewArea.find('select').val('').selectpicker('refresh');
+    }
+
+    function dpr_material_delete_item(row, itemid, parent) {
+        "use strict";
+
+        $(row).parents('tr').addClass('animated fadeOut', function() {
+            setTimeout(function() {
+                $(row).parents('tr').remove();
+            }, 50);
+        });
+        if (itemid && $('input[name="isedit"]').length > 0) {
+            $(parent + ' #removed-material-items').append(hidden_input('removed_material_items[]', itemid));
+        }
+    }
+
 
 </script>
