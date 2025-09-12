@@ -3966,6 +3966,13 @@ class Forms_model extends App_Model
         return $query->result_array();
     }
 
+    public function get_progress_report_rmc_grade()
+    {
+        $this->db->order_by('id', 'ASC');
+        $query = $this->db->get(db_prefix() . 'progress_report_rmc_grade');
+        return $query->result_array();
+    }
+
     public function add_progress_report_type($data)
     {
         $this->db->insert(db_prefix() . 'progress_report_type', $data);
@@ -4045,6 +4052,16 @@ class Forms_model extends App_Model
         return false;
     }   
 
+    public function add_progress_report_rmc_grade($data)
+    {
+        $this->db->insert(db_prefix() . 'progress_report_rmc_grade', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            return $insert_id;
+        }
+        return false;
+    } 
+
     public function update_progress_report_machinary($data, $id)
     {
         $this->db->where('id', $id);
@@ -4065,6 +4082,16 @@ class Forms_model extends App_Model
         return false;
     }
 
+     public function update_progress_report_rmc_grade($data, $id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'progress_report_rmc_grade', $data);
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public function delete_progress_report_machinary($id)
     {
         $this->db->where('id', $id);
@@ -4079,6 +4106,16 @@ class Forms_model extends App_Model
     {
         $this->db->where('id', $id);
         $this->db->delete(db_prefix() . 'progress_report_dept_labor');
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+     public function delete_progress_report_rmc_grade($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'progress_report_rmc_grade');
         if ($this->db->affected_rows() > 0) {
             return true;
         }

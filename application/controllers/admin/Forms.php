@@ -1088,7 +1088,7 @@ class Forms extends AdminController
         $name = $this->input->post('name');
         $staff = $this->input->post('staff');
         $attendance = $this->input->post('attendance');
-        $over_time= $this->input->post('over_time');
+        $over_time = $this->input->post('over_time');
         $kharchi = $this->input->post('kharchi');
         $item_key = $this->input->post('item_key');
 
@@ -1283,7 +1283,8 @@ class Forms extends AdminController
         $data['tab'][] = 'progress_report_type';
         // $data['tab'][] = 'progress_report_sub_type';
         $data['tab'][] = 'progress_report_machinary';
-         $data['tab'][] = 'progress_report_department_labor';
+        $data['tab'][] = 'progress_report_department_labor';
+        $data['tab'][] = 'progress_report_rmc_grade';
         if ($data['group'] == '') {
             $data['group'] = 'progress_report_type';
         }
@@ -1292,7 +1293,7 @@ class Forms extends AdminController
         $data['progress_report_sub_type'] = $this->forms_model->get_progress_report_sub_type();
         $data['progress_report_machinary'] = $this->forms_model->get_progress_report_machinary();
         $data['progress_report_department_labor'] = $this->forms_model->get_progress_report_department_labor();
-
+        $data['progress_report_rmc_grade'] = $this->forms_model->get_progress_report_rmc_grade();
         $this->load->view('admin/progress_reports/manage_setting', $data);
     }
 
@@ -1436,6 +1437,32 @@ class Forms extends AdminController
         }
     }
 
+    public function progress_report_rmc_grade()
+    {
+        if ($this->input->post()) {
+            $message = '';
+            $data = $this->input->post();
+            if (!$this->input->post('id')) {
+                $id = $this->forms_model->add_progress_report_rmc_grade($data);
+                if ($id) {
+                    $success = true;
+                    $message = _l('added_successfully', _l('progress_report_rmc_grade'));
+                    set_alert('success', $message);
+                }
+                redirect(admin_url('forms/progress_report_setting?group=progress_report_rmc_grade'));
+            } else {
+                $id = $data['id'];
+                unset($data['id']);
+                $success = $this->forms_model->update_progress_report_rmc_grade($data, $id);
+                if ($success) {
+                    $message = _l('updated_successfully', _l('progress_report_rmc_grade'));
+                    set_alert('success', $message);
+                }
+                redirect(admin_url('forms/progress_report_setting?group=progress_report_rmc_grade'));
+            }
+            die;
+        }
+    }
     public function delete_progress_report_machinary($id)
     {
         if (!$id) {
@@ -1466,6 +1493,22 @@ class Forms extends AdminController
             set_alert('warning', _l('problem_deleting', _l('progress_report_department_labor')));
         }
         redirect(admin_url('forms/progress_report_setting?group=progress_report_department_labor'));
+    }
+
+    public function delete_progress_report_rmc_grade($id)
+    {
+        if (!$id) {
+            redirect(admin_url('forms/progress_report_setting?group=progress_report_rmc_grade'));
+        }
+        $response = $this->forms_model->delete_progress_report_rmc_grade($id);
+        if (is_array($response) && isset($response['referenced'])) {
+            set_alert('warning', _l('is_referenced', _l('progress_report_rmc_grade')));
+        } elseif ($response == true) {
+            set_alert('success', _l('deleted', _l('progress_report_rmc_grade')));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('progress_report_rmc_grade')));
+        }
+        redirect(admin_url('forms/progress_report_setting?group=progress_report_rmc_grade'));
     }
 
     public function dpr_dashboard()

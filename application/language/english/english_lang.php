@@ -4176,4 +4176,8 @@ $lang['progress_report_department_labor'] = 'Department Labor';
 $lang['edit_progress_report_dept_labor'] = 'Edit Department Labor';
 $lang['new_progress_report_dept_labor'] = 'Add Department Labor';
 $lang['progress_report_department_labor'] = 'Department Labor';
+$lang['rmc_grade'] = 'RMC Grade';
+$lang['edit_progress_report_rmc_grade'] = 'Edit RMC Grade';
+$lang['new_progress_report_rmc_grade'] = 'Add RMC Grade';
+$lang['progress_report_rmc_grade'] = 'RMC Grade';
 
