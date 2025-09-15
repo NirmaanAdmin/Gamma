@@ -1289,6 +1289,7 @@ class Forms extends AdminController
         $data['daily_labor_report'] = $this->forms_model->get_daily_labor_report($id);
         $data['labor_report_machinery'] = $this->forms_model->get_labor_report_machinery($id);
         $data['dpr_department_labor_report'] = $this->forms_model->get_dpr_department_form_detail($id);
+        $data['dpr_department_rmc_plant'] = $this->forms_model->get_dpr_rmc_sum_form_detail($id);
         add_admin_progress_reports_js_assets();
         $this->load->view('admin/progress_reports/dpr/view_edit', $data);
     }

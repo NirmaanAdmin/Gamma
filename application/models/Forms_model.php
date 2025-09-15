@@ -3592,6 +3592,14 @@ class Forms_model extends App_Model
         return $this->db->get(db_prefix() . 'dpr_rmc_form_detail')->result_array();
     }
 
+    public function get_dpr_rmc_sum_form_detail($form_id)
+    {
+        $this->db->select('SUM(quantity) as quantity,grade');
+        $this->db->where('form_id', $form_id);
+        $this->db->group_by('grade');
+        return $this->db->get(db_prefix() . 'dpr_rmc_form_detail')->result_array();
+    }
+
     public function get_dpr_material_form_detail($form_id)
     {
         $this->db->where('form_id', $form_id);
@@ -4481,11 +4489,70 @@ class Forms_model extends App_Model
             ->order_by('date', 'ASC');
         $type_array = $this->db->get()->result_array();
 
+        //4. deprt labour 
+        $this->db->select([
+            'DATE(f.date) AS date',
+            'd.attendance',
+            'd.staff',
+        ])
+            ->from(db_prefix() . 'dpr_dept_form_detail d')
+            ->join(db_prefix() . 'forms f', 'f.formid = d.form_id')
+            ->where("d.id != ''", null, false);
+
+        if ($projects !== null) {
+            if (is_array($projects)) {
+                $this->db->where_in('f.project_id', $projects);
+            } else {
+                $this->db->where('f.project_id', $projects);
+            }
+        }
+
+        if ($start_date) {
+            $this->db->where('DATE(f.date) >=', $start_date);
+        }
+        if ($end_date) {
+            $this->db->where('DATE(f.date) <=', $end_date);
+        }
+
+        $this->db->group_by(['date'])
+            ->order_by('date', 'ASC');
+        $deprt_array = $this->db->get()->result_array();
+
+        //5. RMC Plant
+        $this->db->select([
+            'DATE(f.date) AS date',
+            'd.grade',
+            'sum(d.quantity) AS quantity',
+        ])
+            ->from(db_prefix() . 'dpr_rmc_form_detail d')
+            ->join(db_prefix() . 'forms f', 'f.formid = d.form_id')
+            ->where("d.id != ''", null, false);
+
+        if ($projects !== null) {
+            if (is_array($projects)) {
+                $this->db->where_in('f.project_id', $projects);
+            } else {
+                $this->db->where('f.project_id', $projects);
+            }
+        }
+
+        if ($start_date) {
+            $this->db->where('DATE(f.date) >=', $start_date);
+        }
+        if ($end_date) {
+            $this->db->where('DATE(f.date) <=', $end_date);
+        }
+
+        $this->db->group_by(['date', 'd.grade'])
+            ->order_by('date', 'ASC');
+        $rmc_plant_array = $this->db->get()->result_array();
+
 
         // 4. Reference lists
         $progress_report_sub_type = $this->db->get(db_prefix() . 'progress_report_sub_type')->result_array();
         $progress_report_type = $this->db->get(db_prefix() . 'progress_report_type')->result_array();
-
+        $progress_report_dept_labor = $this->db->get(db_prefix() . 'progress_report_dept_labor')->result_array();
+        $progress_report_dept_rmc_grade = $this->db->get(db_prefix() . 'progress_report_rmc_grade')->result_array();
         // 5. Process each unique form date
         foreach ($forms as $form) {
             $date = $form['date'];
@@ -4498,14 +4565,6 @@ class Forms_model extends App_Model
                 }));
                 $total = !empty($match) ? $match[0]['total'] : 0;
                 $total_workforce_values[$sub['name']][] = $total;
-            }
-
-            foreach ($progress_report_type as $type) {
-                $match = array_values(array_filter($type_array, function ($x) use ($date, $type) {
-                    return $x['date'] == $date && $x['type'] == $type['id'];
-                }));
-                $total = !empty($match) ? $match[0]['total'] : 0;
-                $stacked_labor_values[$type['name']][] = $total;
             }
         }
 
@@ -4570,6 +4629,57 @@ class Forms_model extends App_Model
         }
         $preport_type_html .= '</tbody></table></div>';
 
+        $preport_deprt_html = '<div class="table-responsive s_table"><table class="table items no-mtop preportDeprtTable" style="border: 1px solid #dee2e6;"><tbody>';
+        $preport_deprt_html .= '<tr style="font-weight: bold; background: #f1f5f9; color: #1e293b;"><td align="left">Row Labels</td>';
+        foreach ($progress_report_dept_labor as $staff) {
+            $preport_deprt_html .= '<td align="right">' . $staff['name'] . '</td>';
+        }
+        $preport_deprt_html .= '</tr>';
+
+        if (!empty($forms)) {
+            foreach ($forms as $form) {
+                $date = $form['date'];
+                $preport_deprt_html .= '<tr><td>' . $date . '</td>';
+                foreach ($progress_report_dept_labor as $staff) {
+                    $match = array_values(array_filter($deprt_array, function ($x) use ($date, $staff) {
+                        return $x['date'] == $date && $x['staff'] == $staff['id'];
+                    }));
+                    $attendance = !empty($match) ? $match[0]['attendance'] : 0;
+                    $preport_deprt_html .= '<td align="right">' . $attendance . '</td>';
+                }
+                $preport_deprt_html .= '</tr>';
+            }
+        } else {
+            $preport_deprt_html .= '<tr><td colspan="' . (count($progress_report_dept_labor) + 1) . '" align="center">No records found</td></tr>';
+        }
+        $preport_deprt_html .= '</tbody></table></div>';
+
+
+        $preport_rmc_plant_html = '<div class="table-responsive s_table"><table class="table items no-mtop preportRMCplantTable" style="border: 1px solid #dee2e6;"><tbody>';
+        $preport_rmc_plant_html .= '<tr style="font-weight: bold; background: #f1f5f9; color: #1e293b;"><td align="left">Row Labels</td>';
+        foreach ($progress_report_dept_rmc_grade as $grade) {
+            $preport_rmc_plant_html .= '<td align="right">' . $grade['name'] . '</td>';
+        }
+        $preport_rmc_plant_html .= '</tr>';
+
+        if (!empty($forms)) {
+            foreach ($forms as $form) {
+                $date = $form['date'];
+                $preport_rmc_plant_html .= '<tr><td>' . $date . '</td>';
+                foreach ($progress_report_dept_rmc_grade as $grade) {
+                    $match = array_values(array_filter($rmc_plant_array, function ($x) use ($date, $grade) {
+                        return $x['date'] == $date && $x['grade'] == $grade['id'];
+                    }));
+                    $quantity = !empty($match) ? $match[0]['quantity'] : 0;
+                    $preport_rmc_plant_html .= '<td align="right">' . $quantity . '</td>';
+                }
+                $preport_rmc_plant_html .= '</tr>';
+            }
+        } else {
+            $preport_rmc_plant_html .= '<tr><td colspan="' . (count($progress_report_dept_rmc_grade) + 1) . '" align="center">No records found</td></tr>';
+        }
+        $preport_rmc_plant_html .= '</tbody></table></div>';
+
         // Final response
         return [
             'preport_sub_type_html' => $preport_sub_type_html,
@@ -4577,7 +4687,9 @@ class Forms_model extends App_Model
             'total_workforce_labels' => $total_workforce_labels,
             'total_workforce_values' => $total_workforce_datasets,
             'stacked_labor_labels' => $stacked_labor_labels,
-            'stacked_labor_values' => $stacked_labor_values
+            'stacked_labor_values' => $stacked_labor_values,
+            'preport_deprt_html' => $preport_deprt_html,
+            'preport_rmc_plant_html' => $preport_rmc_plant_html
         ];
     }
 

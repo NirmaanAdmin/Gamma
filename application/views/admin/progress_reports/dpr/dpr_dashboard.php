@@ -100,6 +100,29 @@
             </div>
           </div>
 
+
+          <div class="row">
+            <h4>Departments Labor</h4>
+            <span style="padding: 0px; margin-bottom: 12px;">
+              <button id="export-csv-deprt" class="btn btn-primary pull-right">Export to CSV</button>
+            </span>
+            <div class="col-md-12" style="margin-top: 10px;">
+              <div class="preport_deprt_html">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <h4>RMC Plant</h4>
+            <span style="padding: 0px; margin-bottom: 12px;">
+              <button id="export-csv-rmc-plant" class="btn btn-primary pull-right">Export to CSV</button>
+            </span>
+            <div class="col-md-12" style="margin-top: 10px;">
+              <div class="preport_rmc_plant_html">
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -165,6 +188,108 @@
       alert('An error occurred while exporting to CSV. Please check the console for details.');
     }
   });
+
+   document.getElementById('export-csv-deprt').addEventListener('click', function() {
+    try {
+      // Select the table
+      const table = document.querySelector('.preportDeprtTable');
+      if (!table) {
+        throw new Error('Table with class "items-preview" not found');
+      }
+
+      const rows = Array.from(table.querySelectorAll('tr'));
+
+      // Initialize CSV content with UTF-8 BOM
+      let csvContent = '\uFEFF';
+
+      // Loop through each row
+      rows.forEach(row => {
+        const cells = Array.from(row.querySelectorAll('th, td'));
+        const rowContent = cells.map(cell => {
+          // Escape quotes by doubling them and wrap in quotes
+          const text = cell.textContent.trim().replace(/"/g, '""');
+          return `"${text}"`;
+        }).join(',');
+        csvContent += rowContent + '\r\n'; // Using \r\n for Windows compatibility
+      });
+
+      // Create a Blob and downloadable link
+      const blob = new Blob([csvContent], {
+        type: 'text/csv;charset=utf-8;'
+      });
+      const url = URL.createObjectURL(blob);
+
+      // Create a temporary link and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'department_labour.csv';
+      link.style.display = 'none';
+
+      // Add link to DOM and trigger click
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url); // Release the object URL
+      }, 100);
+    } catch (error) {
+      console.error('Error exporting to CSV:', error);
+      alert('An error occurred while exporting to CSV. Please check the console for details.');
+    }
+  });
+
+  document.getElementById('export-csv-rmc-plant').addEventListener('click', function() {
+    try {
+      // Select the table
+      const table = document.querySelector('.preportRMCplantTable');
+      if (!table) {
+        throw new Error('Table with class "items-preview" not found');
+      }
+
+      const rows = Array.from(table.querySelectorAll('tr'));
+
+      // Initialize CSV content with UTF-8 BOM
+      let csvContent = '\uFEFF';
+
+      // Loop through each row
+      rows.forEach(row => {
+        const cells = Array.from(row.querySelectorAll('th, td'));
+        const rowContent = cells.map(cell => {
+          // Escape quotes by doubling them and wrap in quotes
+          const text = cell.textContent.trim().replace(/"/g, '""');
+          return `"${text}"`;
+        }).join(',');
+        csvContent += rowContent + '\r\n'; // Using \r\n for Windows compatibility
+      });
+
+      // Create a Blob and downloadable link
+      const blob = new Blob([csvContent], {
+        type: 'text/csv;charset=utf-8;'
+      });
+      const url = URL.createObjectURL(blob);
+
+      // Create a temporary link and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'RMC_plant.csv';
+      link.style.display = 'none';
+
+      // Add link to DOM and trigger click
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url); // Release the object URL
+      }, 100);
+    } catch (error) {
+      console.error('Error exporting to CSV:', error);
+      alert('An error occurred while exporting to CSV. Please check the console for details.');
+    }
+  });
   
   $('select[name="projects"]').on('change', function() {
     get_dpr_dashboard();
@@ -190,7 +315,8 @@
     $.post(admin_url + 'forms/get_dpr_dashboard', data).done(function(res) {
       var response = JSON.parse(res);
       $('.preport_type_html').html(response.preport_type_html);
-
+      $('.preport_deprt_html').html(response.preport_deprt_html);
+      $('.preport_rmc_plant_html').html(response.preport_rmc_plant_html);
       // === Stacked Labor Chart ===
       if (window.stackedLaborChartInstance) {
         window.stackedLaborChartInstance.destroy();

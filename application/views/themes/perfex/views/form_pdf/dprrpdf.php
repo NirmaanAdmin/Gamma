@@ -215,22 +215,33 @@ if (!empty($form_dept_labour)) {
 $deprtmenttable .= '</tbody>';
 $deprtmenttable .= '</table>';
 
-
-$pdf->AddPage();
-$pdf->writeHTML($rcmplanttable, true, false, false, false, '');
-$pdf->writeHTML($materialinwardtable, true, false, false, false, '');
-$pdf->writeHTML($deprtmenttable, true, false, false, false, '');
-
-
+if ($form_rmc_plant || $form_material_inward || $form_dept_labour) {
+    $pdf->AddPage();
+}
 // Add a page break before the note
 if ($form_data->message != '') {
-    $pdf->AddPage(); // Add a new page
+    if (empty($form_rmc_plant) && empty($form_material_inward) && empty($form_dept_labour)) {
+        $pdf->AddPage(); // Add a new page
+    }
 
     $noteContent = '<h2>Note:</h2>';
     $noteContent .= '<p>' . $form_data->message . '</p>';
 
     $pdf->writeHTML($noteContent, true, false, false, false, '');
 }
+if (!empty($form_rmc_plant)) {
+    $pdf->writeHTML($rcmplanttable, true, false, false, false, '');
+}
+if (!empty($form_material_inward)) {
+    $pdf->writeHTML($materialinwardtable, true, false, false, false, '');
+}
+if (!empty($form_dept_labour)) {
+    $pdf->writeHTML($deprtmenttable, true, false, false, false, '');
+}
+
+
+
+
 
 if (!empty($form_attachments)) {
     $formhtml = '';

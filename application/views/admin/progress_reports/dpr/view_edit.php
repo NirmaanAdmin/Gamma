@@ -241,13 +241,67 @@
                                     <table class="table items no-mtop" style="border: 1px solid #dee2e6;">
                                         <thead>
                                             <tr>
+                                                <th colspan="3" align="center">Department Labour</th>
+                                            </tr>
+                                            <tr>
                                                 <th width="50%" align="">Name</th>
                                                 <th width="25%">Attendance</th>
                                                 <th width="25%">Over Time</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <?php 
+                                            foreach($dpr_department_labor_report as $key => $value) { 
+                                                $attendeance = $over_time = '';
+                                                $attendeance = isset($value['attendance']) && $value['attendance'] == 1 ? 'Yes' : "No"; 
+                                                $over_time = isset($value['over_time']) && $value['over_time'] != '' ? 'Yes' : "No";
+                                                ?>
+                                                <tr>
+                                                    <td align="left">
+                                                        <?php echo get_dept_labour_name($value['staff']); ?>
+                                                    </td>
+                                                    <td align="left">
+                                                        <?php echo $attendeance; ?>
+                                                    </td>
+                                                    <td align="left">
+                                                        <?php echo $over_time; ?>
+                                                    </td>
+                                                </tr>
+                                            <?php }
+
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="table-responsive s_table">
+                                    <table class="table items no-mtop" style="border: 1px solid #dee2e6;">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2" align="center">RMC Plant</th>
+                                            </tr>
+                                            <tr>
+                                                <th width="50%" align="">Grade Name</th>
+                                                <th width="25%">Total Quantity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php 
+                                            foreach($dpr_department_rmc_plant as $key => $value) { 
                                             
+                                                ?>
+                                                <tr>
+                                                    <td align="left">
+                                                        <?php echo get_rmc_grade_name($value['grade']); ?>
+                                                    </td>
+                                                    <td align="left">
+                                                        <?php echo $value['quantity']; ?>
+                                                    </td>
+                                                    
+                                                </tr>
+                                            <?php }
+
+                                            ?>
                                         </tbody>
                                     </table>
                                 </div>
