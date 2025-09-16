@@ -35,6 +35,11 @@
                         <?php echo _l('Allotment Letter'); ?>
                      </a>
                   </li>
+                  <li role="presentation">
+                     <a href="#sale_deed" aria-controls="sale_deed" role="tab" data-toggle="tab">
+                        <?php echo _l('Sale Deed'); ?>
+                     </a>
+                  </li>
                <?php } elseif ($client->property_id == 2) { ?>
                   <li role="presentation" class="<?php if (!$this->input->get('tab')) {
                                                    echo 'active';
@@ -244,6 +249,52 @@
                                        <li><a href="<?php echo admin_url('purchase/allotment_letter_pdf/' . $letter['id']); ?>"><?php echo _l('download'); ?></a></li>
                                        <li>
                                           <a href="<?php echo admin_url('purchase/allotment_letter_pdf/' . $letter['id'] . '?print=true'); ?>" target="_blank">
+                                             <?php echo _l('print'); ?>
+                                          </a>
+                                       </li>
+                                    </ul>
+
+                                 </div>
+                              </td>
+                           </tr>
+                        <?php } ?>
+                     <?php } ?>
+                  </tbody>
+               </table>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="sale_deed">
+
+               <table class="table dt-table">
+                  <thead>
+                     <tr>
+                        <th>#</th>
+                        <th><?php echo _l('Sale Deed Name'); ?></th>
+                        <th><?php echo _l('Deed Date'); ?></th>
+                        <th class="text-right"><?php echo _l('options'); ?></th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <?php if (isset($sale_deed) && count($sale_deed) > 0) {
+                        $sr = 1; ?>
+                        <?php foreach ($sale_deed as $deed) { ?>
+                           <tr>
+                              <td><?php echo $sr++; ?></td>
+                              <td><?= $deed['sale_deed_name'];?></td>
+                              <td data-order="<?php echo pur_html_entity_decode($deed['create_at']); ?>"><?php echo date('d M, Y', strtotime($deed['create_at'])); ?></td>
+                              <td class="text-right">
+                                 <div class="btn-group">
+                                    <a href="<?php echo admin_url('purchase/edit_sale_deed/' . $deed['id']); ?>" class="btn btn-default btn-icon" style="padding: 10px !important"><i class="fa fa-pencil-square"></i></a>
+                                    <!-- <a href="<?php echo admin_url('purchase/delete_sale_deed/' . $deed['id']); ?>" class="btn btn-danger _delete btn-icon" style="padding: 10px !important"><i class="fa fa-remove"></i></a> -->
+                                    <a href="javascript:void(0)" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 7px !important"><i class="fa fa-file-pdf"></i><?php if (is_mobile()) {
+                                                                                                                                                                                                                                             echo ' PDF';
+                                                                                                                                                                                                                                          } ?> <span class="caret"></span></a>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                       <li class="hidden-xs"><a href="<?php echo admin_url('purchase/sale_deed_pdf/' . $deed['id'] . '?output_type=I'); ?>"><?php echo _l('view_pdf'); ?></a></li>
+                                       <li class="hidden-xs"><a href="<?php echo admin_url('purchase/sale_deed_pdf/' . $deed['id'] . '?output_type=I'); ?>" target="_blank"><?php echo _l('view_pdf_in_new_window'); ?></a></li>
+                                       <li><a href="<?php echo admin_url('purchase/sale_deed_pdf/' . $deed['id']); ?>"><?php echo _l('download'); ?></a></li>
+                                       <li>
+                                          <a href="<?php echo admin_url('purchase/sale_deed_pdf/' . $deed['id'] . '?print=true'); ?>" target="_blank">
                                              <?php echo _l('print'); ?>
                                           </a>
                                        </li>
