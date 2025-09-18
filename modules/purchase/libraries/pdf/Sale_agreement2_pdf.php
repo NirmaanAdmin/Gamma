@@ -37,7 +37,7 @@ class Sale_agreement2_pdf extends App_pdf
     protected function file_path()
     {
         $customPath = APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_requestpdf.php';
-        $actualPath = APP_MODULES_PATH . '/purchase/views/customers/sale_agreementpdf.php';
+        $actualPath = APP_MODULES_PATH . '/purchase/views/customers/sale_agreement2pdf.php';
 
         if (file_exists($customPath)) {
             $actualPath = $customPath;
