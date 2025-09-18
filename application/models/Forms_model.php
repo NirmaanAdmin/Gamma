@@ -4566,15 +4566,16 @@ class Forms_model extends App_Model
                 $total = !empty($match) ? $match[0]['total'] : 0;
                 $total_workforce_values[$sub['name']][] = $total;
             }
-        }
-        foreach ($progress_report_type as $type) {
-            $match = array_values(array_filter($type_array, function ($x) use ($date, $type) {
-                return $x['date'] == $date && $x['type'] == $type['id'];
-            }));
-            $total = !empty($match) ? $match[0]['total'] : 0;
-            $stacked_labor_values[$type['name']][] = $total;
-        }   
 
+
+            foreach ($progress_report_type as $type) {
+                $match = array_values(array_filter($type_array, function ($x) use ($date, $type) {
+                    return $x['date'] == $date && $x['type'] == $type['id'];
+                }));
+                $total = !empty($match) ? $match[0]['total'] : 0;
+                $stacked_labor_values[$type['name']][] = $total;
+            }
+        }
         // 6. Convert values to Chart.js compatible datasets
         $total_workforce_datasets = array_map(function ($label) use ($total_workforce_values) {
             return ['label' => $label, 'data' => array_values($total_workforce_values[$label])];
