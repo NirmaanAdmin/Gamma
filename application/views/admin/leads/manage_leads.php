@@ -358,6 +358,14 @@ $module_name = 'leads'; ?>
                                             'name'     => _l('leads_dt_datecreated'),
                                             'th_attrs' => ['class' => 'date-created toggleable', 'id' => 'th-date-created'],
                                         ];
+                                        $_table_data[] = [
+                                            'name'     => _l('Budget'),
+                                            'th_attrs' => ['class' => 'date-lead_value toggleable', 'id' => 'th-lead-value'],
+                                        ];
+                                        $_table_data[] = [
+                                            'name'     => _l('Call Time'),
+                                            'th_attrs' => ['class' => 'date-call_time toggleable', 'id' => 'th-call-time'],
+                                        ];
                                         // $_table_data[] = [
                                         //     'name'     => _l('leads_dt_last_contact'),
                                         //     'th_attrs' => ['class' => 'toggleable', 'id' => 'th-last-contact'],

@@ -35,6 +35,8 @@ $aColumns = [
     db_prefix() . 'leads_status.name as status_name',
     db_prefix() . 'leads_sources.name as source_name',
     db_prefix() . 'leads.dateadded as dateadded',
+    db_prefix() . 'leads.lead_value as lead_value',
+    db_prefix() . 'leads.call_time as call_time',
     // db_prefix() . 'leads.lastcontact as lastcontact',
     db_prefix() . 'leads.broker as broker',
     db_prefix() . 'leads.contact_details as contact_details',
@@ -281,6 +283,8 @@ foreach ($rResult as $aRow) {
 
     $row[] = e($aRow['source_name']);
     $row[] = '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['dateadded'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['dateadded'])) . '</span>';
+    $row[] = e($aRow['lead_value']);
+    $row[] = e($aRow['call_time']);
     // $row[] = ($aRow['lastcontact'] == '0000-00-00 00:00:00' || !is_date($aRow['lastcontact']) ? '' : '<span data-toggle="tooltip" data-title="' . e(_dt($aRow['lastcontact'])) . '" class="text-has-action is-date">' . e(time_ago($aRow['lastcontact'])) . '</span>');
     $row[]        = e($aRow['broker']);
     $row[]        = e($aRow['contact_details']);

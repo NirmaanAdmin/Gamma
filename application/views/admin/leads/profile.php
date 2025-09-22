@@ -202,6 +202,10 @@
                     <dd class="tw-text-neutral-900 tw-mt-1">
                         <?php echo (isset($lead) && $lead->firm != '' ? process_text_content_for_display($lead->firm) : '-') ?>
                     </dd>
+                    <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Call Time'); ?></dt>
+                    <dd class="tw-text-neutral-900 tw-mt-1">
+                        <?php echo (isset($lead) && $lead->call_time != '' ?$lead->call_time : '-') ?>
+                    </dd>
 
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Broker Contact Details'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
@@ -734,6 +738,7 @@
 
                 <?php echo render_input('email', 'lead_add_edit_email', isset($lead) ? $lead->email : ''); ?>
                 <?php echo render_input('firm', 'Firm Name', isset($lead) ? $lead->firm : ''); ?>
+                <?php echo render_input('call_time', 'Call Time', isset($lead) ? $lead->call_time : ''); ?>
 
                 <?php if (!is_language_disabled()) { ?>
                     <div class="form-group">
