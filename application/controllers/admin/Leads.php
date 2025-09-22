@@ -1072,7 +1072,8 @@ class Leads extends AdminController
                 $data['email'],
                 $data['firm'],
                 $data['note'],
-                $data['lastcontact']
+                $data['lastcontact'],
+                $data['call_time'],
             );
             if ($data['contacted_indicator'] == 'yes') {
                 $contacted_date         = to_sql_date($data['custom_contact_date'], true);

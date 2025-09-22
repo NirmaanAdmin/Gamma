@@ -190,7 +190,7 @@
 
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('lead_value'); ?></dt>
                     <dd class="tw-text-neutral-900 tw-mt-1">
-                        <?php echo (isset($lead) && $lead->lead_value != 0 ? e(app_format_money($lead->lead_value, $base_currency->id)) : '-') ?>
+                        <?php echo (isset($lead) && $lead->lead_value != 0 ? $lead->lead_value : '-') ?>
                     </dd>
 
                     <dt class="lead-field-heading tw-font-medium tw-text-neutral-500"><?php echo _l('Broker Name'); ?></dt>
@@ -700,7 +700,7 @@
                 <div class="form-group">
                     <label for="lead_value"><?php echo _l('lead_value'); ?></label>
                     <div class="input-group" data-toggle="tooltip" title="<?php echo _l('lead_value_tooltip'); ?>">
-                        <input type="number" class="form-control" name="lead_value" value="<?php if (isset($lead)) {
+                        <input type="text" class="form-control" name="lead_value" value="<?php if (isset($lead)) {
                                                                                                 echo $lead->lead_value;
                                                                                             } ?>">
                         <div class="input-group-addon">
