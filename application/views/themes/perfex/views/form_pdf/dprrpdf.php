@@ -119,12 +119,13 @@ $rcmplanttable .= '<table width="100%" bgcolor="#fff" cellspacing="0" cellpaddin
 $rcmplanttable .= '<thead>';  // Changed from tbody to thead for header rows
 $rcmplanttable .= '
     <tr style="font-size:20px;">
-        <td colspan="4" align="center"><b>RMC PLANT</b></td>
+        <td colspan="5" align="center"><b>RMC PLANT</b></td>
     </tr>
     <tr style="font-size:11px;">
         <td align="center"><b>Sr. No.</b></td>
         <td align="center"><b>Challan No</b></td>
         <td align="center"><b>Grade</b></td>
+        <td align="center"><b>Structure Work</b></td>
         <td align="center"><b>Quantity(CMT)</b></td>
     </tr>
     
