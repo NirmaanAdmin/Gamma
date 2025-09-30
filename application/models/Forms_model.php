@@ -4514,7 +4514,7 @@ class Forms_model extends App_Model
             $this->db->where('DATE(f.date) <=', $end_date);
         }
 
-        $this->db->group_by(['date'])
+        $this->db
             ->order_by('date', 'ASC');
         $deprt_array = $this->db->get()->result_array();
 
@@ -4642,8 +4642,8 @@ class Forms_model extends App_Model
         foreach ($progress_report_dept_labor as $staff) {
             $preport_deprt_html .= '<td align="right">' . $staff['name'] . '</td>';
         }
+        
         $preport_deprt_html .= '</tr>';
-
         if (!empty($forms)) {
             foreach ($forms as $form) {
                 $date = $form['date'];
