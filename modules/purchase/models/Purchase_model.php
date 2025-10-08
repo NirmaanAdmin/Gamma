@@ -15673,7 +15673,7 @@ class Purchase_model extends App_Model
 
         // Build PDF-safe HTML (no <input>, no PHP tags)
         $html = <<<HTML
-        <br><br>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         <p style="text-align:center;font-weight:700;">AGREEMENT FOR SALE</p>
         <p style="text-align:center;">(Without Possession)</p><br>
 
@@ -16308,6 +16308,7 @@ class Purchase_model extends App_Model
         }
 
         $html = <<<HTML
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         <h1 style="text-align:center;">AGREEMENT FOR SALE</h1>
         <p>This Agreement for Sale without possession ("Agreement") Executed today on this <b>{$DATE} day of {$MONTH}, {$YEAR}</b>.By and Between</p><br>
         <p><strong>KAUTILYA PROPERTIES LLP</strong>, (PAN: ABAFK4198C) a Partnership Firm registered under the Limited Liability Partnership Act, 2008, having its registered office at 30, Lad Society, B/h. Aakash Society, Bodakdev, Ahmedabad, represented through its authorized partner <strong>Mr. Kiran Kamdar</strong>, aged about 50 years, Occupation — Business, residing at 30, Lad Society, B/h. Aakash Society, Bodakdev, Ahmedabad. Hereinafter referred to as the "Promoter" / "Developer" / "Vendor" (which expression shall, unless repugnant to the context, include its present and future partners and their respective heirs, successors and assignees) of the <em>One Part</em>.</p>
