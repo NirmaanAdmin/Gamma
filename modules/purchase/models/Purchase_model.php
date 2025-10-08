@@ -14789,6 +14789,11 @@ class Purchase_model extends App_Model
             unset($data['agreement_master_id']);
         }
 
+        if (isset($data['sum_consideration_amount'])) {
+            $sale_agreements['sum_consideration_amount'] = $data['sum_consideration_amount'];
+            unset($data['sum_consideration_amount']);
+        }
+
         if (isset($data['cost_certificates'])) {
             $cost_certificates['cost_certificates'] = $data['cost_certificates'];
             unset($data['cost_certificates']);
@@ -16274,6 +16279,7 @@ class Purchase_model extends App_Model
         $CHEQUE_NO = $esc($customer['cheque_no'] ?? '');
         $PAYMENT_DATE = !empty($customer['payment_date']) ? date('d M, Y', strtotime($customer['payment_date'])) : 'N/A';
         $FINAL_AMOUNT = $esc($customer['final_amount'] ?? '');
+        $SUM_CONSIDERATION_AMOUNT = $esc($documentation[0]['sum_consideration_amount'] ?? '');
 
         // Secondary customer data
         $CUSTOMER2_COMPANY = $esc($customer2->company2 ?? '');
@@ -16338,7 +16344,7 @@ class Purchase_model extends App_Model
                     <ol>
                         <li>The scheme will be constructed and completed in accordance with the approved layout plans by the competent authority, which the Allottee has/have seen and approved and the Allottee has also agreed that the Promoter may make such variations and modifications therein as may be required to be done by the Government, Ahmedabad Municipal Corporation and other local authorities and/or which the Promoter/Developer may consider desirable and this shall operate as an irrevocable consent of the Allottee/s for making such variations and modifications.</li>
                         <li>The Allottee has/have satisfied himself/herself/ themselves about the title of the said land/property and the Allottee shall not be entitled to investigate further the titles of the said land/property and no requisition or objection shall be raised in any matter relating thereto.</li>
-                        <li>The Allottee hereby agree/s/agreed to acquire the said/property as per the plans and specifications seen and approved by Allottee and the Developer/ Promoter/Land Owner agrees to allot the said Premises/ flat to the Allottee/s-Purchaser/s at or for the lump sum consideration price of Rs. __________/-. and the said consideration amount is basic amount i.e. the allottee shall be liable to pay running maintenance, stamp duty, registration fees maintenance deposit, UGVCL, AUDA, legal charges etc. separately..</li>
+                        <li>The Allottee hereby agree/s/agreed to acquire the said/property as per the plans and specifications seen and approved by Allottee and the Developer/ Promoter/Land Owner agrees to allot the said Premises/ flat to the Allottee/s-Purchaser/s at or for the lump sum consideration price of Rs. <b>{$SUM_CONSIDERATION_AMOUNT}/-</b>. and the said consideration amount is basic amount i.e. the allottee shall be liable to pay running maintenance, stamp duty, registration fees maintenance deposit, UGVCL, AUDA, legal charges etc. separately..</li>
                         <li><strong>Payment Plan</strong>:
                             <p>The Allottee has paid to Promoter a sum of following amounts of the entire negotiated lump sum consideration towards the Booking Amount / Earnest Money to the Said Developer as per the details mentioned below:</p>
                             <table>
