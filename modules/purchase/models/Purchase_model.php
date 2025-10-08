@@ -15608,6 +15608,17 @@ class Purchase_model extends App_Model
         // Expect these arrays inside $sale_agreement; adjust to your actual shape
         $customer      = $this->get_customer_data($sale_agreement_id) ?? [];
 
+        // Get property details
+        $block_name = isset($customer['block_id']) ? get_block_name($customer['block_id']) : '';
+        $flat_name = isset($customer['flat_id']) ? get_flat_name($customer['flat_id']) : '';
+        $floor_name = isset($customer['floor_id']) ? get_floor_name($customer['floor_id']) : '';
+
+
+        $banakhat_details = null;
+        if (isset($customer['property_id'])) {
+            $banakhat_details = get_banakhat_details($customer['property_id'], $flat_name, $block_name, $floor_name);
+        }
+
         // Helper escape
         $esc = static function ($v) {
             return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
@@ -15620,23 +15631,40 @@ class Purchase_model extends App_Model
 
         $CUSTOMER_COMPANY = $esc($customer['company'] ?? '');
 
-        $PAN_NO    = $esc($documentation[0]['pan_no']    ?? '');
-        $AADHAR_NO = $esc($documentation[0]['aadhar_no'] ?? '');
+        $PAN_NO    = $esc($customer['pan_card']    ?? '');
+        $AADHAR_NO = $esc($customer['adhar_card'] ?? '');
 
         $COMMENCEMENT_LETTER_NO = $esc($documentation[0]['commencement_letter_no'] ?? '');
 
-        $FLAT_NO   = $esc($documentation[0]['flat_no']   ?? '');
-        $BLOCK     = $esc($documentation[0]['block']     ?? '');
+       
         $AREA      = $esc($documentation[0]['area']      ?? '');
-        $FLOOR_NO  = $esc($documentation[0]['floor_no']  ?? '');
+        $ADDRESS = $esc($customer['address'] ?? '');
         $PRICE_RS  = $esc($documentation[0]['price_in_rupees'] ?? '');
         $PRICE_TXT = $esc($documentation[0]['price_in_words']  ?? '');
 
-        $FLAT_NO2 = $esc($documentation[0]['flat_no2'] ?? '');
-        $BLOCK2   = $esc($documentation[0]['block2']   ?? '');
-        $FLOOR2   = $esc($documentation[0]['floor2']   ?? '');
-        $AREA2    = $esc($documentation[0]['area2']    ?? '');
-        $AREA3    = $esc($documentation[0]['area3']    ?? '');
+        
+
+        // Secondary customer data
+        $CUSTOMER2_COMPANY = $esc($customer2->company2 ?? '');
+        $CUSTOMER2_ELECTION_CARD = $esc($customer2->election_card_2 ?? '');
+        $CUSTOMER2_PAN_CARD = $esc($customer2->pan_card_2 ?? '');
+        $CUSTOMER2_ADDRESS = $esc($customer2->address_2 ?? '');
+
+        // Property details
+        $CARPET_AREA = $banakhat_details ? $esc($banakhat_details->carpet_area ?? '') : '';
+        $BALCONY = $banakhat_details ? $esc($banakhat_details->balcony ?? '') : '';
+        $WASH_YARD = $banakhat_details ? $esc($banakhat_details->wash_yard ?? '') : '';
+        $UNDIVIDED_LAND_SHARE = $banakhat_details ? round($banakhat_details->undivided_land_share ?? 0, 2) : '';
+        $EAST = $banakhat_details ? $esc($banakhat_details->east ?? '') : '';
+        $WEST = $banakhat_details ? $esc($banakhat_details->west ?? '') : '';
+        $NORTH = $banakhat_details ? $esc($banakhat_details->north ?? '') : '';
+        $SOUTH = $banakhat_details ? $esc($banakhat_details->south ?? '') : '';
+
+         // Build secondary customer HTML
+        $secondary_customer_html = '';
+        if (!empty($customer2)) {
+            $secondary_customer_html = " and <strong>{$CUSTOMER2_COMPANY}</strong> (Election Card No. <strong>{$CUSTOMER2_ELECTION_CARD}</strong>) (PAN: <strong>{$CUSTOMER2_PAN_CARD}</strong>) residing at <strong>{$CUSTOMER2_ADDRESS}</strong>";
+        }
 
         // Build PDF-safe HTML (no <input>, no PHP tags)
         $html = <<<HTML
@@ -15658,8 +15686,9 @@ class Purchase_model extends App_Model
 
         <p>(1) <b>{$CUSTOMER_COMPANY}</b></p>
         <p>PAN: <b>{$PAN_NO}</b> &nbsp;&nbsp; Aadhar: <b>{$AADHAR_NO}</b></p>
-
-        <p>Both Adult Residing at -</p><br><br><br><br>
+        
+        <p>Adult Residing at - <b>{$ADDRESS}</b></p>
+        {$secondary_customer_html}<br><br><br><br>
 
         <p>Hereinafter referred to as the “PURCHASER” (Which expression shall unless repugnant to the context and meaning thereof shall mean and include his / her / their / its heirs, legal representatives, executors, successors and assigns) of the SECOND PART.</p><br>
 
@@ -15691,7 +15720,7 @@ class Purchase_model extends App_Model
 
         <p>(G) The Vendor has initiated the construction as per the approved plan and Development permission.</p><br>
 
-        <p>(H) The Party of the Second Part has visited the said scheme and has shown his / her / their / its willingness to purchase Flat No. <b>{$FLAT_NO}</b> in Wing <b>“{$BLOCK}”</b> having Carpet Area (“Carpet Area” means the net usable floor area of an Property, excluding the area covered by the external walls, areas under services shafts, exclusive balcony or verandah area and exclusive open terrace area but includes the area covered by the internal partition walls of the Property) admeasuring about 80.60 sq.mtrs. (i.e. <b>{$AREA}</b> sq.mtrs. Built up area) situated on <b>{$FLOOR_NO}</b> Floor of the said Scheme along with (i) Wash Area admeasuring 2.42 sq.mtrs.. (ii) Balcony admeasuring about 3.21 sq.mtrs.. in the scheme known as “KAUTILYA ONE-54” together with undivided share in the said land admeasuring about 34.17 Sq.Mtrs. (for the sake of convenience hereinafter referred to as the “Said Property”) from the “Said Developer” at lump sum consideration amount of the said property is fixed for Rs. <b>{$PRICE_RS}/-</b> Rupees <b>{$PRICE_TXT}</b> Only.</p><br>
+        <p>(H) The Party of the Second Part has visited the said scheme and has shown his / her / their / its willingness to purchase Flat No. <b>{$flat_name}</b> in Wing <b>“{$block_name}”</b> having Carpet Area (<b>“{$CARPET_AREA}”</b> means the net usable floor area of an Property, excluding the area covered by the external walls, areas under services shafts, exclusive balcony or verandah area and exclusive open terrace area but includes the area covered by the internal partition walls of the Property) admeasuring about 80.60 sq.mtrs. (i.e. <b>{$AREA}</b> sq.mtrs. Built up area) situated on <b>{$floor_name}</b> Floor of the said Scheme along with (i) Wash Area admeasuring 2.42 sq.mtrs.. (ii) Balcony admeasuring about 3.21 sq.mtrs.. in the scheme known as “KAUTILYA ONE-54” together with undivided share in the said land admeasuring about 34.17 Sq.Mtrs. (for the sake of convenience hereinafter referred to as the “Said Property”) from the “Said Developer” at lump sum consideration amount of the said property is fixed for Rs. <b>{$PRICE_RS}/-</b> Rupees <b>{$PRICE_TXT}</b> Only.</p><br>
 
         <p>(I) The said entire consideration amount is included of the carpet area of the Unit, Wash Area & Balcony.</p><br>
 
@@ -15806,13 +15835,13 @@ class Purchase_model extends App_Model
         <p><strong>SCHEDULE ABOVE REFERRED TO</strong></p>
         <p>(Description of the said Immovable Vendor)</p>
 
-        <p>All That piece & parcel of Immovable property bearing Flat No. <b>{$FLAT_NO2}</b> in Wing <b>“{$BLOCK2}”</b> having total Carpet Area admeasuring about <b>{$AREA2}</b> sq.mtrs. situated on <b>{$FLOOR2}</b> Floor of the said Scheme along with (i) Wash Area admeasuring 2.42 sq.mtrs.. (ii) Balcony admeasuring about 3.21 sq.mtrs.. in the scheme known as “KAUTILYA ONE-54” together with undivided share in the said land admeasuring about <b>{$AREA3}</b> Sq.Mtrs. bearing A) Final Plot No. 321, admeasuring 3400 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/3 admeasuring 5666 sq.mtrs. & B) Final Plot No. 322, admeasuring 2125 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/4 admeasuring 3541 sq.mtrs. situated within the village limits of Chandkheda, Taluka - Sabarmati in the Registration Sub - District of Ahmedabad - 2 (Vadaj) of District Ahmedabad.</p><br><br>
+        <p>All That piece & parcel of Immovable property bearing Flat No. <b>{$flat_name}</b> in Wing <b>“{$block_name}”</b> having total Carpet Area admeasuring about <b>{$AREA2}</b> sq.mtrs. situated on <b>{$FLOOR2}</b> Floor of the said Scheme along with (i) Wash Area admeasuring 2.42 sq.mtrs.. (ii) Balcony admeasuring about 3.21 sq.mtrs.. in the scheme known as “KAUTILYA ONE-54” together with undivided share in the said land admeasuring about <b>{$AREA3}</b> Sq.Mtrs. bearing A) Final Plot No. 321, admeasuring 3400 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/3 admeasuring 5666 sq.mtrs. & B) Final Plot No. 322, admeasuring 2125 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/4 admeasuring 3541 sq.mtrs. situated within the village limits of Chandkheda, Taluka - Sabarmati in the Registration Sub - District of Ahmedabad - 2 (Vadaj) of District Ahmedabad.</p><br><br>
 
         <p><strong>DETAILS OF THE FOUR CORNERS OF THE SAID FLAT PROPERTY</strong></p><br>
-        <p>East: 40 FT T.P Road</p>
-        <p>West : Flat No - A/404</p>
-        <p>North: Flat No - A/402</p>
-        <p>South: Block B</p><br><br>
+        <p>East: {$EAST}</p>
+        <p>West : {$WEST}</p>
+        <p>North: {$NORTH}</p>
+        <p>South: {$SOUTH}</p><br><br>
 
         <p>IN WITNESS WHEREOF the “Said Developer” hereto through its authorized Partner has hereunto executed this Agreement on the Day Month and year herein above written.</p><br>
 
@@ -16224,7 +16253,7 @@ class Purchase_model extends App_Model
         if (isset($customer['property_id'])) {
             $banakhat_details = get_banakhat_details($customer['property_id'], $flat_name, $block_name, $floor_name);
         }
-
+       
         // Helper escape
         $esc = static function ($v) {
             return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
