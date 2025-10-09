@@ -15641,13 +15641,13 @@ class Purchase_model extends App_Model
 
         $COMMENCEMENT_LETTER_NO = $esc($documentation[0]['commencement_letter_no'] ?? '');
 
-       
+
         $AREA      = $esc($documentation[0]['area']      ?? '');
         $ADDRESS = $esc($customer['address'] ?? '');
         $PRICE_RS  = $esc($documentation[0]['price_in_rupees'] ?? '');
         $PRICE_TXT = $esc($documentation[0]['price_in_words']  ?? '');
 
-        
+
 
         // Secondary customer data
         $CUSTOMER2_COMPANY = $esc($customer2->company2 ?? '');
@@ -15665,7 +15665,7 @@ class Purchase_model extends App_Model
         $NORTH = $banakhat_details ? $esc($banakhat_details->north ?? '') : '';
         $SOUTH = $banakhat_details ? $esc($banakhat_details->south ?? '') : '';
 
-         // Build secondary customer HTML
+        // Build secondary customer HTML
         $secondary_customer_html = '';
         if (!empty($customer2)) {
             $secondary_customer_html = " and <strong>{$CUSTOMER2_COMPANY}</strong> (Election Card No. <strong>{$CUSTOMER2_ELECTION_CARD}</strong>) (PAN: <strong>{$CUSTOMER2_PAN_CARD}</strong>) residing at <strong>{$CUSTOMER2_ADDRESS}</strong>";
@@ -15673,6 +15673,191 @@ class Purchase_model extends App_Model
 
         // Build PDF-safe HTML (no <input>, no PHP tags)
         $html = <<<HTML
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Sale Deed</title>
+            <style>
+                :root {
+                    --fg: #111827;
+                    --muted: #4b5563;
+                    --border: #e5e7eb;
+                }
+                
+                body {
+                    font-size: 12px;
+                    line-height: 1.5;
+                    color: var(--fg);
+                    margin: 0;
+                    padding: 15px;
+                    text-align: justify;
+                }
+                
+                h1, h2, h3, h4 { 
+                    margin: 0 0 8px; 
+                    color: #000;
+                }
+                
+                h1 {
+                    text-align: center;
+                    text-decoration: underline;
+                    font-size: 22px;
+                    margin-bottom: 12px;
+                }
+                
+                .subtitle {
+                    text-align: center;
+                    font-style: italic;
+                    color: var(--muted);
+                    margin-bottom: 24px;
+                }
+                
+                p { 
+                    margin: 8px 0; 
+                    text-align: justify;
+                }
+                li{
+                    line-height:1.5;
+                    text-align: justify;
+                }
+                .center {
+                    text-align: center;
+                }
+                
+                .right {
+                    text-align: right;
+                }
+                
+                .u {
+                    text-decoration: underline;
+                }
+                
+                .section.box {
+                    border: 1px solid var(--border);
+                    padding: 15px;
+                    margin: 15px 0;
+                }
+                
+                .whereas { 
+                    margin: 14px 0; 
+                }
+                
+                .section-title {
+                    font-weight: bold;
+                    text-decoration: underline;
+                    margin: 16px 0 8px;
+                }
+                
+                .pair { 
+                    display: flex; 
+                    gap: 12px; 
+                }
+                
+                .pair>div { 
+                    flex: 1; 
+                }
+                
+                .hr { 
+                    border-top: 1px solid var(--border); 
+                    margin: 16px 0; 
+                }
+                
+                ol, ul { 
+                    padding-left: 20px; 
+                    margin: 8px 0;
+                }
+                
+                li {
+                    margin-bottom: 8px;
+                }
+                
+                table { 
+                    width: 100%; 
+                    border-collapse: collapse; 
+                    margin: 12px 0; 
+                }
+                
+                th, td {
+                    border: 1px solid var(--border);
+                    padding: 6px 8px;
+                    vertical-align: top;
+                }
+                
+                th { 
+                    text-align: left; 
+                    background-color: #f9f9f9;
+                }
+                
+                .signature-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 24px;
+                    margin-top: 24px;
+                }
+                
+                .sign-block {
+                    min-height: 80px;
+                    border-bottom: 1px solid var(--border);
+                    margin-bottom: 10px;
+                }
+                
+                .small { 
+                    font-size: 11px; 
+                    color: var(--muted); 
+                }
+                
+                .muted {
+                    color: var(--muted);
+                }
+                
+                .page-break {
+                    page-break-after: always;
+                }
+                
+                .photos {
+                    height: 200px;
+                    border: 1px dashed var(--border);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 15px 0;
+                }
+                
+                .address-block {
+                    border: 1px solid var(--border);
+                    padding: 15px;
+                    margin: 15px 0;
+                }
+                
+                .spacer {
+                    height: 50px;
+                }
+                p{
+                    line-height:1.5;
+                    text-align: justify;
+                }
+                li{
+                    line-height:1.5;
+                    text-align: justify;
+                }
+                @media print {
+                    .page-break {
+                        page-break-after: always;
+                    }
+                    
+                    body { 
+                        margin: 10mm; 
+                    }
+                }
+                    
+                strong { 
+                    font-weight: 700; 
+                    color: black; 
+                }
+            </style>
+        </head>
+        <body>
         <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         <p style="text-align:center;font-weight:700;">AGREEMENT FOR SALE</p>
         <p style="text-align:center;">(Without Possession)</p><br>
@@ -15701,75 +15886,102 @@ class Purchase_model extends App_Model
 
         <p>WHEREAS-</p><br>
 
-        <p>(A) The developer is seized and possessed of or otherwise well sufficiently entitled to all that piece and parcel of land bearing
-        1) Final Plot No. 321, admeasuring 3400 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/3 admeasuring 5666 sq.mtrs. & 2) Final Plot No. 322, admeasuring 2125 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/4 admeasuring 3541 sq.mtrs. situated within the village limits of Chandkheda, Taluka - Sabarmati in the Registration Sub - District of Ahmedabad - 2 (Vadaj) of District Ahmedabad (For the sake of convenience hereinafter referred to as the “Said Land”).</p><br>
+        <ol type="A">
+        <li>
+            The developer is seized and possessed of or otherwise well sufficiently entitled to all that piece and parcel of land bearing
+            1) Final Plot No. 321, admeasuring 3400 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/3 admeasuring 5666 sq.mtrs. & 
+            2) Final Plot No. 322, admeasuring 2125 sq.mtrs. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/4 admeasuring 3541 sq.mtrs. 
+            situated within the village limits of Chandkheda, Taluka - Sabarmati in the Registration Sub - District of Ahmedabad - 2 (Vadaj) of District Ahmedabad 
+            (For the sake of convenience hereinafter referred to as the “Said Land”).
+        </li>
 
-        <p>(B) The Non-Agricultural Permission for Residencial & Commercial purpose of the “Said Land” was granted by the Hon' District Collecter, Ahmedabad under 1) Order No. CB / NA / Ahmedabad / CHANDKHEDA / 875 / 3 / 1009284 / 2019 on 03-06-2019 for Survey No. 875 / 3 of Mouje Chandkheda and entry to that effect was mutated in the revenue record by mutation entry No. 13606 dated : 15-06-2019, which were certified by the competent authority on 29-07-2019 & 2) Order No. CB / LAND-1 / NA / SR - 956 / 2018 / FMPS NO - 323282 on 29-10-218 for Survey No. 875 / 4 of Mouje Chandkheda and entry to that effect was mutated in the revenue record by mutation entry No. 13372 dated :
-        15-12-2018, which were certified by the competent authority on 28-01-2019</p><br>
+        <li>
+            The Non-Agricultural Permission for Residential & Commercial purpose of the “Said Land” was granted by the Hon' District Collector, Ahmedabad under 
+            1) Order No. CB / NA / Ahmedabad / CHANDKHEDA / 875 / 3 / 1009284 / 2019 on 03-06-2019 for Survey No. 875 / 3 of Mouje Chandkheda and entry to that effect was mutated 
+            in the revenue record by mutation entry No. 13606 dated : 15-06-2019, which were certified by the competent authority on 29-07-2019 & 
+            2) Order No. CB / LAND-1 / NA / SR - 956 / 2018 / FMPS NO - 323282 on 29-10-2018 for Survey No. 875 / 4 of Mouje Chandkheda and entry to that effect was mutated 
+            in the revenue record by mutation entry No. 13372 dated : 15-12-2018, which were certified by the competent authority on 28-01-2019.
+        </li>
 
-        <p>(C) The Vendor has purchased the Said land Paiki 1) Survey No. 875 / 3 from Daksh enterprise, a partnership firm by sale deed registered in the office of the Sub-Registrar of Assurances of Ahmedabad - 2 (Vadaj) under Serial No. 5406, dated : 04-04-2022 and entry to that effect was mutated in the revenue record by mutation entry No. 14858, Dated : 12-04-2022, Which was certified by the competent authority on 13-05-2022 & 2) Survey No. 875 / 4 from Jayantibhai Prahladbhai Nayak, Dilipkumar alias Bipinkumar Prahladbhai Nayak, Rajendrakumar Prahladbhai Nayak, Kailasben D/o. Prahladbhai Nayak W/o. Kundanlal Nayak, Sudhaben D/o. Prahladbhai Nayak Wd/o. Maheshbhai Nayak, Nitinkumar Nandubhai Nayak, Bhavnaben D/o. Nandubhai Nayak W/o. Nileshbhai Nayak, Rinaben D/o. Nandubhai Nayak W/o. Jitendrakumar Sisodiya, Jyotiben D/o. Nandubhai Nayak W/o. Jayendrakumar Nayak, Ranjanben Wd/o. Nandubhai Prahladbhai Nayak, Ajaykumar Mahendrakumar Nayak, Amarkumar Mahendrakumar Nayak, Dipakkumar Mahendrakumar Nayak, Ashaben D/o. Mahendrakumar Nayak W/o. Krunalkumar Nayak & Pratimaben Wd/o. Mahendrakumar Prahladbhai Nayak by sale deed registered in the office of the Sub-Registrar of Assurances of Ahmedabad - 2 (Vadaj) under Serial No. 20546, dated : 22-11-2018. In said deed of sale Sankalp Infrastructure, a partnership firm remain there presence as confirming party and entry to that effect was mutated in the revenue record by mutation entry No. 13355, Dated : 01-12-2018, Which was certified by the competent authority on 03-01-2019.</p><br>
+        <li>
+            The Vendor has purchased the Said land Paiki 
+            1) Survey No. 875 / 3 from Daksh enterprise, a partnership firm by sale deed registered in the office of the Sub-Registrar of Assurances of Ahmedabad - 2 (Vadaj) 
+            under Serial No. 5406, dated : 04-04-2022 and entry to that effect was mutated in the revenue record by mutation entry No. 14858, Dated : 12-04-2022, 
+            Which was certified by the competent authority on 13-05-2022 & 
+            2) Survey No. 875 / 4 from Jayantibhai Prahladbhai Nayak, Dilipkumar alias Bipinkumar Prahladbhai Nayak, Rajendrakumar Prahladbhai Nayak, 
+            Kailasben D/o. Prahladbhai Nayak W/o. Kundanlal Nayak, Sudhaben D/o. Prahladbhai Nayak Wd/o. Maheshbhai Nayak, Nitinkumar Nandubhai Nayak, 
+            Bhavnaben D/o. Nandubhai Nayak W/o. Nileshbhai Nayak, Rinaben D/o. Nandubhai Nayak W/o. Jitendrakumar Sisodiya, Jyotiben D/o. Nandubhai Nayak W/o. Jayendrakumar Nayak, 
+            Ranjanben Wd/o. Nandubhai Prahladbhai Nayak, Ajaykumar Mahendrakumar Nayak, Amarkumar Mahendrakumar Nayak, Dipakkumar Mahendrakumar Nayak, 
+            Ashaben D/o. Mahendrakumar Nayak W/o. Krunalkumar Nayak & Pratimaben Wd/o. Mahendrakumar Prahladbhai Nayak by sale deed registered in the office of the 
+            Sub-Registrar of Assurances of Ahmedabad - 2 (Vadaj) under Serial No. 20546, dated : 22-11-2018. In said deed of sale Sankalp Infrastructure, a partnership firm remain there presence as confirming party and entry to that effect was mutated in the revenue record by mutation entry No. 13355, Dated : 01-12-2018, 
+            Which was certified by the competent authority on 03-01-2019.
+        </li>
 
-        <p>(D) Ahmedabad Municipal Corporation granted permission for construction on said land by following Commencement Letter <b>{$COMMENCEMENT_LETTER_NO}</b> issued on 28th July, 2022 and granted Development Permission.</p><br>
+        <li>
+            Ahmedabad Municipal Corporation granted permission for construction on said land by following Commencement Letter 
+            <b>{$COMMENCEMENT_LETTER_NO}</b> issued on 28th July, 2022 and granted Development Permission.<br>
+            Block No. Case No. (Rajachitthi No.)<br>
+            A + B BHNTI / WZ / 210522 / CGDCRV / A6107 / R0 / M1<br>
+            (Rajachitthi No. 06627 / 210522 / A6107 / R0 / M1)<br>
+            C BHNTS / WZ / 210522 / CGDCRV / A6108 / R0 / M1<br>
+            (Rajachitthi No. 06628 / 210522 / A6108 / R0 / M1)<br>
+            D BHNTS / WZ / 210522 / CGDCRV / A6109 / R0 / M1<br>
+            (Rajachitthi No. 06629 / 210522 / A6109 / R0 / M1)<br>
+        </li>
+        <li>The “Said Developer” has floated scheme of Residential & Commercial units known as “KAUTILYA ONE-54” (hereinafter referred to as the “Said Scheme”) on the “Said Land”.</li>
 
-        <p>Block No. Case No. (Rajachitthi No.)</p>
-        <p>A + B BHNTI / WZ / 210522 / CGDCRV / A6107 / R0 / M1</p>
-        <p>(Rajachitthi No. 06627 / 210522 / A6107 / R0 / M1)</p><br>
-        <p>C BHNTS / WZ / 210522 / CGDCRV / A6108 / R0 / M1</p>
-        <p>(Rajachitthi No. 06628 / 210522 / A6108 / R0 / M1)</p><br>
-        <p>D BHNTS / WZ / 210522 / CGDCRV / A6109 / R0 / M1</p>
-        <p>(Rajachitthi No. 06629 / 210522 / A6109 / R0 / M1)</p><br>
+        <li>The said scheme has been registered under the Real Estate (Regulation and Development) Act, 2016 and under the rules of the Gujarat Real Estate (Regulation and Development) (General) Rules, 2017 under Rera Project Registration Referance No. PR / GJ / Ahmedabad / ahmedabad CITY / AUDA / MAA10980 / 291122.</li>
 
-        <p>(E) The “Said Developer” has floated scheme of Residential & Commercial units known as “KAUTILYA ONE-54” (hereinafter referred to as the “Said Scheme”) on the “Said Land”.</p><br>
+        <li>The Vendor has initiated the construction as per the approved plan and Development permission.</li>
 
-        <p>(F) The said scheme has been registered under the Real Estate (Regulation and Development) Act, 2016 and under the rules of the Gujarat Real Estate (Regulation and Development) (General) Rules, 2017 under Rera Project Registration Referance No. PR / GJ / Ahmedabad / ahmedabad CITY / AUDA / MAA10980 / 291122.</p><br>
+        <li>The Party of the Second Part has visited the said scheme and has shown his / her / their / its willingness to purchase Flat No. <b>{$flat_name}</b> in Wing <b>“{$block_name}”</b> having Carpet Area (<b>“{$CARPET_AREA}”</b> means the net usable floor area of an Property, excluding the area covered by the external walls, areas under services shafts, exclusive balcony or verandah area and exclusive open terrace area but includes the area covered by the internal partition walls of the Property) admeasuring about 80.60 sq.mtrs. (i.e. <b>{$AREA}</b> sq.mtrs. Built up area) situated on <b>{$floor_name}</b> Floor of the said Scheme along with (i) Wash Area admeasuring 2.42 sq.mtrs.. (ii) Balcony admeasuring about 3.21 sq.mtrs.. in the scheme known as “KAUTILYA ONE-54” together with undivided share in the said land admeasuring about 34.17 Sq.Mtrs. (for the sake of convenience hereinafter referred to as the “Said Property”) from the “Said Developer” at lump sum consideration amount of the said property is fixed for Rs. <b>{$PRICE_RS}/-</b> Rupees <b>{$PRICE_TXT}</b> Only.</li>
 
-        <p>(G) The Vendor has initiated the construction as per the approved plan and Development permission.</p><br>
+        <li>The said entire consideration amount is included of the carpet area of the Unit, Wash Area & Balcony.</li>
 
-        <p>(H) The Party of the Second Part has visited the said scheme and has shown his / her / their / its willingness to purchase Flat No. <b>{$flat_name}</b> in Wing <b>“{$block_name}”</b> having Carpet Area (<b>“{$CARPET_AREA}”</b> means the net usable floor area of an Property, excluding the area covered by the external walls, areas under services shafts, exclusive balcony or verandah area and exclusive open terrace area but includes the area covered by the internal partition walls of the Property) admeasuring about 80.60 sq.mtrs. (i.e. <b>{$AREA}</b> sq.mtrs. Built up area) situated on <b>{$floor_name}</b> Floor of the said Scheme along with (i) Wash Area admeasuring 2.42 sq.mtrs.. (ii) Balcony admeasuring about 3.21 sq.mtrs.. in the scheme known as “KAUTILYA ONE-54” together with undivided share in the said land admeasuring about 34.17 Sq.Mtrs. (for the sake of convenience hereinafter referred to as the “Said Property”) from the “Said Developer” at lump sum consideration amount of the said property is fixed for Rs. <b>{$PRICE_RS}/-</b> Rupees <b>{$PRICE_TXT}</b> Only.</p><br>
+        <li>The Vendor has provided the copies of Approved Lay-Out Plan, Key-Plan, Building Plan, Elevation Plan, Section Plan etc., N.A. permission, Sale Deed, 7/12 Extracts, all Mutation Entries No. 6, necessary orders/permissions, Loan Papers, Receipts of the Land Revenue, Title Clearance Certificate / Search Report etc. to the Party of the Second Part and after getting it verified through the Advocate / Solicitor / Legal Expert and after being satisfied with the same the Party of the Second Part has agreed to purchase the Said Property from the Vendor.</li>
 
-        <p>(I) The said entire consideration amount is included of the carpet area of the Unit, Wash Area & Balcony.</p><br>
+        <li>The Vendor has given all the information about quality of the materials and goods used in the said scheme to the purchaser, which the Purchaser has got verified through their experts of the respective fields and the Purchaser is fully satisfied with same.</li>
 
-        <p>(J) The Vendor has provided the copies of Approved Lay-Out Plan, Key-Plan, Building Plan, Elevation Plan, Section Plan etc., N.A. permission, Sale Deed, 7/12 Extracts, all Mutation Entries No. 6, necessary orders/permissions, Loan Papers, Receipts of the Land Revenue, Title Clearance Certificate / Search Report etc. to the Party of the Second Part and after getting it verified through the Advocate / Solicitor / Legal Expert and after being satisfied with the same the Party of the Second Part has agreed to purchase the Said Property from the Vendor.</p><br>
+        <li>The Vendor will obey all the terms and conditions, restriction laid down by the competent authority for passing the plan of the said scheme and will construct the said scheme accordingly. The vendor will be responsible for completing the construction of the said scheme and obtain B.U.Permission / Completion Certificate from the competent authority.</li>
 
-        <p>(K) The Vendor has given all the information about quality of the materials and goods used in the said scheme to the purchaser, which the Purchaser has got verified through their experts of the respective fields and the Purchaser is fully satisfied with same.</p><br>
-
-        <p>(L) The Vendor will obey all the terms and conditions, restriction laid down by the competent authority for passing the plan of the said scheme and will construct the said scheme accordingly. The vendor will be responsible for completing the construction of the said scheme and obtain B.U.Permission / Completion Certificate from the competent authority.</p><br>
-
-        <p>(M) The Parties herein hereby agrees to obey the following terms and conditions mentioned in this Agreement for Sale and also agrees to obey the Rules and Regulations / Laws enacted and framed from time to time by the Government.</p><br>
-
+        <li> The Parties herein hereby agrees to obey the following terms and conditions mentioned in this Agreement for Sale and also agrees to obey the Rules and Regulations / Laws enacted and framed from time to time by the Government.</li>
+        </ol>
         <p>NOW IT IS HEREBY AGREED BETWEEN THE PARTIES HERETO AS FOLLOWS :</p><br>
+        <ol type="1">      
+            <li>The “Said Developer” has agreed to sell to the party of the Second Part and the Party of the Second Part has agreed to purchase the “Said Property” (more particularly described in the schedule hereunder written) from the “Said Developer” at or for the entire negotiated lump sum consideration as mentioned hereinabove.</li>
 
-        <p>(1) The “Said Developer” has agreed to sell to the party of the Second Part and the Party of the Second Part has agreed to purchase the “Said Property” (more particularly described in the schedule hereunder written) from the “Said Developer” at or for the entire negotiated lump sum consideration as mentioned hereinabove.</p><br>
+        <li>The Party of the Second Part has paid the following amount of the entire negotiated lump sum consideration towards the Booking Amount / Earnest Money to the Said Developer as per the details mentioned below :<br><br>
 
-        <p>(2) The Party of the Second Part has paid the following amount of the entire negotiated lump sum consideration towards the Booking Amount / Earnest Money to the Said Developer as per the details mentioned below :</p><br><br><br><br>
+        The Said Developer hereby acknowledges the receipt of the same and admits that the said amount shall be adjusted against the total consideration at the time of execution of Sale Deed.<br>
 
-        <p>The Said Developer hereby acknowledges the receipt of the same and admits that the said amount shall be adjusted against the total consideration at the time of execution of Sale Deed.</p>
+        The total consideration in respect of the Said Property shall be payable by the Party of the Second Part as per the payment schedule mentioned below :-<br>
+        <ol type="i">
+        <li> Amount of 30% of the total consideration to be paid to the Vendor after the execution of Agreement.</li>
+        <li>Amount of 45% of the total consideration to be paid to the Vendor on completion of the Plinth of the building or wing in which the said Property is located.</li>
+        <li>Amount of 70% of the total consideration to be paid to the Vendor on completion of the slabs including podiums and stilts of the building or wing in which the said Property is located.</li>
+        <li>Amount of 75% of the total consideration to be paid to the Vendor on completion of the walls, internal plaster, floorings doors and windows of the said Property.</li>
+        <li>Amount of 80% of the total consideration to be paid to the Vendor on completion of the Sanitary fittings, stair cases, lift wells, lobbies up to the floor level of the said Property.</li>
+        <li>Amount of 85% of the total consideration to be paid to the Vendor on completion of the external plumbing and external plaster, elevation, terraces with waterproofing of the building or wing in which the said Property is located.</li>
+        <li>Amount of 95% of the total consideration to be paid to the Vendor on completion of the lifts, water pumps, electrical fittings, electro, mechanical and environment requirements, entrance lobby/s, plinth protection, paving of areas appertain and all other requirements as may be prescribed in the Agreement of sale of the building or wing in which the said Property is located.</li>
+        <li>Balance Amount against and at the time of handing over of the possession of the Property to the Purchaser on or after receipt of B.U.Permission / completion certificate.</li>
+                </ol>
+        </li>
+            
+        <li>The total consideration price as stated above excludes Taxes (consisting of tax paid or payable by the Vendor by way of Goods and Service Tax, and Cess or any other similar taxes which may be levied, in connection with the construction of and carrying out the project payable by the Vendor) up to the date of handing over the possession of the Said Property, which shall be separately / payable by the Purchaser in the manner as may be decided by the Vendor.</li>
 
-        <p>The total consideration in respect of the Said Property shall be payable by the Party of the Second Part as per the payment schedule mentioned below :-</p><br>
+        <li>The total consideration price is escalation-free, save and except escalations/increases, due to increase on account of development charges payable to the competent authority and/or any other increase in charges which may be levied or imposed by the competent authority Local Bodies / Government from time to time. The Vendor undertakes and agrees that while raising a demand on the Purchaser for increase in development charges, cost, or levies imposed by the competent authorities, etc., the Vendor shall enclose the said notification / order / rule / regulation published / issued in that behalf to that effect along with the demand letter being issued to the Purchaser, Which shall only be applicable on subsequent payments.</li>
 
-        <p>(i) Amount of 30% of the total consideration to be paid to the Vendor after the execution of Agreement.</p><br>
-        <p>(ii) Amount of 45% of the total consideration to be paid to the Vendor on completion of the Plinth of the building or wing in which the said Property is located.</p><br>
-        <p>(iii) Amount of 70% of the total consideration to be paid to the Vendor on completion of the slabs including podiums and stilts of the building or wing in which the said Property is located.</p><br>
-        <p>(iv) Amount of 75% of the total consideration to be paid to the Vendor on completion of the walls, internal plaster, floorings doors and windows of the said Property.</p><br>
-        <p>(v) Amount of 80% of the total consideration to be paid to the Vendor on completion of the Sanitary fittings, stair cases, lift wells, lobbies up to the floor level of the said Property.</p><br>
-        <p>(vi) Amount of 85% of the total consideration to be paid to the Vendor on completion of the external plumbing and external plaster, elevation, terraces with waterproofing of the building or wing in which the said Property is located.</p><br>
-        <p>(vii) Amount of 95% of the total consideration to be paid to the Vendor on completion of the lifts, water pumps, electrical fittings, electro, mechanical and environment requirements, entrance lobby/s, plinth protection, paving of areas appertain and all other requirements as may be prescribed in the Agreement of sale of the building or wing in which the said Property is located.</p><br>
-        <p>(viii) Balance Amount against and at the time of handing over of the possession of the Property to the Purchaser on or after receipt of B.U.Permission / completion certificate.</p><br>
-
-        <p>(3) The total consideration price as stated above excludes Taxes (consisting of tax paid or payable by the Vendor by way of Goods and Service Tax, and Cess or any other similar taxes which may be levied, in connection with the construction of and carrying out the project payable by the Vendor) up to the date of handing over the possession of the Said Property, which shall be separately / payable by the Purchaser in the manner as may be decided by the Vendor.</p><br>
-
-        <p>(4) The total consideration price is escalation-free, save and except escalations/increases, due to increase on account of development charges payable to the competent authority and/or any other increase in charges which may be levied or imposed by the competent authority Local Bodies / Government from time to time. The Vendor undertakes and agrees that while raising a demand on the Purchaser for increase in development charges, cost, or levies imposed by the competent authorities, etc., the Vendor shall enclose the said notification / order / rule / regulation published / issued in that behalf to that effect along with the demand letter being issued to the Purchaser, Which shall only be applicable on subsequent payments.</p><br>
-
-        <p>(5) REPRESENTATION AND WARRANTIES OF THE VENDOR:</p>
-        <p>(i) The Vendor has clear and marketable title with respect to the said land; as declared in the title report and has the requisite rights to carry out development upon the said land and also has actual, physical and legal possession of the said land for the implementation of the said scheme;</p><br>
-        <p>(ii) The Vendor has lawful rights and requisite approvals from the competent Authorities to carry out development of the said scheme and shall obtain requisite approvals from time to time to complete the development of the project;</p><br>
-        <p>(iii) There are no encumbrances upon the Project Land or the Project except those disclosed in the Title Report;</p><br>
-        <p>(iv) There are no litigations pending before any Court of law with respect to the said land or said scheme except those disclosed in the title report;</p><br>
-        <p>(v) All approvals, licenses and permits issued by the competent authorities with respect to the said scheme, said land and said building / wing are valid and subsisting and have been obtained by following due process of law. Further, all approvals, licenses and permits to be issued by the competent authorities with respect to the Project, project land and said building / wing shall be obtained by following due process of law and the Vendor has been and shall, at all times, remain to be in compliance with all applicable laws in relation to the Project, project land, Building / wing and common areas;</p><br>
-        <p>(vi) The Vendor has the right to enter into this Agreement and has not committed or omitted to perform any act or thing, whereby the right, title and interest of the Purchaser created herein, may prejudicially be affected;</p><br>
-        <p>(vii) The Vendor has not entered into any agreement for sale and/or development agreement or any other agreement/ arrangement with any person or party with respect to the said land, including the said scheme and the said property which will, in any manner, affect the rights of Purchaser under this Agreement;</p><br>
-        <p>(viii) The Vendor declares that the Vendor is not restricted in any manner whatsoever from selling the said property to the purchaser in the manner contemplated in this Agreement;</p><br>
-
+        <li>REPRESENTATION AND WARRANTIES OF THE VENDOR:</li>
+        <ol type="i">
+        <li>The Vendor has clear and marketable title with respect to the said land; as declared in the title report and has the requisite rights to carry out development upon the said land and also has actual, physical and legal possession of the said land for the implementation of the said scheme;</li>
+        <li>The Vendor has lawful rights and requisite approvals from the competent Authorities to carry out development of the said scheme and shall obtain requisite approvals from time to time to complete the development of the project;</li>
+        <li>There are no encumbrances upon the Project Land or the Project except those disclosed in the Title Report;</li>
+        <li>There are no litigations pending before any Court of law with respect to the said land or said scheme except those disclosed in the title report;</li>
+        <li>All approvals, licenses and permits issued by the competent authorities with respect to the said scheme, said land and said building / wing are valid and subsisting and have been obtained by following due process of law. Further, all approvals, licenses and permits to be issued by the competent authorities with respect to the Project, project land and said building / wing shall be obtained by following due process of law and the Vendor has been and shall, at all times, remain to be in compliance with all applicable laws in relation to the Project, project land, Building / wing and common areas;</li>
+        <li>The Vendor has the right to enter into this Agreement and has not committed or omitted to perform any act or thing, whereby the right, title and interest of the Purchaser created herein, may prejudicially be affected;</li>
+        <li>The Vendor has not entered into any agreement for sale and/or development agreement or any other agreement/ arrangement with any person or party with respect to the said land, including the said scheme and the said property which will, in any manner, affect the rights of Purchaser under this Agreement;</li>
+        <li>The Vendor declares that the Vendor is not restricted in any manner whatsoever from selling the said property to the purchaser in the manner contemplated in this Agreement;</li>
+        </ol>
         <p>(6) The vendor will have to complete the construction of the said scheme as per the approved plan till 31-12-2026 and will have to obtain B.U.Permission / completion certificate.</p><br>
 
         <p>(7) The Purchaser will not store in the said property any goods which are of hazardous, combustible or dangerous nature or are so heavy as to damage the construction or structure of the building in which the said property is situated or storing of which goods is objected to by the concerned local or other authority and shall take care while carrying heavy packages which may damage or likely to damage the staircases, common passages or any other structure of the building in which the said property is situated, including entrances of the building in which the said property is situated and in case any damage is caused to the building in which the Said Property is situated or the Said Property on account of negligence or default of the Purchaser in this behalf, the Purchaser shall be liable for the consequences of this breach.</p><br>
@@ -15835,8 +16047,8 @@ class Purchase_model extends App_Model
         <p>Details of Vendor : as per this agreement.</p>
         <p>It shall be the duty of the Purchaser and the Vendor to inform each other of any change in address subsequent to the execution of this Agreement in the above address by Registered Post failing which all communications and letters posted at the above address shall be deemed to have been received by the Vendor or the Purchaser, as the case may be.</p><br>
 
-        <p>(33) The out of pocket expenses, costs, and charges of and incidental to this agreement and the conveyance to be executed hereafter or for any writing declaration indemnity etc. such as stamp duty, registration fee, GST and all other taxes and also fees of Advocate / Solicitor for obtaining Title Clearance Certificate of the said property shall be borne by the party of the SECOND PART Only.</p><br>
-
+        <li>The out of pocket expenses, costs, and charges of and incidental to this agreement and the conveyance to be executed hereafter or for any writing declaration indemnity etc. such as stamp duty, registration fee, GST and all other taxes and also fees of Advocate / Solicitor for obtaining Title Clearance Certificate of the said property shall be borne by the party of the SECOND PART Only.</li>
+        </ol>
         <p><strong>SCHEDULE ABOVE REFERRED TO</strong></p>
         <p>(Description of the said Immovable Vendor)</p>
 
@@ -15873,6 +16085,8 @@ class Purchase_model extends App_Model
         <p>Signature, Photograph and Thumb Impression of Second Part:-</p><br><br><br><br><br><br>
         <br><br><br><br><br>
         <br>
+        </body>
+        </html>
         HTML;
 
         return $html;
@@ -16258,7 +16472,7 @@ class Purchase_model extends App_Model
         if (isset($customer['property_id'])) {
             $banakhat_details = get_banakhat_details($customer['property_id'], $flat_name, $block_name, $floor_name);
         }
-       
+
         // Helper escape
         $esc = static function ($v) {
             return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
@@ -16768,12 +16982,12 @@ class Purchase_model extends App_Model
         }
         
         body {
-            font-family: Arial, sans-serif;
             font-size: 12px;
             line-height: 1.5;
             color: var(--fg);
             margin: 0;
             padding: 15px;
+            text-align: justify;
         }
         
         h1, h2, h3, h4 { 
@@ -16912,6 +17126,14 @@ class Purchase_model extends App_Model
         .spacer {
             height: 50px;
         }
+        p{
+            line-height:1.5;
+            text-align: justify;
+        }
+        li{
+            line-height:1.5;
+            text-align: justify;
+        }
         
         @media print {
             .page-break {
@@ -16930,7 +17152,7 @@ class Purchase_model extends App_Model
     </style>
 </head>
 <body>
-    <h1>SALE DEED</h1>
+    <h1 style="text-align: center;">SALE DEED</h1>
     <div class="subtitle">Kautilya OnE-54 • RERA No. PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA10980/291122</div>
     
     <div class="section box">
@@ -17004,10 +17226,10 @@ class Purchase_model extends App_Model
         </thead>
         <tbody>
             <tr>
-                <td>{$AMOUNT}</td>
-                <td>{$AMOUNT_WORDS}</td>
-                <td>{$BANK_NAME}</td>
-                <td>{$PAYMENT_DATE}</td>
+                <td style="width: 22%;">{$AMOUNT}</td>
+                <td style="width: 38%;">{$AMOUNT_WORDS}</td>
+                <td style="width: 22%;">{$BANK_NAME}</td>
+                <td style="width: 18%;">{$PAYMENT_DATE}</td>
             </tr>
             <tr>
                 <th colspan="3" class="right">TOTAL CONSIDERATION: {$AMOUNT}/- ({$AMOUNT_WORDS} only)</th>
@@ -17025,15 +17247,15 @@ class Purchase_model extends App_Model
     </strong>
 
     <ol type="1">
-        <li>1. The recitals above form an integral part of these presents, and are not repeated in the operative part only for the sake of brevity and to avoid repetition, and should be deemed to have been incorporated in the operative part of these presents, as if the same were reproduced herein verbatim.</li>
-        <li>2. THE PURCHASER declares that this Sale deed has been executed by the Purchaser out of his free will and consent and understanding full meaning and implications of the provisions contained herein.</li>
-        <li>3. THE SELLER has immediately before the execution hereof handed over to THE PURCHASER his / their possession of the Said Premises duly completed in all respect, and in a good, proper condition with sanitary fixtures, hardware fittings, electrical wiring and all other required facilities, services and amenities as per the plans, specifications and designs accepted by THE PURCHASER.</li>
-        <li>4. The Said Premises is part of the scheme. The same is sold to THE PURCHASER, and as per the rules, regulations, terms, conditions, provisions and stipulations of the scheme approved and accepted by THE PURCHASER at the time of Sale deed of the same, recorded in a form of agreement, approved, accepted and confirmed by THE PURCHASER, also separated recorded simultaneously with the execution hereof, and the same are treated as part and parcel hereof as if incorporated herein verbatim. THE PURCHASER, of the said scheme hereby agrees to observe and abide by the rules, regulations and byelaws of the scheme, including the rules and regulations for use and enjoyment of the common amenities, facilities, conveniences and structures erected at the cost of all the Purchasers for their common use and enjoyment.</li>
-        <li>5. THE PURCHASER hereby declares that the construction of the Said Premises and the said Project - Scheme in general is in accordance with the plans, specifications, design and detailed drawings, seen and agreed by THE PURCHASER. THE PURCHASER hereby confirms and records that they have no complaint or grievance for the materials used in the construction of the said Premises and the said Project-Scheme in general. THE PURCHASER was given effective opportunities to inspect and verify all facts and particulars through such person or person's expert in the subject as Purchaser desired, and all such opportunities were exploited and utilized by THE PURCHASER. It has been specifically agreed by THE PURCHASER that THE PURCHASER shall not be entitled to make any complaint or raise any dispute or grievance in the matter of the plans, specifications, design, and materials used in the construction of the Said Premises, the said Project-Scheme in general & also pertaining to the saleable area of the apartment.</li>
-        <li>6. THE PURCHASER, of the said scheme hereby agrees to observe and abide by the rules, regulations and byelaws of the scheme, including the rules and regulations for use and enjoyment of the common amenities, facilities, conveniences and structures erected at the cost of all the Purchasers for their common use and enjoyment.</li>
-        <li>7. AND THAT THE PURCHASER shall and may at all time hereafter peaceably and quietly enter upon have occupy, possess and enjoy the said Unit and receive the rents and profits thereof and of every part thereof to and for him / her / them use and benefit without any suit, eviction, interruption, claim or demand whatsoever from or by the VENDOR or any of its present and future Partners, authorized signatories, legal representative and assignees or any of them or claiming by, from under or in trust for their or any them.</li>
-        <li>8. THE VENDOR covenants with the purchaser that no litigation or proceedings of any nature concerning it or the said property are pending before any judicial, quasi judicial or Government authorities and that the said property is not under any acquisition, requisition or any reservation for any purpose whatsoever and that no one else has any rights including right of maintenance from and over the said property, and that no lien, charge or mortgage exists on the said property.</li>
-        <li>9. That the Purchaser agrees to abide by the rules, regulations and resolutions of the Service Society and assures that he / she / they shall not commit any breach of the same. Moreover terms and conditions of all other deeds like Agreement for Sale, Possession Declaration, etc shall also be binding upon the Purchaser and it transferee. The Purchaser agrees that he / she / they has / have not become free, independent and absolute owner of the said Unit, but the said Unit is to be occupied by him / her / them as a member of the Service Society pursuant to the Share Certificate given to him / her / them by this Deed from Service Society. Therefore the use and transfer etc of this property shall be in accordance with the rules and regulations of the Service Society.</li>
+        <li>The recitals above form an integral part of these presents, and are not repeated in the operative part only for the sake of brevity and to avoid repetition, and should be deemed to have been incorporated in the operative part of these presents, as if the same were reproduced herein verbatim.</li>
+        <li>THE PURCHASER declares that this Sale deed has been executed by the Purchaser out of his free will and consent and understanding full meaning and implications of the provisions contained herein.</li>
+        <li>THE SELLER has immediately before the execution hereof handed over to THE PURCHASER his / their possession of the Said Premises duly completed in all respect, and in a good, proper condition with sanitary fixtures, hardware fittings, electrical wiring and all other required facilities, services and amenities as per the plans, specifications and designs accepted by THE PURCHASER.</li>
+        <li>The Said Premises is part of the scheme. The same is sold to THE PURCHASER, and as per the rules, regulations, terms, conditions, provisions and stipulations of the scheme approved and accepted by THE PURCHASER at the time of Sale deed of the same, recorded in a form of agreement, approved, accepted and confirmed by THE PURCHASER, also separated recorded simultaneously with the execution hereof, and the same are treated as part and parcel hereof as if incorporated herein verbatim. THE PURCHASER, of the said scheme hereby agrees to observe and abide by the rules, regulations and byelaws of the scheme, including the rules and regulations for use and enjoyment of the common amenities, facilities, conveniences and structures erected at the cost of all the Purchasers for their common use and enjoyment.</li>
+        <li>THE PURCHASER hereby declares that the construction of the Said Premises and the said Project - Scheme in general is in accordance with the plans, specifications, design and detailed drawings, seen and agreed by THE PURCHASER. THE PURCHASER hereby confirms and records that they have no complaint or grievance for the materials used in the construction of the said Premises and the said Project-Scheme in general. THE PURCHASER was given effective opportunities to inspect and verify all facts and particulars through such person or person's expert in the subject as Purchaser desired, and all such opportunities were exploited and utilized by THE PURCHASER. It has been specifically agreed by THE PURCHASER that THE PURCHASER shall not be entitled to make any complaint or raise any dispute or grievance in the matter of the plans, specifications, design, and materials used in the construction of the Said Premises, the said Project-Scheme in general & also pertaining to the saleable area of the apartment.</li>
+        <li>THE PURCHASER, of the said scheme hereby agrees to observe and abide by the rules, regulations and byelaws of the scheme, including the rules and regulations for use and enjoyment of the common amenities, facilities, conveniences and structures erected at the cost of all the Purchasers for their common use and enjoyment.</li>
+        <li>AND THAT THE PURCHASER shall and may at all time hereafter peaceably and quietly enter upon have occupy, possess and enjoy the said Unit and receive the rents and profits thereof and of every part thereof to and for him / her / them use and benefit without any suit, eviction, interruption, claim or demand whatsoever from or by the VENDOR or any of its present and future Partners, authorized signatories, legal representative and assignees or any of them or claiming by, from under or in trust for their or any them.</li>
+        <li>THE VENDOR covenants with the purchaser that no litigation or proceedings of any nature concerning it or the said property are pending before any judicial, quasi judicial or Government authorities and that the said property is not under any acquisition, requisition or any reservation for any purpose whatsoever and that no one else has any rights including right of maintenance from and over the said property, and that no lien, charge or mortgage exists on the said property.</li>
+        <li>That the Purchaser agrees to abide by the rules, regulations and resolutions of the Service Society and assures that he / she / they shall not commit any breach of the same. Moreover terms and conditions of all other deeds like Agreement for Sale, Possession Declaration, etc shall also be binding upon the Purchaser and it transferee. The Purchaser agrees that he / she / they has / have not become free, independent and absolute owner of the said Unit, but the said Unit is to be occupied by him / her / them as a member of the Service Society pursuant to the Share Certificate given to him / her / them by this Deed from Service Society. Therefore the use and transfer etc of this property shall be in accordance with the rules and regulations of the Service Society.</li>
     </ol>
     
     <strong>
@@ -17043,79 +17265,79 @@ class Purchase_model extends App_Model
     <p>The Purchaser irrevocably agrees that he / she / they has / have purchased the said Unit with condition to be a Member of Service Society and on the following terms and conditions and Purchaser hereby agree, confirm, and accept following conditions, restrictions, provisions, stipulations to be observed and performed by the Purchaser :</p>
 
     <ol type="1">
-        <li>1. THAT the property known as <strong>"KAUTILYA ONE-54"</strong> is belonging to and shall always belong to all unit holders i.e. Residential and Commercial Unit Holders of the said scheme. The Purchaser will have ownership right of the Unit sold to him / her / them by Vendor. The Purchaser has to be a member of Service Society. Purchaser has to use common amenities strictly as per rules framed by Service Society.</li>
-        <li>2. THE PURCHASER accepts and confirm that the said Unit is duly complete in all respect, and in a good, proper and complete condition with fixtures, fittings electrical wiring and other required amenities, facilities and services as per the plans, specifications and designs seen and approved by THE PURCHASER.</li>
-        <li>3. THE PURCHASER agrees and confirms that he / she / they have examined the quality of construction and common amenities provided in the said scheme and THE PURCHASER is fully satisfied about the same . THE PURCHASER was given effective opportunities to inspect and verify all facts and particulars through such person or persons expert in the subject as THE PURCHASER desired. THE PURCHASER declares that he / she has no complaint or grievance of any nature whatsoever for the quality of construction and the materials used.</li>
-        <li>4. It has been specifically agreed by THE PURCHASER that THE PURCHASER shall not be here after entitled to make any complaint or raise any dispute or grievance about the plans, specifications, design, materials used in the construction and workmanship of the said Unit and the said project in general.</li>
-        <li>5. The area of the said <strong>Unit No.{$flat_name}</strong> is admeasuring <strong>{$CARPET_AREA} Sq.mtrs. total Carpet Area</strong> [As per Rules of Real Estate (Regulation and Development) Act, 2016].</li>
-        <li>6. There is no consideration in cash or kind for the said Unit, not appearing on record, paid or given or agreed to paid or given by THE PURCHASER to THE VENDOR or the Vendors.</li>
-        <li>7. It has been specifically agreed that consideration or price fixed between THE VENDOR and PURCHASER is one and composite amount for the said Unit and the PURCHASER is not entitled for any running or separate details or particulars of land, construction, development, infrastructure, etc. THE PURCHASER is not entitled for any running or separate details or particulars of land, construction, development infrastructure etc.</li>
-        <li>8. Over and above the sale consideration the Purchaser agree to bear and pay to Vendor / Service Society, any amount in any from whatsoever levied, charged or imposed by any authority or authorities whomsoever; immediately on demand by Vendor / Service Society, from time to time, proportionately in respect of the said Unit.</li>
-        <li>9. THE PURCHASER has been conveyed the said undivided land and the said Unit. THE VENDOR has made aware to THE PURCHASER that they are proposing to dispose off the other Units in the said project to different other persons. THE VENDOR shall have right to dispose of these other Units in such manner at such consideration and on such terms and conditions, as THE VENDORS may deem fit.</li>
-        <li>10. The expression "Said Unit" sold or given to THE PURCHASER herein shall be read, understood, interpreted and implemented with the spirit and intention, thereof for his / her / their use, occupation and enjoyment.</li>
-        <li>11. The Purchaser has clearly understood and agreed that the Unit-Holders of Unit No. A-101, A-102, A-103, A-104, B-101, B-102, B-103, B-104, C-101, C-102, C-103, C-104, D-101, D-102, D-103 & D-104 have got ingress and outgress to the terrace. None of the other Unit-holders of the said scheme have any right on the terrace. Another extra terrace will be common for all Unit-Holders. Unit-Holder of Unit No. A-101, A-102, A-103, A-104, B-101, B-102, B-103, B-104, C-101, C-102, C-103, C-104, D-101, D-102, D-103 & D-104 are not entitled to make any construction on said terrace. The Purchaser agrees and confirms the said condition and in future the Prospective Purchaser will not make any dispute or demand for the said permanent arrangement. The Unit-Holder shall allow the First Party / Maintenance Society to use the terrace for any utilities repairs and he / she / they is / are not entitled to raise any objection for the same.</li>
-        <li>12. THE PURCHASER has satisfied themselves / himself about the title of the Said Property / Said Premises and he / she / they shall not be entitled to further investigate and no requisition or objection shall be raised in any matters relating to the same. THE PURCHASER accepts such title; THE LAND SELLER has provided for the said land, as certified by Advocate and shall not raise any objection to or dispute the Land Seller's right, title, interest to the said land in future.</li>
-        <li>13. THE VENDOR or the Service Society shall have power and authority to regulate, control manage, govern, run, restrict the aforesaid scheme as regards time, quality, quantity, purpose or other related matters. THE PURCHASER shall be bound by the same. The decision of THE VENDOR or the Service Society formed by the THE VENDOR / UNIT-HOLDERS as regards the same shall be final and binding upon THE PURCHASER. The Service Society will consider the new Purchaser as a Member of said society and the said new Purchaser will have to comply with all rules and regulations.</li>
-        <li>14. Part of the said building is on the hollow plinth and the Residential Unit-holders are given 2 allotted Car Parking without any cost and Purchaser is not entitled to raise any objection in this regard. The Purchaser herein has agreed to such arrangement and waived his / her / their right and will not raise any objection of any nature to such arrangement in the future on any ground whatsoever.</li>
-        <li>15. All the common terrace above top floor of said project shall be permenantly under ownership of service society and any flat holder will not object to use the Open Terrace for any utilities repairs like overhead water tank or TV satellite dish etc. and they are not entitled to raise any objection for the same.</li>
-        <li>16. The right of the Purchaser herein shall be subject to the overall powers and authorities of First Party / Service Society, in any of the matter concerning the Unit scheme and development thereof and all amenities pertaining to the same and in particular First Party shall have absolute authority and control as regards the un-disposed Units till handing over the possession of the scheme to the Service Society and Settlement of all accounts.</li>
-        <li>17. The Purchaser shall have no claim and / or legal title with respect to any part of the said Scheme, including but not limited to its common roads, terrace, common infrastructure facilities, amenities, and services, save and except in respect of the Said Unit agreed to be conveyed for him / her / it / them, The Said Facilities shall always be of the possession of Service Society, and the Purchaser and other Unit-holders shall be permitted to use and enjoy the same as per the rules and regulation of Service Society from time to time.</li>
-        <li>18. The Purchaser shall be bound from time to time to sign papers or documents and to do all other things as Service Society may require him / her / it / them to do from time to time to safeguard the maintenance of common amenities of the said scheme and failing which the Service Society is authorized to take action to stop use of common amenities of the Unit-Holders who has committed default.<br>For safeguarding the interest of service Society and other Prospective Acquires. The rules and regulations of the Service Society shall be binding to the purchaser.</li>
-        <li>19.
+        <li>THAT the property known as <strong>"KAUTILYA ONE-54"</strong> is belonging to and shall always belong to all unit holders i.e. Residential and Commercial Unit Holders of the said scheme. The Purchaser will have ownership right of the Unit sold to him / her / them by Vendor. The Purchaser has to be a member of Service Society. Purchaser has to use common amenities strictly as per rules framed by Service Society.</li>
+        <li>THE PURCHASER accepts and confirm that the said Unit is duly complete in all respect, and in a good, proper and complete condition with fixtures, fittings electrical wiring and other required amenities, facilities and services as per the plans, specifications and designs seen and approved by THE PURCHASER.</li>
+        <li>THE PURCHASER agrees and confirms that he / she / they have examined the quality of construction and common amenities provided in the said scheme and THE PURCHASER is fully satisfied about the same . THE PURCHASER was given effective opportunities to inspect and verify all facts and particulars through such person or persons expert in the subject as THE PURCHASER desired. THE PURCHASER declares that he / she has no complaint or grievance of any nature whatsoever for the quality of construction and the materials used.</li>
+        <li>It has been specifically agreed by THE PURCHASER that THE PURCHASER shall not be here after entitled to make any complaint or raise any dispute or grievance about the plans, specifications, design, materials used in the construction and workmanship of the said Unit and the said project in general.</li>
+        <li>The area of the said <strong>Unit No.{$flat_name}</strong> is admeasuring <strong>{$CARPET_AREA} Sq.mtrs. total Carpet Area</strong> [As per Rules of Real Estate (Regulation and Development) Act, 2016].</li>
+        <li>There is no consideration in cash or kind for the said Unit, not appearing on record, paid or given or agreed to paid or given by THE PURCHASER to THE VENDOR or the Vendors.</li>
+        <li>It has been specifically agreed that consideration or price fixed between THE VENDOR and PURCHASER is one and composite amount for the said Unit and the PURCHASER is not entitled for any running or separate details or particulars of land, construction, development, infrastructure, etc. THE PURCHASER is not entitled for any running or separate details or particulars of land, construction, development infrastructure etc.</li>
+        <li>Over and above the sale consideration the Purchaser agree to bear and pay to Vendor / Service Society, any amount in any from whatsoever levied, charged or imposed by any authority or authorities whomsoever; immediately on demand by Vendor / Service Society, from time to time, proportionately in respect of the said Unit.</li>
+        <li>THE PURCHASER has been conveyed the said undivided land and the said Unit. THE VENDOR has made aware to THE PURCHASER that they are proposing to dispose off the other Units in the said project to different other persons. THE VENDOR shall have right to dispose of these other Units in such manner at such consideration and on such terms and conditions, as THE VENDORS may deem fit.</li>
+        <li>The expression "Said Unit" sold or given to THE PURCHASER herein shall be read, understood, interpreted and implemented with the spirit and intention, thereof for his / her / their use, occupation and enjoyment.</li>
+        <li>The Purchaser has clearly understood and agreed that the Unit-Holders of Unit No. A-101, A-102, A-103, A-104, B-101, B-102, B-103, B-104, C-101, C-102, C-103, C-104, D-101, D-102, D-103 & D-104 have got ingress and outgress to the terrace. None of the other Unit-holders of the said scheme have any right on the terrace. Another extra terrace will be common for all Unit-Holders. Unit-Holder of Unit No. A-101, A-102, A-103, A-104, B-101, B-102, B-103, B-104, C-101, C-102, C-103, C-104, D-101, D-102, D-103 & D-104 are not entitled to make any construction on said terrace. The Purchaser agrees and confirms the said condition and in future the Prospective Purchaser will not make any dispute or demand for the said permanent arrangement. The Unit-Holder shall allow the First Party / Maintenance Society to use the terrace for any utilities repairs and he / she / they is / are not entitled to raise any objection for the same.</li>
+        <li>THE PURCHASER has satisfied themselves / himself about the title of the Said Property / Said Premises and he / she / they shall not be entitled to further investigate and no requisition or objection shall be raised in any matters relating to the same. THE PURCHASER accepts such title; THE LAND SELLER has provided for the said land, as certified by Advocate and shall not raise any objection to or dispute the Land Seller's right, title, interest to the said land in future.</li>
+        <li>THE VENDOR or the Service Society shall have power and authority to regulate, control manage, govern, run, restrict the aforesaid scheme as regards time, quality, quantity, purpose or other related matters. THE PURCHASER shall be bound by the same. The decision of THE VENDOR or the Service Society formed by the THE VENDOR / UNIT-HOLDERS as regards the same shall be final and binding upon THE PURCHASER. The Service Society will consider the new Purchaser as a Member of said society and the said new Purchaser will have to comply with all rules and regulations.</li>
+        <li>Part of the said building is on the hollow plinth and the Residential Unit-holders are given 2 allotted Car Parking without any cost and Purchaser is not entitled to raise any objection in this regard. The Purchaser herein has agreed to such arrangement and waived his / her / their right and will not raise any objection of any nature to such arrangement in the future on any ground whatsoever.</li>
+        <li>All the common terrace above top floor of said project shall be permenantly under ownership of service society and any flat holder will not object to use the Open Terrace for any utilities repairs like overhead water tank or TV satellite dish etc. and they are not entitled to raise any objection for the same.</li>
+        <li>The right of the Purchaser herein shall be subject to the overall powers and authorities of First Party / Service Society, in any of the matter concerning the Unit scheme and development thereof and all amenities pertaining to the same and in particular First Party shall have absolute authority and control as regards the un-disposed Units till handing over the possession of the scheme to the Service Society and Settlement of all accounts.</li>
+        <li>The Purchaser shall have no claim and / or legal title with respect to any part of the said Scheme, including but not limited to its common roads, terrace, common infrastructure facilities, amenities, and services, save and except in respect of the Said Unit agreed to be conveyed for him / her / it / them, The Said Facilities shall always be of the possession of Service Society, and the Purchaser and other Unit-holders shall be permitted to use and enjoy the same as per the rules and regulation of Service Society from time to time.</li>
+        <li>The Purchaser shall be bound from time to time to sign papers or documents and to do all other things as Service Society may require him / her / it / them to do from time to time to safeguard the maintenance of common amenities of the said scheme and failing which the Service Society is authorized to take action to stop use of common amenities of the Unit-Holders who has committed default.<br>For safeguarding the interest of service Society and other Prospective Acquires. The rules and regulations of the Service Society shall be binding to the purchaser.</li>
+        <li>
             <ol type="i">
-                <li>(i) THE PURCHASER after execution of Sale Deed shall be responsible and liable to bear and pay, at actual, all Taxes, Cesses, dues and impostiotions of every description of AMC, and / or any other public bodies and authorities, which directly or indirectly relate to or pertain to the said unit and undivided share in land and also to pay propor tionate share of maintenance which will be maintained by the Service Society.</li>
-                <li>(ii) All common expenses and outgoings of security, sweeping, cleaning, lighting, maintenance, repair, replacement etc, of the said project, and amenities, facilities, services, conveniences, utilities and infrastructure therein; common expenses of administrative, management, staff, personals, maintenance of accounts and records and other similar or other related matter (all common interest matters); and any other expenses of common nature, as may be fixed by the Ser vice Society, shall be bor ne and paid by THE PURCHASER and purchasers of other units in said scheme.</li>
+                <li>THE PURCHASER after execution of Sale Deed shall be responsible and liable to bear and pay, at actual, all Taxes, Cesses, dues and impostiotions of every description of AMC, and / or any other public bodies and authorities, which directly or indirectly relate to or pertain to the said unit and undivided share in land and also to pay propor tionate share of maintenance which will be maintained by the Service Society.</li>
+                <li>All common expenses and outgoings of security, sweeping, cleaning, lighting, maintenance, repair, replacement etc, of the said project, and amenities, facilities, services, conveniences, utilities and infrastructure therein; common expenses of administrative, management, staff, personals, maintenance of accounts and records and other similar or other related matter (all common interest matters); and any other expenses of common nature, as may be fixed by the Ser vice Society, shall be bor ne and paid by THE PURCHASER and purchasers of other units in said scheme.</li>
             </ol>
         </li>
-        <li>20. So long as the said Unit shall not be separately assessed for Taxes, water rates, electric bills, etc., the purchaser shall pay of Service Society such amount as may be fixed from time to time, in advance towards such payment, A.M.C. Taxes and other outgoings. Further, until the said Unit, can separately be assessed for payment of cost, charges and expenses, the purchaser shall continue to pay proportionate portion of such amount, cost, charges and expenses and amy be fixed by service Society from time to time. After the Said Unit is separately assessed, then such payments will have to be made by the purchaser on actual basis.</li>
-        <li>21. The Purchaser will have undivided right to use common facilities and amenities etc. with other purchasers of the said scheme but the said facilities are used in a proper way so that other Purchasers may not have any grievance / difficulty.</li>
-        <li>22. It is hereby agreed that the Purchaser shall not put or allow to be put any Name Plate, Sign Board and / or any other kind of display of any nature, on the compound wall, gate and / or on the exterior side of the development to be planned and / or in the open space in the said Unit without the written consent of First Party / Service Society except it is provided by the First Party.</li>
-        <li>23. That the Purchaser shall use the said Unit only for residential purpose which is sanctioned by Ahmedabad Municipal Corporation as residential Units and residential unit holders will have right to use the basement parking, common plot and common amenities of residential part.</li>
-        <li>24. In said project seller has made basements for residential unit holder parking and Hence the residential unit holders will have no right to park vehicles in front of commercial units and their margin area. The Commercial unit holders will have right to park their vehicles in the front of the commercial space / shop only and hence the Commercial unit holders will have no right to enter in the residential / Basement parking area to park their vehicles or enjoy the facilities of residential part except for repairs and maintenance of common electric and water amenities. Residential unit holder shall have to park their vehicles at First celler & Second celler as per arrangement done by service society. All the unit holders confirms and shall have to manage that visitors of their unit park their vehicles out side of said scheme.</li>
-        <li>25. The Purchaser hereby covenants to keep the Said Unit neat, clean and tidy and saved and protected from trespasser, from being illegally used or occupied and to keep construction, sewers, drains, pipes, appurtenances belonging thereto in a good and tenable condition so as to support and protect the part of the building structure other than their said Unit/s.</li>
-        <li>26. After conveyance of the Said Unit to the Purchaser, the Purchaser shall be entitled to let, sub-let, sell, transfer, convey, mortgage, charge or in any way encumber or deal with or dispose of the Said Unit, after obtaining prior written permission of Service Society and subject to and in accordance with the terms and conditions laid down by First Party. In the event the Purchaser is desirous of selling the Said Unit he / she / It / they shall comply with the following :-
+        <li>So long as the said Unit shall not be separately assessed for Taxes, water rates, electric bills, etc., the purchaser shall pay of Service Society such amount as may be fixed from time to time, in advance towards such payment, A.M.C. Taxes and other outgoings. Further, until the said Unit, can separately be assessed for payment of cost, charges and expenses, the purchaser shall continue to pay proportionate portion of such amount, cost, charges and expenses and amy be fixed by service Society from time to time. After the Said Unit is separately assessed, then such payments will have to be made by the purchaser on actual basis.</li>
+        <li>The Purchaser will have undivided right to use common facilities and amenities etc. with other purchasers of the said scheme but the said facilities are used in a proper way so that other Purchasers may not have any grievance / difficulty.</li>
+        <li>It is hereby agreed that the Purchaser shall not put or allow to be put any Name Plate, Sign Board and / or any other kind of display of any nature, on the compound wall, gate and / or on the exterior side of the development to be planned and / or in the open space in the said Unit without the written consent of First Party / Service Society except it is provided by the First Party.</li>
+        <li>That the Purchaser shall use the said Unit only for residential purpose which is sanctioned by Ahmedabad Municipal Corporation as residential Units and residential unit holders will have right to use the basement parking, common plot and common amenities of residential part.</li>
+        <li>In said project seller has made basements for residential unit holder parking and Hence the residential unit holders will have no right to park vehicles in front of commercial units and their margin area. The Commercial unit holders will have right to park their vehicles in the front of the commercial space / shop only and hence the Commercial unit holders will have no right to enter in the residential / Basement parking area to park their vehicles or enjoy the facilities of residential part except for repairs and maintenance of common electric and water amenities. Residential unit holder shall have to park their vehicles at First celler & Second celler as per arrangement done by service society. All the unit holders confirms and shall have to manage that visitors of their unit park their vehicles out side of said scheme.</li>
+        <li>The Purchaser hereby covenants to keep the Said Unit neat, clean and tidy and saved and protected from trespasser, from being illegally used or occupied and to keep construction, sewers, drains, pipes, appurtenances belonging thereto in a good and tenable condition so as to support and protect the part of the building structure other than their said Unit/s.</li>
+        <li>After conveyance of the Said Unit to the Purchaser, the Purchaser shall be entitled to let, sub-let, sell, transfer, convey, mortgage, charge or in any way encumber or deal with or dispose of the Said Unit, after obtaining prior written permission of Service Society and subject to and in accordance with the terms and conditions laid down by First Party. In the event the Purchaser is desirous of selling the Said Unit he / she / It / they shall comply with the following :-
             <ol type="i">
-                <li>[i] The Purchaser shall pay Transfer Fee as per rules of Service Society.</li>
-                <li>[ii] Declaration cum Indemnity Bond to be obtained from New Purchaser ensuring that all terms and conditions, otherwise binding to the Purchaser shall also be binding to the New Purchaser.</li>
+                <li>The Purchaser shall pay Transfer Fee as per rules of Service Society.</li>
+                <li>Declaration cum Indemnity Bond to be obtained from New Purchaser ensuring that all terms and conditions, otherwise binding to the Purchaser shall also be binding to the New Purchaser.</li>
             </ol>
         </li>
-        <li>27. THE PURCHASER shall permit THE VENDOR or to its order the Service Society and / or its surveyors and agents with or without workmen and others at all reasonable time to enter into and upon the Said Unit or any part of the building and for the purpose of making repairing, maintaining, re-building, cleaning, lighting and keeping in order and good condition all services, drains, pipes, cables, water covers, gutters, wires, or other conveniences belonging to or used for the building/s and also for the purpose of laying down, maintaining, repairing, re-constructing, replacing and testing drainage, gas and water pipe ; and electric wires and for similar or other purposes. The Purchaser shall have to repair or change any common amenities which is damage caused by purchaser or agent of purchaser. If purchaser fails to repair such damage service society shall repair such damage at cost of purchaser.</li>
-        <li>28.
+        <li>THE PURCHASER shall permit THE VENDOR or to its order the Service Society and / or its surveyors and agents with or without workmen and others at all reasonable time to enter into and upon the Said Unit or any part of the building and for the purpose of making repairing, maintaining, re-building, cleaning, lighting and keeping in order and good condition all services, drains, pipes, cables, water covers, gutters, wires, or other conveniences belonging to or used for the building/s and also for the purpose of laying down, maintaining, repairing, re-constructing, replacing and testing drainage, gas and water pipe ; and electric wires and for similar or other purposes. The Purchaser shall have to repair or change any common amenities which is damage caused by purchaser or agent of purchaser. If purchaser fails to repair such damage service society shall repair such damage at cost of purchaser.</li>
+        <li>
             <ol type="a">
-                <li>a) THE PURCHASER shall not make any changes in the elevations and outside color scheme of the Said Unit and shall not decorate the exterior of his / her / their Unit other than in the manner in which the same was previously decorated.</li>
-                <li>b) THAT the Purchaser shall not throw dirt, rubbish, garbage, trash or any other refuse or permit the same to be thrown out from his / her / it / their property in the common passages, balconies, compound or any portion of the said Scheme.</li>
+                <li> THE PURCHASER shall not make any changes in the elevations and outside color scheme of the Said Unit and shall not decorate the exterior of his / her / their Unit other than in the manner in which the same was previously decorated.</li>
+                <li> THAT the Purchaser shall not throw dirt, rubbish, garbage, trash or any other refuse or permit the same to be thrown out from his / her / it / their property in the common passages, balconies, compound or any portion of the said Scheme.</li>
             </ol>
         </li>
-        <li>29. THE PURCHASER shall not make any temporary or permanent additions and alterations in the structure of the Unit, not call to do anything which may cause damage or which may the structure of the Building / Unit, like slab, columns, beams, load bearing walls, etc., Similarly, THE PURCHASER shall not also, cover the balcony.<br>
+        <li>THE PURCHASER shall not make any temporary or permanent additions and alterations in the structure of the Unit, not call to do anything which may cause damage or which may the structure of the Building / Unit, like slab, columns, beams, load bearing walls, etc., Similarly, THE PURCHASER shall not also, cover the balcony.<br>
             THE PURCAHSER shall not hang clothes and other articles in the balcony or out-side view of building or otherwise shall not do anything which in the opinion of Service Society does not give proper decorum and decency to the Building/Project.
         </li>
-        <li>30. THAT Purchaser shall not alter / change the size and shape of the door, windows, shutter etc and shall not make any hole or new window to fix air conditioner and shall put the air - conditioner at the specified place and shall not damage the partition walls, common walls, flooring ceiling etc of the said Unit.</li>
-        <li>31. THE PURCHASER shall not change, or make any holes or openings, or draw or lay any wires, cables, pipes through, or in any other manner damage, the columns, beams, slabs or RCC pardis or walls or other structural changes of the said Unit or any part of the Project.</li>
-        <li>32. THAT the Purchaser is also aware that some of the walls of this unit/ flat are of single brick thickness, which may not be too much strong. If any damage is caused to such walls due to any act of his neighbors, Purchaser/s is likely to suffer damages. Purchaser agrees that he / she shall not claim it from the Vendor. Purchaser also assure to keep and maintain all walls of the unit in good conditions.</li>
-        <li>33. Similarly the leakage of water from the toilets, bathrooms and kitchen is also likely to happen in the said unit/flat as well as from the neighboring and upper units/flats. Leaked water / moisture is likely to appear on the walls of the unit and that may deteriorate the paining and plaster on the walls. Purchaser is / are aware that water is a substance which is likely to escape resulting into its leakage. Even if all safety measures are taken to seal the joints of pipes, sometimes it cannot be avoided. Leakage may be due to various reasons unconnected with construction. Use of Acids for cleanliness, vibration of heavy duty washing machines, mild earthquake jerks, hot water, hard water, rough use, etc are likely to damage pipelines, tiles and their joints. The joints of flooring tiles and wall tiles are also likely to be damaged by such use, any damage in the unit due to leakage of water and its various other bad effects.</li>
-        <li>34. That the doors of the units which are made of wood are likely to be swollen during monsoon due to humidity / damp and thereby can cause some hardship to the purchaser. It is due to act of nature. The Purchaser shall not be entitled to claim any damages on that ground. Similarly the purchaser shall not be entitled to recover any damages due to rusting of stoppers etc. as it is usual during monsoon / passage of time.</li>
-        <li>35. The Seller has installed lift in each Block & Purchaser unconditionally agrees that the Lift facility in this building shall be used as per rules of the society. It is to be economically used. The Purchaser as well as his / her / their employee shall not misuse the said lift and will take care about it and co-operate with society members / officials of the service society. One should take care that the children do not use the lift often to play. The quality of lift is good. But this is machine and it is no manufactured by the Vendor. Therefore during the use of the lift and even as a result of any defect or otherwise if any one is injured or receive other damages then the Service Society / Vendor / Seller shall not become responsible for it and purchaser and his / her / their heirs etc shall not demand and shall not be entitled to demand such damages / compensation from First Party / Service Society. In future all such lift license shall have to compulsorily renew by service society / members.</li>
-        <li>36. The seller has made borewell for use of residential & commercial units holder of the said project and all units holder have to same right on borewell and have to use it mutually agreed between residential & commercial units holder. All the common maintenance of the such borewell shall have to bear by service society only. As per approved plan seller has arranged ONE percolating well in the said project, Which shall have to maintain by service society and members. According to fire safety laws seller has installed fire safety equipments, Which are currently in properly working status. In future any of such common amenities not found working properly seller shall not held liable for non working of such equipments. All the Common amenities & equipments shall have to be properly & regularly maintained by service society / members. In future all such fire equipments license shall have to be compulsorily renew by service society / members.</li>
-        <li>37. THAT THE Purchaser or his / her / their employee, agents, contractors will not at any time demolish or cause to be done any additions / alternations / modifications of whatsoever nature to the said property or any part thereof which are likely to cause damage, hazard or structural deterioration to the said Unit, building or the neighboring Unit. The Purchaser shall not be permitted to put up anything or encroaching of passages or lounges or balconies or veranda's or make any alterations in the elevations and outside colour scheme of the property (including shutters) acquired by him / her / them. The Commercial Unit holders are not entitled to cover margin space by doing additional construction or not entitled to put advertisement on the shutters of the shops.</li>
-        <li>38. THE PURCHASER shall insure and keep insured the said unit against loss or damage by fire, earthquake, riot, war, flood, civil commotion, act of god or such other risks to the full value thereof in the name of THE PURCHASER with nationalized insurance company of repute having office at Ahmedabad, and whenever required he shall produce to THE VENDOR / Service Society the policy / policies of such insurance and the receipt for the last premium paid in respect thereof. In the event of the said unit being damaged or destroyed by fire / earthquake or otherwise the purchaser shall expend the insurance money for the repair, rebuilding or reinstatement of the said unit as soon as reasonable, practical and required.</li>
-        <li>39. The letters, receipts and / or notices issued by service Society dispatched by registered post / courier to the address of the purchaser as known to Service Society, will be sufficient proof of receipt of the same by the Purchaser and shall completely and effectively discharge Service Society.</li>
-        <li>40. The Scheme shall always be known as <strong>"KAUTILYA ONE-54"</strong>, and this name shall not be changed in any circumstances.</li>
-        <li>41. AND THAT this Deed of Conveyance, shall be governed and construed in accordance with the RERA Act together with the rules and regulations formed thereunder and other relevant acts, rules and statues formed by competent authority from time to time. If any term of this Deed of Conveyance are found illegal, invalid or unenforceable under the RERA Act together with the rules and regulations formed thereunder or other relevant acts, rules and statues, such term shall, insofar as it is severable from the remaining Terms, be deemed omitted from these Terms and shall in no way affect the legality, validity or enforceability of the remaining Terms which shall continue in full force and effect and be binding to the Promoter as well as the Allottee. In event of any contradiction to the terms and conditions mentioned hereinabove with the relevant acts, rules and statues, the terms mentioned in such relevant acts, rules and statues shall be binding to the Promoter as well as the Allottee.</li>
-        <li>42. All right, title and interest of the Purchaser is restricted to and to be read, understood and interpreted in relation to the Said Unit only, and all other constructed-covered-un-covered-open spaces-areas-por tions, open margin lands, infrastructures, developments, amenities, facilities and services shall belong to Vendor / Service Society. The Purchaser shall at no time demand partition of his / her/ it / their interest from the entire Scheme. It being agreed and declared by the Purchaser that his / her / its / their interest in the scheme shall be indivisible.</li>
-        <li>43. The Purchaser has / have agreed, finally, to acquire legal possession and title to the said unit by obtaining conveyance from first Party. The spirit, intention, interpretation and implementation of the word "to confer" or "conferment" of the said unit to the Purchaser, in their all grammatical sense, in this Deed shall be understood accordingly.</li>
-        <li>44. THAT the Purchaser shall maintain at his / her / their own costs the property agreed to be purchased by him / her / them in the same good condition, state and order in which it is / will be delivered to him / her / them and shall abide by all bye laws, rules and regulations of the government, the Ahmedabad Municipal Corporation and any other authorities, local bodies, and Society and shall attend to answer and be responsible for all actions and violations of any of the conditions or rules or bye laws and shall observe and perform all the terms and conditions contained in this Sale Deed.</li>
-        <li>45. If within a period of five years from the date of handing over the Said Property to the Purchaser, the Purchaser brings to the notice of the Vendor any structural defect in the Said Property or the building in which the Said Property are situated or any defects on account of workmanship, quality or provision of service, then, whenever possible such defects shall be rectified by the Vendor at its own cost. Purchaser shall not entitled to get compensation for damage of goods in property.</li>
-        <li>46. THAT the Purchaser and persons to whom the said Unit is ultimately transferred, assigned or given possession of shall observe and perform the bye laws and / or the rules, regulations and resolutions, which the said Society may make and the additions, alternation or amendments thereto for the protection, maintenance, use and transfer of the said building, unit and other space and Unit therein and/or in the compound. They will also abide by the building rules, regulations and bye-laws for the time being of the Ahmedabad Municipal Corporation and other authorities of the government. The Purchaser and the person to whom the said Unit is let, transferred, assigned or given possession, shall observe and perform all the stipulations and conditions laid by the Society regarding the occupation and use of the building and / or the said unit or other spaces and / or parking spaces therein and shall pay the contribution regularly and punctually towards the taxes and / or expenses or other out goings in accordance with the terms of this deed and as may be decided by the Society from time to time. All the terms, conditions, stipulations and provisions of this deed shall be binding upon the transferee of the Purchasers from time to time.</li>
-        <li>47. THAT the purchaser have inspected the unit, verified / checked all fittings and fixtures in the unit before taking the possession. He / she / they has / have no complaint / dispute for the same. From now onwards, it is / will be Purchaser's responsibility to keep the unit in good and tenable conditions.</li>
-        <li>48. That if the Purchaser is found to have committed breach of any of the conditions, without prejudice to the right of expulsion of the purchaser from the membership of the said service society and forfeiture of its share and maintenance deposit, the said service society shall have absolute right to compel the purchaser to restore the unit to the original position and in default, shall have a right to cause it to be done through its agents and employees at the cost of purchaser. Under such circumstances the purchaser is liable to pay penalty, charges etc. that may be fixed or decided by the service society. If the Purchaser fails to pay penalty, charges etc. then under that circumstances the purchaser is not entitled to use common facilities and common amenities of the said scheme and the same can be discontinued by service society without giving any notice and for that purchaser is not entitled to take any legal action against the service society and ultimately his / her their membership right can also be terminated.</li>
-        <li>49. The Vendor has authorized its partner <strong>Kiran Rasiklal Kamdar</strong> to sign the present Sale Deed and other related documents as "Authorised Signatory".</li>
-        <li>50. THE PURCHASER, as the context may, require, shall also include his representatives, occupiers, visitors, authorized person successors, assigns and all and every other person or person to claim under him / her / it.</li>
-        <li>51. The expression VENDOR shall also mean and include any person authorised / nominated by it or to its order the Service Society formed by the Unit holders or its assignee or transferee vested with such powers, authorities or obligations as the Vendor may think fit.</li>
-        <li>52. This Deed shall be binding on the purchaser, (in case of individual) his / her / their heirs, legal representatives, executors, successors and assigns; (in case of Partnership firm) its partners as at present and from time to time and the heirs and legal representatives of the last surviving partner; (in case of HUF) its members as at present and from time to time and their respective heirs, executors and successors and its (HUF's) permitted assigns; (in case of Trust) its Trustees as at present and from time to time and the beneficiaries thereof; (in case of Company) its present and future directors and assigns and / or any third party having or contemplating to have in future any charge or interest on the said unit and / or on the construction thereupon, in part and/or as a whole.</li>
-        <li>53. The purchaser hereby declares that he / she / it / they has / have read, understood and agreed each and every term of this agreement before execution.</li>
-        <li>54. That said property is situated in peaceful area and not included under the notification of the Gujarat Prohibition of Transfer of Immoveable property and provision for protection of Tenants from Eviction from premises in Disturbed Areas Act, 1991 [Gujarat 12 of 1991]. Hence the permission under the said Act is not required for transfer of Unit.</li>
-        <li>55. That, the Vendor has paid all taxes, cesses, upto the date of scheme and if the same are found to be due or unpaid, the Vendor shall be liable to pay the same and failing which, the purchaser shall be entitled to recover them from vendor. Hereinafter purchaser is liable for payment of all type of taxes.</li>
-        <li>56. That, the expenses for stamp Duty, Registration Fees, miscellaneous expenses have been borne by the purchaser.</li>
+        <li>THAT Purchaser shall not alter / change the size and shape of the door, windows, shutter etc and shall not make any hole or new window to fix air conditioner and shall put the air - conditioner at the specified place and shall not damage the partition walls, common walls, flooring ceiling etc of the said Unit.</li>
+        <li>THE PURCHASER shall not change, or make any holes or openings, or draw or lay any wires, cables, pipes through, or in any other manner damage, the columns, beams, slabs or RCC pardis or walls or other structural changes of the said Unit or any part of the Project.</li>
+        <li>THAT the Purchaser is also aware that some of the walls of this unit/ flat are of single brick thickness, which may not be too much strong. If any damage is caused to such walls due to any act of his neighbors, Purchaser/s is likely to suffer damages. Purchaser agrees that he / she shall not claim it from the Vendor. Purchaser also assure to keep and maintain all walls of the unit in good conditions.</li>
+        <li>Similarly the leakage of water from the toilets, bathrooms and kitchen is also likely to happen in the said unit/flat as well as from the neighboring and upper units/flats. Leaked water / moisture is likely to appear on the walls of the unit and that may deteriorate the paining and plaster on the walls. Purchaser is / are aware that water is a substance which is likely to escape resulting into its leakage. Even if all safety measures are taken to seal the joints of pipes, sometimes it cannot be avoided. Leakage may be due to various reasons unconnected with construction. Use of Acids for cleanliness, vibration of heavy duty washing machines, mild earthquake jerks, hot water, hard water, rough use, etc are likely to damage pipelines, tiles and their joints. The joints of flooring tiles and wall tiles are also likely to be damaged by such use, any damage in the unit due to leakage of water and its various other bad effects.</li>
+        <li>That the doors of the units which are made of wood are likely to be swollen during monsoon due to humidity / damp and thereby can cause some hardship to the purchaser. It is due to act of nature. The Purchaser shall not be entitled to claim any damages on that ground. Similarly the purchaser shall not be entitled to recover any damages due to rusting of stoppers etc. as it is usual during monsoon / passage of time.</li>
+        <li>The Seller has installed lift in each Block & Purchaser unconditionally agrees that the Lift facility in this building shall be used as per rules of the society. It is to be economically used. The Purchaser as well as his / her / their employee shall not misuse the said lift and will take care about it and co-operate with society members / officials of the service society. One should take care that the children do not use the lift often to play. The quality of lift is good. But this is machine and it is no manufactured by the Vendor. Therefore during the use of the lift and even as a result of any defect or otherwise if any one is injured or receive other damages then the Service Society / Vendor / Seller shall not become responsible for it and purchaser and his / her / their heirs etc shall not demand and shall not be entitled to demand such damages / compensation from First Party / Service Society. In future all such lift license shall have to compulsorily renew by service society / members.</li>
+        <li>The seller has made borewell for use of residential & commercial units holder of the said project and all units holder have to same right on borewell and have to use it mutually agreed between residential & commercial units holder. All the common maintenance of the such borewell shall have to bear by service society only. As per approved plan seller has arranged ONE percolating well in the said project, Which shall have to maintain by service society and members. According to fire safety laws seller has installed fire safety equipments, Which are currently in properly working status. In future any of such common amenities not found working properly seller shall not held liable for non working of such equipments. All the Common amenities & equipments shall have to be properly & regularly maintained by service society / members. In future all such fire equipments license shall have to be compulsorily renew by service society / members.</li>
+        <li>THAT THE Purchaser or his / her / their employee, agents, contractors will not at any time demolish or cause to be done any additions / alternations / modifications of whatsoever nature to the said property or any part thereof which are likely to cause damage, hazard or structural deterioration to the said Unit, building or the neighboring Unit. The Purchaser shall not be permitted to put up anything or encroaching of passages or lounges or balconies or veranda's or make any alterations in the elevations and outside colour scheme of the property (including shutters) acquired by him / her / them. The Commercial Unit holders are not entitled to cover margin space by doing additional construction or not entitled to put advertisement on the shutters of the shops.</li>
+        <li>THE PURCHASER shall insure and keep insured the said unit against loss or damage by fire, earthquake, riot, war, flood, civil commotion, act of god or such other risks to the full value thereof in the name of THE PURCHASER with nationalized insurance company of repute having office at Ahmedabad, and whenever required he shall produce to THE VENDOR / Service Society the policy / policies of such insurance and the receipt for the last premium paid in respect thereof. In the event of the said unit being damaged or destroyed by fire / earthquake or otherwise the purchaser shall expend the insurance money for the repair, rebuilding or reinstatement of the said unit as soon as reasonable, practical and required.</li>
+        <li>The letters, receipts and / or notices issued by service Society dispatched by registered post / courier to the address of the purchaser as known to Service Society, will be sufficient proof of receipt of the same by the Purchaser and shall completely and effectively discharge Service Society.</li>
+        <li>The Scheme shall always be known as <strong>"KAUTILYA ONE-54"</strong>, and this name shall not be changed in any circumstances.</li>
+        <li>AND THAT this Deed of Conveyance, shall be governed and construed in accordance with the RERA Act together with the rules and regulations formed thereunder and other relevant acts, rules and statues formed by competent authority from time to time. If any term of this Deed of Conveyance are found illegal, invalid or unenforceable under the RERA Act together with the rules and regulations formed thereunder or other relevant acts, rules and statues, such term shall, insofar as it is severable from the remaining Terms, be deemed omitted from these Terms and shall in no way affect the legality, validity or enforceability of the remaining Terms which shall continue in full force and effect and be binding to the Promoter as well as the Allottee. In event of any contradiction to the terms and conditions mentioned hereinabove with the relevant acts, rules and statues, the terms mentioned in such relevant acts, rules and statues shall be binding to the Promoter as well as the Allottee.</li>
+        <li>All right, title and interest of the Purchaser is restricted to and to be read, understood and interpreted in relation to the Said Unit only, and all other constructed-covered-un-covered-open spaces-areas-por tions, open margin lands, infrastructures, developments, amenities, facilities and services shall belong to Vendor / Service Society. The Purchaser shall at no time demand partition of his / her/ it / their interest from the entire Scheme. It being agreed and declared by the Purchaser that his / her / its / their interest in the scheme shall be indivisible.</li>
+        <li>The Purchaser has / have agreed, finally, to acquire legal possession and title to the said unit by obtaining conveyance from first Party. The spirit, intention, interpretation and implementation of the word "to confer" or "conferment" of the said unit to the Purchaser, in their all grammatical sense, in this Deed shall be understood accordingly.</li>
+        <li>THAT the Purchaser shall maintain at his / her / their own costs the property agreed to be purchased by him / her / them in the same good condition, state and order in which it is / will be delivered to him / her / them and shall abide by all bye laws, rules and regulations of the government, the Ahmedabad Municipal Corporation and any other authorities, local bodies, and Society and shall attend to answer and be responsible for all actions and violations of any of the conditions or rules or bye laws and shall observe and perform all the terms and conditions contained in this Sale Deed.</li>
+        <li>If within a period of five years from the date of handing over the Said Property to the Purchaser, the Purchaser brings to the notice of the Vendor any structural defect in the Said Property or the building in which the Said Property are situated or any defects on account of workmanship, quality or provision of service, then, whenever possible such defects shall be rectified by the Vendor at its own cost. Purchaser shall not entitled to get compensation for damage of goods in property.</li>
+        <li>THAT the Purchaser and persons to whom the said Unit is ultimately transferred, assigned or given possession of shall observe and perform the bye laws and / or the rules, regulations and resolutions, which the said Society may make and the additions, alternation or amendments thereto for the protection, maintenance, use and transfer of the said building, unit and other space and Unit therein and/or in the compound. They will also abide by the building rules, regulations and bye-laws for the time being of the Ahmedabad Municipal Corporation and other authorities of the government. The Purchaser and the person to whom the said Unit is let, transferred, assigned or given possession, shall observe and perform all the stipulations and conditions laid by the Society regarding the occupation and use of the building and / or the said unit or other spaces and / or parking spaces therein and shall pay the contribution regularly and punctually towards the taxes and / or expenses or other out goings in accordance with the terms of this deed and as may be decided by the Society from time to time. All the terms, conditions, stipulations and provisions of this deed shall be binding upon the transferee of the Purchasers from time to time.</li>
+        <li>THAT the purchaser have inspected the unit, verified / checked all fittings and fixtures in the unit before taking the possession. He / she / they has / have no complaint / dispute for the same. From now onwards, it is / will be Purchaser's responsibility to keep the unit in good and tenable conditions.</li>
+        <li>That if the Purchaser is found to have committed breach of any of the conditions, without prejudice to the right of expulsion of the purchaser from the membership of the said service society and forfeiture of its share and maintenance deposit, the said service society shall have absolute right to compel the purchaser to restore the unit to the original position and in default, shall have a right to cause it to be done through its agents and employees at the cost of purchaser. Under such circumstances the purchaser is liable to pay penalty, charges etc. that may be fixed or decided by the service society. If the Purchaser fails to pay penalty, charges etc. then under that circumstances the purchaser is not entitled to use common facilities and common amenities of the said scheme and the same can be discontinued by service society without giving any notice and for that purchaser is not entitled to take any legal action against the service society and ultimately his / her their membership right can also be terminated.</li>
+        <li>The Vendor has authorized its partner <strong>Kiran Rasiklal Kamdar</strong> to sign the present Sale Deed and other related documents as "Authorised Signatory".</li>
+        <li>THE PURCHASER, as the context may, require, shall also include his representatives, occupiers, visitors, authorized person successors, assigns and all and every other person or person to claim under him / her / it.</li>
+        <li>The expression VENDOR shall also mean and include any person authorised / nominated by it or to its order the Service Society formed by the Unit holders or its assignee or transferee vested with such powers, authorities or obligations as the Vendor may think fit.</li>
+        <li>This Deed shall be binding on the purchaser, (in case of individual) his / her / their heirs, legal representatives, executors, successors and assigns; (in case of Partnership firm) its partners as at present and from time to time and the heirs and legal representatives of the last surviving partner; (in case of HUF) its members as at present and from time to time and their respective heirs, executors and successors and its (HUF's) permitted assigns; (in case of Trust) its Trustees as at present and from time to time and the beneficiaries thereof; (in case of Company) its present and future directors and assigns and / or any third party having or contemplating to have in future any charge or interest on the said unit and / or on the construction thereupon, in part and/or as a whole.</li>
+        <li>The purchaser hereby declares that he / she / it / they has / have read, understood and agreed each and every term of this agreement before execution.</li>
+        <li>That said property is situated in peaceful area and not included under the notification of the Gujarat Prohibition of Transfer of Immoveable property and provision for protection of Tenants from Eviction from premises in Disturbed Areas Act, 1991 [Gujarat 12 of 1991]. Hence the permission under the said Act is not required for transfer of Unit.</li>
+        <li>That, the Vendor has paid all taxes, cesses, upto the date of scheme and if the same are found to be due or unpaid, the Vendor shall be liable to pay the same and failing which, the purchaser shall be entitled to recover them from vendor. Hereinafter purchaser is liable for payment of all type of taxes.</li>
+        <li>That, the expenses for stamp Duty, Registration Fees, miscellaneous expenses have been borne by the purchaser.</li>
     </ol>
     
     <p>The schedule above referred to is mentioned hereunder :</p>
@@ -17227,7 +17449,7 @@ HTML;
         return $query->result_array();
     }
 
-     public function sale_deed_pdf($sale_deed)
+    public function sale_deed_pdf($sale_deed)
     {
         return app_pdf('sale_deed', module_dir_path(PURCHASE_MODULE_NAME, 'libraries/pdf/Sale_deed_pdf'), $sale_deed);
     }
