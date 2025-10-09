@@ -15679,187 +15679,73 @@ class Purchase_model extends App_Model
             <meta charset="utf-8">
             <title>Sale Deed</title>
             <style>
-                :root {
-                    --fg: #111827;
-                    --muted: #4b5563;
-                    --border: #e5e7eb;
-                }
-                
-                body {
-                    font-size: 12px;
-                    line-height: 1.5;
-                    color: var(--fg);
-                    margin: 0;
-                    padding: 15px;
-                    text-align: justify;
-                }
-                
-                h1, h2, h3, h4 { 
-                    margin: 0 0 8px; 
-                    color: #000;
-                }
-                
-                h1 {
-                    text-align: center;
-                    text-decoration: underline;
-                    font-size: 22px;
-                    margin-bottom: 12px;
-                }
-                
-                .subtitle {
-                    text-align: center;
-                    font-style: italic;
-                    color: var(--muted);
-                    margin-bottom: 24px;
-                }
-                
-                p { 
-                    margin: 8px 0; 
-                    text-align: justify;
-                }
-                li{
-                    line-height:1.5;
-                    text-align: justify;
-                }
-                .center {
-                    text-align: center;
-                }
-                
-                .right {
-                    text-align: right;
-                }
-                
-                .u {
-                    text-decoration: underline;
-                }
-                
-                .section.box {
-                    border: 1px solid var(--border);
-                    padding: 15px;
-                    margin: 15px 0;
-                }
-                
-                .whereas { 
-                    margin: 14px 0; 
-                }
-                
-                .section-title {
-                    font-weight: bold;
-                    text-decoration: underline;
-                    margin: 16px 0 8px;
-                }
-                
-                .pair { 
-                    display: flex; 
-                    gap: 12px; 
-                }
-                
-                .pair>div { 
-                    flex: 1; 
-                }
-                
-                .hr { 
-                    border-top: 1px solid var(--border); 
-                    margin: 16px 0; 
-                }
-                
-                ol, ul { 
-                    padding-left: 20px; 
-                    margin: 8px 0;
-                }
-                
-                li {
-                    margin-bottom: 8px;
-                }
-                
-                table { 
-                    width: 100%; 
-                    border-collapse: collapse; 
-                    margin: 12px 0; 
-                }
-                
-                th, td {
-                    border: 1px solid var(--border);
-                    padding: 6px 8px;
-                    vertical-align: top;
-                }
-                
-                th { 
-                    text-align: left; 
-                    background-color: #f9f9f9;
-                }
-                
-                .signature-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 24px;
-                    margin-top: 24px;
-                }
-                
-                .sign-block {
-                    min-height: 80px;
-                    border-bottom: 1px solid var(--border);
-                    margin-bottom: 10px;
-                }
-                
-                .small { 
-                    font-size: 11px; 
-                    color: var(--muted); 
-                }
-                
-                .muted {
-                    color: var(--muted);
-                }
-                
-                .page-break {
-                    page-break-after: always;
-                }
-                
-                .photos {
-                    height: 200px;
-                    border: 1px dashed var(--border);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    margin: 15px 0;
-                }
-                
-                .address-block {
-                    border: 1px solid var(--border);
-                    padding: 15px;
-                    margin: 15px 0;
-                }
-                
-                .spacer {
-                    height: 50px;
-                }
-                p{
-                    line-height:1.5;
-                    text-align: justify;
-                }
-                li{
-                    line-height:1.5;
-                    text-align: justify;
-                }
-                @media print {
-                    .page-break {
-                        page-break-after: always;
-                    }
-                    
-                    body { 
-                        margin: 10mm; 
-                    }
-                }
-                    
-                strong { 
-                    font-weight: 700; 
-                    color: black; 
-                }
-            </style>
+            :root {
+                --fg: #111827;
+                --muted: #4b5563;
+                --border: #e5e7eb;
+            }
+
+            h1, h2, h3 { margin: 0 0 8px; }
+            h1 {
+                text-align: center;
+                text-decoration: underline;
+                font-size: 22px;
+                margin-bottom: 12px;
+            }
+            .subtitle {
+                text-align: center;
+                font-style: italic;
+                color: var(--muted);
+                margin-bottom: 24px;
+            }
+            p { margin: 8px 0; }
+            .whereas { margin: 14px 0; }
+            .section-title {
+                font-weight: bold;
+                text-decoration: underline;
+                margin: 16px 0 8px;
+            }
+            .pair { display: flex; gap: 12px; }
+            .pair>div { flex: 1; }
+            .hr { border-top: 1px solid var(--border); margin: 16px 0; }
+            ol { padding-left: 20px; }
+            table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+            th, td {
+                border: 1px solid var(--border);
+                padding: 6px 8px;
+                vertical-align: top;
+            }
+            th { text-align: left; }
+            .sign-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+                margin-top: 24px;
+            }
+            .sign-box {
+                min-height: 120px;
+                border: 1px dashed var(--border);
+                padding: 12px;
+            }
+            .small { font-size: 13px; color: var(--muted); }
+            @media print {
+                .no-print { display: none !important; }
+                body { margin: 10mm; }
+            }
+            strong { font-weight: 700; color: black; }
+            p{
+                text-align: justify;
+                line-height: 1.5;
+            }
+            li{
+                text-align: justify;
+                line-height: 1.5;
+            }    
+        </style>
         </head>
         <body>
-        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-        <p style="text-align:center;font-weight:700;">AGREEMENT FOR SALE</p>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <h1 style="text-align:center;">AGREEMENT FOR SALE</h1>
         <p style="text-align:center;">(Without Possession)</p><br>
 
         <p>THIS AGREEMENT FOR SALE is made and executed at Ahmedabad on this <b>{$DATE} day of {$MONTH}, {$YEAR}</b>.</p><br>
@@ -16517,7 +16403,7 @@ class Purchase_model extends App_Model
         // Convert amount to words
         $TOKAN_AMOUNT_WORDS = convertToIndianCurrency($TOKAN_AMOUNT);
         $FINAL_AMOUNT_WORDS = convertToIndianCurrency($FINAL_AMOUNT);
-
+        $FORMAT_FINAL_AMOUNT = app_format_money($FINAL_AMOUNT, '');
         // Build secondary customer HTML
         $secondary_customer_html = '';
         if (!empty($customer2)) {
@@ -16552,14 +16438,14 @@ class Purchase_model extends App_Model
 
                         The said land is earmarked for specific development as mentioned herein and the same shall be used for those purposes only and no other development shall be permitted unless it is a part of the plan approved by the competent authority.<br>
 
-                        AND WHEREAS the Allottee being desirous to purchase a residential flats in the said Scheme, approached the Promoter and after verifying all papers, documents, plans, specifications etc. and finding the titles of the Promoter to the said land and construction standing thereon as clear, marketable and free from all encumbrances and beyond reasonable doubts, has decided to purchase the property being <strong>Flat No. {$flat_name}</strong> on the <strong>{$floor_name}</strong> of Block "{$block_name}", admeasuring <strong>{$CARPET_AREA} sq.mtrs</strong> carpet area; including balcony <strong>{$BALCONY} sq.mtrs</strong> and wash area <strong>{$WASH_YARD} sq.mtrs</strong>, together with undivided proportionate land share <strong>{$UNDIVIDED_LAND_SHARE} sq.mtrs</strong> in the said land, more particularly described in the Schedule-A. (hereinafter referred to as "<strong>said Shop/Flat</strong>" and/or "<strong>said Premises</strong>" and/or "<strong>said Apartment</strong>".).</li>
+                        AND WHEREAS the Allottee being desirous to purchase a residential flats in the said Scheme, approached the Promoter and after verifying all papers, documents, plans, specifications etc. and finding the titles of the Promoter to the said land and construction standing thereon as clear, marketable and free from all encumbrances and beyond reasonable doubts, has decided to purchase the property being <strong>Flat No. {$flat_name}</strong> on the <strong>{$floor_name}</strong> of Block "{$block_name}", admeasuring <strong>{$CARPET_AREA} sq.mtrs</strong> carpet area; including balcony <strong>{$BALCONY} sq.mtrs</strong> and wash area <strong>{$WASH_YARD} sq.mtrs</strong>, together with undivided proportionate land share <strong>{$UNDIVIDED_LAND_SHARE} sq.mtrs</strong> in the said land, more particularly described in the Schedule-A. (hereinafter referred to as "<strong>said Flat</strong>" and/or "<strong>said Premises</strong>" and/or "<strong>said Apartment</strong>".).</li>
 
                         <li>AND WHEREAS, Prior to execution, the Allottee paid <strong>Rs. {$TOKAN_AMOUNT} /-</strong> <strong>(Rupees {$TOKAN_AMOUNT_WORDS} only)</strong>, being part payment of the sale consideration of the said flat agreed to be sold by the Promoter to the Allottee as advance payment or Application Fee (the payment and receipt whereof the Promoter hereby admits and acknowledges) and the Allottee has agreed to pay to the Promoter the balance of the sale consideration in the manner hereinafter appearing.</li>
                         <li>AND WHEREAS, under section 13 of the said Act, the Promoter is required to execute a written Agreement for sale of the said flat to the Allottee, and to register this Agreement under the Registration Act, 1908.</li>
                         </ol>
                     </div>
 
-                    <div class="section-title">Now this Agreement Witnesseth as follows</div>
+                    <div class="section-title" style="text-align: center;">Now this Agreement Witnesseth as follows</div>
 
                     <ol>
                         <li>The scheme will be constructed and completed in accordance with the approved layout plans by the competent authority, which the Allottee has/have seen and approved and the Allottee has also agreed that the Promoter may make such variations and modifications therein as may be required to be done by the Government, Ahmedabad Municipal Corporation and other local authorities and/or which the Promoter/Developer may consider desirable and this shall operate as an irrevocable consent of the Allottee/s for making such variations and modifications.</li>
@@ -16746,7 +16632,7 @@ class Purchase_model extends App_Model
                     </ol>
 
 
-                    <p>Received of and from the Allottee above named the sum of Rupees <strong>{$FINAL_AMOUNT_WORDS} only</strong> on execution of this agreement towards Earnest Money Deposit or application fee.</p>
+                    <p>Received of and from the Allottee above named the sum of Rupees <strong>{$FORMAT_FINAL_AMOUNT}/-</strong> <strong>{$FINAL_AMOUNT_WORDS} only</strong> on execution of this agreement towards Earnest Money Deposit or application fee.</p>
 
                     <div >
                         <div >

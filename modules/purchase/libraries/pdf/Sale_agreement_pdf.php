@@ -10,22 +10,31 @@ class Sale_agreement_pdf extends App_pdf
 
     public function __construct($sale_agreement)
     {
-        $sale_agreement                = hooks()->apply_filters('request_html_pdf_data', $sale_agreement);
+        $sale_agreement               = hooks()->apply_filters('request_html_pdf_data', $sale_agreement);
         $GLOBALS['sale_agreement_pdf'] = $sale_agreement;
 
         parent::__construct();
 
         $this->sale_agreement = $sale_agreement;
 
+        // ✅ Set custom page size: 8.5 x 14 inches (Legal)
+        // 1 inch = 25.4 mm → [8.5 * 25.4, 14 * 25.4] = [215.9, 355.6]
+        $custom_layout = array(215.9, 355.6);
+        $this->SetPageFormat($custom_layout, 'P'); // 'P' = Portrait; use 'L' for Landscape
+
+        // Optional: adjust margins and auto page break
+        $this->SetMargins(15, 20, 15);
+        $this->SetAutoPageBreak(true, 20);
+
         $this->SetTitle(_l('sale_agreement'));
-        # Don't remove these lines - important for the PDF layout
+
+        // Important for proper layout rendering
         $this->sale_agreement = $this->fix_editor_html($this->sale_agreement);
     }
 
     public function prepare()
     {
         $this->set_view_vars('sale_agreement', $this->sale_agreement);
-
         return $this->build();
     }
 
