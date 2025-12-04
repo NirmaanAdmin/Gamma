@@ -9306,7 +9306,7 @@ class purchase extends AdminController
     {
         $data['title'] = _l('Sale Deed');
         $data['master_id'] = $id;
-        $data['customer'] = $this->purchase_model->get_customer_data($id);
+        $data['customer'] = $this->purchase_model->get_sale_deed_cust_data($id);
         $data['customer2'] = $this->purchase_model->get_pur_customer2($data['customer']['userid']);
         $data['documentation'] = $this->purchase_model->get_all_sale_agreements($id);
         $this->load->view('customers/edit_sale_deed', $data);
@@ -9519,7 +9519,7 @@ class purchase extends AdminController
         $allotment_letter = $this->purchase_model->get_sale_deed_pdf_html($id);
         try {
             $pdf = $this->purchase_model->sale_deed_pdf($allotment_letter);
-        } catch (Exception $e) {
+        } catch (Exception $e) { 
             echo pur_html_entity_decode($e->getMessage());
             die;
         }
