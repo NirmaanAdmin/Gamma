@@ -17426,188 +17426,188 @@ class Purchase_model extends App_Model
         <meta charset="utf-8">
         <title>Sale Deed</title>
         <style>
-            :root {
-                --fg: #111827;
-                --muted: #4b5563;
-                --border: #e5e7eb;
-            }
-            
-            body {
-                font-size: 12px;
-                line-height: 1.5;
-                color: var(--fg);
-                margin: 0;
-                padding: 15px;
-                text-align: justify;
-            }
-            
-            h1, h2, h3, h4 { 
-                margin: 0 0 8px; 
-                color: #000;
-            }
-            
-            h1 {
-                text-align: center;
-                text-decoration: underline;
-                font-size: 22px;
-                margin-bottom: 12px;
-            }
-            
-            .subtitle {
-                text-align: center;
-                font-style: italic;
-                color: var(--muted);
-                margin-bottom: 24px;
-            }
-            
-            p { 
-                margin: 8px 0; 
-                text-align: justify;
-            }
-            
-            .center {
-                text-align: center;
-            }
-            
-            .right {
-                text-align: right;
-            }
-            
-            .u {
-                text-decoration: underline;
-            }
-            
-            .section.box {
-                border: 1px solid var(--border);
-                padding: 15px;
-                margin: 15px 0;
-            }
-            
-            .whereas { 
-                margin: 14px 0; 
-            }
-            
-            .section-title {
-                font-weight: bold;
-                text-decoration: underline;
-                margin: 16px 0 8px;
-            }
-            
-            .pair { 
-                display: flex; 
-                gap: 12px; 
-            }
-            
-            .pair>div { 
-                flex: 1; 
-            }
-            
-            .hr { 
-                border-top: 1px solid var(--border); 
-                margin: 16px 0; 
-            }
-            
-            ol, ul { 
-                padding-left: 20px; 
-                margin: 8px 0;
-            }
-            
-            li {
-                margin-bottom: 8px;
-            }
-            
-            table { 
-                width: 100%; 
-                border-collapse: collapse; 
-                margin: 12px 0; 
-            }
-            
-            th, td {
-                border: 1px solid var(--border);
-                padding: 6px 8px;
-                vertical-align: top;
-            }
-            
-            th { 
-                text-align: left; 
-                background-color: #f9f9f9;
-            }
-            
-            .signature-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 24px;
-                margin-top: 24px;
-            }
-            
-            .sign-block {
-                min-height: 80px;
-                border-bottom: 1px solid var(--border);
-                margin-bottom: 10px;
-            }
-            
-            .small { 
-                font-size: 11px; 
-                color: var(--muted); 
-            }
-            
-            .muted {
-                color: var(--muted);
-            }
-            
-            .page-break {
-                page-break-after: always;
-            }
-            
-            .photos {
-                height: 200px;
-                border: 1px dashed var(--border);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin: 15px 0;
-            }
-            
-            .address-block {
-                border: 1px solid var(--border);
-                padding: 15px;
-                margin: 15px 0;
-            }
-            
-            .spacer {
-                height: 50px;
-            }
-            p{
-                line-height:1.5;
-                text-align: justify;
-            }
-            li{
-                line-height:1.5;
-                text-align: justify;
-            }
-            
-            @media print {
-                .page-break {
-                    page-break-after: always;
+                 :root {
+                     --fg: #111827;
+                     --muted: #4b5563;
+                     --border: #e5e7eb;
+                 }
+
+                 body {
+                     font-size: 12px;
+                     line-height: 1.5;
+                     color: var(--fg);
+                     margin: 0;
+                     padding: 15px;
+                     text-align: justify;
+                 }
+
+                h1, h2, h3, h4 { 
+                     margin: 0 0 8px; 
+                     color: #000;
+                 }
+
+             h1 {
+                 text-align: center;
+                 text-decoration: underline;
+                 font-size: 22px;
+                 margin-bottom: 12px;
+             }
+
+             .subtitle {
+                 text-align: center;
+                 font-style: italic;
+                 color: var(--muted);
+                 margin-bottom: 24px;
+             }
+
+                 p { 
+                     margin: 8px 0; 
+                     text-align: justify;
+                 }
+
+                 .center {
+                     text-align: center;
+                 }
+
+                 .right {
+                     text-align: right;
+                 }
+
+                 .u {
+                     text-decoration: underline;
+                 }
+
+                 .section.box {
+                     border: 1px solid var(--border);
+                     padding: 15px;
+                     margin: 15px 0;
+                 }
+
+                 .whereas { 
+                     margin: 14px 0; 
+                 }
+
+                 .section-title {
+                 font-weight: bold;
+                     text-decoration: underline;
+                     margin: 16px 0 8px;
+                 }
+
+                 .pair { 
+                     display: flex; 
+                     gap: 12px; 
+                 }
+
+                 .pair>div { 
+                     flex: 1; 
+             }
+
+                 .hr { 
+                     border-top: 1px solid var(--border); 
+                     margin: 16px 0; 
+                 }
+
+                 ol, ul { 
+                     padding-left: 20px; 
+                    margin: 8px 0;
+                 }
+
+                 li {
+                     margin-bottom: 8px;
+                 }
+
+                 table { 
+                     width: 100%; 
+                     border-collapse: collapse; 
+                     margin: 12px 0; 
+                 }
+
+                 th, td {
+                     border: 1px solid var(--border);
+                     padding: 6px 8px;
+                     vertical-align: top;
+                 }
+
+                 th { 
+                     text-align: left; 
+                     background-color: #f9f9f9;
+                 }
+
+                 .signature-grid {
+                     display: grid;
+                     grid-template-columns: 1fr 1fr;
+                     gap: 24px;
+                     margin-top: 24px;
                 }
-                
-                body { 
-                    margin: 10mm; 
-                }
-            }
-            
-            strong { 
-                font-weight: 700; 
-                color: black; 
-            }
-        </style>
+
+                 .sign-block {
+                     min-height: 80px;
+                     border-bottom: 1px solid var(--border);
+                     margin-bottom: 10px;
+                 }
+
+                 .small { 
+                     font-size: 11px; 
+                     color: var(--muted); 
+                 }
+
+                 .muted {
+                     color: var(--muted);
+                 }
+
+                 .page-break {
+                     page-break-after: always;
+                 }
+
+                 .photos {
+                     height: 200px;
+                     border: 1px dashed var(--border);
+                     display: flex;
+                     align-items: center;
+                     justify-content: center;
+                     margin: 15px 0;
+                 }
+
+                 .address-block {
+                     border: 1px solid var(--border);
+                     padding: 15px;
+                     margin: 15px 0;
+                 }
+
+                 .spacer {
+                     height: 50px;
+                 }
+                 p{
+                     line-height:1.5;
+                     text-align: justify;
+                 }
+                 li{
+                     line-height:1.5;
+                     text-align: justify;
+                 }
+
+                 @media print {
+                     .page-break {
+                         page-break-after: always;
+                     }
+
+                     body { 
+                         margin: 10mm; 
+                     }
+                 }
+
+                 strong { 
+                     font-weight: 700; 
+                     color: black; 
+                 }
+             </style>
     </head>
     <body>
         <h1 style="text-align: center;">SALE DEED</h1>
         <div class="subtitle">Kautilya OnE-54 • RERA No. PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA10980/291122</div>
         
         <div class="section box">
-            <p class="center">The Sale Deed of Residential <strong>Flat No.<span class="u">{$flat_name}</span> </strong> in Wing <strong>"{$block_name}"</strong> having total Carpet Area admeasuring about <strong>{$CARPET_AREA} sq.mtrs.</strong> situated on
+            <p>The Sale Deed of Residential <strong>Flat No.<span class="u">{$flat_name}</span> </strong> in Wing <strong>"{$block_name}"</strong> having total Carpet Area admeasuring about <strong>{$CARPET_AREA} sq.mtrs.</strong> situated on
                 <strong>{$floor_name}</strong> of the said Scheme along with (i) <strong>Wash Area admeasuring{$WASH_YARD} sq.mtrs.</strong> (ii) Balcony admeasuring about 3<strong>{$BALCONY} sq.mtrs.</strong> (under the provisions of Gujarat RERA Act) carpet area as well as approximately <strong>{$CARPET_AREA} sq.mtrs.</strong> (as per plan sanctioned by Ahmedabad Municipal Corporation) in the scheme known as " KAUTILYA ONE-54 " together with undivided share in the said land admeasuring about <strong>{$UNDIVIDED_LAND_SHARE} sq.mtrs</strong> bearing A) Final Plot No. 321, admeasuring 3400 sq. m. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/3 admeasuring 5666 sq. m.& B) Final Plot No. 322, admeasuring 2125 sq. m. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/4 admeasuring 3541 sq. m. Thereby, a total of 5525 sq. m. of land of both the final plots now amalgamated Final Plot no: (321+322) and the affordable housing project being built on the above said land situated within the village limits of Chandkheda, Taluka - Sabarmati in the Registration Sub - District of Ahmedabad - 13 (Sabarmati) of District Ahmedabad. Sale deed of the sale consideration price <strong>{$FINAL_AMOUNT}</strong> (Rupees <strong>{$FINAL_AMOUNT_WORDS} only</strong>)
             </p>
         </div>
