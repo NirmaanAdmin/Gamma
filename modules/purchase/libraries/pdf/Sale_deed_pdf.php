@@ -10,38 +10,51 @@ class Sale_deed_pdf extends App_pdf
 
     public function __construct($sale_deed)
     {
-        $sale_deed               = hooks()->apply_filters('request_html_pdf_data', $sale_deed);
+        $sale_deed = hooks()->apply_filters('request_html_pdf_data', $sale_deed);
         $GLOBALS['Sale_deed_pdf'] = $sale_deed;
 
         parent::__construct();
 
         $this->sale_deed = $sale_deed;
 
-        // ✅ Set custom page size: 8.5 x 14 inches (Legal)
-        // 1 inch = 25.4 mm → [8.5 * 25.4, 14 * 25.4] = [215.9, 355.6]
-        $custom_layout = array(215.9, 355.6);
-        $this->SetPageFormat($custom_layout, 'P'); // 'P' = Portrait; use 'L' for Landscape
+        // Custom legal size (8.5 x 14 inches)
+        $custom_layout = [215.9, 355.6];
+        $this->SetPageFormat($custom_layout, 'P');
 
-        // Optional: adjust margins and auto page break
-        $this->SetMargins(15, 20, 15);
+        // Enable header
+        $this->setPrintHeader(true);
+
+        // Key fix: Set header margin to the height of your header + padding
+        $this->setHeaderMargin(38); // 30 (header height) + 8 (padding)
+
+        // Set margins - top should be >= header margin
+        $this->SetMargins(15, 38, 15);
+
         $this->SetAutoPageBreak(true, 20);
-
         $this->SetTitle(_l('sale_deed'));
-
-        // Important for proper layout rendering
         $this->sale_deed = $this->fix_editor_html($this->sale_deed);
+
+        // Manually add first page with correct positioning
+        $this->AddPage();
+
+        // Force starting position below header for first page
+        $this->SetY(38);
     }
+
 
     public function prepare()
     {
+        // Don't auto-add page here since we added it in constructor
         $this->set_view_vars('sale_deed', $this->sale_deed);
         return $this->build();
     }
+
 
     protected function type()
     {
         return 'sale_deed';
     }
+
 
     protected function file_path()
     {
@@ -53,5 +66,26 @@ class Sale_deed_pdf extends App_pdf
         }
 
         return $actualPath;
+    }
+    // -----------------------------------------------------------------------------
+    // CUSTOM HEADER
+    // -----------------------------------------------------------------------------
+    public function Header()
+    {
+        // Top Line
+        $this->SetLineStyle(['width' => 0.4]);
+        $this->Line(10, 12, $this->getPageWidth() - 10, 12);
+
+        $this->SetFont('helvetica', 'B', 12);
+        $this->SetXY(0, 15);
+        $this->Cell(0, 6, "“ KAUTILYA ONE-54 ”", 0, 1, 'C');
+
+        $this->SetFont('helvetica', '', 10);
+        $this->SetXY(0, 22);
+        $this->Cell(0, 6, "RERA No. PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA10980/291122", 0, 1, 'C');
+
+        $this->Line(10, 30, $this->getPageWidth() - 10, 30);
+
+        $this->SetY(40);
     }
 }

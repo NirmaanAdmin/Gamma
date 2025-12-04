@@ -9516,7 +9516,8 @@ class purchase extends AdminController
 
     public function sale_deed_pdf($id)
     {
-        $allotment_letter = $this->purchase_model->get_sale_deed_pdf_html($id);
+       $allotment_letter = $this->purchase_model->get_sale_deed_pdf_html($id);
+       
         try {
             $pdf = $this->purchase_model->sale_deed_pdf($allotment_letter);
         } catch (Exception $e) { 

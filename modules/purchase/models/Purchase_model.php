@@ -17432,7 +17432,7 @@ class Purchase_model extends App_Model
                      --border: #e5e7eb;
                  }
 
-                 body {
+                 boFdy {
                      font-size: 12px;
                      line-height: 1.5;
                      color: var(--fg);
@@ -17603,10 +17603,10 @@ class Purchase_model extends App_Model
              </style>
     </head>
     <body>
-        <h1 style="text-align: center;">SALE DEED</h1>
-        <div class="subtitle">Kautilya OnE-54 • RERA No. PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA10980/291122</div>
+        <h1 style="text-align: center;"><strong><u>SALE-DEED</u></strong></h1>
+       
         
-        <div class="section box">
+        <div class="">
             <p>The Sale Deed of Residential <strong>Flat No.<span class="u">{$flat_name}</span> </strong> in Wing <strong>"{$block_name}"</strong> having total Carpet Area admeasuring about <strong>{$CARPET_AREA} sq.mtrs.</strong> situated on
                 <strong>{$floor_name}</strong> of the said Scheme along with (i) <strong>Wash Area admeasuring{$WASH_YARD} sq.mtrs.</strong> (ii) Balcony admeasuring about 3<strong>{$BALCONY} sq.mtrs.</strong> (under the provisions of Gujarat RERA Act) carpet area as well as approximately <strong>{$CARPET_AREA} sq.mtrs.</strong> (as per plan sanctioned by Ahmedabad Municipal Corporation) in the scheme known as " KAUTILYA ONE-54 " together with undivided share in the said land admeasuring about <strong>{$UNDIVIDED_LAND_SHARE} sq.mtrs</strong> bearing A) Final Plot No. 321, admeasuring 3400 sq. m. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/3 admeasuring 5666 sq. m.& B) Final Plot No. 322, admeasuring 2125 sq. m. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/4 admeasuring 3541 sq. m. Thereby, a total of 5525 sq. m. of land of both the final plots now amalgamated Final Plot no: (321+322) and the affordable housing project being built on the above said land situated within the village limits of Chandkheda, Taluka - Sabarmati in the Registration Sub - District of Ahmedabad - 13 (Sabarmati) of District Ahmedabad. Sale deed of the sale consideration price <strong>{$FINAL_AMOUNT}</strong> (Rupees <strong>{$FINAL_AMOUNT_WORDS} only</strong>)
             </p>
