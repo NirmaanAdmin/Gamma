@@ -17605,6 +17605,7 @@ class Purchase_model extends App_Model
              </style>
     </head>
     <body>
+        <br><br><br><br><br><br><br><br>
         <h1 style="text-align: center;"><strong><u>SALE-DEED</u></strong></h1>
        
         
@@ -17660,8 +17661,7 @@ class Purchase_model extends App_Model
         </p>
 
         <p>5) The "Said Developer" has floated scheme of Residential & Commercial units known as " KAUTILYA ONE-54 " (hereinafter referred to as the "Said Scheme") on the "Said Land".
-            Then, the said developer have completed all kind of construction work as per the approved plan and therefore Ahmedabad Municipal Corporation granted B.U. Permission on dated : 16/10/2025 for block A+B and B.U. Permission as under :<br>
-            <div class="page-break"></div>
+            Then, the said developer have completed all kind of construction work as per the approved plan and therefore Ahmedabad Municipal Corporation granted B.U. Permission on dated : 16/10/2025 for block A+B and B.U. Permission as under :<br><br>
         <table >
             <thead>
                 <tr>
@@ -17687,7 +17687,7 @@ class Purchase_model extends App_Model
                     <td>17/10/2025</td>
                 </tr>
             </tbody>
-        </table>
+        </table><br><br>
         The above Building Use Permissions were issued by Ahmedabad Municipal Corporation and correspond to the RERA registration for the project: RERA No. <strong>PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA10980/291122.</strong>
         </p>
 
