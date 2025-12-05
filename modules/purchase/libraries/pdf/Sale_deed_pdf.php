@@ -24,21 +24,37 @@ class Sale_deed_pdf extends App_pdf
         // Enable header
         $this->setPrintHeader(true);
 
-        // Key fix: Set header margin to the height of your header + padding
-        $this->setHeaderMargin(38); // 30 (header height) + 8 (padding)
-
-        // Set margins - top should be >= header margin
-        $this->SetMargins(15, 38, 15);
-
-        $this->SetAutoPageBreak(true, 20);
+        // Convert inches to mm
+        $top_margin_before_header = 38.1;    // 1.5 inches = 1.5 * 25.4
+        $left_margin = 31.75;               // 1.25 inches = 1.25 * 25.4
+        $right_margin = 25.4;               // 1 inch = 1 * 25.4
+        $bottom_margin = 19.05;             // 0.75 inches = 0.75 * 25.4
+        
+        // Set header margin to 1.5 inches (38.1mm) - this is the space from top of page to header content
+        $this->setHeaderMargin($top_margin_before_header);
+        
+        // Calculate header height including lines and text
+        $header_height = 38; // Your header content height
+        
+        // Set margins: Left, Top (header margin + header height), Right
+        $this->SetMargins(
+            $left_margin, 
+            $top_margin_before_header + $header_height, 
+            $right_margin
+        );
+        
+        // Set auto page break with bottom margin
+        $this->SetAutoPageBreak(true, $bottom_margin);
+        
         $this->SetTitle(_l('sale_deed'));
         $this->sale_deed = $this->fix_editor_html($this->sale_deed);
 
         // Manually add first page with correct positioning
         $this->AddPage();
+        $this->deletePage(1);
 
         // Force starting position below header for first page
-        $this->SetY(38);
+        $this->SetY($top_margin_before_header + $header_height);
     }
 
 
@@ -67,25 +83,52 @@ class Sale_deed_pdf extends App_pdf
 
         return $actualPath;
     }
-    // -----------------------------------------------------------------------------
-    // CUSTOM HEADER
-    // -----------------------------------------------------------------------------
+
     public function Header()
     {
-        // Top Line
+        // Start header content 1.5 inches from top
+        $header_start_y = 38.1; // 1.5 inches in mm
+        
+        $this->SetY($header_start_y);
+        
         $this->SetLineStyle(['width' => 0.4]);
-        $this->Line(10, 12, $this->getPageWidth() - 10, 12);
+        
+        // Draw line from left margin to right margin
+        $page_width = $this->getPageWidth();
+        $this->Line(
+            $this->lMargin,           // Start X from left margin (31.75mm)
+            $header_start_y,          // Start Y at header start
+            $page_width - $this->rMargin,  // End X at right margin (page width - 25.4mm)
+            $header_start_y           // End Y at header start
+        );
 
-        $this->SetFont('helvetica', 'B', 12);
-        $this->SetXY(0, 15);
-        $this->Cell(0, 6, "“ KAUTILYA ONE-54 ”", 0, 1, 'C');
+        $this->SetFont('', 'B', 13);
+        $this->SetX($this->lMargin); // Start from left margin (31.75mm)
+        $this->Cell(
+            $page_width - $this->lMargin - $this->rMargin, // Width: page width minus both margins
+            6, 
+            "“ KAUTILYA ONE-54 ”", 
+            0, 1, 'C'
+        );
 
-        $this->SetFont('helvetica', '', 10);
-        $this->SetXY(0, 22);
-        $this->Cell(0, 6, "RERA No. PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA10980/291122", 0, 1, 'C');
+        $this->SetFont('', 'B', 13);
+        $this->SetX($this->lMargin); // Start from left margin (31.75mm)
+        $this->Cell(
+            $page_width - $this->lMargin - $this->rMargin, // Width: page width minus both margins
+            6, 
+            "RERA No. PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA10980/291122", 
+            0, 1, 'C'
+        );
 
-        $this->Line(10, 30, $this->getPageWidth() - 10, 30);
+        // Bottom line of header
+        $this->Line(
+            $this->lMargin,           // Start X from left margin (31.75mm)
+            $header_start_y + 18,     // Start Y at header start + 18mm
+            $page_width - $this->rMargin,  // End X at right margin (page width - 25.4mm)
+            $header_start_y + 18      // End Y at header start + 18mm
+        );
 
-        $this->SetY(40);
+        // Reset Y position for content after header
+        $this->SetY($this->getHeaderMargin() + $header_height);
     }
 }

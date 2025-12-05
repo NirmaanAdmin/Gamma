@@ -17413,10 +17413,9 @@ class Purchase_model extends App_Model
         $customer2_html = '';
         if (!empty($customer2)) {
             $customer2_html = "
-        (2) <strong>{$CUSTOMER2_COMPANY}</strong></p>
-        [ PAN : <strong>{$CUSTOMER2_PAN_CARD}</strong>]
-        [ AADHAR : <strong>{$CUSTOMER2_ADHAR_CARD}</strong>]<br>
-        Adult Residing at -<strong>{$CUSTOMER2_ADDRESS}</strong>";
+        <p>(2) <strong>{$CUSTOMER2_COMPANY}</strong></p>
+        <p>[ PAN : <strong>{$CUSTOMER2_PAN_CARD}</strong>]</p>
+        <p>[ AADHAR : <strong>{$CUSTOMER2_ADHAR_CARD}</strong>]</p>";
         }
 
         $html = <<<HTML
@@ -17430,10 +17429,11 @@ class Purchase_model extends App_Model
                      --fg: #111827;
                      --muted: #4b5563;
                      --border: #e5e7eb;
+                     font-family: Arial;
                  }
 
-                 boFdy {
-                     font-size: 12px;
+                 body {
+                     font-size: 13%;
                      line-height: 1.5;
                      color: var(--fg);
                      margin: 0;
@@ -17578,10 +17578,12 @@ class Purchase_model extends App_Model
                      height: 50px;
                  }
                  p{
+                    font-size:20px;
                      line-height:1.5;
                      text-align: justify;
                  }
                  li{
+                    font-size:20px;
                      line-height:1.5;
                      text-align: justify;
                  }
@@ -17611,18 +17613,19 @@ class Purchase_model extends App_Model
                 <strong>{$floor_name}</strong> of the said Scheme along with (i) <strong>Wash Area admeasuring{$WASH_YARD} sq.mtrs.</strong> (ii) Balcony admeasuring about 3<strong>{$BALCONY} sq.mtrs.</strong> (under the provisions of Gujarat RERA Act) carpet area as well as approximately <strong>{$CARPET_AREA} sq.mtrs.</strong> (as per plan sanctioned by Ahmedabad Municipal Corporation) in the scheme known as " KAUTILYA ONE-54 " together with undivided share in the said land admeasuring about <strong>{$UNDIVIDED_LAND_SHARE} sq.mtrs</strong> bearing A) Final Plot No. 321, admeasuring 3400 sq. m. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/3 admeasuring 5666 sq. m.& B) Final Plot No. 322, admeasuring 2125 sq. m. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/4 admeasuring 3541 sq. m. Thereby, a total of 5525 sq. m. of land of both the final plots now amalgamated Final Plot no: (321+322) and the affordable housing project being built on the above said land situated within the village limits of Chandkheda, Taluka - Sabarmati in the Registration Sub - District of Ahmedabad - 13 (Sabarmati) of District Ahmedabad. Sale deed of the sale consideration price <strong>{$FINAL_AMOUNT}</strong> (Rupees <strong>{$FINAL_AMOUNT_WORDS} only</strong>)
             </p>
         </div>
-
-        <h4>FIRST PARTY - VENDOR :-</h4>
+        <div class="page-break"></div>
+        <p><u>FIRST PARTY - VENDOR :-</u></p>
         <p><span>KAUTILYA DEVELOPERS</span><br> <span>PAN : AATFK 6344 G</span></p>
         <p>A Partnership Firm, having its Registered office at : 30, Lad Society, B/h. Judges Bunglow, , Ahmedabad - 380054 & having site office at, "Kautilya One-54", located at Opp. Swaminarayan Temple, B/h. Omkar Lotus, Chandkheda, Ahmedabad.</p>
         <p>Here in after in this Deed of Sale referred to as <strong>“ THE VENDOR”</strong> or <strong> “ THE FIRST PARTY ” </strong> which expression shall unless it be repugnant to the context or meaning thereof be deemed to mean and include the said <strong>“VENDOR ”</strong> and its present and future partners, authorized signatories, successors, agents, administrators, legal representative and assignees of the FIRST PARTY.</p>
 
         <p>SECOND PARTY - PURCHASER :-</p>
         <p>(1) <strong>{$CUSTOMER}</strong></p>
-        [ PAN : <strong>{$PAN_CARD}</strong>]
-        [ AADHAR : <strong>{$ADHAR_CARD}</strong>]<br>
-        Adult Residing at -<strong>{$ADDRESS}</strong><br>
+        <p>[ PAN : <strong>{$PAN_CARD}</strong>]</p>
+        <p>[ AADHAR : <strong>{$ADHAR_CARD}</strong>]</p><br>
         {$customer2_html}
+        Adult Residing at -<strong>{$ADDRESS}</strong>
+        
         
         <p>Here in after in this Deed of Sale referred to as <strong>“ THE PURCHASER ”</strong> or <strong>“ THE SECOND PARTY ”</strong> which expression shall unless it be repugnant to the context or meaning thereof be deemed to mean and include the said <strong>“ PURCHASER ”</strong> and his / her / their heirs, agents, administrators, legal representative and assignees of the SECOND PARTY.</p>
 
@@ -17658,6 +17661,7 @@ class Purchase_model extends App_Model
 
         <p>5) The "Said Developer" has floated scheme of Residential & Commercial units known as " KAUTILYA ONE-54 " (hereinafter referred to as the "Said Scheme") on the "Said Land".
             Then, the said developer have completed all kind of construction work as per the approved plan and therefore Ahmedabad Municipal Corporation granted B.U. Permission on dated : 16/10/2025 for block A+B and B.U. Permission as under :<br>
+            <div class="page-break"></div>
         <table >
             <thead>
                 <tr>
@@ -17798,7 +17802,7 @@ class Purchase_model extends App_Model
             <li>It is hereby agreed that the Purchaser shall not put or allow to be put any Name Plate, Sign Board and / or any other kind of display of any nature, on the compound wall, gate and / or on the exterior side of the development to be planned and / or in the open space in the said Unit without the written consent of First Party / Service Society except it is provided by the First Party.</li>
             <li>That the Purchaser shall use the said Unit only for residential purpose which is sanctioned by Ahmedabad Municipal Corporation as residential Units and residential unit holders will have right to use the basement parking, common plot and common amenities of residential part. The Purchaser will not carry out any commercial, industrial, hazardous or polluting activity, nor store combustible or noxious materials in the Said Unit. Any breach shall entitle the Service Society / Vendor to take necessary action including fines or restriction of common facility usage.
             </li>
-            <li>In said project seller has made basements for residential unit holder parking and hence the residential unit holders will have no right to park vehicles in front of commercial units and their margin area. The Commercial unit holders will have right to park their vehicles in the front of the commercial space / shop only and hence the Commercial unit holders will have no right to enter in the residential / Basement parking area to park their vehicles or enjoy the facilities of residential part except for repairs and maintenance of common electric and water amenities. Residential unit holders shall have to park their vehicles at First cellar & Second cellar as per arrangement done by service society and as mentioned in the parking plan. All the unit holders confirms and shall have to manage that visitors of their unit park their vehicles out side of said scheme.</li>
+            <li>In said project seller has made basements for residential unit holder parking and hence the residential unit holders will have no right to park vehicles in front of commercial units and their margin area. The Commercial unit holders will have right to park their vehicles in the front of the commercial space / shop only and hence the Commercial unit holders will have no right to enter in the residential / Basement parking area to park their vehicles or enjoy the facilities of residential part except for repairs and maintenance of common electric and water amenities. Residential unit holders shall have to park their vehicles at Ground floor or basement as per arrangement done by service society and as mentioned in the parking plan. All the unit holders confirms and shall have to manage that visitors of their unit park their vehicles out side of said scheme.</li>
             <li>The Purchaser hereby covenants to keep the Said Unit neat, clean and tidy and saved and protected from trespasser, from being illegally used or occupied and to keep construction, sewers, drains, pipes, appurtenances belonging thereto in a good and tenable condition so as to support and protect the part of the building structure other than their said Unit/s.</li>
             <li>After conveyance of the Said Unit to the Purchaser, the Purchaser shall be entitled to let, sub-let, sell, transfer, convey, mortgage, charge or in any way encumber or deal with or dispose of the Said Unit, after obtaining prior written permission of Service Society and subject to and in accordance with the terms and conditions laid down by First Party. In the event the Purchaser is desirous of selling the Said Unit he / she / It / they shall comply with the following :-
 
@@ -17902,7 +17906,7 @@ class Purchase_model extends App_Model
                 <td><span class="u">:by {$SOUTH}</span></td>
             </tr>
         </table>
-
+                 <div class="page-break"></div>
         <p>IN WITNESS WHEREOF the par ties hereto have hereunto set and subscribe their respective hands hereunder on this ___ th day of _______, 2025 at Ahmedabad.</p>
         <div class="signature-grid">
             <div>
@@ -17928,46 +17932,64 @@ class Purchase_model extends App_Model
 
         <div class="page-break"></div>
 
-        <h2>Photographs of Said Unit</h2>
-        <div class="photos">Photo Placeholder</div>
+        <h2 style="text-align: center;"><u>Photographs of Said Unit</u></h2>
 
-        <h3>Postal Address of Property</h3>
-        <div class="address-block">
-            <p><strong>Flat No. {$flat_name}</strong></p>
-            <p><strong>KAUTILYA ONE-54</strong></p>
-            <p>Chandkheda, Ahmedabad</p>
-        </div>
+        <table width="100%" cellpadding="0" border="1" style="margin-top: 20px;">
+            <tr>
+                <td style="text-align: center; vertical-align: middle; height: 600px; padding: 10px;">
+                    [Space for photographs]
+                </td>
+            </tr>
+        </table>
 
-        <div class="signature-grid">
+        <div style="height: 40px;"></div>
+
+        <h3><u>Postal Address of Property</u></h3><br>
+        <span style="text-align: center;margin: 0px;"><strong>Flat No. {$flat_name}</strong></span><br>
+        <span style="text-align: center;margin: 0px;"><strong>KAUTILYA ONE-54</strong></span><br>
+        <span style="text-align: center;margin: 0px;">Chandkheda, Ahmedabad</span><br>
+
+    
+
+        <div >
             <div>
-                <h3>First Party – Vendor</h3>
+                <span><strong>First Party – Vendor</strong></span>
                 <div class="sign-block"></div>
             </div>
             <div>
-                <h3>Second Party – Purchaser</h3>
+                <span><strong>Second Party – Purchaser</strong></span>
                 <div class="sign-block"></div>
             </div>
         </div>
 
         <div class="page-break"></div>
 
-        <h2>Photographs of Said Unit</h2>
-        <div class="photos">Photo Placeholder</div>
+        <h2 style="text-align: center;"><u>Photographs of Said Unit</u></h2>
 
-        <h3>Postal Address of Property</h3>
-        <div class="address-block">
-            <p><strong>Flat No. {$flat_name}</strong></p>
-            <p><strong>KAUTILYA ONE-54</strong></p>
-            <p>Chandkheda, Ahmedabad</p>
-        </div>
+        <table width="100%" cellpadding="0" border="1" style="margin-top: 20px;">
+            <tr>
+                <td style="text-align: center; vertical-align: middle; height: 600px; padding: 10px;">
+                    [Space for photographs]
+                </td>
+            </tr>
+        </table>
 
-        <div class="signature-grid">
+        <div style="height: 40px;"></div>
+
+        <h3><u>Postal Address of Property</u></h3><br>
+        <span style="text-align: center;margin: 0px;"><strong>Flat No. {$flat_name}</strong></span><br>
+        <span style="text-align: center;margin: 0px;"><strong>KAUTILYA ONE-54</strong></span><br>
+        <span style="text-align: center;margin: 0px;">Chandkheda, Ahmedabad</span><br>
+
+    
+
+        <div >
             <div>
-                <h3>First Party – Vendor</h3>
+                <span><strong>First Party – Vendor</strong></span>
                 <div class="sign-block"></div>
             </div>
             <div>
-                <h3>Second Party – Purchaser</h3>
+                <span><strong>Second Party – Purchaser</strong></span>
                 <div class="sign-block"></div>
             </div>
         </div>
