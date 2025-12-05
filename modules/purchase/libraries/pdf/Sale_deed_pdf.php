@@ -21,8 +21,9 @@ class Sale_deed_pdf extends App_pdf
         $custom_layout = [215.9, 355.6];
         $this->SetPageFormat($custom_layout, 'P');
 
-        // Enable header
+        // Enable header and footer
         $this->setPrintHeader(true);
+        $this->setPrintFooter(true);
 
         // Convert inches to mm
         $top_margin_before_header = 38.1;    // 1.5 inches = 1.5 * 25.4
@@ -32,6 +33,10 @@ class Sale_deed_pdf extends App_pdf
         
         // Set header margin to 1.5 inches (38.1mm) - this is the space from top of page to header content
         $this->setHeaderMargin($top_margin_before_header);
+        
+        // Set footer margin (space from bottom of page to footer content)
+        $footer_margin = 15; // mm from bottom
+        $this->setFooterMargin($footer_margin);
         
         // Calculate header height including lines and text
         $header_height = 38; // Your header content height
@@ -43,8 +48,8 @@ class Sale_deed_pdf extends App_pdf
             $right_margin
         );
         
-        // Set auto page break with bottom margin
-        $this->SetAutoPageBreak(true, $bottom_margin);
+        // Set auto page break with bottom margin (including space for footer)
+        $this->SetAutoPageBreak(true, $bottom_margin + $footer_margin + 5);
         
         $this->SetTitle(_l('sale_deed'));
         $this->sale_deed = $this->fix_editor_html($this->sale_deed);
@@ -130,5 +135,39 @@ class Sale_deed_pdf extends App_pdf
 
         // Reset Y position for content after header
         $this->SetY($this->getHeaderMargin() + $header_height);
+    }
+
+    public function Footer()
+    {
+        // Position at 15 mm from bottom
+        $this->SetY(-15);
+        
+        // Set font for footer
+        $this->SetFont('helvetica', 'I', 9);
+        
+        // Get page width
+        $page_width = $this->getPageWidth();
+        
+        // Get current page number and total pages
+        $page_number = $this->getAliasNumPage();
+        $total_pages = $this->getAliasNbPages();
+        
+        // Page number text
+        $footer_text = "Page No : {$page_number}";
+        
+        // Print page number aligned to right side
+        // Calculate position: start from right margin position
+        $text_width = 30; // Approximate width for "Page X of Y"
+        $x_position = $page_width - $this->rMargin - $text_width;
+        
+        $this->SetX($x_position);
+        $this->Cell(
+            $text_width,
+            10,
+            $footer_text,
+            0,
+            0,
+            'R'
+        );
     }
 }
