@@ -17605,7 +17605,7 @@ class Purchase_model extends App_Model
              </style>
     </head>
     <body>
-        <br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         <h1 style="text-align: center;"><strong><u>SALE-DEED</u></strong></h1>
        
         
