@@ -396,13 +396,6 @@
          // Append to container
          $('#bank-details-container').append(newRow);
 
-         // Initialize datepicker if you're using one
-         // if ($.fn.datepicker) {
-         //    newRow.find('input[type="date"]').datepicker({
-         //       format: 'yyyy-mm-dd',
-         //       autoclose: true
-         //    });
-         // }
       }
 
       // Function to remove a bank detail row

@@ -172,6 +172,10 @@
                         <?php $value = (isset($client) ? $client->sr_date : ''); ?>
                         <?php echo render_input('sr_date', 'Date', $value, 'date'); ?>
                      </div>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->sub_registrar : ''); ?>
+                        <?php echo render_input('sub_registrar', 'Sub-Registrar', $value, 'text'); ?>
+                     </div>
 
 
                   </div>
