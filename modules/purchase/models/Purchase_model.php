@@ -17373,7 +17373,7 @@ class Purchase_model extends App_Model
                 <li>THAT the Purchaser and persons to whom the said Unit is ultimately transferred, assigned or given possession of shall observe and perform the bye laws and / or the rules, regulations and resolutions, which the said Society may make and the additions, alternation or amendments thereto for the protection, maintenance, use and transfer of the said building, unit and other space and Unit therein and/or in the compound. They will also abide by the building rules, regulations and bye-laws for the time being of the Ahmedabad Municipal Corporation and other authorities of the government. The Purchaser and the person to whom the said Unit is let, transferred, assigned or given possession, shall observe and perform all the stipulations and conditions laid by the Society regarding the occupation and use of the building and / or the said unit or other spaces and / or parking spaces therein and shall pay the contribution regularly and punctually towards the taxes and / or expenses or other out goings in accordance with the terms of this deed and as may be decided by the Society from time to time. All the terms, conditions, stipulations and provisions of this deed shall be binding upon the transferee of the Purchasers from time to time. </li><br>
                 <li>THAT the purchaser have inspected the unit, verified / checked all fittings and fixtures in the unit before taking the possession. He / she / they has / have no complaint / dispute for the same. From now onwards, it is / will be Purchaser's responsibility to keep the unit in good and tenable conditions.</li><br>
                 <li>That if the Purchaser is found to have committed breach of any of the conditions, without prejudice to the right of expulsion of the purchaser from the membership of the said service society and forfeiture of its share and maintenance deposit, the said service society shall have absolute right to compel the purchaser to restore the unit to the original position and in default, shall have a right to cause it to be done through its agents and employees at the cost of purchaser. Under such circumstances the purchaser is liable to pay penalty, charges etc. that may be fixed or decided by the service society. If the Purchaser fails to pay penalty, charges etc. then under that circumstances the purchaser is not entitled to use common facilities and common amenities of the said scheme and the same can be discontinued by service society without giving any notice and for that purchaser is not entitled to take any legal action against the service society and ultimately his / her their membership right can also be terminated.</li><br>
-                <li>The Vendor has authorized its partner_________________________________ to sign the present Sale Deed and other related documents as "Authorized Signatory".</li><br>
+                <li>The Vendor has authorized its partner Kiran Rasiklal Kamdar to sign the present Sale Deed and other related documents as "Authorized Signatory".</li><br>
                 <li>THE PURCHASER, as the context may, require, shall also include his representatives, occupiers, visitors, authorized person successors, assigns and all and every other person or person to claim under him / her / it.</li><br>
                 <li>The expression VENDOR shall also mean and include any person authorized / nominated by it or to its order the Service Society formed by the Unit holders or its assignee or transferee vested with such powers, authorities or obligations as the Vendor may think fit.</li><br>
                 <li>This Deed shall be binding on the purchaser, (in case of individual) his
@@ -17470,7 +17470,7 @@ class Purchase_model extends App_Model
             <div style="height: 40px;"></div>
 
             <h3><u>Postal Address of Property</u></h3><br>
-            <span style="text-align: center;margin: 0px;"><strong>Flat No. {$flat_name}</strong></span><br>
+            <span style="text-align: center;margin: 0px;"><strong>Flat No. {$block_name} {$flat_name}</strong></span><br>
             <span style="text-align: center;margin: 0px;"><strong>KAUTILYA ONE-54</strong></span><br>
             <span style="text-align: center;margin: 0px;">Chandkheda, Ahmedabad</span><br>
 
@@ -17493,7 +17493,7 @@ class Purchase_model extends App_Model
 
             <table width="100%" cellpadding="0" border="1" style="margin-top: 20px;">
                 <tr>
-                    <td style="text-align: center; vertical-align: middle; height: 600px; padding: 10px;">
+                    <td style="text-align: center; vertical-align: middle; height: 550px; padding: 10px;">
                         [Space for photographs]
                     </td>
                 </tr>
@@ -17502,11 +17502,9 @@ class Purchase_model extends App_Model
             <div style="height: 40px;"></div>
 
             <h3><u>Postal Address of Property</u></h3><br>
-            <span style="text-align: center;margin: 0px;"><strong>Flat No. {$flat_name}</strong></span><br>
+            <span style="text-align: center;margin: 0px;"><strong>Flat No. {$block_name} {$flat_name}</strong></span><br>
             <span style="text-align: center;margin: 0px;"><strong>KAUTILYA ONE-54</strong></span><br>
             <span style="text-align: center;margin: 0px;">Chandkheda, Ahmedabad</span><br>
-
-        
 
             <div >
                 <div>
