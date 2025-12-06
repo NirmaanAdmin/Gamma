@@ -164,6 +164,14 @@
                         <?php $value = (isset($client) ? $client->occupation : ''); ?>
                         <?php echo render_input('occupation', 'Occupation', $value, 'text'); ?>
                      </div>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->sr_no : ''); ?>
+                        <?php echo render_input('sr_no', 'Sr. No.', $value, 'text'); ?>
+                     </div>
+                     <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->sr_date : ''); ?>
+                        <?php echo render_input('sr_date', 'Date', $value, 'date'); ?>
+                     </div>
 
 
                   </div>
