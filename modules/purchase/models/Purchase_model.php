@@ -16951,7 +16951,15 @@ class Purchase_model extends App_Model
         </tbody>
     </table>";
         }
+        $BU_HTML = '';
 
+        if($customer['bu_permissions'] == 1){
+           $BU_HTML = '<p>[f] Thereafter the First Party and Second Party have not executed Agreement for Sale of said because B.U. Permission of the said unit has been already received.</p>';
+        }elseif ($customer['bu_permissions'] == 0) {
+            $BU_HTML = "<p>[f] Thereafter the First Party and Second Party have executed Agreement for Sale of said Unit which was registered before Sub-Registrar of {$SUBREGISTER} under Sr. No. <strong>{$SRNO}</strong>, dated <strong>{$SRDATE}</strong>, herein after referred to as ' The said Agreement '.</p>";
+        }
+
+        
 
         $html = <<<HTML
         <!DOCTYPE html>
@@ -17251,7 +17259,7 @@ class Purchase_model extends App_Model
             </p>
 
 
-            <p>[f] Thereafter the First Party and Second Party have executed Agreement for Sale of said Unit which was registered before Sub-Registrar of {$SUBREGISTER} under Sr. No. <strong>{$SRNO}</strong>, dated <strong>{$SRDATE}</strong>, herein after referred to as " The said Agreement ".</p>
+            {$BU_HTML}
 
             <p>[g] AND WHEREAS as per the terms and conditions mentioned in the said Agreement the Vendor has agreed to sell to the Purchaser and the Purchaser has agreed to purchase from Vendor the said property for a consideration of Rs.<strong>{$FINAL_AMOUNT}</strong>/- (Rupees <strong>{$FINAL_AMOUNT_WORDS} Only</strong>).</p>
 

@@ -176,6 +176,20 @@
                         <?php $value = (isset($client) ? $client->sub_registrar : ''); ?>
                         <?php echo render_input('sub_registrar', 'Sub-Registrar', $value, 'text'); ?>
                      </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label for="bu_permissions">BU Permissions</label>
+                           <div class="checkbox">
+                              <input type="hidden" name="bu_permissions" value="0">
+                              <input type="checkbox"
+                                 id="bu_permissions"
+                                 name="bu_permissions"
+                                 value="1"
+                                 <?php echo (isset($client) && $client->bu_permissions == 1) ? 'checked' : ''; ?>>
+                              <label for="bu_permissions">Enable BU Permissions</label>
+                           </div>
+                        </div>
+                     </div>
 
 
                   </div>
