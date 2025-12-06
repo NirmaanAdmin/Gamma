@@ -197,21 +197,98 @@
                         <?php $value = (isset($client) ? $client->final_amount : ''); ?>
                         <?php echo render_input('final_amount', 'Final Amount(₹)', $value, 'number'); ?>
                      </div>
-                     <div class="col-md-6">
-                        <?php $value = (isset($client) ? $client->bank_name : ''); ?>
-                        <?php echo render_input('bank_name', 'Bank Name', $value, 'text'); ?>
+                     <div id="bank-details-container">
+                        <?php if (!empty($payment_details) && is_array($payment_details)): ?>
+                           <?php foreach ($payment_details as $index => $detail): ?>
+                              <div class="bank-detail-row" id="bank-detail-row-<?php echo $index; ?>">
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="col-md-12">
+                                          <?php if ($index > 0): ?>
+                                             <hr>
+                                          <?php endif; ?>
+                                          <h5>Payment Details <?php echo $index + 1; ?></h5>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <input type="hidden" name="bank_details[<?php echo $index; ?>][id]" value="<?php echo html_escape($detail['id'] ?? ''); ?>">
+                                          <div class="form-group">
+                                             <label for="bank_name_<?php echo $index; ?>" class="control-label">Bank Name</label>
+                                             <input type="text" id="bank_name_<?php echo $index; ?>" name="bank_details[<?php echo $index; ?>][bank_name]" class="form-control" value="<?php echo html_escape($detail['bank_name'] ?? ''); ?>">
+                                          </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <div class="form-group">
+                                             <label for="cheque_no_<?php echo $index; ?>" class="control-label">Cheque No. / UTR</label>
+                                             <input type="text" id="cheque_no_<?php echo $index; ?>" name="bank_details[<?php echo $index; ?>][cheque_no]" class="form-control" value="<?php echo html_escape($detail['cheque_no'] ?? ''); ?>">
+                                          </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <div class="form-group">
+                                             <label for="payment_date_<?php echo $index; ?>" class="control-label">Payment Date</label>
+                                             <input type="date" id="payment_date_<?php echo $index; ?>" name="bank_details[<?php echo $index; ?>][payment_date]" class="form-control" value="<?php echo html_escape($detail['payment_date'] ?? ''); ?>">
+                                          </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <div class="form-group">
+                                             <label for="amount_<?php echo $index; ?>" class="control-label">Amount</label>
+                                             <input type="number" id="amount_<?php echo $index; ?>" name="bank_details[<?php echo $index; ?>][amount]" class="form-control" value="<?php echo html_escape($detail['amount'] ?? ''); ?>" step="0.01">
+                                          </div>
+                                       </div>
+                                       <?php if ($index > 0): ?>
+                                          <div class="col-md-12 text-right">
+                                             <button type="button" class="btn btn-danger btn-remove-bank-detail" data-row-id="bank-detail-row-<?php echo $index; ?>">
+                                                <i class="fa fa-times"></i> Remove
+                                             </button>
+                                          </div>
+                                       <?php endif; ?>
+                                    </div>
+                                 </div>
+                              </div>
+                           <?php endforeach; ?>
+                        <?php else: ?>
+                           <!-- Default/Empty row -->
+                           <div class="bank-detail-row" id="bank-detail-row-0">
+                              <div class="row">
+                                 <div class="col-md-12">
+                                    <div class="col-md-12">
+                                       <h5>Payment Details 1</h5>
+                                    </div>
+                                    <div class="col-md-6">
+                                       <input type="hidden" name="bank_details[0][id]" value="">
+                                       <div class="form-group">
+                                          <label for="bank_name_0" class="control-label">Bank Name</label>
+                                          <input type="text" id="bank_name_0" name="bank_details[0][bank_name]" class="form-control" value="">
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                       <div class="form-group">
+                                          <label for="cheque_no_0" class="control-label">Cheque No. / UTR</label>
+                                          <input type="text" id="cheque_no_0" name="bank_details[0][cheque_no]" class="form-control" value="">
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                       <div class="form-group">
+                                          <label for="payment_date_0" class="control-label">Payment Date</label>
+                                          <input type="date" id="payment_date_0" name="bank_details[0][payment_date]" class="form-control" value="">
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                       <div class="form-group">
+                                          <label for="amount_0" class="control-label">Amount</label>
+                                          <input type="number" id="amount_0" name="bank_details[0][amount]" class="form-control" value="" step="0.01">
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        <?php endif; ?>
                      </div>
-                     <div class="col-md-6">
-                        <?php $value = (isset($client) ? $client->cheque_no : ''); ?>
-                        <?php echo render_input('cheque_no', 'Cheque No. / UTR', $value, 'text'); ?>
-                     </div>
-                     <div class="col-md-6">
-                        <?php $value = (isset($client) ? $client->payment_date : ''); ?>
-                        <?php echo render_input('payment_date', 'Payment Date', $value, 'date'); ?>
-                     </div>
-                     <div class="col-md-6">
-                        <?php $value = (isset($client) ? $client->amount : ''); ?>
-                        <?php echo render_input('amount', 'Amount', $value, 'number'); ?>
+
+                     <!-- Add button -->
+                     <div class="col-md-12">
+                        <button type="button" id="add-bank-detail" class="btn btn-info pull-right mbot25 mtop10">
+                           <i class="fa fa-plus"></i> Add More Bank Details
+                        </button>
                      </div>
 
                      <div class="col-md-12">

@@ -8918,6 +8918,7 @@ class purchase extends AdminController
             // Fetch data based on groups
             if ($data['group'] == 'profile') {
                 $data['customer_admins'] = $this->purchase_model->get_vendor_admins($id);
+                $data['payment_details'] = $this->purchase_model->get_payment_details($id);
             } elseif ($group == 'estimates') {
                 $this->load->model('estimates_model');
                 $data['estimate_statuses'] = $this->estimates_model->get_statuses();
@@ -9517,7 +9518,7 @@ class purchase extends AdminController
     public function sale_deed_pdf($id)
     {
        $allotment_letter = $this->purchase_model->get_sale_deed_pdf_html($id);
-       
+        
         try {
             $pdf = $this->purchase_model->sale_deed_pdf($allotment_letter);
         } catch (Exception $e) { 
