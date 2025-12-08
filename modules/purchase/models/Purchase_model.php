@@ -16911,7 +16911,7 @@ class Purchase_model extends App_Model
         if (!empty($payment_details)) {
 
             $PAYMENT_HTML .= '
-    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+    <table border="1"  cellspacing="0" style="border-collapse: collapse; width: 100%;">
         <thead>
             <tr>
                 <th width="25%">Amount (Rs.)</th>
