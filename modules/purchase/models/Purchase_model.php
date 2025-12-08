@@ -16933,7 +16933,7 @@ class Purchase_model extends App_Model
                 $bank   = $p['bank_name']    !== '' ? $p['bank_name']   : '&nbsp;';
                 $cheque = $p['cheque_no']    !== '' ? $p['cheque_no']   : '&nbsp;';
                 $date   = $dt                !== '' ? $dt               : '&nbsp;';
-
+                $amount = app_format_money($amount,'');
                 $PAYMENT_HTML .= "
         <tr>
             <td>{$amount}</td>
