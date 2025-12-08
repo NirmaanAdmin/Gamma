@@ -16867,7 +16867,8 @@ class Purchase_model extends App_Model
         $BANK_NAME = $esc($customer['bank_name'] ?? '');
         $CHEQUE_NO = $esc($customer['cheque_no'] ?? '');
         $PAYMENT_DATE = !empty($customer['payment_date']) && $customer['payment_date'] != '0000-00-00' ? date('d M, Y', strtotime($customer['payment_date'])) : '';
-        $FINAL_AMOUNT = $esc($customer['final_amount'] ?? '');
+        $final_amount = $esc($customer['final_amount'] ?? '');
+        $FINAL_AMOUNT = app_format_money($final_amount, '');
         $AMOUNT = $esc($customer['amount'] ?? '');
         $SRNO = $esc($customer['sr_no'] ?? '');
         $SRDATE = !empty($customer['sr_date']) && $customer['sr_date'] != '0000-00-00' ? date('d M, Y', strtotime($customer['sr_date'])) : '';
@@ -16893,7 +16894,7 @@ class Purchase_model extends App_Model
 
         // Convert amount to words
         $TOKAN_AMOUNT_WORDS = convertToIndianCurrency($TOKAN_AMOUNT);
-        $FINAL_AMOUNT_WORDS = convertToIndianCurrency($FINAL_AMOUNT);
+        $FINAL_AMOUNT_WORDS = convertToIndianCurrency($final_amount);
         $AMOUNT_WORDS = convertToIndianCurrency($AMOUNT);
 
         // Generate customer2 HTML section
@@ -16911,56 +16912,73 @@ class Purchase_model extends App_Model
         if (!empty($payment_details)) {
 
             $PAYMENT_HTML .= '
-    <table border="1"  cellspacing="0" style="border-collapse: collapse; width: 100%;">
-        <thead>
-            <tr>
-                <th width="25%">Amount (Rs.)</th>
-                <th width="35%">Bank Name</th>
-                <th width="25%">ChequeNo./ Ref No.</th>
-                <th width="15%">Date</th>
-            </tr>
-        </thead>
-        <tbody>
-    ';
+            <style>
+                table.payment-table th, 
+                table.payment-table td {
+                    font-size: 18px;
+                }
+                table.total-table td {
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+            </style>
+
+            <table class="payment-table" border="1" cellpadding="4" cellspacing="0" width="100%">
+                <thead>
+                    <tr style="background-color:#f0f0f0; font-weight:bold;">
+                        <th width="25%">Amount (Rs.)</th>
+                        <th width="35%">Bank Name</th>
+                        <th width="25%">Cheque No./ Ref No.</th>
+                        <th width="15%">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+            ';
 
             foreach ($payment_details as $p) {
 
                 $dt = (!empty($p['payment_date']) && $p['payment_date'] != '0000-00-00')
                     ? date('d M, Y', strtotime($p['payment_date']))
-                    : '';
+                    : '&nbsp;';
 
-                $amount = $p['amount']       !== '' ? $p['amount']      : '&nbsp;';
-                $bank   = $p['bank_name']    !== '' ? $p['bank_name']   : '&nbsp;';
-                $cheque = $p['cheque_no']    !== '' ? $p['cheque_no']   : '&nbsp;';
-                $date   = $dt                !== '' ? $dt               : '&nbsp;';
-                $amount = app_format_money($amount,'');
-                $PAYMENT_HTML .= "
-        <tr>
-            <td>{$amount}</td>
-            <td>{$bank}</td>
-            <td>{$cheque}</td>
-            <td>{$date}</td>
-        </tr>";
+                $amount = $p['amount'] !== '' ? app_format_money($p['amount'], '') : '&nbsp;';
+                $bank   = $p['bank_name'] !== '' ? $p['bank_name'] : '&nbsp;';
+                $cheque = $p['cheque_no'] !== '' ? $p['cheque_no'] : '&nbsp;';
+
+                $PAYMENT_HTML .= '
+                    <tr>
+                        <td width="25%">'.$amount.'</td>
+                        <td width="35%">'.$bank.'</td>
+                        <td width="25%">'.$cheque.'</td>
+                        <td width="15%">'.$dt.'</td>
+                    </tr>
+                ';
             }
 
-            $PAYMENT_HTML .= "
-        <tr>
-            <td colspan='4' style='font-weight:bold; padding:10px;'>
-                TOTAL CONSIDERATION: {$FINAL_AMOUNT}/- ({$FINAL_AMOUNT_WORDS} only)
-            </td>
-        </tr>
-        </tbody>
-    </table>";
+            $PAYMENT_HTML .= '
+                </tbody>
+            </table>
+
+
+            <table class="total-table" border="1" cellpadding="4" cellspacing="0" width="100%">
+                <tr>
+                    <td>
+                        TOTAL CONSIDERATION: '.$FINAL_AMOUNT.'/- ('.$FINAL_AMOUNT_WORDS.' only)
+                    </td>
+                </tr>
+            </table>
+            ';
         }
+
         $BU_HTML = '';
 
-        if($customer['bu_permissions'] == 1){
-           $BU_HTML = '<p>[f] Thereafter the First Party and Second Party have not executed Agreement for Sale of said because B.U. Permission of the said unit has been already received.</p>';
-        }elseif ($customer['bu_permissions'] == 0) {
+        if ($customer['bu_permissions'] == 1) {
+            $BU_HTML = '<p>[f] Thereafter the First Party and Second Party have not executed Agreement for Sale of said because B.U. Permission of the said unit has been already received.</p>';
+        } elseif ($customer['bu_permissions'] == 0) {
             $BU_HTML = "<p>[f] Thereafter the First Party and Second Party have executed Agreement for Sale of said Unit which was registered before Sub-Registrar of {$SUBREGISTER} under Sr. No. <strong>{$SRNO}</strong>, dated <strong>{$SRDATE}</strong>, herein after referred to as ' The said Agreement '.</p>";
         }
 
-        
+
 
         $html = <<<HTML
         <!DOCTYPE html>
@@ -17264,10 +17282,9 @@ class Purchase_model extends App_Model
 
             <p>[g] AND WHEREAS as per the terms and conditions mentioned in the said Agreement the Vendor has agreed to sell to the Purchaser and the Purchaser has agreed to purchase from Vendor the said property for a consideration of Rs.<strong>{$FINAL_AMOUNT}</strong>/- (Rupees <strong>{$FINAL_AMOUNT_WORDS} Only</strong>).</p>
 
-            <p>[h] THE PURCHASER has no complaint, dispute or grievance regarding amounts paid by them to THE SELLER in the matter of acquisition of the Said Premises and in all matters relating to the said Project- Scheme, its common amenities, facilities and services, in general. THE PURCHASER has been given receipts for all the amounts paid by him. No payment has been made by THE PURCHASER for which no receipt has been given. THE PURCHASER has agreed that no claim for any payment made by him shall be valid unless receipt for the same is produced - issued by THE SELLER or its agent. The payment particulars made by THE PURCHASER are as follows :-<br><br>
+            <p>[h] THE PURCHASER has no complaint, dispute or grievance regarding amounts paid by them to THE SELLER in the matter of acquisition of the Said Premises and in all matters relating to the said Project- Scheme, its common amenities, facilities and services, in general. THE PURCHASER has been given receipts for all the amounts paid by him. No payment has been made by THE PURCHASER for which no receipt has been given. THE PURCHASER has agreed that no claim for any payment made by him shall be valid unless receipt for the same is produced - issued by THE SELLER or its agent. The payment particulars made by THE PURCHASER are as follows :-</p><br><br>
             {$PAYMENT_HTML}
-            <br><br>
-            There is no other any type of consideration for sale deed of the said Premises not appearing on record, paid or agreed to be paid by THE PURCHASER to THE SELLER.
+            <p>There is no other any type of consideration for sale deed of the said Premises not appearing on record, paid or agreed to be paid by THE PURCHASER to THE SELLER.
             </p>
 
             <p>NOW THIS INDENTURE WITNESSETH THAT IN pursuance of this Sale Deed and in consideration of the said amount by Purchaser to the Vendor on or before the execution of these presents being the full consideration agreed to be paid, the receipt whereof the Vendor hereby admits and acknowledges and of and from the same and every part thereof forever acquit release and discharge the Purchaser, the Vendor hereby grant, convey, transfer and assure unto the Purchaser ALL THAT property of Unit, undivided land and Unit more particularly described in the schedule hereunder written TOGETHER WITH undivided right in all and singular sewers, drains, passage, common gullies, water, water-courses, lights liberties, privileges, easements, profit, advantages, right and appurtenance whatsoever to the said Unit, hereditaments and Unit or any part thereof belonging or in any way appertaining to or with the same or any part thereof now hath or any time heretofore usually held, used, occupied or enjoyed or reputed or known as part thereof and to belong or be appurtenant thereto.</p>
@@ -17523,6 +17540,8 @@ class Purchase_model extends App_Model
         </html>
         HTML;
 
+
+
         return $html;
     }
     public function get_all_sale_deed($master_id)
@@ -17548,7 +17567,8 @@ class Purchase_model extends App_Model
         return $query->row_array();
     }
 
-    public function get_payment_details($cust_id){
+    public function get_payment_details($cust_id)
+    {
         $this->db->select('*');
         $this->db->from(db_prefix() . 'pur_customer_payment_details');
         $this->db->where('customer_id', $cust_id);
