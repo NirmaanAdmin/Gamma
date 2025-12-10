@@ -16964,7 +16964,7 @@ class Purchase_model extends App_Model
             foreach ($payment_details as $p) {
 
                 $dt = (!empty($p['payment_date']) && $p['payment_date'] != '0000-00-00')
-                    ? date('d-m-y', strtotime($p['payment_date']))
+                    ? date('d-m-Y', strtotime($p['payment_date']))
                     : '&nbsp;';
 
                 $amount = $p['amount'] !== '' ? app_format_money($p['amount'], '') : '&nbsp;';
