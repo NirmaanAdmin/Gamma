@@ -16365,6 +16365,13 @@ class Purchase_model extends App_Model
         return $this->db->get(db_prefix() . 'pur_customer_new')->row();
     }
 
+
+    public function get_pur_customer3($id)
+    {
+        $this->db->where('userid', $id);
+        return $this->db->get(db_prefix() . 'pur_customer_new2')->row();
+    }
+
     public function get_sale_agreement2_pdf_html($sale_agreement_id)
     {
         $company_logo = get_option('company_logo_dark');
@@ -16834,6 +16841,8 @@ class Purchase_model extends App_Model
         // Get additional customer data if needed
         $customer2 = $this->get_pur_customer2($customer['userid'] ?? null) ?? null;
 
+        $customer3 = $this->get_pur_customer3($customer['userid'] ?? null) ?? null;
+
         //get payment details
         $payment_details = $this->get_pur_customer_payment_details($customer['userid'] ?? null) ?? null;
 
@@ -16881,6 +16890,10 @@ class Purchase_model extends App_Model
         $CUSTOMER2_ADHAR_CARD = $esc($customer2->adhar_card_2 ?? '');
         $CUSTOMER2_ADDRESS = $esc($customer2->address_2 ?? '');
 
+        $CUSTOMER3_COMPANY = $esc($customer3->company3 ?? '');
+        $CUSTOMER3_PAN_CARD = $esc($customer3->pan_card_3 ?? '');
+        $CUSTOMER3_ADHAR_CARD = $esc($customer3->adhar_card_3 ?? '');
+
         // Property details
         $CARPET_AREA = $banakhat_details ? $esc($banakhat_details->carpet_area ?? '') : '';
         $BALCONY = $banakhat_details ? $esc($banakhat_details->balcony ?? '') : '';
@@ -16904,6 +16917,16 @@ class Purchase_model extends App_Model
         <p>(2) <strong>{$CUSTOMER2_COMPANY}</strong></p>
         <p>[ PAN : <strong>{$CUSTOMER2_PAN_CARD}</strong>]</p>
         <p>[ AADHAR : <strong>{$CUSTOMER2_ADHAR_CARD}</strong>]</p>";
+        }
+
+        $customer3_html = '';
+
+        if(!empty($customer3)) {
+            $customer3_html = "
+            <p>(3) <strong>{$CUSTOMER3_COMPANY}</strong></p>
+            <p>[ PAN : <strong>{$CUSTOMER3_PAN_CARD}</strong>]</p>
+            <p>[ AADHAR : <strong>{$CUSTOMER3_ADHAR_CARD}</strong>]</p>";
+            
         }
 
 
@@ -17187,6 +17210,7 @@ class Purchase_model extends App_Model
             <p>[ PAN : <strong>{$PAN_CARD}</strong>]</p>
             <p>[ AADHAR : <strong>{$ADHAR_CARD}</strong>]</p><br>
             {$customer2_html}
+            {$customer3_html}
             Adult Residing at -<strong>{$ADDRESS}</strong>
             
             
