@@ -17210,6 +17210,7 @@ class Purchase_model extends App_Model
             <p>[ PAN : <strong>{$PAN_CARD}</strong>]</p>
             <p>[ AADHAR : <strong>{$ADHAR_CARD}</strong>]</p><br>
             {$customer2_html}
+            <div class="page-break"></div>
             {$customer3_html}
             Adult Residing at -<strong>{$ADDRESS}</strong>
             
