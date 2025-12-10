@@ -16822,6 +16822,7 @@ class Purchase_model extends App_Model
         $this->db->select('*');
         $this->db->from('tblpur_customer_payment_details');
         $this->db->where('customer_id', $cust_id);
+        $this->db->order_by('id', 'asc'); // Added ORDER BY ASC
         $query = $this->db->get();
         return $query->result_array();
     }
@@ -16921,15 +16922,14 @@ class Purchase_model extends App_Model
 
         $customer3_html = '';
 
-        if(!empty($customer3)) {
+        if (!empty($customer3)) {
             $customer3_html = "
             <p>(3) <strong>{$CUSTOMER3_COMPANY}</strong></p>
             <p>[ PAN : <strong>{$CUSTOMER3_PAN_CARD}</strong>]</p>
             <p>[ AADHAR : <strong>{$CUSTOMER3_ADHAR_CARD}</strong>]</p>";
-            
         }
         //condition base page break 
-        if($sale_agreement_id == 63){
+        if ($sale_agreement_id == 63) {
             $PAGE_BREAK = '<div class="page-break"></div>';
         }
 
@@ -16973,10 +16973,10 @@ class Purchase_model extends App_Model
 
                 $PAYMENT_HTML .= '
                     <tr>
-                        <td width="25%">'.$amount.'</td>
-                        <td width="35%">'.$bank.'</td>
-                        <td width="25%">'.$cheque.'</td>
-                        <td width="15%">'.$dt.'</td>
+                        <td width="25%">' . $amount . '</td>
+                        <td width="35%">' . $bank . '</td>
+                        <td width="25%">' . $cheque . '</td>
+                        <td width="15%">' . $dt . '</td>
                     </tr>
                 ';
             }
@@ -16989,7 +16989,7 @@ class Purchase_model extends App_Model
             <table class="total-table" border="1" cellpadding="4" cellspacing="0" width="100%">
                 <tr>
                     <td>
-                        TOTAL CONSIDERATION: '.$FINAL_AMOUNT.'/- ('.$FINAL_AMOUNT_WORDS.' only)
+                        TOTAL CONSIDERATION: ' . $FINAL_AMOUNT . '/- (' . $FINAL_AMOUNT_WORDS . ' only)
                     </td>
                 </tr>
             </table>
