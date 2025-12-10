@@ -16928,7 +16928,10 @@ class Purchase_model extends App_Model
             <p>[ AADHAR : <strong>{$CUSTOMER3_ADHAR_CARD}</strong>]</p>";
             
         }
-
+        //condition base page break 
+        if($sale_agreement_id == 63){
+            $PAGE_BREAK = '<div class="page-break"></div>';
+        }
 
         $PAYMENT_HTML = '';
 
@@ -17454,7 +17457,7 @@ class Purchase_model extends App_Model
                     <td><span class="u">:by <strong><u>FINAL PLOT 323</u></strong></span></td>
                 </tr>
             </table>
-
+            {$PAGE_BREAK}
             <p>The said " Unit " is bounded as follows :-</p>
             <table class="table">
                 <tr>
