@@ -16924,6 +16924,7 @@ class Purchase_model extends App_Model
 
         if (!empty($customer3)) {
             $customer3_html = "
+            <div class='page-break'></div>
             <p>(3) <strong>{$CUSTOMER3_COMPANY}</strong></p>
             <p>[ PAN : <strong>{$CUSTOMER3_PAN_CARD}</strong>]</p>
             <p>[ AADHAR : <strong>{$CUSTOMER3_ADHAR_CARD}</strong>]</p>";
@@ -17213,7 +17214,7 @@ class Purchase_model extends App_Model
             <p>[ PAN : <strong>{$PAN_CARD}</strong>]</p>
             <p>[ AADHAR : <strong>{$ADHAR_CARD}</strong>]</p><br>
             {$customer2_html}
-            <div class="page-break"></div>
+            
             {$customer3_html}
             Adult Residing at -<strong>{$ADDRESS}</strong>
             
