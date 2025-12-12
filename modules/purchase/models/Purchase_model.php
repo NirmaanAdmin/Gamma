@@ -16917,7 +16917,8 @@ class Purchase_model extends App_Model
             $customer2_html = "
         <p>(2) <strong>{$CUSTOMER2_COMPANY}</strong></p>
         <p>[ PAN : <strong>{$CUSTOMER2_PAN_CARD}</strong>]</p>
-        <p>[ AADHAR : <strong>{$CUSTOMER2_ADHAR_CARD}</strong>]</p>";
+        <p>[ AADHAR : <strong>{$CUSTOMER2_ADHAR_CARD}</strong>]</p>
+        <p>[ ELECTION : <strong>{$CUSTOMER2_ELECTION_CARD}</strong>]</p>";
         }
 
         $customer3_html = '';
@@ -17216,6 +17217,7 @@ class Purchase_model extends App_Model
             <p>(1) <strong>{$CUSTOMER}</strong></p>
             <p>[ PAN : <strong>{$PAN_CARD}</strong>]</p>
             <p>[ AADHAR : <strong>{$ADHAR_CARD}</strong>]</p><br>
+            <p>[ ELECTION : <strong>{$ELECTION_CARD}</strong>]</p><br>
             {$customer2_html}
             
             {$customer3_html}
