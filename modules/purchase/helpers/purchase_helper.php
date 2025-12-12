@@ -3509,7 +3509,7 @@ function convertToIndianCurrency($number) {
         $paise = ($decimal > 0) ? " and " . ($words[(int)($decimal / 10) * 10] . " " . $words[$decimal % 10]) . ' Paise' : '';
         
         // Clean up any extra spaces
-        $output = trim(($Rupees ? $Rupees . 'Rupees' : '') . $paise);
+        $output = trim(($Rupees ? $Rupees : '') . $paise);
         $output = preg_replace('/\s+/', ' ', $output); // Replace multiple spaces with one
         
         return ucfirst($output);
