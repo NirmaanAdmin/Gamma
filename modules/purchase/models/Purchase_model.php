@@ -17216,7 +17216,7 @@ class Purchase_model extends App_Model
             <p>SECOND PARTY - PURCHASER :-</p>
             <p>(1) <strong>{$CUSTOMER}</strong></p>
             <p>[ PAN : <strong>{$PAN_CARD}</strong>]</p>
-            <p>[ AADHAR : <strong>{$ADHAR_CARD}</strong>]</p><br>
+            <p>[ AADHAR : <strong>{$ADHAR_CARD}</strong>]</p>
             <p>[ ELECTION : <strong>{$ELECTION_CARD}</strong>]</p><br>
             {$customer2_html}
             
