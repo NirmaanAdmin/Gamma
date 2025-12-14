@@ -16916,9 +16916,9 @@ class Purchase_model extends App_Model
         if (!empty($customer2)) {
             $customer2_html = "
         <p>(2) <strong>{$CUSTOMER2_COMPANY}</strong></p>
-        <p>[ PAN : <strong>{$CUSTOMER2_PAN_CARD}</strong>]</p>
-        <p>[ AADHAR : <strong>{$CUSTOMER2_ADHAR_CARD}</strong>]</p>
-        <p>[ ELECTION : <strong>{$CUSTOMER2_ELECTION_CARD}</strong>]</p>";
+        <span style=\"font-size:20px;\"> [ PAN : <strong>{$CUSTOMER2_PAN_CARD}</strong>]</span><br>
+        <span style=\"font-size:20px;\">[ AADHAR : <strong>{$CUSTOMER2_ADHAR_CARD}</strong>]</span><br>
+        <span style=\"font-size:20px;\">[ ELECTION : <strong>{$CUSTOMER2_ELECTION_CARD}</strong>]</span><br>";
         }
 
         $customer3_html = '';
@@ -16927,8 +16927,8 @@ class Purchase_model extends App_Model
             $customer3_html = "
             <div class='page-break'></div>
             <p>(3) <strong>{$CUSTOMER3_COMPANY}</strong></p>
-            <p>[ PAN : <strong>{$CUSTOMER3_PAN_CARD}</strong>]</p>
-            <p>[ AADHAR : <strong>{$CUSTOMER3_ADHAR_CARD}</strong>]</p>";
+            <span style=\"font-size:20px;\"> [ PAN : <strong>{$CUSTOMER3_PAN_CARD}</strong>]</span><br>
+            <span style=\"font-size:20px;\">[ AADHAR : <strong>{$CUSTOMER3_ADHAR_CARD}</strong>]</span>";
         }
         //condition base page break 
         if ($sale_agreement_id == 63) {
@@ -17222,12 +17222,12 @@ class Purchase_model extends App_Model
 
             <p>SECOND PARTY - PURCHASER :-</p>
             <p>(1) <strong>{$CUSTOMER}</strong></p>
-            <p>[ PAN : <strong>{$PAN_CARD}</strong>]</p>
-            <p>[ AADHAR : <strong>{$ADHAR_CARD}</strong>]</p>
-            <p>[ ELECTION : <strong>{$ELECTION_CARD}</strong>]</p><br>
+            <span style="font-size:20px;"> [ PAN : <strong>{$PAN_CARD}</strong>]</span><br>
+            <span style="font-size:20px;">[ AADHAR : <strong>{$ADHAR_CARD}</strong>]</span><br>
+            <span style="font-size:20px;">[ ELECTION : <strong>{$ELECTION_CARD}</strong>]</span><br>
             {$customer2_html}
             
-            {$customer3_html}
+            {$customer3_html}<br>
             Adult Residing at -<strong>{$ADDRESS}</strong>
             
             
@@ -17447,6 +17447,7 @@ class Purchase_model extends App_Model
                 <li>That, the expenses for stamp Duty, Registration Fees, miscellaneous expenses have been borne by the purchaser.</li><br>
             </ol>
             <p>The schedule above referred to is mentioned hereunder :</p>
+            {$PAGE_BREAK4}
             <p style="text-align: center;"><strong><u>SCHEDULE OF PROPERTY</u></strong></p>
             <p>
 
