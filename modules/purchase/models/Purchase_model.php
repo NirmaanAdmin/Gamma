@@ -16913,36 +16913,70 @@ class Purchase_model extends App_Model
 
         // Generate customer2 HTML section
         $customer2_html = '';
+
         if (!empty($customer2)) {
+
+            $customer2_identity = '';
+
+            if (!empty($CUSTOMER2_PAN_CARD)) {
+                $customer2_identity .= '<span style="font-size:20px;">[ PAN : <strong>' . $CUSTOMER2_PAN_CARD . '</strong>]</span><br>';
+            }
+
+            if (!empty($CUSTOMER2_ADHAR_CARD)) {
+                $customer2_identity .= '<span style="font-size:20px;">[ AADHAR : <strong>' . $CUSTOMER2_ADHAR_CARD . '</strong>]</span><br>';
+            }
+
+            if (!empty($CUSTOMER2_ELECTION_CARD)) {
+                $customer2_identity .= '<span style="font-size:20px;">[ ELECTION : <strong>' . $CUSTOMER2_ELECTION_CARD . '</strong>]</span><br>';
+            }
+
             $customer2_html = "
         <p>(2) <strong>{$CUSTOMER2_COMPANY}</strong></p>
-        <span style=\"font-size:20px;\"> [ PAN : <strong>{$CUSTOMER2_PAN_CARD}</strong>]</span><br>
-        <span style=\"font-size:20px;\">[ AADHAR : <strong>{$CUSTOMER2_ADHAR_CARD}</strong>]</span><br>
-        <span style=\"font-size:20px;\">[ ELECTION : <strong>{$CUSTOMER2_ELECTION_CARD}</strong>]</span><br>";
+        {$customer2_identity}
+    ";
         }
+
+
+        $customer3_html = '';
 
         $customer3_html = '';
 
         if (!empty($customer3)) {
+
+            $customer3_identity = '';
+
+            if (!empty($CUSTOMER3_PAN_CARD)) {
+                $customer3_identity .= '<span style="font-size:20px;">[ PAN : <strong>' . $CUSTOMER3_PAN_CARD . '</strong>]</span><br>';
+            }
+
+            if (!empty($CUSTOMER3_ADHAR_CARD)) {
+                $customer3_identity .= '<span style="font-size:20px;">[ AADHAR : <strong>' . $CUSTOMER3_ADHAR_CARD . '</strong>]</span><br>';
+            }
+
+            if (!empty($CUSTOMER3_ELECTION_CARD)) {
+                $customer3_identity .= '<span style="font-size:20px;">[ ELECTION : <strong>' . $CUSTOMER3_ELECTION_CARD . '</strong>]</span><br>';
+            }
+
             $customer3_html = "
-            <div class='page-break'></div>
-            <p>(3) <strong>{$CUSTOMER3_COMPANY}</strong></p>
-            <span style=\"font-size:20px;\"> [ PAN : <strong>{$CUSTOMER3_PAN_CARD}</strong>]</span><br>
-            <span style=\"font-size:20px;\">[ AADHAR : <strong>{$CUSTOMER3_ADHAR_CARD}</strong>]</span>";
+        <div class='page-break'></div>
+        <p>(3) <strong>{$CUSTOMER3_COMPANY}</strong></p>
+        {$customer3_identity}
+    ";
         }
+
         //condition base page break 
         if ($sale_agreement_id == 63) {
             $PAGE_BREAK = '<div class="page-break"></div>';
         }
 
-        if($sale_agreement_id == 131){
+        if ($sale_agreement_id == 131) {
             $PAGE_BREAK2 = '<div class="page-break"></div>';
         }
 
-        if($sale_agreement_id == 78){
+        if ($sale_agreement_id == 78) {
             $PAGE_BREAK3 = '<div class="page-break"></div>';
         }
-        if($sale_agreement_id == 62){
+        if ($sale_agreement_id == 62) {
             $PAGE_BREAK4 = '<div class="page-break"></div>';
         }
         $PAYMENT_HTML = '';
@@ -17017,6 +17051,19 @@ class Purchase_model extends App_Model
         }
 
 
+        $identity_html = '';
+
+        if (!empty($PAN_CARD)) {
+            $identity_html .= '<span style="font-size:20px;">[ PAN : <strong>' . $PAN_CARD . '</strong>]</span><br>';
+        }
+
+        if (!empty($ADHAR_CARD)) {
+            $identity_html .= '<span style="font-size:20px;">[ AADHAR : <strong>' . $ADHAR_CARD . '</strong>]</span><br>';
+        }
+
+        if (!empty($ELECTION_CARD)) {
+            $identity_html .= '<span style="font-size:20px;">[ ELECTION : <strong>' . $ELECTION_CARD . '</strong>]</span><br>';
+        }
 
         $html = <<<HTML
         <!DOCTYPE html>
@@ -17222,9 +17269,7 @@ class Purchase_model extends App_Model
 
             <p>SECOND PARTY - PURCHASER :-</p>
             <p>(1) <strong>{$CUSTOMER}</strong></p>
-            <span style="font-size:20px;"> [ PAN : <strong>{$PAN_CARD}</strong>]</span><br>
-            <span style="font-size:20px;">[ AADHAR : <strong>{$ADHAR_CARD}</strong>]</span><br>
-            <span style="font-size:20px;">[ ELECTION : <strong>{$ELECTION_CARD}</strong>]</span><br>
+            {$identity_html}
             {$customer2_html}
             
             {$customer3_html}<br>
