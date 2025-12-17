@@ -16979,6 +16979,9 @@ class Purchase_model extends App_Model
         if ($sale_agreement_id == 62) {
             $PAGE_BREAK4 = '<div class="page-break"></div>';
         }
+        if ($sale_agreement_id == 80) {
+            $PAGE_BREAK5 = '<div class="page-break"></div>';
+        }
         $PAYMENT_HTML = '';
 
         if (!empty($payment_details)) {
@@ -17369,9 +17372,7 @@ class Purchase_model extends App_Model
             <p>[g] AND WHEREAS as per the terms and conditions mentioned in the said Agreement the Vendor has agreed to sell to the Purchaser and the Purchaser has agreed to purchase from Vendor the said property for a consideration of Rs.<strong>{$FINAL_AMOUNT}</strong>/- (Rupees <strong>{$FINAL_AMOUNT_WORDS} Only</strong>).</p>
 
             <p>[h] THE PURCHASER has no complaint, dispute or grievance regarding amounts paid by them to THE SELLER in the matter of acquisition of the Said Premises and in all matters relating to the said Project- Scheme, its common amenities, facilities and services, in general. THE PURCHASER has been given receipts for all the amounts paid by him. No payment has been made by THE PURCHASER for which no receipt has been given. THE PURCHASER has agreed that no claim for any payment made by him shall be valid unless receipt for the same is produced - issued by THE SELLER or its agent. The payment particulars made by THE PURCHASER are as follows :-</p><br><br>
-            {$PAGE_BREAK2}
-            {$PAGE_BREAK3}
-            {$PAGE_BREAK4}
+            <div class="page-break"></div>
             {$PAYMENT_HTML}
             <p>There is no other any type of consideration for sale deed of the said Premises not appearing on record, paid or agreed to be paid by THE PURCHASER to THE SELLER.
             </p>
