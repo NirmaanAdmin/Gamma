@@ -17255,7 +17255,7 @@ class Purchase_model extends App_Model
                 </style>
         </head>
         <body>
-            <br><br><br><br><br><br><br><br><br><br>
+            <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
             <h1 style="text-align: center;"><strong><u>SALE-DEED</u></strong></h1>
         
             
@@ -17264,7 +17264,7 @@ class Purchase_model extends App_Model
                     <strong>{$floor_name}</strong> of the said Scheme along with (i) <strong>Wash Area admeasuring {$WASH_YARD} sq.mtrs.</strong> (ii) Balcony admeasuring about <strong>{$BALCONY} sq.mtrs.</strong> (under the provisions of Gujarat RERA Act) carpet area as well as approximately <strong>{$CARPET_AREA2} sq.mtrs.</strong> (unit built up area as per plan sanctioned by Ahmedabad Municipal Corporation) in the scheme known as " KAUTILYA ONE-54 " together with undivided share in the said land admeasuring about <strong>{$UNDIVIDED_LAND_SHARE} sq.mtrs</strong> bearing A) Final Plot No. 321, admeasuring 3400 sq. m. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/3 admeasuring 5666 sq. m.& B) Final Plot No. 322, admeasuring 2125 sq. m. of Town Planning Scheme No. 76 / B (Chandkheda), allotted in lieu of Survey No. 875/4 admeasuring 3541 sq. m. Thereby, a total of 5525 sq. m. of land of both the final plots now amalgamated Final Plot no: (321+322) and the affordable housing project being built on the above said land situated within the village limits of Chandkheda, Taluka - Sabarmati in the Registration Sub - District of Ahmedabad - 13 (Sabarmati) of District Ahmedabad. Sale deed of the sale consideration price <strong>{$FINAL_AMOUNT}</strong> (Rupees <strong>{$FINAL_AMOUNT_WORDS} only /-</strong>)
                 </p>
             </div>
-            <div class="page-break"></div>
+            <!-- <div class="page-break"></div> -->
             <p><u>FIRST PARTY - VENDOR :-</u></p>
             <p><span>KAUTILYA DEVELOPERS</span><br> <span>PAN : AATFK 6344 G</span></p>
             <p>A Partnership Firm, having its Registered office at : 30, Lad Society, B/h. Judges Bunglow, , Ahmedabad - 380054 & having site office at, "Kautilya One-54", located at Opp. Swaminarayan Temple, B/h. Omkar Lotus, Chandkheda, Ahmedabad.</p>
