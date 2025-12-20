@@ -17546,7 +17546,7 @@ class Purchase_model extends App_Model
                 <div>
                     <p>SIGNED AND DEVLIVERED BY</p>
                     <div class="sign-block">THE WITHINNAMED VENDOR :-</div>
-                    <p class="muted">Kiran Rasiklal Kamdar<span class="u">________________</span></p>
+                    <p class="muted"><strong>Kiran Rasiklal Kamdar</strong><span class="u">________________</span></p>
                 </div>
                 <div>
                     <h3>In the presence of following two witnesses :-</h3>
