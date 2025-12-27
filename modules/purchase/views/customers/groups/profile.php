@@ -190,8 +190,20 @@
                            </div>
                         </div>
                      </div>
-
-
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label for="car_parking">Car Parking</label>
+                           <div class="checkbox">
+                              <input type="hidden" name="car_parking" value="0">
+                              <input type="checkbox"
+                                 id="car_parking"
+                                 name="car_parking"
+                                 value="1"
+                                 <?php echo (isset($client) && $client->car_parking == 1) ? 'checked' : ''; ?>>
+                              <label for="car_parking">One Car Parking</label>
+                           </div>
+                        </div>
+                     </div>
                   </div>
                   <?php if (get_option('disable_language') == 0) { ?>
                      <div class="form-group select-placeholder">
