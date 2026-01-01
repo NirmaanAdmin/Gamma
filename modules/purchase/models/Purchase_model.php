@@ -16982,6 +16982,9 @@ class Purchase_model extends App_Model
         if ($sale_agreement_id == 80) {
             $PAGE_BREAK5 = '<div class="page-break"></div>';
         }
+         if ($sale_agreement_id == 133) {
+            $PAGE_BREAK6 = '<div class="page-break"></div>';
+        }
         $REMOVE_PAGE_BREAK = 0;
         if($sale_agreement_id == 133){
             $REMOVE_PAGE_BREAK = 1;
@@ -17540,6 +17543,7 @@ class Purchase_model extends App_Model
                 </tr>
             </table>
             {$PAGE_BREAK}
+            {$PAGE_BREAK6}
             <p>The said " Unit " is bounded as follows :-</p>
             <table class="table">
                 <tr>
