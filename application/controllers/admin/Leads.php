@@ -51,7 +51,8 @@ class Leads extends AdminController
         $data['leadid']   = $id;
         $data['isKanBan'] = $this->session->has_userdata('leads_kanban_view') &&
             $this->session->userdata('leads_kanban_view') == 'true';
-
+        $admin = is_admin() ? 1 : 0;
+        $data['isadmin'] = $admin;
         $this->load->view('admin/leads/manage_leads', $data);
     }
 

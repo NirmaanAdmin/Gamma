@@ -7,7 +7,7 @@ $module_name = 'leads'; ?>
         z-index: 999;
         left: 289px
     }
-</style> 
+</style>
 <div id="wrapper">
     <div class="content">
         <div class="row">
@@ -157,7 +157,7 @@ $module_name = 'leads'; ?>
                                         $month_type_filter = get_module_filter($module_name, 'month');
                                         $month_type_filter_val = !empty($month_type_filter) ? explode(",", $month_type_filter->filter_value) : '';
 
-                                        
+
                                         echo render_select('month[]', $months, array('id', 'name'), '', $month_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('Month'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
                                         ?>
                                     </div>
@@ -167,7 +167,7 @@ $module_name = 'leads'; ?>
                                         $duplicate_type_filter_val = !empty($duplicate_type_filter) ? explode(",", $duplicate_type_filter->filter_value) : '';
 
                                         $duplicate = [
-                                            ['id' => '1', 'name' => 'Duplicate'], 
+                                            ['id' => '1', 'name' => 'Duplicate'],
                                         ];
                                         echo render_select('duplicate[]', $duplicate, array('id', 'name'), '', $duplicate_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('Duplicate'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
                                         ?>
@@ -404,7 +404,7 @@ $module_name = 'leads'; ?>
                                         ?>
                                         <div class="panel-table-full">
                                             <?php
-                                            render_datatable( 
+                                            render_datatable(
                                                 $table_data,
                                                 'leads',
                                                 ['customizable-table number-index-2'],
@@ -536,3 +536,9 @@ $module_name = 'leads'; ?>
 </body>
 
 </html>
+
+<script>
+    <?php if (!$isadmin): ?>
+        $('.buttons-collection').hide();
+    <?php endif; ?>
+</script>
