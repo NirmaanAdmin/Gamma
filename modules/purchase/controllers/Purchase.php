@@ -9517,11 +9517,11 @@ class purchase extends AdminController
 
     public function sale_deed_pdf($id)
     {
-       $allotment_letter = $this->purchase_model->get_sale_deed_pdf_html($id);
-        
+        $allotment_letter = $this->purchase_model->get_sale_deed_pdf_html($id);
+
         try {
             $pdf = $this->purchase_model->sale_deed_pdf($allotment_letter);
-        } catch (Exception $e) { 
+        } catch (Exception $e) {
             echo pur_html_entity_decode($e->getMessage());
             die;
         }
@@ -9585,5 +9585,31 @@ class purchase extends AdminController
         }
 
         $pdf->Output('sale_agreement.pdf', $type);
+    }
+
+    public function update_lock_drp()
+    {
+        $today_date = date('Y-m-d');
+        $today_start = $today_date . ' 00:00:00';
+        $today_end = $today_date . ' 23:59:59';
+
+        $sql = "UPDATE `tblforms` 
+            SET `locked` = 1 
+            WHERE `date` BETWEEN ? AND ?";
+
+        // Execute query
+        $query = $this->db->query($sql, array($today_start, $today_end));
+        $affected_rows = $this->db->affected_rows();
+
+        // Set response headers for JSON
+        header('Content-Type: application/json');
+
+        echo json_encode([
+            'success' => true,
+            'message' => "Updated lock status for {$affected_rows} records",
+            'date' => $today_date,
+            'count' => $affected_rows
+        ]);
+        exit;
     }
 }
