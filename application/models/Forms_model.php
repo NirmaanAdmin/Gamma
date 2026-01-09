@@ -2125,7 +2125,6 @@ class Forms_model extends App_Model
 
             /* === MAIN FORM UPDATE === */
             if (!empty($dpr_form)) {
-
                 $old_dpr_form = $this->db
                     ->where('form_id', $data['formid'])
                     ->get(db_prefix() . 'dpr_form')
@@ -2135,7 +2134,6 @@ class Forms_model extends App_Model
 
                 if ($this->db->affected_rows() > 0) {
                     $affectedRows++;
-
                     update_dpr_form_activity_log(
                         $data['formid'],
                         $old_dpr_form,
@@ -2174,7 +2172,6 @@ class Forms_model extends App_Model
             /* === UPDATE DETAILS === */
             if (!empty($update_order)) {
                 foreach ($update_order as $value) {
-
                     $old_row = $this->db
                         ->where('id', $value['id'])
                         ->get(db_prefix() . 'dpr_form_detail')
@@ -2211,6 +2208,153 @@ class Forms_model extends App_Model
                 }
             }
 
+            if (isset($new_order_dept) && !empty($new_order_dept)) {
+                foreach ($new_order_dept as $key => $value) {
+                    $dt_data = [
+                        'form_id' => $data['formid'],
+                        'staff' => $value['staff'],
+                        'attendance' => $value['attendance'],
+                        'over_time' => $value['over_time'],
+                        'kharchi' => $value['kharchi'],
+                    ];
+
+                    $this->db->insert(db_prefix() . $formBeforeUpdate->form_type . '_dept_form_detail', $dt_data);
+                    $new_insert_id = $this->db->insert_id();
+                    if ($new_insert_id) {
+                        $affectedRows++;
+                        // Consider adding logging here like other sections
+                        // dept_detail_added_log($data['formid'], $dt_data);
+                    }
+                }
+            }
+
+            if (isset($new_order_rmc) && !empty($new_order_rmc)) {
+                foreach ($new_order_rmc as $key => $value) {
+                    $dt_data = [
+                        'form_id' => $data['formid'],
+                        'challan' => $value['challan'],
+                        'grade' => $value['grade'],
+                        'structure' => $value['structure'],
+                        'quantity' => $value['quantity'],
+                    ];
+
+                    $this->db->insert(db_prefix() . $formBeforeUpdate->form_type . '_rmc_form_detail', $dt_data);
+                    $new_insert_id = $this->db->insert_id();
+                    if ($new_insert_id) {
+                        $affectedRows++;
+                        // Consider adding logging here like other sections
+                        // rmc_detail_added_log($data['formid'], $dt_data);
+                    }
+                }
+            }
+
+            if (isset($new_order_material) && !empty($new_order_material)) {
+                foreach ($new_order_material as $key => $value) {
+                    $dt_data = [
+                        'form_id' => $data['formid'],
+                        'challan' => $value['challan'],
+                        'supplier' => $value['supplier'],
+                        'material_description' => $value['material_description'],
+                        'total' => $value['total'],
+                    ];
+
+                    $this->db->insert(db_prefix() . $formBeforeUpdate->form_type . '_material_form_detail', $dt_data);
+                    $new_insert_id = $this->db->insert_id();
+                    if ($new_insert_id) {
+                        $affectedRows++;
+                        // Consider adding logging here like other sections
+                        // material_detail_added_log($data['formid'], $dt_data);
+                    }
+                }
+            }
+
+            if (isset($update_order_dept) && !empty($update_order_dept)) {
+                foreach ($update_order_dept as $key => $value) {
+                    $old_row = $this->db
+                        ->where('id', $value['id'])
+                        ->get(db_prefix() . $formBeforeUpdate->form_type . '_dept_form_detail')
+                        ->row_array();
+
+                    if (empty($old_row)) {
+                        continue;
+                    }
+
+                    $dt_data = [
+                        'staff' => $value['staff'],
+                        'attendance' => $value['attendance'],
+                        'over_time' => $value['over_time'],
+                        'kharchi' => $value['kharchi'],
+                    ];
+
+                    $this->db->where('id', $value['id']);
+                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_dept_form_detail', $dt_data);
+
+                    if ($this->db->affected_rows() > 0) {
+                        $affectedRows++;
+                        // Consider adding logging here like other sections
+                        // update_dept_detail_activity_log($data['formid'], $old_row, $dt_data);
+                    }
+                }
+            }
+
+            if (isset($update_order_rmc) && !empty($update_order_rmc)) {
+                foreach ($update_order_rmc as $key => $value) {
+                    $old_row = $this->db
+                        ->where('id', $value['id'])
+                        ->get(db_prefix() . $formBeforeUpdate->form_type . '_rmc_form_detail')
+                        ->row_array();
+
+                    if (empty($old_row)) {
+                        continue;
+                    }
+
+                    $dt_data = [
+                        'challan' => $value['challan'],
+                        'grade' => $value['grade'],
+                        'structure' => $value['structure'],
+                        'quantity' => $value['quantity'],
+                    ];
+
+                    $this->db->where('id', $value['id']);
+                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_rmc_form_detail', $dt_data);
+
+                    if ($this->db->affected_rows() > 0) {
+                        $affectedRows++;
+                        // Consider adding logging here like other sections
+                        // update_rmc_detail_activity_log($data['formid'], $old_row, $dt_data);
+                    }
+                }
+            }
+
+            if (isset($update_order_material) && !empty($update_order_material)) {
+                foreach ($update_order_material as $key => $value) {
+                    $old_row = $this->db
+                        ->where('id', $value['id'])
+                        ->get(db_prefix() . $formBeforeUpdate->form_type . '_material_form_detail')
+                        ->row_array();
+
+                    if (empty($old_row)) {
+                        continue;
+                    }
+
+                    $dt_data = [
+                        'challan' => $value['challan'],
+                        'supplier' => $value['supplier'],
+                        'material_description' => $value['material_description'],
+                        'total' => $value['total'],
+                    ];
+
+                    $this->db->where('id', $value['id']);
+                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_material_form_detail', $dt_data);
+
+                    if ($this->db->affected_rows() > 0) {
+                        $affectedRows++;
+                        // Consider adding logging here like other sections
+                        // update_material_detail_activity_log($data['formid'], $old_row, $dt_data);
+                    }
+                }
+            }
+
             /* === REMOVE DETAILS === */
             if (!empty($remove_order)) {
                 foreach ($remove_order as $id) {
@@ -2225,6 +2369,36 @@ class Forms_model extends App_Model
                         if ($this->db->delete(db_prefix() . 'dpr_form_detail')) {
                             $affectedRows++;
                         }
+                    }
+                }
+            }
+
+            if (isset($remove_order_dept) && !empty($remove_order_dept)) {
+                foreach ($remove_order_dept as $key => $value) {
+                    $this->db->where('id', $value);
+                    if ($this->db->delete(db_prefix() . $formBeforeUpdate->form_type . '_dept_form_detail')) {
+                        $affectedRows++;
+                        // Consider adding logging here like other sections
+                    }
+                }
+            }
+
+            if (isset($remove_order_rmc) && !empty($remove_order_rmc)) {
+                foreach ($remove_order_rmc as $key => $value) {
+                    $this->db->where('id', $value);
+                    if ($this->db->delete(db_prefix() . $formBeforeUpdate->form_type . '_rmc_form_detail')) {
+                        $affectedRows++;
+                        // Consider adding logging here like other sections
+                    }
+                }
+            }
+
+            if (isset($remove_order_material) && !empty($remove_order_material)) {
+                foreach ($remove_order_material as $key => $value) {
+                    $this->db->where('id', $value);
+                    if ($this->db->delete(db_prefix() . $formBeforeUpdate->form_type . '_material_form_detail')) {
+                        $affectedRows++;
+                        // Consider adding logging here like other sections
                     }
                 }
             }
