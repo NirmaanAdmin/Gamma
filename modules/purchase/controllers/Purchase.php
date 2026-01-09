@@ -9612,4 +9612,16 @@ class purchase extends AdminController
         ]);
         exit;
     }
+
+    public function activity_log()
+    {
+        $data['title'] = _l('activity_log');
+        $data['staff'] = $this->staff_model->get();
+        $this->load->view('activity_log/activity_log', $data);
+    }
+
+    public function table_activity_log()
+    {
+        $this->app->get_table_data(module_views_path('purchase', 'activity_log/table_activity_log'));
+    }
 }

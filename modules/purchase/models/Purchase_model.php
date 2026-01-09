@@ -16982,17 +16982,17 @@ class Purchase_model extends App_Model
         if ($sale_agreement_id == 80) {
             $PAGE_BREAK5 = '<div class="page-break"></div>';
         }
-         if ($sale_agreement_id == 133) {
+        if ($sale_agreement_id == 133) {
             $PAGE_BREAK6 = '<div class="page-break"></div>';
         }
         $REMOVE_PAGE_BREAK = 0;
-        if($sale_agreement_id == 133){
+        if ($sale_agreement_id == 133) {
             $REMOVE_PAGE_BREAK = 1;
         }
 
-        if($REMOVE_PAGE_BREAK == 1){
+        if ($REMOVE_PAGE_BREAK == 1) {
             $PAGE_BREAK_PYMENT = '';
-        }else{
+        } else {
             $PAGE_BREAK_PYMENT = '<div class="page-break"></div>';
         }
 
@@ -17688,5 +17688,49 @@ class Purchase_model extends App_Model
         $this->db->where('customer_id', $cust_id);
         $query = $this->db->get();
         return $query->result_array();
+    }
+
+    public function get_where_report_period($field = 'date')
+    {
+        $months_report      = $this->input->post('report_months');
+        $custom_date_select = '';
+        if ($months_report != '') {
+            if (is_numeric($months_report)) {
+                // Last month
+                if ($months_report == '1') {
+                    $beginMonth = date('Y-m-01', strtotime('first day of last month'));
+                    $endMonth   = date('Y-m-t', strtotime('last day of last month'));
+                } else {
+                    $months_report = (int) $months_report;
+                    $months_report--;
+                    $beginMonth = date('Y-m-01', strtotime("-$months_report MONTH"));
+                    $endMonth   = date('Y-m-t');
+                }
+
+                $custom_date_select = 'AND (' . $field . ' BETWEEN "' . $beginMonth . '" AND "' . $endMonth . '")';
+            } elseif ($months_report == 'this_month') {
+                $custom_date_select = 'AND (' . $field . ' BETWEEN "' . date('Y-m-01') . '" AND "' . date('Y-m-t') . '")';
+            } elseif ($months_report == 'this_year') {
+                $custom_date_select = 'AND (' . $field . ' BETWEEN "' .
+                    date('Y-m-d', strtotime(date('Y-01-01'))) .
+                    '" AND "' .
+                    date('Y-m-d', strtotime(date('Y-12-31'))) . '")';
+            } elseif ($months_report == 'last_year') {
+                $custom_date_select = 'AND (' . $field . ' BETWEEN "' .
+                    date('Y-m-d', strtotime(date(date('Y', strtotime('last year')) . '-01-01'))) .
+                    '" AND "' .
+                    date('Y-m-d', strtotime(date(date('Y', strtotime('last year')) . '-12-31'))) . '")';
+            } elseif ($months_report == 'custom') {
+                $from_date = to_sql_date($this->input->post('report_from'));
+                $to_date   = to_sql_date($this->input->post('report_to'));
+                if ($from_date == $to_date) {
+                    $custom_date_select = 'AND ' . $field . ' = "' . $from_date . '"';
+                } else {
+                    $custom_date_select = 'AND (' . $field . ' BETWEEN "' . $from_date . '" AND "' . $to_date . '")';
+                }
+            }
+        }
+
+        return $custom_date_select;
     }
 }
