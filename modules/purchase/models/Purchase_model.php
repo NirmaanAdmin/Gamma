@@ -16961,7 +16961,7 @@ class Purchase_model extends App_Model
         <div class='page-break'></div>
         <p>(3) <strong>{$CUSTOMER3_COMPANY}</strong></p>
         {$customer3_identity}
-    ";
+        ";
         }
 
         //condition base page break 
@@ -17516,6 +17516,7 @@ class Purchase_model extends App_Model
             </ol>
             <p>The schedule above referred to is mentioned hereunder :</p>
             {$PAGE_BREAK4}
+            <div class="page-break"></div>  
             <p style="text-align: center;"><strong><u>SCHEDULE OF PROPERTY</u></strong></p>
             <p>
 
