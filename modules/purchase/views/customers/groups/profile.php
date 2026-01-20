@@ -190,7 +190,7 @@
                            </div>
                         </div>
                      </div>
-                     <div class="col-md-6">
+                     <div class="col-md-6" style="clear:both;">
                         <div class="form-group">
                            <label for="car_parking">Car Parking</label>
                            <div class="checkbox">
@@ -202,6 +202,27 @@
                                  <?php echo (isset($client) && $client->car_parking == 1) ? 'checked' : ''; ?>>
                               <label for="car_parking">One Car Parking</label>
                            </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                           <label for="terrace">Terrace</label>
+                           <div class="checkbox">
+                              <input type="hidden" name="terrace" value="0">
+                              <input type="checkbox"
+                                 id="terrace"
+                                 name="terrace"
+                                 value="1"
+                                 <?php echo (isset($client) && $client->terrace == 1) ? 'checked' : ''; ?>>
+                              <label for="terrace">Terrace</label>
+                           </div>
+                           <!-- Added terrace_val input field -->
+                           <input type="text"
+                              class="form-control"
+                              id="terrace_val"
+                              name="terrace_val"
+                              placeholder="Enter terrace value"
+                              value="<?php echo isset($client) ? htmlspecialchars($client->terrace_val) : ''; ?>">
                         </div>
                      </div>
                   </div>
