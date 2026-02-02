@@ -17025,7 +17025,9 @@ class Purchase_model extends App_Model
             ';
 
             foreach ($payment_details as $p) {
-
+                if($p['amount'] == 0){
+                    continue;
+                }
                 $dt = (!empty($p['payment_date']) && $p['payment_date'] != '0000-00-00')
                     ? date('d-m-Y', strtotime($p['payment_date']))
                     : '&nbsp;';
