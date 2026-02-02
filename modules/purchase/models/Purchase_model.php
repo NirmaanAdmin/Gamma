@@ -16822,7 +16822,7 @@ class Purchase_model extends App_Model
         $this->db->select('*');
         $this->db->from('tblpur_customer_payment_details');
         $this->db->where('customer_id', $cust_id);
-        $this->db->order_by('id', 'asc'); // Added ORDER BY ASC
+        $this->db->order_by('payment_date', 'asc'); // Added ORDER BY ASC
         $query = $this->db->get();
         return $query->result_array();
     }
