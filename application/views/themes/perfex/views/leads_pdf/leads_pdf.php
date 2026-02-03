@@ -2,40 +2,84 @@
 
 $formrowsinfo = '';
 
-$formrowsinfo .= '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
-
 /* ===========================
-   TABLE HEADER
+   ADD CSS STYLES
 =========================== */
 
-$formrowsinfo .= '<thead>';
-
 $formrowsinfo .= '
-<tr style="font-size:16px;">
-    <td colspan="10" align="center"><b>Leads Data</b></td>
-</tr>
-
-<tr style="font-size:11px;">
-    <td width="4%;" align="center"><b>#</b></td>
-    <td width="14%;" align="center"><b>Name</b></td>
-    <td width="10%;" align="center"><b>Phone</b></td>
-    <td width="10%;" align="center"><b>Alt Phone</b></td>
-    <td width="14%;" align="center"><b>Project</b></td>
-    <td width="10%;" align="center"><b>Status</b></td>
-    <td width="10%;" align="center"><b>Source</b></td>
-    <td width="12%;" align="center"><b>Assigned</b></td>
-    <td width="10%;" align="center"><b>Lead Value</b></td>
-    <td width="10%;" align="center"><b>Date Added</b></td>
-</tr>
+<style>
+.table * {
+    font-size: 10px !important;
+}
+.table {
+    table-layout: fixed !important;
+    width: 100% !important;
+    word-wrap: break-word !important;
+}
+.border_table, .border_tr, .border_td,
+.border_td_left, .border_td_right {
+    border: 1px solid #A4A4A4 !important;
+}
+.table th,
+.table td {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: normal !important;
+    padding: 2px !important;
+}
+.border_tr{
+    text-align: center;
+}
+.border_td{
+    text-align: center;
+}
+.border_td_left{
+    text-align: left;
+}
+.border_td_right{
+    text-align: right;
+}
+.thead-dark {
+    background-color: #415164;
+    color: #fff;
+}
+</style>
 ';
 
-$formrowsinfo .= '</thead>';
+/* ===========================
+   TABLE START
+=========================== */
+$organization_info = '';
+$organization_info = '<div style="color:#424242;">';
+$organization_info .= format_organization_info();
+$organization_info .= '</div><br/><br/>';
+$pdf->writeHTML($organization_info, true, false, false, false, '');
+$formrowsinfo .= '
+<table class="table border_table" width="100%" cellspacing="0" cellpadding="5">
+<thead>
+
+
+
+<tr class="border_tr thead-dark">
+    <td width="4%"><b>#</b></td>
+    <td width="14%"><b>Name</b></td>
+    <td width="12%"><b>Phone</b></td>
+    <td width="12%"><b>Alt Phone</b></td>
+    <td width="10%"><b>Project</b></td>
+    <td width="10%"><b>Status</b></td>
+    <td width="10%"><b>Source</b></td>
+    <td width="12%"><b>Assigned</b></td>
+    <td width="10%"><b>Lead Value</b></td>
+    <td width="10%"><b>Date Added</b></td>
+</tr>
+
+</thead>
+<tbody>
+';
 
 /* ===========================
    TABLE BODY
 =========================== */
-
-$formrowsinfo .= '<tbody>';
 
 if (!empty($lead_data)) {
 
@@ -45,7 +89,7 @@ if (!empty($lead_data)) {
 
         $assigned = trim(
             ($row['assigned_firstname'] ?? '') . ' ' .
-            ($row['assigned_lastname'] ?? '')
+                ($row['assigned_lastname'] ?? '')
         );
 
         $projects = !empty($row['projects'])
@@ -53,32 +97,33 @@ if (!empty($lead_data)) {
             : '';
 
         $formrowsinfo .= '
-        <tr style="font-size:10px;">
-            <td width="4%;" align="center">'.$i++.'</td>
-            <td width="14%;" align="left">'.$row['name'].'</td>
-            <td width="10%;" align="left">'.$row['phonenumber'].'</td>
-            <td width="10%;" align="left">'.$row['alt_phonenumber'].'</td>
-            <td width="14%;" align="left">'.$projects.'</td>
-            <td width="10%;" align="left">'.$row['status_name'].'</td>
-            <td width="10%;" align="left">'.$row['source_name'].'</td>
-            <td width="12%;" align="left">'.$assigned.'</td>
-            <td width="10%;" align="right">'.$row['lead_value'].'</td>
-            <td width="10%;" align="center">'.$row['dateadded'].'</td>
+        <tr class="border_tr">
+            <td width="4%" class="border_td">' . $i++ . '</td>
+            <td width="14%" class="border_td_left">' . $row['name'] . '</td>
+            <td width="12%" class="border_td_left">' . $row['phonenumber'] . '</td>
+            <td width="12%" class="border_td_left">' . $row['alt_phonenumber'] . '</td>
+            <td width="10%" class="border_td_left">' . $projects . '</td>
+            <td width="10%" class="border_td_left">' . $row['status_name'] . '</td>
+            <td width="10%" class="border_td_left">' . $row['source_name'] . '</td>
+            <td width="12%" class="border_td_left">' . $assigned . '</td>
+            <td width="10%" class="border_td_right">' . $row['lead_value'] . '</td>
+            <td width="10%" class="border_td">' . $row['dateadded'] . '</td>
         </tr>
         ';
     }
-
 } else {
 
     $formrowsinfo .= '
     <tr>
-        <td colspan="10" align="center">No Data Found</td>
+        <td colspan="10" class="border_td">No Data Found</td>
     </tr>
     ';
 }
 
-$formrowsinfo .= '</tbody>';
-$formrowsinfo .= '</table>';
+$formrowsinfo .= '
+</tbody>
+</table>
+';
 
 /* ===========================
    PDF OUTPUT
