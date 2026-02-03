@@ -26,7 +26,7 @@ $custom_fields = get_custom_fields('leads', ['show_on_table' => 1]);
 // Base columns
 $aColumns = [
     0, // checkbox placeholder
-    db_prefix() . 'leads.id as id',
+    db_prefix() . 'leads.id as id', 
     db_prefix() . 'leads.name as name',
     db_prefix() . 'leads.phonenumber as phonenumber',
     db_prefix() . 'leads.alt_phonenumber as alt_phonenumber',
@@ -96,26 +96,6 @@ if ($CI->input->post('month') && count($CI->input->post('month')) > 0) {
 if($CI->input->post('duplicate') && count($CI->input->post('duplicate')) > 0){
     $where[] = 'AND ' . db_prefix() . 'leads.duplicate IN (' . implode(',', $CI->input->post('duplicate')) . ')';
 }
-
-// Restrict for non-admins
-// if (!has_permission('view', 'leads')) {
-//     $staffid = get_staff_user_id();
-//     $assigned_projects = get_assigned_projects($staffid);
-//     $project_ids = !empty($assigned_projects)
-//         ? array_column($assigned_projects, 'team_manage_id')
-//         : [];
-//     $projCond = '';
-//     if (!empty($project_ids)) {
-//         $projCond = ' OR ' . db_prefix() .
-//             'leads.projects IN (' . implode(',', $project_ids) . ')';
-//     }
-//     $where[] = 'AND ('
-//         . db_prefix() . 'leads.assigned  = ' . $staffid
-//         . ' OR ' . db_prefix() . 'leads.addedfrom = ' . $staffid
-//         . ' OR ' . db_prefix() . 'leads.is_public  = 1'
-//         . $projCond
-//         . ')';
-// }
 
 
 $project_filter_name_value = !empty($this->ci->input->post('project')) ? implode(',', $this->ci->input->post('project')) : NULL;

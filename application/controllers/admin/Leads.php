@@ -1404,4 +1404,79 @@ class Leads extends AdminController
         // For other statuses, date check will be required
         echo json_encode(['success' => true, 'skip_date_check' => false]);
     }
+    public function export_leads_pdf()
+    {
+        ini_set('memory_limit', '4096M'); // 4GB
+        ini_set('max_execution_time', 0);
+
+        $leads_data = $this->leads_model->get_leads_pdf_data();
+
+        if (!empty($leads_data)) {
+            $pdf = create_leads_pdf($leads_data);
+            $type = 'I';
+            if ($this->input->get('output_type')) {
+                $type = $this->input->get('output_type');
+            }
+            if ($this->input->get('print')) {
+                $type = 'I';
+            }
+            $pdf->Output('leads.pdf', $type);
+        } else {
+            echo "PDF have not created yet.";
+        }
+    }
+
+    public function export_leads_excel()
+    {
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="Leads.csv"');
+
+        // Open output stream
+        $output = fopen('php://output', 'w');
+        $leads_data = $this->leads_model->get_leads_pdf_data();
+        // CSV Headers (same as PDF table columns)
+        $headers = [
+            'Name',
+            'Phone',
+            'Alt Phone',
+            'Project',
+            'Status',
+            'Source',
+            'Assigned To',
+            'Lead Value',
+            'Date Added',
+        ];
+
+        // Write headers to CSV
+        fputcsv($output, $headers);
+
+        // Data rows
+        $serial_no = 1;
+        foreach ($leads_data as $row) {
+            $assigned = trim(
+                ($row['assigned_firstname'] ?? '') . ' ' .
+                    ($row['assigned_lastname'] ?? '')
+            );
+
+            $projects = !empty($row['projects'])
+                ? get_projects($row['projects'])
+                : '';
+            $data = [];
+            $data[] = $row['name'];
+            $data[] = $row['phonenumber'];
+            $data[] = $row['alt_phonenumber'];
+            $data[] = $projects;
+            $data[] = $row['status_name'];
+            $data[] = $row['source_name'];
+            $data[] = $assigned;
+            $data[] = $row['lead_value'];
+            $data[] = $row['date_added'];
+            fputcsv($output, $data);
+            $serial_no++;
+        }
+
+        // Close output stream
+        fclose($output);
+        exit;
+    }
 }

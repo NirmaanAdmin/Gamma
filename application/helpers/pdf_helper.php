@@ -316,3 +316,10 @@ function create_dpr_form_pdf($form_data)
 {
     return app_pdf('Dprr', LIBSPATH . 'pdf/Dprr_pdf', $form_data);
 }
+
+
+function create_leads_pdf($lead_data)
+{
+    $pdf = app_pdf('Leads', LIBSPATH . 'pdf/Leads_pdf', $lead_data);
+    return $pdf;
+}

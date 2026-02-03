@@ -1449,4 +1449,146 @@ class Leads_model extends App_Model
 
         return $kanBan->get();
     }
+
+
+    public function get_leads_pdf_data()
+    {
+        // Simply return data array
+        return $this->get_leads_export_data();
+    }
+
+
+
+    public function get_leads_export_data()
+    {
+        $CI = &get_instance();
+
+        // ---------------------------------------------------
+        // BASE QUERY (NO ORDER / LIMIT HERE)
+        // ---------------------------------------------------
+
+        $baseSql = "
+        SELECT 
+            0,
+            l.id,
+            l.name,
+            l.phonenumber,
+            l.alt_phonenumber,
+            l.projects,
+            l.assigned,
+            s.firstname AS assigned_firstname,
+            s.lastname  AS assigned_lastname,
+            ls.name AS status_name,
+            src.name AS source_name,
+            l.dateadded,
+            l.lead_value,
+            l.call_time,
+            l.broker,
+            l.contact_details,
+            l.duplicate,
+            l.junk,
+            l.lost,
+            l.status,
+            l.addedfrom,
+            l.zip,
+
+            (
+                SELECT GROUP_CONCAT(t.name ORDER BY tg.tag_order SEPARATOR ',')
+                FROM tbltaggables tg
+                JOIN tbltags t ON tg.tag_id = t.id
+                WHERE tg.rel_id = l.id 
+                  AND tg.rel_type = 'lead'
+            ) AS tags,
+
+            (
+                SELECT COUNT(c.leadid) 
+                FROM tblclients c 
+                WHERE c.leadid = l.id
+            ) AS is_converted
+
+        FROM tblleads l
+        LEFT JOIN tblstaff s ON s.staffid = l.assigned
+        LEFT JOIN tblleads_status ls ON ls.id = l.status
+        LEFT JOIN tblleads_sources src ON src.id = l.source
+        ";
+
+        // ---------------------------------------------------
+        // LOAD SAVED FILTERS
+        // ---------------------------------------------------
+
+        $filters = $CI->db
+            ->where('module_name', 'leads')
+            ->where('staff_id', get_staff_user_id())
+            ->get(db_prefix() . 'module_filter')
+            ->result_array();
+
+        // ---------------------------------------------------
+        // BUILD WHERE CONDITIONS
+        // ---------------------------------------------------
+
+        $where = [];
+
+        foreach ($filters as $f) {
+            if ($f['filter_value'] === '' || $f['filter_value'] === null) continue;
+
+            $val = $CI->db->escape($f['filter_value']);
+
+            switch ($f['filter_name']) {
+
+                case 'project':
+                    $where[] = "l.projects = $val";
+                    break;
+
+                case 'source':
+                    $where[] = "l.source = $val";
+                    break;
+
+                case 'status':
+                    $where[] = "l.status = $val";
+                    break;
+
+                case 'assigned':
+                    $where[] = "l.assigned = $val";
+                    break;
+
+                case 'duplicate':
+                    $where[] = "l.duplicate = $val";
+                    break;
+
+                case 'lead_value':
+                    $where[] = "l.lead_value = $val";
+                    break;
+
+                case 'month':
+                    $where[] = "MONTH(l.dateadded) = $val";
+                    break;
+
+                case 'period':
+                    if ($f['filter_value'] == 'today') {
+                        $where[] = "DATE(l.dateadded) = CURDATE()";
+                    }
+                    if ($f['filter_value'] == 'this_month') {
+                        $where[] = "MONTH(l.dateadded)=MONTH(CURDATE()) 
+                                AND YEAR(l.dateadded)=YEAR(CURDATE())";
+                    }
+                    break;
+            }
+        }
+
+        // ---------------------------------------------------
+        // FINAL SQL
+        // ---------------------------------------------------
+
+        if (!empty($where)) {
+            $baseSql .= " WHERE " . implode(" AND ", $where);
+        }
+
+        $baseSql .= " ORDER BY l.dateadded DESC";
+
+        // ---------------------------------------------------
+        // EXECUTE
+        // ---------------------------------------------------
+
+        return $CI->db->query($baseSql)->result_array();
+    }
 }

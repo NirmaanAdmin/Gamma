@@ -5,7 +5,13 @@ $module_name = 'leads'; ?>
     .show_hide_columns {
         position: absolute;
         z-index: 999;
-        left: 289px
+        left: 223px;
+    }
+
+    .export-btn-div {
+        position: absolute;
+        z-index: 999;
+        left: 272px;
     }
 </style>
 <div id="wrapper">
@@ -298,6 +304,19 @@ $module_name = 'leads'; ?>
 
                                             </div>
                                         </div>
+                                        <div class="btn-group export-btn-div" id="export-btn-div">
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 4px 7px;">
+                                                <i class="fa fa-download"></i> <?php echo _l('Export'); ?> <span class="caret"></span>
+                                            </button>
+                                            <div class="dropdown-menu" style="padding: 10px;min-width: 94px;">
+                                                <a class="dropdown-item export-btn" href="<?php echo admin_url('leads/export_leads_pdf'); ?>" data-type="pdf">
+                                                    <i class="fa fa-file-pdf text-danger"></i> PDF
+                                                </a><br>
+                                                <a class="dropdown-item export-btn" href="<?php echo admin_url('leads/export_leads_excel'); ?>" data-type="excel">
+                                                    <i class="fa fa-file-excel text-success"></i> Excel
+                                                </a>
+                                            </div>
+                                        </div>
                                         <?php
 
                                         $table_data  = [];
@@ -538,7 +557,8 @@ $module_name = 'leads'; ?>
 </html>
 
 <script>
+    $('.buttons-collection').hide();
     <?php if (!$isadmin): ?>
-        $('.buttons-collection').hide();
+        $('.export-btn-div').hide();
     <?php endif; ?>
 </script>
