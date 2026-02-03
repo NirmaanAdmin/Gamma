@@ -1432,7 +1432,7 @@ class Leads extends AdminController
         header('Content-Disposition: attachment; filename="Leads.csv"');
 
         // Open output stream
-        $output = fopen('php://output', 'w');
+        $output = fopen('php://output', 'w'); 
         $leads_data = $this->leads_model->get_leads_pdf_data();
         // CSV Headers (same as PDF table columns)
         $headers = [
@@ -1470,7 +1470,7 @@ class Leads extends AdminController
             $data[] = $row['source_name'];
             $data[] = $assigned;
             $data[] = $row['lead_value'];
-            $data[] = $row['date_added'];
+            $data[] = $row['dateadded'];
             fputcsv($output, $data);
             $serial_no++;
         }
