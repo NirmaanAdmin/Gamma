@@ -9,7 +9,7 @@ $formrowsinfo = '';
 $formrowsinfo .= '
 <style>
 .table * {
-    font-size: 10px !important;
+    font-size: 11px !important;
 }
 .table {
     table-layout: fixed !important;
