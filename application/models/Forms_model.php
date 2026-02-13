@@ -4721,19 +4721,38 @@ class Forms_model extends App_Model
         }
 
         $preport_deprt_html .= '</tr>';
+
+        // Initialize sum array for each staff
+        $staff_sums = array_fill_keys(array_column($progress_report_dept_labor, 'id'), 0);
+
         if (!empty($forms)) {
             foreach ($forms as $form) {
                 $date = $form['date'];
                 $preport_deprt_html .= '<tr><td>' . $date . '</td>';
+
                 foreach ($progress_report_dept_labor as $staff) {
                     $match = array_values(array_filter($deprt_array, function ($x) use ($date, $staff) {
                         return $x['date'] == $date && $x['staff'] == $staff['id'];
                     }));
                     $attendance = !empty($match) ? $match[0]['attendance'] : 0;
+
+                    // Add to the sum for this staff
+                    $staff_sums[$staff['id']] += $attendance;
+
                     $preport_deprt_html .= '<td align="right">' . $attendance . '</td>';
                 }
                 $preport_deprt_html .= '</tr>';
             }
+
+            // Add total row
+            $preport_deprt_html .= '<tr style="font-weight: bold; background: #f8f9fa; border-top: 2px solid #dee2e6;">';
+            $preport_deprt_html .= '<td align="left">Total</td>';
+
+            foreach ($progress_report_dept_labor as $staff) {
+                $preport_deprt_html .= '<td align="right">' . $staff_sums[$staff['id']] . '</td>';
+            }
+
+            $preport_deprt_html .= '</tr>';
         } else {
             $preport_deprt_html .= '<tr><td colspan="' . (count($progress_report_dept_labor) + 1) . '" align="center">No records found</td></tr>';
         }
