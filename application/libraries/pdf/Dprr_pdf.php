@@ -33,6 +33,7 @@ class Dprr_pdf extends App_pdf
             'form_material_inward' => $this->get_progress_report_material_inward($this->formid),
             'form_dept_labour' => $this->get_progress_report_dept_labour($this->formid),
             'form_attachments' => $this->get_form_attachments($this->formid),
+            'form_cement_rack' => $this->get_progress_report_cement_rack($this->formid),
         ]);
 
         return $this->build();
@@ -83,5 +84,10 @@ class Dprr_pdf extends App_pdf
     {
         $this->ci->db->where('form_id', $form_id);
         return $this->ci->db->get(db_prefix() . 'dpr_dept_form_detail')->result_array();
+    }
+    private function get_progress_report_cement_rack($form_id)
+    {
+        $this->ci->db->where('form_id', $form_id);
+        return $this->ci->db->get(db_prefix() . 'dpr_cement_form_detail')->result_array();
     }
 }

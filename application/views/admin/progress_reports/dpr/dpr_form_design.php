@@ -40,6 +40,7 @@
     .laber-type .dropdown-toggle {
         width: 138px !important;
     }
+
     .laber-type .dropdown-menu .open,
     .progress_report_type .dropdown-menu .open {
         width: max-content !important;
@@ -59,8 +60,6 @@
     .laber-type .dropdown-toggle {
         width: 140px !important;
     }
-
-
 </style>
 <div class="col-md-12">
     <hr class="hr-panel-separator" />
@@ -182,12 +181,12 @@
                     </th>
                 </tr>
             </thead>
-             <tbody class="dpr_rmc_body">
+            <tbody class="dpr_rmc_body">
                 <?php echo pur_html_entity_decode($dpr_rmc_row_template); ?>
             </tbody>
         </table>
         <div id="removed-rmc-items"></div>
-         <table class="table dpr-material-table items  has-calculations no-mtop">
+        <table class="table dpr-material-table items  has-calculations no-mtop">
             <thead>
                 <tr>
                     <th colspan="5" class="daily_report_title">MATERIAL INWARD</th>
@@ -202,7 +201,7 @@
                     </th>
                 </tr>
             </thead>
-             <tbody class="dpr_material_body">
+            <tbody class="dpr_material_body">
                 <?php echo pur_html_entity_decode($dpr_material_row_template); ?>
             </tbody>
         </table>
@@ -222,11 +221,39 @@
                     </th>
                 </tr>
             </thead>
-             <tbody class="dpr_department_body">
+            <tbody class="dpr_department_body">
                 <?php echo pur_html_entity_decode($dpr_department_row_template); ?>
             </tbody>
         </table>
         <div id="removed-department-items"></div>
+        <table class="table rack-cement-table items has-calculations no-mtop">
+            <thead>
+                <tr>
+                    <th colspan="4" class="daily_report_title">RACK CEMENT BAG</th>
+                </tr>
+                <tr>
+                    <th>Inward Inventory</th>
+                    <th>Todays usage</th>
+                    <th>Total Remaining cement</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody class="rack_cement_body">
+                <?php 
+                $inward_inventory = isset($dpr_cement_data) ? $dpr_cement_data[0]['inward_inventory'] : ''; 
+                $today_usage = isset($dpr_cement_data) ? $dpr_cement_data[0]['today_usage'] : ''; 
+                $remaining_cement = isset($dpr_cement_data) ? $dpr_cement_data[0]['remaining_cement'] : ''; 
+                $notes = isset($dpr_cement_data) ? $dpr_cement_data[0]['notes'] : '';
+                ?>
+                <td class="inward_inventory"><?php echo render_input('inward_inventory', '', $inward_inventory, 'number', ['id' => 'inward_inventory', 'oninput' => 'calculateRemaining()']) ?></td>
+                <td class="today_usage"><?php echo render_input('today_usage', '', $today_usage, 'number', ['id' => 'today_usage', 'oninput' => 'calculateRemaining()']) ?></td>
+                <td class="remaining_cement"><?php echo render_input('remaining_cement', '', $remaining_cement, 'number', ['id' => 'remaining_cement', 'readonly' => true]) ?></td>
+                <td class="nores"><?php echo render_input('notes', '', $notes, 'text', ['id' => 'notes']) ?></td>
+                <input type="hidden" name="rack_cement_id" value="<?php echo isset($dpr_cement_data) ? $dpr_cement_data[0]['id'] : ''; ?>">
+            </tbody>
+        </table>
+
+        <div id="removed-cement-items"></div>
     </div>
 </div>
 
@@ -411,6 +438,7 @@
         });
         return d;
     }
+
     function pur_department_clear_item_preview_values() {
         "use strict";
 
@@ -491,6 +519,7 @@
         });
         return d;
     }
+
     function pur_rmc_clear_item_preview_values() {
         "use strict";
 
@@ -572,6 +601,7 @@
         });
         return d;
     }
+
     function pur_material_clear_item_preview_values() {
         "use strict";
 
@@ -593,6 +623,43 @@
             $(parent + ' #removed-material-items').append(hidden_input('removed_material_items[]', itemid));
         }
     }
+</script>
 
 
+<script>
+    function calculateRemaining() {
+        // Get the values from input fields
+        let inwardInventory = document.getElementById('inward_inventory').value;
+        let todayUsage = document.getElementById('today_usage').value;
+        let remainingField = document.getElementById('remaining_cement');
+
+        // Convert to numbers (empty values become 0)
+        inwardInventory = inwardInventory === '' ? 0 : parseFloat(inwardInventory);
+        todayUsage = todayUsage === '' ? 0 : parseFloat(todayUsage);
+
+        // Calculate remaining
+        let remaining = inwardInventory - todayUsage;
+
+        // Update the remaining field
+        remainingField.value = remaining;
+
+        // Optional: Add visual feedback for negative values
+        if (remaining < 0) {
+            remainingField.style.backgroundColor = '#ffebee'; // Light red for negative
+            remainingField.style.color = '#c62828'; // Dark red text
+        } else {
+            remainingField.style.backgroundColor = ''; // Reset to default
+            remainingField.style.color = ''; // Reset to default
+        }
+    }
+
+    // Add event listeners for real-time calculation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initial calculation if fields have values
+        calculateRemaining();
+
+        // Optional: Add keyup event for even more responsive updates
+        document.getElementById('inward_inventory').addEventListener('keyup', calculateRemaining);
+        document.getElementById('today_usage').addEventListener('keyup', calculateRemaining);
+    });
 </script>

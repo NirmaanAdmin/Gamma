@@ -1090,6 +1090,7 @@ class Forms extends AdminController
                 }
 
             }
+
             $data['dpr_form'] = $dpr_form;
             $data['dpr_main_form'] = $dpr_main_form;
         }
@@ -1097,6 +1098,7 @@ class Forms extends AdminController
         $data['dpr_department_row_template'] = $dpr_row_department_template;
         $data['dpr_rmc_row_template'] = $dpr_row_rmc_template;
         $data['dpr_material_row_template'] = $dpr_row_material_template;
+        $data['dpr_cement_data'] = $this->forms_model->get_dpr_department_cement_rack($form_id);
         $this->load->view('admin/progress_reports/dpr/dpr_form_design', $data);
     }
 
@@ -1581,7 +1583,7 @@ class Forms extends AdminController
         $data['projects'] = $this->forms_model->get_dpr_projects();
         $this->load->view('admin/progress_reports/dpr/dpr_dashboard', $data);
     }
-
+ 
     public function get_dpr_dashboard()
     {
         $data = $this->input->post();

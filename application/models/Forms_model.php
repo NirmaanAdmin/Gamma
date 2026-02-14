@@ -898,6 +898,19 @@ class Forms_model extends App_Model
                     $new_order_material = $data['newitemsmaterial'];
                     unset($data['newitemsmaterial']);
                 }
+                $new_order_cement = [];
+                if (isset($data['inward_inventory']) || isset($data['today_usage']) || isset($data['remaining_cement']) || isset($data['notes'])) {
+                    $new_order_cement[] = [
+                        'inward_inventory' => $data['inward_inventory'],
+                        'today_usage' => $data['today_usage'],
+                        'remaining_cement' => $data['remaining_cement'],
+                        'notes' => $data['notes'],
+                    ];
+                    unset($data['inward_inventory']);
+                    unset($data['today_usage']);
+                    unset($data['remaining_cement']);
+                    unset($data['notes']);
+                }
             } elseif ($data['form_type'] == "apc") {
                 $apc_form = [];
                 $apc_form['date'] = $data['date'];
@@ -1145,6 +1158,20 @@ class Forms_model extends App_Model
                             $dt_data['material_description'] = $value['material_description'];
                             $dt_data['total	'] = $value['total'];
                             $this->db->insert(db_prefix() . $data['form_type'] . '_material_form_detail', $dt_data);
+                        }
+                    }
+                }
+
+                if (isset($new_order_cement)) {
+                    if (!empty($new_order_cement)) {
+                        foreach ($new_order_cement as $value) {
+                            $dt_data = [];
+                            $dt_data['form_id'] = $formid;
+                            $dt_data['inward_inventory'] = $value['inward_inventory'];
+                            $dt_data['today_usage'] = $value['today_usage'];
+                            $dt_data['remaining_cement'] = $value['remaining_cement'];
+                            $dt_data['notes	'] = $value['notes'];
+                            $this->db->insert(db_prefix() . $data['form_type'] . '_cement_form_detail', $dt_data);
                         }
                     }
                 }
@@ -1903,7 +1930,22 @@ class Forms_model extends App_Model
                 $update_order_material = $data['itemsmaterial'];
                 unset($data['itemsmaterial']);
             }
+            $update_order_cement = [];
+            if (isset($data['inward_inventory']) || isset($data['today_usage']) || isset($data['remaining_cement']) || isset($data['notes'])) {
+                $update_order_cement[] = [
+                    'id' => $data['rack_cement_id'],
+                    'inward_inventory' => $data['inward_inventory'],
+                    'today_usage' => $data['today_usage'],
+                    'remaining_cement' => $data['remaining_cement'],
+                    'notes' => $data['notes'],
+                ];
 
+                unset($data['inward_inventory']);
+                unset($data['today_usage']);
+                unset($data['remaining_cement']);
+                unset($data['notes']);
+                unset($data['rack_cement_id']);
+            }
             $remove_order = [];
             if (isset($data['removed_items'])) {
                 $remove_order = $data['removed_items'];
@@ -1926,6 +1968,11 @@ class Forms_model extends App_Model
             if (isset($data['removed_material_items'])) {
                 $remove_order_material = $data['removed_material_items'];
                 unset($data['removed_material_items']);
+            }
+            $remove_order_cement = [];
+            if (isset($data['removed_cement_items'])) {
+                $remove_order_cement = $data['removed_cement_items'];
+                unset($data['removed_cement_items']);
             }
         } elseif ($formBeforeUpdate->form_type == "apc") {
             $apc_form = [];
@@ -2355,6 +2402,41 @@ class Forms_model extends App_Model
                 }
             }
 
+            if (isset($update_order_cement) && !empty($update_order_cement)) {
+                foreach ($update_order_cement as $key => $value) {
+                    $table_name = db_prefix() . $formBeforeUpdate->form_type . '_cement_form_detail';
+
+                    // Check if we should update (has ID and exists)
+                    if (!empty($value['id'])) {
+                        $exists = $this->db->where('id', $value['id'])->get($table_name)->row_array();
+
+                        if ($exists) {
+                            // Update
+                            $this->db->where('id', $value['id'])->update($table_name, [
+                                'inward_inventory' => $value['inward_inventory'],
+                                'today_usage' => $value['today_usage'],
+                                'remaining_cement' => $value['remaining_cement'],
+                                'notes' => $value['notes'],
+                            ]);
+
+                            if ($this->db->affected_rows() > 0) $affectedRows++;
+                            continue;
+                        }
+                    }
+
+                    // Insert new record
+                    $this->db->insert($table_name, [
+                        'form_id' => $formBeforeUpdate->formid,
+                        'inward_inventory' => $value['inward_inventory'],
+                        'today_usage' => $value['today_usage'],
+                        'remaining_cement' => $value['remaining_cement'],
+                        'notes' => $value['notes'],
+                    ]);
+
+                    if ($this->db->affected_rows() > 0) $affectedRows++;
+                }
+            }
+
             /* === REMOVE DETAILS === */
             if (!empty($remove_order)) {
                 foreach ($remove_order as $id) {
@@ -2397,6 +2479,16 @@ class Forms_model extends App_Model
                 foreach ($remove_order_material as $key => $value) {
                     $this->db->where('id', $value);
                     if ($this->db->delete(db_prefix() . $formBeforeUpdate->form_type . '_material_form_detail')) {
+                        $affectedRows++;
+                        // Consider adding logging here like other sections
+                    }
+                }
+            }
+
+            if (isset($remove_order_cement) && !empty($remove_order_cement)) {
+                foreach ($remove_order_cement as $key => $value) {
+                    $this->db->where('id', $value);
+                    if ($this->db->delete(db_prefix() . $formBeforeUpdate->form_type . '_cement_form_detail')) {
                         $affectedRows++;
                         // Consider adding logging here like other sections
                     }
@@ -3663,6 +3755,12 @@ class Forms_model extends App_Model
         return $this->db->get(db_prefix() . 'dpr_dept_form_detail')->result_array();
     }
 
+    public function get_dpr_department_cement_rack($form_id)
+    {
+        $this->db->where('form_id', $form_id);
+        return $this->db->get(db_prefix() . 'dpr_cement_form_detail')->result_array();
+    }
+
     public function get_dpr_rmc_form_detail($form_id)
     {
         $this->db->where('form_id', $form_id);
@@ -4623,6 +4721,38 @@ class Forms_model extends App_Model
         $this->db->group_by(['date', 'd.grade'])
             ->order_by('date', 'ASC');
         $rmc_plant_array = $this->db->get()->result_array();
+        //5. Cement
+        $this->db->select([
+            'DATE(f.date) AS date',
+            'e.inward_inventory',
+            'e.today_usage',
+            'e.remaining_cement'
+        ])
+            ->from(db_prefix() . 'dpr_cement_form_detail e')
+            ->join(db_prefix() . 'forms f', 'f.formid = e.form_id');
+
+        // Fix the projects filter
+        if ($projects !== null && !empty($projects)) {
+            if (is_array($projects)) {
+                $this->db->where_in('f.project_id', $projects);
+            } else {
+                $this->db->where('f.project_id', $projects);
+            }
+        }
+
+        // Date filters
+        if ($start_date) {
+            $this->db->where('DATE(f.date) >=', $start_date);
+        }
+        if ($end_date) {
+            $this->db->where('DATE(f.date) <=', $end_date);
+        }
+
+        // If you want only the latest record per date, use group_by with MAX or ORDER BY
+        $this->db->group_by('DATE(f.date)')
+            ->order_by('f.date', 'DESC'); // Get latest records first
+
+        $cr_array = $this->db->get()->result_array();
 
 
         // 4. Reference lists
@@ -4689,7 +4819,7 @@ class Forms_model extends App_Model
         $preport_sub_type_html .= '</tbody></table></div>';
 
         // Type Table
-        $preport_type_html = '<div class="table-responsive s_table"><table class="table items no-mtop preportTypeTable" style="border: 1px solid #dee2e6;"><tbody>';
+        $preport_type_html = '<div class="table-responsive s_table" style="overflow-x: auto; border: 1px solid #dee2e6;"><table class="table items no-mtop preportTypeTable" style="border: 1px solid #dee2e6; min-width: 100%;"><tbody>';
         $preport_type_html .= '<tr style="font-weight: bold; background: #f1f5f9; color: #1e293b;"><td align="left">Row Labels</td>';
         foreach ($progress_report_type as $type) {
             $preport_type_html .= '<td align="right">' . $type['name'] . '</td>';
@@ -4784,6 +4914,33 @@ class Forms_model extends App_Model
         }
         $preport_rmc_plant_html .= '</tbody></table></div>';
 
+        $preport_rack_cement_html = '<div class="table-responsive s_table"><table class="table items no-mtop preportcementTable" style="border: 1px solid #dee2e6;"><tbody>';
+
+        // Add table headers
+        $preport_rack_cement_html .= '<tr style="font-weight: bold; background: #f1f5f9; color: #1e293b;">';
+        $preport_rack_cement_html .= '<td align="left">Date</td>';
+        $preport_rack_cement_html .= '<td align="right">Inward Inventory</td>';
+        $preport_rack_cement_html .= '<td align="right">Today Usage</td>';
+        $preport_rack_cement_html .= '<td align="right">Remaining Cement</td>';
+        $preport_rack_cement_html .= '</tr>';
+
+        // Add data rows
+        if (!empty($cr_array)) {
+            foreach ($cr_array as $row) {
+                $preport_rack_cement_html .= '<tr>';
+                $preport_rack_cement_html .= '<td align="left">' . $row['date'] . '</td>';
+                $preport_rack_cement_html .= '<td align="right">' . $row['inward_inventory'] . '</td>';
+                $preport_rack_cement_html .= '<td align="right">' . $row['today_usage'] . '</td>';
+                $preport_rack_cement_html .= '<td align="right">' . $row['remaining_cement'] . '</td>';
+                $preport_rack_cement_html .= '</tr>';
+            }
+        } else {
+            // No records found
+            $preport_rack_cement_html .= '<tr><td colspan="4" align="center">No cement records found</td></tr>';
+        }
+
+        $preport_rack_cement_html .= '</tbody></table></div>';
+
         // Final response
         return [
             'preport_sub_type_html' => $preport_sub_type_html,
@@ -4793,7 +4950,8 @@ class Forms_model extends App_Model
             'stacked_labor_labels' => $stacked_labor_labels,
             'stacked_labor_values' => $stacked_labor_values,
             'preport_deprt_html' => $preport_deprt_html,
-            'preport_rmc_plant_html' => $preport_rmc_plant_html
+            'preport_rmc_plant_html' => $preport_rmc_plant_html,
+            'preport_rack_cement_html' => $preport_rack_cement_html
         ];
     }
 

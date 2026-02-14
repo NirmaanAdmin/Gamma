@@ -216,7 +216,40 @@ if (!empty($form_dept_labour)) {
 $deprtmenttable .= '</tbody>';
 $deprtmenttable .= '</table>';
 
-if ($form_rmc_plant || $form_material_inward || $form_dept_labour) {
+$cementtable = '';
+$cementtable = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
+$cementtable .= '<thead>'; 
+$cementtable .= '
+    <tr style="font-size:20px;">
+        <td colspan="5" align="center"><b>RACK CEMENT BAG</b></td>
+    </tr>
+    <tr style="font-size:11px;">
+        <td align="center"><b>Sr. No.</b></td>
+        <td align="center"><b>Inward Inventory</b></td>
+        <td align="center"><b>Todays usage</b></td>
+        <td align="center"><b>Total Remaining</b></td>
+        <td align="center"><b>Notes</b></td>
+    </tr>
+    ';
+$cementtable .= '</thead>';
+
+$cementtable .= '<tbody>';  // Start tbody for data rows
+if (!empty($form_cement_rack)) {
+    foreach ($form_cement_rack as $key => $value) {
+        $cementtable .= '
+                <tr style="font-size:11px;">
+                    <td align="center" >' . ($key + 1) . '</td>
+                    <td align="center" >' . ($value['inward_inventory'] != '' ? $value['inward_inventory'] : '') . '</td>
+                    <td align="center" >' . ($value['today_usage'] != '' ? $value['today_usage'] : '') . '</td>
+                    <td align="center" >' . ($value['remaining_cement'] != '' ? $value['remaining_cement'] : '') . '</td>
+                    <td align="center" >' . ($value['notes'] != '' ? $value['notes'] : '') . '</td>
+                </tr>';
+    }
+}
+$cementtable .= '</tbody>';
+$cementtable .= '</table>';
+
+if ($form_rmc_plant || $form_material_inward || $form_dept_labour || $form_cement_rack) {
     $pdf->AddPage();
 }
 // Add a page break before the note
@@ -238,6 +271,9 @@ if (!empty($form_material_inward)) {
 }
 if (!empty($form_dept_labour)) {
     $pdf->writeHTML($deprtmenttable, true, false, false, false, '');
+}
+if (!empty($form_cement_rack)) {
+    $pdf->writeHTML($cementtable, true, false, false, false, '');
 }
 
 
