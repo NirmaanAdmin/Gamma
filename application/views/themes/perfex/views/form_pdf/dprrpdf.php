@@ -221,7 +221,7 @@ $cementtable = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="
 $cementtable .= '<thead>'; 
 $cementtable .= '
     <tr style="font-size:20px;">
-        <td colspan="5" align="center"><b>RACK CEMENT BAG</b></td>
+        <td colspan="5" align="center"><b>ON RACK CEMENT BAG</b></td>
     </tr>
     <tr style="font-size:11px;">
         <td align="center"><b>Sr. No.</b></td>

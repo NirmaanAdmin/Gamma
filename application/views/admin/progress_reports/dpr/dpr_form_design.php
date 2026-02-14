@@ -229,7 +229,7 @@
         <table class="table rack-cement-table items has-calculations no-mtop">
             <thead>
                 <tr>
-                    <th colspan="4" class="daily_report_title">RACK CEMENT BAG</th>
+                    <th colspan="4" class="daily_report_title">ON RACK CEMENT BAG</th>
                 </tr>
                 <tr>
                     <th>Inward Inventory</th>
