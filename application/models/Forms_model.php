@@ -910,6 +910,7 @@ class Forms_model extends App_Model
                     unset($data['today_usage']);
                     unset($data['remaining_cement']);
                     unset($data['notes']);
+                    unset($data['rack_cement_id']);
                 }
             } elseif ($data['form_type'] == "apc") {
                 $apc_form = [];
