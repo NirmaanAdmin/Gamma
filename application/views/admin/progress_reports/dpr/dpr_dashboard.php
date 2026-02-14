@@ -101,7 +101,7 @@
           </div>
 
 
-          <div class="row">
+          <div class="row" style="margin-top: 10px;">
             <h4>Departments Labor</h4>
             <span style="padding: 0px; margin-bottom: 12px;">
               <button id="export-csv-deprt" class="btn btn-primary pull-right">Export to CSV</button>
