@@ -17352,17 +17352,17 @@ class Purchase_model extends App_Model
                 <tbody>
                     <tr>
                         <td>A + B</td>
-                        <td>BUC/BHNTI/WZ/210522/CGDCRV/A6107/RO/M1</td>
+                        <td>BUC/BHNTI/WZ/210522/CGDCRV/A6107/R0/M1</td>
                         <td>17/10/2025</td>
                     </tr>
                     <tr>
                         <td>C</td>
-                        <td>BUC/BHNTS/WZ/210522/CGDCRV/A6108/RO/M1</td>
+                        <td>BUC/BHNTS/WZ/210522/CGDCRV/A6108/R0/M1</td>
                         <td>16/10/2025</td>
                     </tr>
                     <tr>
                         <td>D</td>
-                        <td>BUC/BHNTS/WZ/21 0522/CGDCRV/A610 9/RO/M1</td>
+                        <td>BUC/BHNTS/WZ/21 0522/CGDCRV/A6109/R0/M1</td>
                         <td>16/10/2025</td>
                     </tr>
                 </tbody>
