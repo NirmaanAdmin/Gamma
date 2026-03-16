@@ -205,6 +205,10 @@
                         </div>
                      </div>
                      <div class="col-md-6">
+                        <?php $value = (isset($client) ? $client->driving_licence : ''); ?>
+                        <?php echo render_input('driving_licence', 'Driving Licence', $value, 'text'); ?>
+                     </div>
+                     <div class="col-md-6">
                         <div class="form-group">
                            <label for="terrace">Terrace</label>
                            <div class="checkbox">

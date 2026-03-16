@@ -16868,6 +16868,7 @@ class Purchase_model extends App_Model
         $YEAR = $esc($documentation[0]['year'] ?? '');
         $CUSTOMER = $esc($customer['company'] ?? '');
         $ELECTION_CARD = $esc($customer['election_card'] ?? '');
+        $DRIVER_LICENSE = $esc($customer['driving_licence'] ?? '');
         $PAN_CARD = $esc($customer['pan_card'] ?? '');
         $ADHAR_CARD = $esc($customer['adhar_card'] ?? '');
         $AGE = $esc($customer['age'] ?? '');
@@ -17094,6 +17095,10 @@ class Purchase_model extends App_Model
 
         if (!empty($ELECTION_CARD)) {
             $identity_html .= '<span style="font-size:20px;">[ ELECTION : <strong>' . $ELECTION_CARD . '</strong>]</span><br>';
+        }
+
+         if (!empty($DRIVER_LICENSE)) {
+            $identity_html .= '<span style="font-size:20px;">[ DRIVER LICENSE : <strong>' . $DRIVER_LICENSE . '</strong>]</span><br>';
         }
 
         $html = <<<HTML
