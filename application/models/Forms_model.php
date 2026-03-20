@@ -912,6 +912,76 @@ class Forms_model extends App_Model
                     unset($data['notes']);
                     unset($data['rack_cement_id']);
                 }
+                $new_order_block = [];
+                if (isset($data['inward_inventory_bmj']) || isset($data['today_usage_bmj']) || isset($data['remaining_cement_bmj']) || isset($data['notes_bmj'])) {
+                    $new_order_block[] = [
+                        'inward_inventory_bmj' => $data['inward_inventory_bmj'],
+                        'today_usage_bmj' => $data['today_usage_bmj'],
+                        'remaining_cement_bmj' => $data['remaining_cement_bmj'],
+                        'notes_bmj' => $data['notes_bmj'],
+                    ];
+                    unset($data['inward_inventory_bmj']);
+                    unset($data['today_usage_bmj']);
+                    unset($data['remaining_cement_bmj']);
+                    unset($data['notes_bmj']);
+                    unset($data['block_mortar_id']);
+                }
+                $new_order_tile = [];
+                if (isset($data['inward_inventory_ta']) || isset($data['today_usage_ta']) || isset($data['remaining_cement_ta']) || isset($data['notes_ta'])) {
+                    $new_order_tile[] = [
+                        'inward_inventory_ta' => $data['inward_inventory_ta'],
+                        'today_usage_ta' => $data['today_usage_ta'],
+                        'remaining_cement_ta' => $data['remaining_cement_ta'],
+                        'notes_ta' => $data['notes_ta'],
+                    ];
+                    unset($data['inward_inventory_ta']);
+                    unset($data['today_usage_ta']);
+                    unset($data['remaining_cement_ta']);
+                    unset($data['notes_ta']);
+                    unset($data['tile_adhesive_id']);
+                }
+                $new_order_coupler = [];
+                if (isset($data['inward_inventory_ca']) || isset($data['today_usage_ca']) || isset($data['remaining_cement_ca']) || isset($data['notes_ca'])) {
+                    $new_order_coupler[] = [
+                        'inward_inventory_ca' => $data['inward_inventory_ca'],
+                        'today_usage_ca' => $data['today_usage_ca'],
+                        'remaining_cement_ca' => $data['remaining_cement_ca'],
+                        'notes_ca' => $data['notes_ca'],
+                    ];
+                    unset($data['inward_inventory_ca']);
+                    unset($data['today_usage_ca']);
+                    unset($data['remaining_cement_ca']);
+                    unset($data['notes_ca']);
+                    unset($data['coupler_id']);
+                }
+                $new_order_wire = [];
+                if (isset($data['inward_inventory_wi']) || isset($data['today_usage_wi']) || isset($data['remaining_cement_wi']) || isset($data['notes_wi'])) {
+                    $new_order_wire[] = [
+                        'inward_inventory_wi' => $data['inward_inventory_wi'],
+                        'today_usage_wi' => $data['today_usage_wi'],
+                        'remaining_cement_wi' => $data['remaining_cement_wi'],
+                        'notes_wi' => $data['notes_wi'],
+                    ];
+                    unset($data['inward_inventory_wi']);
+                    unset($data['today_usage_wi']);
+                    unset($data['remaining_cement_wi']);
+                    unset($data['notes_wi']);
+                    unset($data['wires_id']);
+                }
+                $new_order_council = [];
+                if (isset($data['inward_inventory_cb']) || isset($data['today_usage_cb']) || isset($data['remaining_cement_cb']) || isset($data['notes_cb'])) {
+                    $new_order_council[] = [
+                        'inward_inventory_cb' => $data['inward_inventory_cb'],
+                        'today_usage_cb' => $data['today_usage_cb'],
+                        'remaining_cement_cb' => $data['remaining_cement_cb'],
+                        'notes_cb' => $data['notes_cb'],
+                    ];
+                    unset($data['inward_inventory_cb']);
+                    unset($data['today_usage_cb']);
+                    unset($data['remaining_cement_cb']);
+                    unset($data['notes_cb']);
+                    unset($data['cb_id']);
+                }
             } elseif ($data['form_type'] == "apc") {
                 $apc_form = [];
                 $apc_form['date'] = $data['date'];
@@ -1157,7 +1227,7 @@ class Forms_model extends App_Model
                             $dt_data['challan'] = $value['challan'];
                             $dt_data['supplier'] = $value['supplier'];
                             $dt_data['material_description'] = $value['material_description'];
-                            $dt_data['total	'] = $value['total'];
+                            $dt_data['total'] = $value['total'];
                             $this->db->insert(db_prefix() . $data['form_type'] . '_material_form_detail', $dt_data);
                         }
                     }
@@ -1171,11 +1241,77 @@ class Forms_model extends App_Model
                             $dt_data['inward_inventory'] = $value['inward_inventory'];
                             $dt_data['today_usage'] = $value['today_usage'];
                             $dt_data['remaining_cement'] = $value['remaining_cement'];
-                            $dt_data['notes	'] = $value['notes'];
+                            $dt_data['notes'] = $value['notes'];
                             $this->db->insert(db_prefix() . $data['form_type'] . '_cement_form_detail', $dt_data);
                         }
                     }
                 }
+                if (isset($new_order_block)) {
+                    if (!empty($new_order_block)) {
+                        foreach ($new_order_block as $value) {
+                            $dt_data = [];
+                            $dt_data['form_id'] = $formid;
+                            $dt_data['inward_inventory_bmj'] = $value['inward_inventory_bmj'];
+                            $dt_data['today_usage_bmj'] = $value['today_usage_bmj'];
+                            $dt_data['remaining_cement_bmj'] = $value['remaining_cement_bmj'];
+                            $dt_data['notes_bmj'] = $value['notes_bmj'];
+                            $this->db->insert(db_prefix() . $data['form_type'] . '_block_form_detail', $dt_data);
+                        }
+                    }
+                }
+                if (isset($new_order_tile)) {
+                    if (!empty($new_order_tile)) {
+                        foreach ($new_order_tile as $value) {
+                            $dt_data = [];
+                            $dt_data['form_id'] = $formid;
+                            $dt_data['inward_inventory_ta'] = $value['inward_inventory_ta'];
+                            $dt_data['today_usage_ta'] = $value['today_usage_ta'];
+                            $dt_data['remaining_cement_ta'] = $value['remaining_cement_ta'];
+                            $dt_data['notes_ta'] = $value['notes_ta'];
+                            $this->db->insert(db_prefix() . $data['form_type'] . '_tile_form_detail', $dt_data);
+                        }
+                    }
+                }
+                if (isset($new_order_coupler)) {
+                    if (!empty($new_order_coupler)) {
+                        foreach ($new_order_coupler as $value) {
+                            $dt_data = [];
+                            $dt_data['form_id'] = $formid;
+                            $dt_data['inward_inventory_ca'] = $value['inward_inventory_ca'];
+                            $dt_data['today_usage_ca'] = $value['today_usage_ca'];
+                            $dt_data['remaining_cement_ca'] = $value['remaining_cement_ca'];
+                            $dt_data['notes_ca'] = $value['notes_ca'];
+                            $this->db->insert(db_prefix() . $data['form_type'] . '_coupler_form_detail', $dt_data);
+                        }
+                    }
+                }
+                 if (isset($new_order_wire)) {
+                    if (!empty($new_order_wire)) {
+                        foreach ($new_order_wire as $value) {
+                            $dt_data = [];
+                            $dt_data['form_id'] = $formid;
+                            $dt_data['inward_inventory_wi'] = $value['inward_inventory_wi'];
+                            $dt_data['today_usage_wi'] = $value['today_usage_wi'];
+                            $dt_data['remaining_cement_wi'] = $value['remaining_cement_wi'];
+                            $dt_data['notes_wi'] = $value['notes_wi'];
+                            $this->db->insert(db_prefix() . $data['form_type'] . '_wires_form_detail', $dt_data);
+                        }
+                    }
+                }
+                if (isset($new_order_council)) {
+                    if (!empty($new_order_council)) {
+                        foreach ($new_order_council as $value) {
+                            $dt_data = [];
+                            $dt_data['form_id'] = $formid;
+                            $dt_data['inward_inventory_cb'] = $value['inward_inventory_cb'];
+                            $dt_data['today_usage_cb'] = $value['today_usage_cb'];
+                            $dt_data['remaining_cement_cb'] = $value['remaining_cement_cb'];
+                            $dt_data['notes_cb'] = $value['notes_cb'];
+                            $this->db->insert(db_prefix() . $data['form_type'] . '_council_form_detail', $dt_data);
+                        }
+                    }
+                }
+                
             } elseif ($data['form_type'] == "apc") {
                 if (isset($apc_form)) {
                     if (!empty($apc_form)) {
@@ -1947,6 +2083,86 @@ class Forms_model extends App_Model
                 unset($data['notes']);
                 unset($data['rack_cement_id']);
             }
+            $update_order_block = [];
+            if (isset($data['inward_inventory_bmj']) || isset($data['today_usage_bmj']) || isset($data['remaining_cement_bmj']) || isset($data['notes_bmj'])) {
+                $update_order_block[] = [
+                    'id' => $data['block_mortar_id'],
+                    'inward_inventory_bmj' => $data['inward_inventory_bmj'],
+                    'today_usage_bmj' => $data['today_usage_bmj'],
+                    'remaining_cement_bmj' => $data['remaining_cement_bmj'],
+                    'notes_bmj' => $data['notes_bmj'],
+                ];
+
+                unset($data['inward_inventory_bmj']);
+                unset($data['today_usage_bmj']);
+                unset($data['remaining_cement_bmj']);
+                unset($data['notes_bmj']);
+                unset($data['block_mortar_id']);
+            }
+            $update_order_tile = [];
+            if (isset($data['inward_inventory_ta']) || isset($data['today_usage_ta']) || isset($data['remaining_cement_ta']) || isset($data['notes_ta'])) {
+                $update_order_tile[] = [
+                    'id' => $data['tile_adhesive_id'],
+                    'inward_inventory_ta' => $data['inward_inventory_ta'],
+                    'today_usage_ta' => $data['today_usage_ta'],
+                    'remaining_cement_ta' => $data['remaining_cement_ta'],
+                    'notes_ta' => $data['notes_ta'],
+                ];
+
+                unset($data['inward_inventory_ta']);
+                unset($data['today_usage_ta']);
+                unset($data['remaining_cement_ta']);
+                unset($data['notes_ta']);
+                unset($data['tile_adhesive_id']);
+            }
+            $update_order_coupler = [];
+            if (isset($data['inward_inventory_ca']) || isset($data['today_usage_ca']) || isset($data['remaining_cement_ca']) || isset($data['notes_ca'])) {
+                $update_order_coupler[] = [
+                    'id' => $data['coupler_id'],
+                    'inward_inventory_ca' => $data['inward_inventory_ca'],
+                    'today_usage_ca' => $data['today_usage_ca'],
+                    'remaining_cement_ca' => $data['remaining_cement_ca'],
+                    'notes_ca' => $data['notes_ca'],
+                ];
+
+                unset($data['inward_inventory_ca']);
+                unset($data['today_usage_ca']);
+                unset($data['remaining_cement_ca']);
+                unset($data['notes_ca']);
+                unset($data['coupler_id']);
+            }
+            $update_wire_coupler = [];
+            if (isset($data['inward_inventory_wi']) || isset($data['today_usage_wi']) || isset($data['remaining_cement_wi']) || isset($data['notes_wi'])) {
+                $update_wire_coupler[] = [
+                    'id' => $data['wires_id'],
+                    'inward_inventory_wi' => $data['inward_inventory_wi'],
+                    'today_usage_wi' => $data['today_usage_wi'],
+                    'remaining_cement_wi' => $data['remaining_cement_wi'],
+                    'notes_wi' => $data['notes_wi'],
+                ];
+
+                unset($data['inward_inventory_wi']);
+                unset($data['today_usage_wi']);
+                unset($data['remaining_cement_wi']);
+                unset($data['notes_wi']);
+                unset($data['wires_id']);
+            }
+            $update_cb_coupler = [];
+            if (isset($data['inward_inventory_cb']) || isset($data['today_usage_cb']) || isset($data['remaining_cement_cb']) || isset($data['notes_cb'])) {
+                $update_cb_coupler[] = [
+                    'id' => $data['cb_id'],
+                    'inward_inventory_cb' => $data['inward_inventory_cb'],
+                    'today_usage_cb' => $data['today_usage_cb'],
+                    'remaining_cement_cb' => $data['remaining_cement_cb'],
+                    'notes_cb' => $data['notes_cb'],
+                ];
+
+                unset($data['inward_inventory_cb']);
+                unset($data['today_usage_cb']);
+                unset($data['remaining_cement_cb']);
+                unset($data['notes_cb']);
+                unset($data['cb_id']);
+            }
             $remove_order = [];
             if (isset($data['removed_items'])) {
                 $remove_order = $data['removed_items'];
@@ -2438,6 +2654,187 @@ class Forms_model extends App_Model
                 }
             }
 
+            if (isset($update_order_block) && !empty($update_order_block)) {
+                foreach ($update_order_block as $key => $value) {
+                    $table_name = db_prefix() . $formBeforeUpdate->form_type . '_block_form_detail';
+
+                    // Check if we should update (has ID and exists)
+                    if (!empty($value['id'])) {
+                        $exists = $this->db->where('id', $value['id'])->get($table_name)->row_array();
+
+                        if ($exists) {
+                            // Update
+                            $this->db->where('id', $value['id'])->update($table_name, [
+                                'inward_inventory_bmj' => $value['inward_inventory_bmj'],
+                                'today_usage_bmj' => $value['today_usage_bmj'],
+                                'remaining_cement_bmj' => $value['remaining_cement_bmj'],
+                                'notes_bmj' => $value['notes_bmj'],
+                            ]);
+
+                            if ($this->db->affected_rows() > 0) $affectedRows++;
+                            continue;
+                        }
+                    }
+
+                    // Insert new record
+                    $this->db->insert($table_name, [
+                        'form_id' => $formBeforeUpdate->formid,
+                        'inward_inventory_bmj' => $value['inward_inventory_bmj'],
+                        'today_usage_bmj' => $value['today_usage_bmj'],
+                        'remaining_cement_bmj' => $value['remaining_cement_bmj'],
+                        'notes_bmj' => $value['notes_bmj'],
+                    ]);
+
+                    if ($this->db->affected_rows() > 0) $affectedRows++;
+                }
+            }
+
+            
+
+            if (isset($update_order_tile) && !empty($update_order_tile)) {
+                foreach ($update_order_tile as $key => $value) {
+                    $table_name = db_prefix() . $formBeforeUpdate->form_type . '_tile_form_detail';
+
+                    // Check if we should update (has ID and exists)
+                    if (!empty($value['id'])) {
+                        $exists = $this->db->where('id', $value['id'])->get($table_name)->row_array();
+
+                        if ($exists) {
+                            // Update
+                            $this->db->where('id', $value['id'])->update($table_name, [
+                                'inward_inventory_ta' => $value['inward_inventory_ta'],
+                                'today_usage_ta' => $value['today_usage_ta'],
+                                'remaining_cement_ta' => $value['remaining_cement_ta'],
+                                'notes_ta' => $value['notes_ta'],
+                            ]);
+
+                            if ($this->db->affected_rows() > 0) $affectedRows++;
+                            continue;
+                        }
+                    }
+
+                    // Insert new record
+                    $this->db->insert($table_name, [
+                        'form_id' => $formBeforeUpdate->formid,
+                        'inward_inventory_ta' => $value['inward_inventory_ta'],
+                        'today_usage_ta' => $value['today_usage_ta'],
+                        'remaining_cement_ta' => $value['remaining_cement_ta'],
+                        'notes_ta' => $value['notes_ta'],
+                    ]);
+
+                    if ($this->db->affected_rows() > 0) $affectedRows++;
+                }
+            }
+                    
+
+            if (isset($update_order_coupler) && !empty($update_order_coupler)) {
+                foreach ($update_order_coupler as $key => $value) {
+                    $table_name = db_prefix() . $formBeforeUpdate->form_type . '_coupler_form_detail';
+
+                    // Check if we should update (has ID and exists)
+                    if (!empty($value['id'])) {
+                        $exists = $this->db->where('id', $value['id'])->get($table_name)->row_array();
+
+                        if ($exists) {
+                            // Update
+                            $this->db->where('id', $value['id'])->update($table_name, [
+                                'inward_inventory_ca' => $value['inward_inventory_ca'],
+                                'today_usage_ca' => $value['today_usage_ca'],
+                                'remaining_cement_ca' => $value['remaining_cement_ca'],
+                                'notes_ca' => $value['notes_ca'],
+                            ]);
+
+                            if ($this->db->affected_rows() > 0) $affectedRows++;
+                            continue;
+                        }
+                    }
+
+                    // Insert new record
+                    $this->db->insert($table_name, [
+                        'form_id' => $formBeforeUpdate->formid,
+                        'inward_inventory_ca' => $value['inward_inventory_ca'],
+                        'today_usage_ca' => $value['today_usage_ca'],
+                        'remaining_cement_ca' => $value['remaining_cement_ca'],
+                        'notes_ca' => $value['notes_ca'],
+                    ]);
+
+                    if ($this->db->affected_rows() > 0) $affectedRows++;
+                }
+            }
+
+            
+
+            if (isset($update_wire_coupler) && !empty($update_wire_coupler)) {
+                foreach ($update_wire_coupler as $key => $value) {
+                    $table_name = db_prefix() . $formBeforeUpdate->form_type . '_wires_form_detail';
+
+                    // Check if we should update (has ID and exists)
+                    if (!empty($value['id'])) {
+                        $exists = $this->db->where('id', $value['id'])->get($table_name)->row_array();
+
+                        if ($exists) {
+                            // Update
+                            $this->db->where('id', $value['id'])->update($table_name, [
+                                'inward_inventory_wi' => $value['inward_inventory_wi'],
+                                'today_usage_wi' => $value['today_usage_wi'],
+                                'remaining_cement_wi' => $value['remaining_cement_wi'],
+                                'notes_wi' => $value['notes_wi'],
+                            ]);
+
+                            if ($this->db->affected_rows() > 0) $affectedRows++;
+                            continue;
+                        }
+                    }
+
+                    // Insert new record
+                    $this->db->insert($table_name, [
+                        'form_id' => $formBeforeUpdate->formid,
+                        'inward_inventory_wi' => $value['inward_inventory_wi'],
+                        'today_usage_wi' => $value['today_usage_wi'],
+                        'remaining_cement_wi' => $value['remaining_cement_wi'],
+                        'notes_wi' => $value['notes_wi'],
+                    ]);
+
+                    if ($this->db->affected_rows() > 0) $affectedRows++;
+                }
+            }
+
+
+            if (isset($update_cb_coupler) && !empty($update_cb_coupler)) {
+                foreach ($update_cb_coupler as $key => $value) {
+                    $table_name = db_prefix() . $formBeforeUpdate->form_type . '_council_form_detail';
+
+                    // Check if we should update (has ID and exists)
+                    if (!empty($value['id'])) {
+                        $exists = $this->db->where('id', $value['id'])->get($table_name)->row_array();
+
+                        if ($exists) {
+                            // Update
+                            $this->db->where('id', $value['id'])->update($table_name, [
+                                'inward_inventory_cb' => $value['inward_inventory_cb'],
+                                'today_usage_cb' => $value['today_usage_cb'],
+                                'remaining_cement_cb' => $value['remaining_cement_cb'],
+                                'notes_cb' => $value['notes_cb'],
+                            ]);
+
+                            if ($this->db->affected_rows() > 0) $affectedRows++;
+                            continue;
+                        }
+                    }
+
+                    // Insert new record
+                    $this->db->insert($table_name, [
+                        'form_id' => $formBeforeUpdate->formid,
+                        'inward_inventory_cb' => $value['inward_inventory_cb'],
+                        'today_usage_cb' => $value['today_usage_cb'],
+                        'remaining_cement_cb' => $value['remaining_cement_cb'],
+                        'notes_cb' => $value['notes_cb'],
+                    ]);
+
+                    if ($this->db->affected_rows() > 0) $affectedRows++;
+                }
+            }
+            
             /* === REMOVE DETAILS === */
             if (!empty($remove_order)) {
                 foreach ($remove_order as $id) {
@@ -5161,5 +5558,34 @@ class Forms_model extends App_Model
 
         $row .= '</tr>';
         return $row;
+    }
+    public function get_dpr_department_block_mortar($form_id)
+    {
+        $this->db->where('form_id', $form_id);
+        return $this->db->get(db_prefix() . 'dpr_block_form_detail')->result_array();
+    }
+    public function get_dpr_department_tile_mortar($form_id)
+    {
+        $this->db->where('form_id', $form_id);
+        return $this->db->get(db_prefix() . 'dpr_tile_form_detail')->result_array();
+    }
+
+    public function get_dpr_department_coupler_mortar($form_id)
+    {
+        $this->db->where('form_id', $form_id);
+        return $this->db->get(db_prefix() . 'dpr_coupler_form_detail')->result_array();
+    }
+
+    public function get_dpr_department_wires_mortar($form_id)
+    {
+        $this->db->where('form_id', $form_id);
+        return $this->db->get(db_prefix() . 'dpr_wires_form_detail')->result_array();
+    }
+
+    
+    public function get_dpr_department_council_mortar($form_id)
+    {
+        $this->db->where('form_id', $form_id);
+        return $this->db->get(db_prefix() . 'dpr_council_form_detail')->result_array();
     }
 }

@@ -1099,6 +1099,11 @@ class Forms extends AdminController
         $data['dpr_rmc_row_template'] = $dpr_row_rmc_template;
         $data['dpr_material_row_template'] = $dpr_row_material_template;
         $data['dpr_cement_data'] = $this->forms_model->get_dpr_department_cement_rack($form_id);
+        $data['dpr_block_data'] = $this->forms_model->get_dpr_department_block_mortar($form_id);
+        $data['dpr_tile_data'] = $this->forms_model->get_dpr_department_tile_mortar($form_id);
+        $data['dpr_coupler_data'] = $this->forms_model->get_dpr_department_coupler_mortar($form_id);
+        $data['dpr_wires_data'] = $this->forms_model->get_dpr_department_wires_mortar($form_id);
+        $data['dpr_council_data'] = $this->forms_model->get_dpr_department_council_mortar($form_id);
         $this->load->view('admin/progress_reports/dpr/dpr_form_design', $data);
     }
 
@@ -1303,19 +1308,19 @@ class Forms extends AdminController
             $this->session->mark_as_flash('active_tab');
             $this->session->mark_as_flash('active_tab_settings');
 
-            if ($this->input->post('merge_form_ids') !== 0) {
-                $formsToMerge = explode(',', $this->input->post('merge_form_ids'));
+            // if ($this->input->post('merge_form_ids') !== 0) {
+            //     $formsToMerge = explode(',', $this->input->post('merge_form_ids'));
 
-                $alreadyMergedForms = $this->forms_model->get_already_merged_forms($formsToMerge);
-                if (count($alreadyMergedForms) > 0) {
-                    echo json_encode([
-                        'success' => false,
-                        'message' => _l('cannot_merge_forms_with_ids', implode(',', $alreadyMergedForms)),
-                    ]);
+            //     $alreadyMergedForms = $this->forms_model->get_already_merged_forms($formsToMerge);
+            //     if (count($alreadyMergedForms) > 0) {
+            //         echo json_encode([
+            //             'success' => false,
+            //             'message' => _l('cannot_merge_forms_with_ids', implode(',', $alreadyMergedForms)),
+            //         ]);
 
-                    die();
-                }
-            }
+            //         die();
+            //     }
+            // }
             $success = $this->forms_model->update_single_form_settings($this->input->post());
             if ($success) {
                 $this->session->set_flashdata('active_tab', true);

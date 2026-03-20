@@ -239,10 +239,10 @@
                 </tr>
             </thead>
             <tbody class="rack_cement_body">
-                <?php 
-                $inward_inventory = isset($dpr_cement_data) ? $dpr_cement_data[0]['inward_inventory'] : ''; 
-                $today_usage = isset($dpr_cement_data) ? $dpr_cement_data[0]['today_usage'] : ''; 
-                $remaining_cement = isset($dpr_cement_data) ? $dpr_cement_data[0]['remaining_cement'] : ''; 
+                <?php
+                $inward_inventory = isset($dpr_cement_data) ? $dpr_cement_data[0]['inward_inventory'] : '';
+                $today_usage = isset($dpr_cement_data) ? $dpr_cement_data[0]['today_usage'] : '';
+                $remaining_cement = isset($dpr_cement_data) ? $dpr_cement_data[0]['remaining_cement'] : '';
                 $notes = isset($dpr_cement_data) ? $dpr_cement_data[0]['notes'] : '';
                 ?>
                 <td class="inward_inventory"><?php echo render_input('inward_inventory', '', $inward_inventory, 'number', ['id' => 'inward_inventory', 'oninput' => 'calculateRemaining()']) ?></td>
@@ -253,8 +253,205 @@
             </tbody>
         </table>
 
+
         <div id="removed-cement-items"></div>
     </div>
+    <div class="horizontal-scrollable-tabs preview-tabs-top">
+        <div class="scroller arrow-left"><i class="fa fa-angle-left"></i></div>
+        <div class="scroller arrow-right"><i class="fa fa-angle-right"></i></div>
+        <div class="horizontal-tabs">
+            <ul class="nav nav-tabs nav-tabs-horizontal mbot15" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#block_mortar_joint" aria-controls="block_mortar_joint" role="tab" data-toggle="tab">
+                        <?php echo _l('Block mortar joint'); ?>
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#tile_adhesive" aria-controls="tile_adhesive" role="tab" data-toggle="tab">
+                        <?php echo _l('Tile Adhesive'); ?>
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#coupler" aria-controls="coupler" role="tab" data-toggle="tab">
+                        <?php echo _l('Coupler'); ?>
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#wires" aria-controls="wires" role="tab" data-toggle="tab">
+                        <?php echo _l('Wires'); ?>
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#council_box" aria-controls="council_box" role="tab" data-toggle="tab">
+                        <?php echo _l('Council Box'); ?>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane ptop10 active" id="block_mortar_joint">
+            <div id="estimate-preview">
+                <div class="row">
+                    <table class="table block-mortar-table items has-calculations no-mtop">
+                        <thead>
+                            <tr>
+                                <th colspan="4" class="daily_report_title">Block mortar joint</th>
+                            </tr>
+                            <tr>
+                                <th>Inward Inventory</th>
+                                <th>Todays usage</th>
+                                <th>Total Remaining cement</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="block_mortar_body">
+                            <?php
+                            $inward_inventory_bmj = isset($dpr_block_data) ? $dpr_block_data[0]['inward_inventory_bmj'] : '';
+                            $today_usage_bmj = isset($dpr_block_data) ? $dpr_block_data[0]['today_usage_bmj'] : '';
+                            $remaining_cement_bmj = isset($dpr_block_data) ? $dpr_block_data[0]['remaining_cement_bmj'] : '';
+                            $notes_bmj = isset($dpr_block_data) ? $dpr_block_data[0]['notes_bmj'] : '';
+                            ?>
+                            <td class="inward_inventory_bmj"><?php echo render_input('inward_inventory_bmj', '', $inward_inventory_bmj, 'number', ['id' => 'inward_inventory_bmj', 'oninput' => 'calculateRemainingbmj()']) ?></td>
+                            <td class="today_usage_bmj"><?php echo render_input('today_usage_bmj', '', $today_usage_bmj, 'number', ['id' => 'today_usage_bmj', 'oninput' => 'calculateRemainingbmj()']) ?></td>
+                            <td class="remaining_cement_bmj"><?php echo render_input('remaining_cement_bmj', '', $remaining_cement_bmj, 'number', ['id' => 'remaining_cement_bmj', 'readonly' => true]) ?></td>
+                            <td class="notes_bmj"><?php echo render_input('notes_bmj', '', $notes_bmj, 'text', ['id' => 'notes_bmj']) ?></td>
+                            <input type="hidden" name="block_mortar_id" value="<?php echo isset($dpr_block_data) ? $dpr_block_data[0]['id'] : ''; ?>">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane ptop10" id="tile_adhesive">
+            <div id="estimate-preview">
+                <div class="row">
+                    <table class="table tile-adhesive-table items has-calculations no-mtop">
+                        <thead>
+                            <tr>
+                                <th colspan="4" class="daily_report_title">Tile Adhesive</th>
+                            </tr>
+                            <tr>
+                                <th>Inward Inventory</th>
+                                <th>Todays usage</th>
+                                <th>Total Remaining cement</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tile_adhesive_body">
+                            <?php
+                            $inward_inventory_ta = isset($dpr_tile_data) ? $dpr_tile_data[0]['inward_inventory_ta'] : '';
+                            $today_usage_ta = isset($dpr_tile_data) ? $dpr_tile_data[0]['today_usage_ta'] : '';
+                            $remaining_cement_ta = isset($dpr_tile_data) ? $dpr_tile_data[0]['remaining_cement_ta'] : '';
+                            $notes_ta = isset($dpr_tile_data) ? $dpr_tile_data[0]['notes_ta'] : '';
+                            ?>
+                            <td class="inward_inventory_ta"><?php echo render_input('inward_inventory_ta', '', $inward_inventory_ta, 'number', ['id' => 'inward_inventory_ta', 'oninput' => 'calculateRemainingta()']) ?></td>
+                            <td class="today_usage_ta"><?php echo render_input('today_usage_ta', '', $today_usage_ta, 'number', ['id' => 'today_usage_ta', 'oninput' => 'calculateRemainingta()']) ?></td>
+                            <td class="remaining_cement_ta"><?php echo render_input('remaining_cement_ta', '', $remaining_cement_ta, 'number', ['id' => 'remaining_cement_ta', 'readonly' => true]) ?></td>
+                            <td class="notes_bmj"><?php echo render_input('notes_ta', '', $notes_ta, 'text', ['id' => 'notes_ta']) ?></td>
+                            <input type="hidden" name="tile_adhesive_id" value="<?php echo isset($dpr_tile_data) ? $dpr_tile_data[0]['id'] : ''; ?>">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane ptop10" id="coupler">
+            <div id="estimate-preview">
+                <div class="row">
+                    <table class="table tile-coupler-table items has-calculations no-mtop">
+                        <thead>
+                            <tr>
+                                <th colspan="4" class="daily_report_title">Coupler</th>
+                            </tr>
+                            <tr>
+                                <th>Inward Inventory</th>
+                                <th>Todays usage</th>
+                                <th>Total Remaining cement</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tile_coupler_body">
+                            <?php
+                            $inward_inventory_ca = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['inward_inventory_ca'] : '';
+                            $today_usage_ca = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['today_usage_ca'] : '';
+                            $remaining_cement_ca = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['remaining_cement_ca'] : '';
+                            $notes_ca = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['notes_ca'] : '';
+                            ?>
+                            <td class="inward_inventory_ca"><?php echo render_input('inward_inventory_ca', '', $inward_inventory_ca, 'number', ['id' => 'inward_inventory_ca', 'oninput' => 'calculateRemainingca()']) ?></td>
+                            <td class="today_usage_ca"><?php echo render_input('today_usage_ca', '', $today_usage_ca, 'number', ['id' => 'today_usage_ca', 'oninput' => 'calculateRemainingca()']) ?></td>
+                            <td class="remaining_cement_ca"><?php echo render_input('remaining_cement_ca', '', $remaining_cement_ca, 'number', ['id' => 'remaining_cement_ca', 'readonly' => true]) ?></td>
+                            <td class="notes_ca"><?php echo render_input('notes_ca', '', $notes_ca, 'text', ['id' => 'notes_ta']) ?></td>
+                            <input type="hidden" name="coupler_id" value="<?php echo isset($dpr_coupler_data) ? $dpr_coupler_data[0]['id'] : ''; ?>">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane ptop10" id="wires">
+            <div id="estimate-preview">
+                <div class="row">
+                    <table class="table tile-wires-table items has-calculations no-mtop">
+                        <thead>
+                            <tr>
+                                <th colspan="4" class="daily_report_title">Wires</th>
+                            </tr>
+                            <tr>
+                                <th>Inward Inventory</th>
+                                <th>Todays usage</th>
+                                <th>Total Remaining cement</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tile_wires_body">
+                            <?php
+                            $inward_inventory_wi = isset($dpr_wires_data) ? $dpr_wires_data[0]['inward_inventory_wi'] : '';
+                            $today_usage_wi = isset($dpr_wires_data) ? $dpr_wires_data[0]['today_usage_wi'] : '';
+                            $remaining_cement_wi = isset($dpr_wires_data) ? $dpr_wires_data[0]['remaining_cement_wi'] : '';
+                            $notes_wi = isset($dpr_wires_data) ? $dpr_wires_data[0]['notes_wi'] : '';
+                            ?>
+                            <td class="inward_inventory_wi"><?php echo render_input('inward_inventory_wi', '', $inward_inventory_wi, 'number', ['id' => 'inward_inventory_wi', 'oninput' => 'calculateRemainingwi()']) ?></td>
+                            <td class="today_usage_wi"><?php echo render_input('today_usage_wi', '', $today_usage_wi, 'number', ['id' => 'today_usage_wi', 'oninput' => 'calculateRemainingwi()']) ?></td>
+                            <td class="remaining_cement_wi"><?php echo render_input('remaining_cement_wi', '', $remaining_cement_wi, 'number', ['id' => 'remaining_cement_wi', 'readonly' => true]) ?></td>
+                            <td class="notes_wi"><?php echo render_input('notes_wi', '', $notes_wi, 'text', ['id' => 'notes_wi']) ?></td>
+                            <input type="hidden" name="wires_id" value="<?php echo isset($dpr_wires_data) ? $dpr_wires_data[0]['id'] : ''; ?>">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane ptop10" id="council_box">
+            <div id="estimate-preview">
+                <div class="row">
+                    <table class="table tile-coucil-table items has-calculations no-mtop">
+                        <thead>
+                            <tr>
+                                <th colspan="4" class="daily_report_title">Council Box</th>
+                            </tr>
+                            <tr>
+                                <th>Inward Inventory</th>
+                                <th>Todays usage</th>
+                                <th>Total Remaining cement</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tile_wires_body">
+                            <?php
+                            $inward_inventory_cb = isset($dpr_council_data) ? $dpr_council_data[0]['inward_inventory_cb'] : '';
+                            $today_usage_cb = isset($dpr_council_data) ? $dpr_council_data[0]['today_usage_cb'] : '';
+                            $remaining_cement_cb = isset($dpr_council_data) ? $dpr_council_data[0]['remaining_cement_cb'] : '';
+                            $notes_cb = isset($dpr_council_data) ? $dpr_council_data[0]['notes_cb'] : '';
+                            ?>
+                            <td class="inward_inventory_cb"><?php echo render_input('inward_inventory_cb', '', $inward_inventory_cb, 'number', ['id' => 'inward_inventory_cb', 'oninput' => 'calculateRemainingcb()']) ?></td>
+                            <td class="today_usage_cb"><?php echo render_input('today_usage_cb', '', $today_usage_cb, 'number', ['id' => 'today_usage_cb', 'oninput' => 'calculateRemainingcb()']) ?></td>
+                            <td class="remaining_cement_cb"><?php echo render_input('remaining_cement_cb', '', $remaining_cement_cb, 'number', ['id' => 'remaining_cement_cb', 'readonly' => true]) ?></td>
+                            <td class="notes_cb"><?php echo render_input('notes_cb', '', $notes_cb, 'text', ['id' => 'notes_cb']) ?></td>
+                            <input type="hidden" name="cb_id" value="<?php echo isset($dpr_wires_data) ? $dpr_wires_data[0]['id'] : ''; ?>">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script type="text/javascript">
@@ -661,5 +858,185 @@
         // Optional: Add keyup event for even more responsive updates
         document.getElementById('inward_inventory').addEventListener('keyup', calculateRemaining);
         document.getElementById('today_usage').addEventListener('keyup', calculateRemaining);
+    });
+
+    function calculateRemainingbmj() {
+        // Get the values from input fields
+        let inwardInventorybmj = document.getElementById('inward_inventory_bmj').value;
+        let todayUsagebmj = document.getElementById('today_usage_bmj').value;
+        let remainingFieldbmj = document.getElementById('remaining_cement_bmj');
+
+        // Convert to numbers (empty values become 0)
+        inwardInventorybmj = inwardInventorybmj === '' ? 0 : parseFloat(inwardInventorybmj);
+        todayUsagebmj = todayUsagebmj === '' ? 0 : parseFloat(todayUsagebmj);
+
+        // Calculate remaining
+        let remaining = inwardInventorybmj - todayUsagebmj;
+
+        // Update the remaining field
+        remainingFieldbmj.value = remaining;
+
+        // Optional: Add visual feedback for negative values
+        if (remaining < 0) {
+            remainingFieldbmj.style.backgroundColor = '#ffebee'; // Light red for negative
+            remainingFieldbmj.style.color = '#c62828'; // Dark red text
+        } else {
+            remainingFieldbmj.style.backgroundColor = ''; // Reset to default
+            remainingFieldbmj.style.color = ''; // Reset to default
+        }
+    }
+
+    // Add event listeners for real-time calculation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initial calculation if fields have values
+        calculateRemainingbmj();
+
+        // Optional: Add keyup event for even more responsive updates
+        document.getElementById('inward_inventory_bmj').addEventListener('keyup', calculateRemainingbmj);
+        document.getElementById('today_usage_bmj').addEventListener('keyup', calculateRemainingbmj);
+    });
+
+     function calculateRemainingta() {
+        // Get the values from input fields
+        let inwardInventoryta = document.getElementById('inward_inventory_ta').value;
+        let todayUsageta = document.getElementById('today_usage_ta').value;
+        let remainingFieldta = document.getElementById('remaining_cement_ta');
+
+        // Convert to numbers (empty values become 0)
+        inwardInventoryta = inwardInventoryta === '' ? 0 : parseFloat(inwardInventoryta);
+        todayUsageta = todayUsageta === '' ? 0 : parseFloat(todayUsageta);
+
+        // Calculate remaining
+        let remaining = inwardInventoryta - todayUsageta;
+
+        // Update the remaining field
+        remainingFieldta.value = remaining;
+
+        // Optional: Add visual feedback for negative values
+        if (remaining < 0) {
+            remainingFieldta.style.backgroundColor = '#ffebee'; // Light red for negative
+            remainingFieldta.style.color = '#c62828'; // Dark red text
+        } else {
+            remainingFieldta.style.backgroundColor = ''; // Reset to default
+            remainingFieldta.style.color = ''; // Reset to default
+        }
+    }
+
+    // Add event listeners for real-time calculation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initial calculation if fields have values
+        calculateRemainingta();
+
+        // Optional: Add keyup event for even more responsive updates
+        document.getElementById('inward_inventory_ta').addEventListener('keyup', calculateRemainingta);
+        document.getElementById('today_usage_ta').addEventListener('keyup', calculateRemainingta);
+    });
+
+    function calculateRemainingca() {
+        // Get the values from input fields
+        let inwardInventoryca = document.getElementById('inward_inventory_ca').value;
+        let todayUsageca = document.getElementById('today_usage_ca').value;
+        let remainingFieldca = document.getElementById('remaining_cement_ca');
+
+        // Convert to numbers (empty values become 0)
+        inwardInventoryca = inwardInventoryca === '' ? 0 : parseFloat(inwardInventoryca);
+        todayUsageca = todayUsageca === '' ? 0 : parseFloat(todayUsageca);
+
+        // Calculate remaining
+        let remaining = inwardInventoryca - todayUsageca;
+
+        // Update the remaining field
+        remainingFieldca.value = remaining;
+
+        // Optional: Add visual feedback for negative values
+        if (remaining < 0) {
+            remainingFieldca.style.backgroundColor = '#ffebee'; // Light red for negative
+            remainingFieldca.style.color = '#c62828'; // Dark red text
+        } else {
+            remainingFieldca.style.backgroundColor = ''; // Reset to default
+            remainingFieldca.style.color = ''; // Reset to default
+        }
+    }
+
+    // Add event listeners for real-time calculation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initial calculation if fields have values
+        calculateRemainingca();
+
+        // Optional: Add keyup event for even more responsive updates
+        document.getElementById('inward_inventory_ca').addEventListener('keyup', calculateRemainingca);
+        document.getElementById('today_usage_ca').addEventListener('keyup', calculateRemainingca);
+    });
+
+    function calculateRemainingwi() {
+        // Get the values from input fields
+        let inwardInventorywi = document.getElementById('inward_inventory_wi').value;
+        let todayUsagewi = document.getElementById('today_usage_wi').value;
+        let remainingFieldwi = document.getElementById('remaining_cement_wi');
+
+        // Convert to numbers (empty values become 0)
+        inwardInventorywi = inwardInventorywi === '' ? 0 : parseFloat(inwardInventorywi);
+        todayUsagewi = todayUsagewi === '' ? 0 : parseFloat(todayUsagewi);
+
+        // Calculate remaining
+        let remaining = inwardInventorywi - todayUsagewi;
+
+        // Update the remaining field
+        remainingFieldwi.value = remaining;
+
+        // Optional: Add visual feedback for negative values
+        if (remaining < 0) {
+            remainingFieldwi.style.backgroundColor = '#ffebee'; // Light red for negative
+            remainingFieldwi.style.color = '#c62828'; // Dark red text
+        } else {
+            remainingFieldwi.style.backgroundColor = ''; // Reset to default
+            remainingFieldwi.style.color = ''; // Reset to default
+        }
+    }
+
+    // Add event listeners for real-time calculation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initial calculation if fields have values
+        calculateRemainingwi();
+
+        // Optional: Add keyup event for even more responsive updates
+        document.getElementById('inward_inventory_wi').addEventListener('keyup', calculateRemainingwi);
+        document.getElementById('today_usage_wi').addEventListener('keyup', calculateRemainingwi);
+    });
+
+    function calculateRemainingcb() {
+        // Get the values from input fields
+        let inwardInventorycb = document.getElementById('inward_inventory_cb').value;
+        let todayUsagecb = document.getElementById('today_usage_cb').value;
+        let remainingFieldcb = document.getElementById('remaining_cement_cb');
+
+        // Convert to numbers (empty values become 0)
+        inwardInventorycb = inwardInventorycb === '' ? 0 : parseFloat(inwardInventorycb);
+        todayUsagecb = todayUsagecb === '' ? 0 : parseFloat(todayUsagecb);
+
+        // Calculate remaining
+        let remaining = inwardInventorycb - todayUsagecb;
+
+        // Update the remaining field
+        remainingFieldcb.value = remaining;
+
+        // Optional: Add visual feedback for negative values
+        if (remaining < 0) {
+            remainingFieldcb.style.backgroundColor = '#ffebee'; // Light red for negative
+            remainingFieldcb.style.color = '#c62828'; // Dark red text
+        } else {
+            remainingFieldcb.style.backgroundColor = ''; // Reset to default
+            remainingFieldcb.style.color = ''; // Reset to default
+        }
+    }
+
+    // Add event listeners for real-time calculation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initial calculation if fields have values
+        calculateRemainingcb();
+
+        // Optional: Add keyup event for even more responsive updates
+        document.getElementById('inward_inventory_cb').addEventListener('keyup', calculateRemainingcb);
+        document.getElementById('today_usage_cb').addEventListener('keyup', calculateRemainingcb);
     });
 </script>
