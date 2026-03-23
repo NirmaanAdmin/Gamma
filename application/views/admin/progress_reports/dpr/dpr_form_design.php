@@ -360,10 +360,11 @@
                     <table class="table tile-coupler-table items has-calculations no-mtop">
                         <thead>
                             <tr>
-                                <th colspan="4" class="daily_report_title">Coupler</th>
+                                <th colspan="5" class="daily_report_title">Coupler</th>
                             </tr>
                             <tr>
                                 <th>Inward Inventory</th>
+                                <th>Type</th>
                                 <th>Todays usage</th>
                                 <th>Total Remaining cement</th>
                                 <th>Notes</th>
@@ -375,8 +376,19 @@
                             $today_usage_ca = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['today_usage_ca'] : '';
                             $remaining_cement_ca = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['remaining_cement_ca'] : '';
                             $notes_ca = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['notes_ca'] : '';
+                            $coupler_type = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['coupler_type'] : '';
                             ?>
                             <td class="inward_inventory_ca"><?php echo render_input('inward_inventory_ca', '', $inward_inventory_ca, 'number', ['id' => 'inward_inventory_ca', 'oninput' => 'calculateRemainingca()']) ?></td>
+                            <td class="inward_inventory_ca">
+                                <select class="form-control" name="coupler_type" id="coupler_type">
+                                    <option value=""></option>
+                                    <option value="1" <?= ($coupler_type == '1') ? 'selected' : ''; ?>>16mm</option>
+                                    <option value="2" <?= ($coupler_type == '2') ? 'selected' : ''; ?>>20mm</option>
+                                    <option value="3" <?= ($coupler_type == '3') ? 'selected' : ''; ?>>25mm</option>
+                                    <option value="4" <?= ($coupler_type == '4') ? 'selected' : ''; ?>>20x16mm</option>
+                                    <option value="5" <?= ($coupler_type == '5') ? 'selected' : ''; ?>>25x20mm</option>
+                                </select>
+                            </td>
                             <td class="today_usage_ca"><?php echo render_input('today_usage_ca', '', $today_usage_ca, 'number', ['id' => 'today_usage_ca', 'oninput' => 'calculateRemainingca()']) ?></td>
                             <td class="remaining_cement_ca"><?php echo render_input('remaining_cement_ca', '', $remaining_cement_ca, 'number', ['id' => 'remaining_cement_ca', 'readonly' => true]) ?></td>
                             <td class="notes_ca"><?php echo render_input('notes_ca', '', $notes_ca, 'text', ['id' => 'notes_ta']) ?></td>
@@ -396,6 +408,7 @@
                             </tr>
                             <tr>
                                 <th>Inward Inventory</th>
+                                <th>Type</th>
                                 <th>Todays usage</th>
                                 <th>Total Remaining cement</th>
                                 <th>Notes</th>
@@ -407,8 +420,19 @@
                             $today_usage_wi = isset($dpr_wires_data) ? $dpr_wires_data[0]['today_usage_wi'] : '';
                             $remaining_cement_wi = isset($dpr_wires_data) ? $dpr_wires_data[0]['remaining_cement_wi'] : '';
                             $notes_wi = isset($dpr_wires_data) ? $dpr_wires_data[0]['notes_wi'] : '';
+                            $wire_type = isset($dpr_wires_data) ? $dpr_wires_data[0]['wire_type'] : '';
                             ?>
                             <td class="inward_inventory_wi"><?php echo render_input('inward_inventory_wi', '', $inward_inventory_wi, 'number', ['id' => 'inward_inventory_wi', 'oninput' => 'calculateRemainingwi()']) ?></td>
+                            <td class="inward_inventory_ca">
+                                <select class="form-control" name="wire_type" id="wire_type">
+                                    <option value=""></option>
+                                    <option value="1" <?= ($wire_type == '1') ? 'selected' : ''; ?>>1 sqmm</option>
+                                    <option value="2" <?= ($wire_type == '2') ? 'selected' : ''; ?>>1.5 sqmm</option>
+                                    <option value="3" <?= ($wire_type == '3') ? 'selected' : ''; ?>>2.5 sqmm</option>
+                                    <option value="4" <?= ($wire_type == '4') ? 'selected' : ''; ?>>4 sqmm</option>
+                                    <option value="5" <?= ($wire_type == '5') ? 'selected' : ''; ?>>6 sqmm</option>
+                                </select>
+                            </td>
                             <td class="today_usage_wi"><?php echo render_input('today_usage_wi', '', $today_usage_wi, 'number', ['id' => 'today_usage_wi', 'oninput' => 'calculateRemainingwi()']) ?></td>
                             <td class="remaining_cement_wi"><?php echo render_input('remaining_cement_wi', '', $remaining_cement_wi, 'number', ['id' => 'remaining_cement_wi', 'readonly' => true]) ?></td>
                             <td class="notes_wi"><?php echo render_input('notes_wi', '', $notes_wi, 'text', ['id' => 'notes_wi']) ?></td>
@@ -896,7 +920,7 @@
         document.getElementById('today_usage_bmj').addEventListener('keyup', calculateRemainingbmj);
     });
 
-     function calculateRemainingta() {
+    function calculateRemainingta() {
         // Get the values from input fields
         let inwardInventoryta = document.getElementById('inward_inventory_ta').value;
         let todayUsageta = document.getElementById('today_usage_ta').value;

@@ -941,32 +941,36 @@ class Forms_model extends App_Model
                     unset($data['tile_adhesive_id']);
                 }
                 $new_order_coupler = [];
-                if (isset($data['inward_inventory_ca']) || isset($data['today_usage_ca']) || isset($data['remaining_cement_ca']) || isset($data['notes_ca'])) {
+                if (isset($data['inward_inventory_ca']) || isset($data['today_usage_ca']) || isset($data['remaining_cement_ca']) || isset($data['notes_ca']) || isset($data['coupler_type'])) {
                     $new_order_coupler[] = [
                         'inward_inventory_ca' => $data['inward_inventory_ca'],
                         'today_usage_ca' => $data['today_usage_ca'],
                         'remaining_cement_ca' => $data['remaining_cement_ca'],
                         'notes_ca' => $data['notes_ca'],
+                        'coupler_type' => $data['coupler_type'],
                     ];
                     unset($data['inward_inventory_ca']);
                     unset($data['today_usage_ca']);
                     unset($data['remaining_cement_ca']);
                     unset($data['notes_ca']);
                     unset($data['coupler_id']);
+                    unset($data['coupler_type']);
                 }
                 $new_order_wire = [];
-                if (isset($data['inward_inventory_wi']) || isset($data['today_usage_wi']) || isset($data['remaining_cement_wi']) || isset($data['notes_wi'])) {
+                if (isset($data['inward_inventory_wi']) || isset($data['today_usage_wi']) || isset($data['remaining_cement_wi']) || isset($data['notes_wi']) || isset($data['wire_type'])) {
                     $new_order_wire[] = [
                         'inward_inventory_wi' => $data['inward_inventory_wi'],
                         'today_usage_wi' => $data['today_usage_wi'],
                         'remaining_cement_wi' => $data['remaining_cement_wi'],
                         'notes_wi' => $data['notes_wi'],
+                        'wire_type' => $data['wire_type'],
                     ];
                     unset($data['inward_inventory_wi']);
                     unset($data['today_usage_wi']);
                     unset($data['remaining_cement_wi']);
                     unset($data['notes_wi']);
                     unset($data['wires_id']);
+                    unset($data['wire_type']);
                 }
                 $new_order_council = [];
                 if (isset($data['inward_inventory_cb']) || isset($data['today_usage_cb']) || isset($data['remaining_cement_cb']) || isset($data['notes_cb'])) {
@@ -1281,6 +1285,7 @@ class Forms_model extends App_Model
                             $dt_data['today_usage_ca'] = $value['today_usage_ca'];
                             $dt_data['remaining_cement_ca'] = $value['remaining_cement_ca'];
                             $dt_data['notes_ca'] = $value['notes_ca'];
+                            $dt_data['coupler_type'] = $value['coupler_type'];
                             $this->db->insert(db_prefix() . $data['form_type'] . '_coupler_form_detail', $dt_data);
                         }
                     }
@@ -1294,6 +1299,7 @@ class Forms_model extends App_Model
                             $dt_data['today_usage_wi'] = $value['today_usage_wi'];
                             $dt_data['remaining_cement_wi'] = $value['remaining_cement_wi'];
                             $dt_data['notes_wi'] = $value['notes_wi'];
+                            $dt_data['wire_type'] = $value['wire_type'];
                             $this->db->insert(db_prefix() . $data['form_type'] . '_wires_form_detail', $dt_data);
                         }
                     }
@@ -2116,13 +2122,14 @@ class Forms_model extends App_Model
                 unset($data['tile_adhesive_id']);
             }
             $update_order_coupler = [];
-            if (isset($data['inward_inventory_ca']) || isset($data['today_usage_ca']) || isset($data['remaining_cement_ca']) || isset($data['notes_ca'])) {
+            if (isset($data['inward_inventory_ca']) || isset($data['today_usage_ca']) || isset($data['remaining_cement_ca']) || isset($data['notes_ca']) || isset($data['coupler_type'])) {
                 $update_order_coupler[] = [
                     'id' => $data['coupler_id'],
                     'inward_inventory_ca' => $data['inward_inventory_ca'],
                     'today_usage_ca' => $data['today_usage_ca'],
                     'remaining_cement_ca' => $data['remaining_cement_ca'],
                     'notes_ca' => $data['notes_ca'],
+                    'coupler_type' => $data['coupler_type']
                 ];
 
                 unset($data['inward_inventory_ca']);
@@ -2130,15 +2137,17 @@ class Forms_model extends App_Model
                 unset($data['remaining_cement_ca']);
                 unset($data['notes_ca']);
                 unset($data['coupler_id']);
+                unset($data['coupler_type']);
             }
             $update_wire_coupler = [];
-            if (isset($data['inward_inventory_wi']) || isset($data['today_usage_wi']) || isset($data['remaining_cement_wi']) || isset($data['notes_wi'])) {
+            if (isset($data['inward_inventory_wi']) || isset($data['today_usage_wi']) || isset($data['remaining_cement_wi']) || isset($data['notes_wi']) || isset($data['wire_type'])) {
                 $update_wire_coupler[] = [
                     'id' => $data['wires_id'],
                     'inward_inventory_wi' => $data['inward_inventory_wi'],
                     'today_usage_wi' => $data['today_usage_wi'],
                     'remaining_cement_wi' => $data['remaining_cement_wi'],
                     'notes_wi' => $data['notes_wi'],
+                    'wire_type' => $data['wire_type']
                 ];
 
                 unset($data['inward_inventory_wi']);
@@ -2146,6 +2155,7 @@ class Forms_model extends App_Model
                 unset($data['remaining_cement_wi']);
                 unset($data['notes_wi']);
                 unset($data['wires_id']);
+                unset($data['wire_type']);
             }
             $update_cb_coupler = [];
             if (isset($data['inward_inventory_cb']) || isset($data['today_usage_cb']) || isset($data['remaining_cement_cb']) || isset($data['notes_cb'])) {
@@ -2742,6 +2752,7 @@ class Forms_model extends App_Model
                                 'today_usage_ca' => $value['today_usage_ca'],
                                 'remaining_cement_ca' => $value['remaining_cement_ca'],
                                 'notes_ca' => $value['notes_ca'],
+                                'coupler_type' => $value['coupler_type'],
                             ]);
 
                             if ($this->db->affected_rows() > 0) $affectedRows++;
@@ -2756,6 +2767,7 @@ class Forms_model extends App_Model
                         'today_usage_ca' => $value['today_usage_ca'],
                         'remaining_cement_ca' => $value['remaining_cement_ca'],
                         'notes_ca' => $value['notes_ca'],
+                        'coupler_type' => $value['coupler_type'],
                     ]);
 
                     if ($this->db->affected_rows() > 0) $affectedRows++;
@@ -2779,6 +2791,7 @@ class Forms_model extends App_Model
                                 'today_usage_wi' => $value['today_usage_wi'],
                                 'remaining_cement_wi' => $value['remaining_cement_wi'],
                                 'notes_wi' => $value['notes_wi'],
+                                'wire_type' => $value['wire_type'],
                             ]);
 
                             if ($this->db->affected_rows() > 0) $affectedRows++;
@@ -2793,6 +2806,7 @@ class Forms_model extends App_Model
                         'today_usage_wi' => $value['today_usage_wi'],
                         'remaining_cement_wi' => $value['remaining_cement_wi'],
                         'notes_wi' => $value['notes_wi'],
+                        'wire_type' => $value['wire_type'],
                     ]);
 
                     if ($this->db->affected_rows() > 0) $affectedRows++;
