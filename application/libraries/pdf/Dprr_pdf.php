@@ -34,6 +34,10 @@ class Dprr_pdf extends App_pdf
             'form_dept_labour' => $this->get_progress_report_dept_labour($this->formid),
             'form_attachments' => $this->get_form_attachments($this->formid),
             'form_cement_rack' => $this->get_progress_report_cement_rack($this->formid),
+            'form_block_mortar_joint' => $this->get_progress_report_block_mortar_joint($this->formid),
+            'form_tile' => $this->get_progress_report_tile($this->formid),
+            'form_coupler' => $this->get_progress_report_coupler($this->formid),
+            'form_wire' => $this->get_progress_report_wire($this->formid),
         ]);
 
         return $this->build();
@@ -89,5 +93,25 @@ class Dprr_pdf extends App_pdf
     {
         $this->ci->db->where('form_id', $form_id);
         return $this->ci->db->get(db_prefix() . 'dpr_cement_form_detail')->result_array();
+    }
+    private function get_progress_report_block_mortar_joint($form_id)
+    {
+        $this->ci->db->where('form_id', $form_id);
+        return $this->ci->db->get(db_prefix() . 'dpr_block_form_detail')->result_array();
+    }
+    private function get_progress_report_tile($form_id)
+    {
+        $this->ci->db->where('form_id', $form_id);
+        return $this->ci->db->get(db_prefix() . 'dpr_tile_form_detail')->result_array();
+    }
+    private function get_progress_report_coupler($form_id)
+    {
+        $this->ci->db->where('form_id', $form_id);
+        return $this->ci->db->get(db_prefix() . 'dpr_coupler_form_detail')->result_array();
+    }
+    private function get_progress_report_wire($form_id)
+    {
+        $this->ci->db->where('form_id', $form_id);
+        return $this->ci->db->get(db_prefix() . 'dpr_wires_form_detail')->result_array();
     }
 }
