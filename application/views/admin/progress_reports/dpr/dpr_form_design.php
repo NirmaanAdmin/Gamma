@@ -281,11 +281,11 @@
                         <?php echo _l('Wires'); ?>
                     </a>
                 </li>
-                <li role="presentation">
+                <!-- <li role="presentation">
                     <a href="#council_box" aria-controls="council_box" role="tab" data-toggle="tab">
                         <?php echo _l('Council Box'); ?>
                     </a>
-                </li>
+                </li> -->
             </ul>
         </div>
     </div>
