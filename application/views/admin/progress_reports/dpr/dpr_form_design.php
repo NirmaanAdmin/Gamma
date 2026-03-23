@@ -404,7 +404,7 @@
                     <table class="table tile-wires-table items has-calculations no-mtop">
                         <thead>
                             <tr>
-                                <th colspan="4" class="daily_report_title">Wires</th>
+                                <th colspan="5" class="daily_report_title">Wires</th>
                             </tr>
                             <tr>
                                 <th>Inward Inventory</th>
