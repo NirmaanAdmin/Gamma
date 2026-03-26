@@ -218,7 +218,7 @@ $deprtmenttable .= '</table>';
 
 $cementtable = '';
 $cementtable = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
-$cementtable .= '<thead>'; 
+$cementtable .= '<thead>';
 $cementtable .= '
     <tr style="font-size:20px;">
         <td colspan="5" align="center"><b>ON RACK CEMENT BAG</b></td>
@@ -251,7 +251,7 @@ $cementtable .= '</table>';
 
 $blocktable = '';
 $blocktable = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
-$blocktable .= '<thead>'; 
+$blocktable .= '<thead>';
 $blocktable .= '
     <tr style="font-size:20px;">
         <td colspan="5" align="center"><b>Block mortar joint</b></td>
@@ -285,7 +285,7 @@ $blocktable .= '</table>';
 
 $tiletable = '';
 $tiletable = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
-$tiletable .= '<thead>'; 
+$tiletable .= '<thead>';
 $tiletable .= '
     <tr style="font-size:20px;">
         <td colspan="5" align="center"><b>Tile Adhesive</b></td>
@@ -317,91 +317,116 @@ $tiletable .= '</tbody>';
 $tiletable .= '</table>';
 
 $cuplertable = '';
-$cuplertable = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
-$cuplertable .= '<thead>'; 
+$cuplertable .= '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
+
+$cuplertable .= '<thead>';
 $cuplertable .= '
-    <tr style="font-size:20px;">
-        <td colspan="6" align="center"><b>Coupler</b></td>
-    </tr>
-    <tr style="font-size:11px;">
-        <td align="center"><b>Sr. No.</b></td>
-        <td align="center"><b>Inward Inventory</b></td>
-        <td align="center"><b>Type</b></td>
-        <td align="center"><b>Todays usage</b></td>
-        <td align="center"><b>Total Remaining</b></td>
-        <td align="center"><b>Notes</b></td>
-    </tr>
-    ';
+<tr style="font-size:20px;">
+    <td colspan="6" align="center"><b>Coupler</b></td>
+</tr>
+<tr style="font-size:11px;">
+    <td align="center"><b>Sr. No.</b></td>
+    <td align="center"><b>Inward Inventory</b></td>
+    <td align="center"><b>Type</b></td>
+    <td align="center"><b>Todays usage</b></td>
+    <td align="center"><b>Total Remaining</b></td>
+    <td align="center"><b>Notes</b></td>
+</tr>
+';
 $cuplertable .= '</thead>';
-$coupler_type_list = [
+
+$type_list = [
     '1' => '16mm',
     '2' => '20mm',
     '3' => '25mm',
     '4' => '20x16mm',
     '5' => '25x20mm',
 ];
-$cuplertable .= '<tbody>';  // Start tbody for data rows
+
+$cuplertable .= '<tbody>';
+
+// Create indexed data by type for easy mapping
+$mapped_data = [];
 if (!empty($form_coupler)) {
-    foreach ($form_coupler as $key => $value) {
-        $coupler_type = $value['coupler_type'];
-        $coupler_type_list = isset($coupler_type_list[$coupler_type]) ? $coupler_type_list[$coupler_type] : '';
-        $cuplertable .= '
-                <tr style="font-size:11px;">
-                    <td align="center" >' . ($key + 1) . '</td>
-                    <td align="center" >' . ($value['inward_inventory_ca'] != '' ? $value['inward_inventory_ca'] : '') . '</td>
-                    <td align="center">' . $coupler_type_list . '</td>
-                    <td align="center" >' . ($value['today_usage_ca'] != '' ? $value['today_usage_ca'] : '') . '</td>
-                    <td align="center" >' . ($value['remaining_cement_ca'] != '' ? $value['remaining_cement_ca'] : '') . '</td>
-                    <td align="center" >' . ($value['notes_ca'] != '' ? $value['notes_ca'] : '') . '</td>
-                </tr>';
+    foreach ($form_coupler as $row) {
+        $mapped_data[$row['coupler_type']] = $row;
     }
 }
+
+// Always print 5 rows
+foreach ($type_list as $type_key => $type_label) {
+
+    $row = isset($mapped_data[$type_key]) ? $mapped_data[$type_key] : [];
+
+    $cuplertable .= '
+        <tr style="font-size:11px;">
+            <td align="center">' . $type_key . '</td>
+            <td align="center">' . (!empty($row['inward_inventory_ca']) ? $row['inward_inventory_ca'] : '') . '</td>
+            <td align="center">' . $type_label . '</td>
+            <td align="center">' . (!empty($row['today_usage_ca']) ? $row['today_usage_ca'] : '') . '</td>
+            <td align="center">' . (!empty($row['remaining_cement_ca']) ? $row['remaining_cement_ca'] : '') . '</td>
+            <td align="center">' . (!empty($row['notes_ca']) ? $row['notes_ca'] : '') . '</td>
+        </tr>';
+}
+
 $cuplertable .= '</tbody>';
 $cuplertable .= '</table>';
 
 $wiretable = '';
-$wiretable = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
-$wiretable .= '<thead>'; 
+$wiretable .= '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1" style="word-break: break-word;">';
+
+$wiretable .= '<thead>';
 $wiretable .= '
-    <tr style="font-size:20px;">
-        <td colspan="5" align="center"><b>Wire</b></td>
-    </tr>
-    <tr style="font-size:11px;">
-        <td align="center"><b>Sr. No.</b></td>
-        <td align="center"><b>Inward Inventory</b></td>
-        <td align="center"><b>Type</b></td>
-        <td align="center"><b>Todays usage</b></td>
-        <td align="center"><b>Total Remaining</b></td>
-        <td align="center"><b>Notes</b></td>
-    </tr>
-    ';
+<tr style="font-size:20px;">
+    <td colspan="6" align="center"><b>Wire</b></td>
+</tr>
+<tr style="font-size:11px;">
+    <td align="center"><b>Sr. No.</b></td>
+    <td align="center"><b>Inward Inventory</b></td>
+    <td align="center"><b>Type</b></td>
+    <td align="center"><b>Todays usage</b></td>
+    <td align="center"><b>Total Remaining</b></td>
+    <td align="center"><b>Notes</b></td>
+</tr>
+';
 $wiretable .= '</thead>';
-$wire_list = [
+
+$type_list = [
     '1' => '1 sqmm',
     '2' => '1.5 sqmm',
     '3' => '2.5 sqmm',
     '4' => '4 sqmm',
     '5' => '6 sqmm',
 ];
-$wiretable .= '<tbody>';  // Start tbody for data rows
+
+$wiretable .= '<tbody>';
+
+// Map data by type
+$mapped_data = [];
 if (!empty($form_wire)) {
-    foreach ($form_wire as $key => $value) {
-        $wire_type = $value['wire_type'];
-        $wire_list = isset($wire_list[$wire_type]) ? $wire_list[$wire_type] : '';
-        $wiretable .= '
-                <tr style="font-size:11px;">
-                    <td align="center" >' . ($key + 1) . '</td>
-                    <td align="center" >' . ($value['inward_inventory_wi'] != '' ? $value['inward_inventory_wi'] : '') . '</td>
-                    <td align="center">' . $wire_list . '</td>
-                    <td align="center" >' . ($value['today_usage_wi'] != '' ? $value['today_usage_wi'] : '') . '</td>
-                    <td align="center" >' . ($value['remaining_cement_wi'] != '' ? $value['remaining_cement_wi'] : '') . '</td>
-                    <td align="center" >' . ($value['notes_wi'] != '' ? $value['notes_wi'] : '') . '</td>
-                </tr>';
+    foreach ($form_wire as $row) {
+        $mapped_data[$row['wire_type']] = $row;
     }
 }
+
+// Always print 5 rows
+foreach ($type_list as $type_key => $type_label) {
+
+    $row = isset($mapped_data[$type_key]) ? $mapped_data[$type_key] : [];
+
+    $wiretable .= '
+        <tr style="font-size:11px;">
+            <td align="center">' . $type_key . '</td>
+            <td align="center">' . (!empty($row['inward_inventory_wi']) ? $row['inward_inventory_wi'] : '') . '</td>
+            <td align="center">' . $type_label . '</td>
+            <td align="center">' . (!empty($row['today_usage_wi']) ? $row['today_usage_wi'] : '') . '</td>
+            <td align="center">' . (!empty($row['remaining_cement_wi']) ? $row['remaining_cement_wi'] : '') . '</td>
+            <td align="center">' . (!empty($row['notes_wi']) ? $row['notes_wi'] : '') . '</td>
+        </tr>';
+}
+
 $wiretable .= '</tbody>';
 $wiretable .= '</table>';
-
 if ($form_rmc_plant || $form_material_inward || $form_dept_labour || $form_cement_rack || $form_block_mortar_joint || $form_tile || $form_coupler || $form_wire) {
     $pdf->AddPage();
 }
@@ -433,6 +458,9 @@ if (!empty($form_block_mortar_joint)) {
 }
 if (!empty($form_tile)) {
     $pdf->writeHTML($tiletable, true, false, false, false, '');
+}
+if (!empty($form_coupler)) {
+    $pdf->writeHTML($cuplertable, true, false, false, false, '');
 }
 if (!empty($form_wire)) {
     $pdf->writeHTML($wiretable, true, false, false, false, '');

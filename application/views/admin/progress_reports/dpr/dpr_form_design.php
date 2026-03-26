@@ -366,33 +366,59 @@
                                 <th>Inward Inventory</th>
                                 <th>Type</th>
                                 <th>Todays usage</th>
-                                <th>Total Remaining cement</th>
+                                <th>Total Remaining</th>
                                 <th>Notes</th>
                             </tr>
                         </thead>
                         <tbody class="tile_coupler_body">
                             <?php
-                            $inward_inventory_ca = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['inward_inventory_ca'] : '';
-                            $today_usage_ca = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['today_usage_ca'] : '';
-                            $remaining_cement_ca = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['remaining_cement_ca'] : '';
-                            $notes_ca = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['notes_ca'] : '';
-                            $coupler_type = isset($dpr_coupler_data) ? $dpr_coupler_data[0]['coupler_type'] : '';
+                            $types = [
+                                1 => '16mm',
+                                2 => '20mm',
+                                3 => '25mm',
+                                4 => '20x16mm',
+                                5 => '25x20mm'
+                            ];
+
+                            foreach ($types as $key => $label) {
+
+                                $inward_inventory_ca = isset($dpr_coupler_data[$key - 1]['inward_inventory_ca']) ? $dpr_coupler_data[$key - 1]['inward_inventory_ca'] : '';
+                                $today_usage_ca      = isset($dpr_coupler_data[$key - 1]['today_usage_ca']) ? $dpr_coupler_data[$key - 1]['today_usage_ca'] : '';
+                                $remaining_cement_ca = isset($dpr_coupler_data[$key - 1]['remaining_cement_ca']) ? $dpr_coupler_data[$key - 1]['remaining_cement_ca'] : '';
+                                $notes_ca            = isset($dpr_coupler_data[$key - 1]['notes_ca']) ? $dpr_coupler_data[$key - 1]['notes_ca'] : '';
+                                $id                  = isset($dpr_coupler_data[$key - 1]['id']) ? $dpr_coupler_data[$key - 1]['id'] : '';
                             ?>
-                            <td class="inward_inventory_ca"><?php echo render_input('inward_inventory_ca', '', $inward_inventory_ca, 'number', ['id' => 'inward_inventory_ca', 'oninput' => 'calculateRemainingca()']) ?></td>
-                            <td class="inward_inventory_ca">
-                                <select class="form-control" name="coupler_type" id="coupler_type">
-                                    <option value=""></option>
-                                    <option value="1" <?= ($coupler_type == '1') ? 'selected' : ''; ?>>16mm</option>
-                                    <option value="2" <?= ($coupler_type == '2') ? 'selected' : ''; ?>>20mm</option>
-                                    <option value="3" <?= ($coupler_type == '3') ? 'selected' : ''; ?>>25mm</option>
-                                    <option value="4" <?= ($coupler_type == '4') ? 'selected' : ''; ?>>20x16mm</option>
-                                    <option value="5" <?= ($coupler_type == '5') ? 'selected' : ''; ?>>25x20mm</option>
-                                </select>
-                            </td>
-                            <td class="today_usage_ca"><?php echo render_input('today_usage_ca', '', $today_usage_ca, 'number', ['id' => 'today_usage_ca', 'oninput' => 'calculateRemainingca()']) ?></td>
-                            <td class="remaining_cement_ca"><?php echo render_input('remaining_cement_ca', '', $remaining_cement_ca, 'number', ['id' => 'remaining_cement_ca', 'readonly' => true]) ?></td>
-                            <td class="notes_ca"><?php echo render_input('notes_ca', '', $notes_ca, 'text', ['id' => 'notes_ta']) ?></td>
-                            <input type="hidden" name="coupler_id" value="<?php echo isset($dpr_coupler_data) ? $dpr_coupler_data[0]['id'] : ''; ?>">
+                                <tr>
+                                    <td>
+                                        <?php echo render_input('inward_inventory_ca[]', '', $inward_inventory_ca, 'number', [
+                                            'oninput' => 'calculateRemainingca(this)'
+                                        ]); ?>
+                                    </td>
+
+                                    <td>
+                                        <input type="text" class="form-control" value="<?php echo $label; ?>" readonly>
+                                        <input type="hidden" name="coupler_type[]" value="<?php echo $key; ?>">
+                                    </td>
+
+                                    <td>
+                                        <?php echo render_input('today_usage_ca[]', '', $today_usage_ca, 'number', [
+                                            'oninput' => 'calculateRemainingca(this)'
+                                        ]); ?>
+                                    </td>
+
+                                    <td>
+                                        <?php echo render_input('remaining_cement_ca[]', '', $remaining_cement_ca, 'number', [
+                                            'readonly' => true
+                                        ]); ?>
+                                    </td>
+
+                                    <td>
+                                        <?php echo render_input('notes_ca[]', '', $notes_ca, 'text'); ?>
+                                    </td>
+
+                                    <input type="hidden" name="coupler_id[]" value="<?php echo $id; ?>">
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
@@ -410,33 +436,60 @@
                                 <th>Inward Inventory</th>
                                 <th>Type</th>
                                 <th>Todays usage</th>
-                                <th>Total Remaining cement</th>
+                                <th>Total Remaining</th>
                                 <th>Notes</th>
                             </tr>
                         </thead>
+
                         <tbody class="tile_wires_body">
                             <?php
-                            $inward_inventory_wi = isset($dpr_wires_data) ? $dpr_wires_data[0]['inward_inventory_wi'] : '';
-                            $today_usage_wi = isset($dpr_wires_data) ? $dpr_wires_data[0]['today_usage_wi'] : '';
-                            $remaining_cement_wi = isset($dpr_wires_data) ? $dpr_wires_data[0]['remaining_cement_wi'] : '';
-                            $notes_wi = isset($dpr_wires_data) ? $dpr_wires_data[0]['notes_wi'] : '';
-                            $wire_type = isset($dpr_wires_data) ? $dpr_wires_data[0]['wire_type'] : '';
+                            $types = [
+                                1 => '1 sqmm',
+                                2 => '1.5 sqmm',
+                                3 => '2.5 sqmm',
+                                4 => '4 sqmm',
+                                5 => '6 sqmm'
+                            ];
+
+                            foreach ($types as $key => $label) {
+
+                                $inward = isset($dpr_wires_data[$key - 1]['inward_inventory_wi']) ? $dpr_wires_data[$key - 1]['inward_inventory_wi'] : '';
+                                $usage  = isset($dpr_wires_data[$key - 1]['today_usage_wi']) ? $dpr_wires_data[$key - 1]['today_usage_wi'] : '';
+                                $remain = isset($dpr_wires_data[$key - 1]['remaining_cement_wi']) ? $dpr_wires_data[$key - 1]['remaining_cement_wi'] : '';
+                                $notes  = isset($dpr_wires_data[$key - 1]['notes_wi']) ? $dpr_wires_data[$key - 1]['notes_wi'] : '';
+                                $id     = isset($dpr_wires_data[$key - 1]['id']) ? $dpr_wires_data[$key - 1]['id'] : '';
                             ?>
-                            <td class="inward_inventory_wi"><?php echo render_input('inward_inventory_wi', '', $inward_inventory_wi, 'number', ['id' => 'inward_inventory_wi', 'oninput' => 'calculateRemainingwi()']) ?></td>
-                            <td class="inward_inventory_ca">
-                                <select class="form-control" name="wire_type" id="wire_type">
-                                    <option value=""></option>
-                                    <option value="1" <?= ($wire_type == '1') ? 'selected' : ''; ?>>1 sqmm</option>
-                                    <option value="2" <?= ($wire_type == '2') ? 'selected' : ''; ?>>1.5 sqmm</option>
-                                    <option value="3" <?= ($wire_type == '3') ? 'selected' : ''; ?>>2.5 sqmm</option>
-                                    <option value="4" <?= ($wire_type == '4') ? 'selected' : ''; ?>>4 sqmm</option>
-                                    <option value="5" <?= ($wire_type == '5') ? 'selected' : ''; ?>>6 sqmm</option>
-                                </select>
-                            </td>
-                            <td class="today_usage_wi"><?php echo render_input('today_usage_wi', '', $today_usage_wi, 'number', ['id' => 'today_usage_wi', 'oninput' => 'calculateRemainingwi()']) ?></td>
-                            <td class="remaining_cement_wi"><?php echo render_input('remaining_cement_wi', '', $remaining_cement_wi, 'number', ['id' => 'remaining_cement_wi', 'readonly' => true]) ?></td>
-                            <td class="notes_wi"><?php echo render_input('notes_wi', '', $notes_wi, 'text', ['id' => 'notes_wi']) ?></td>
-                            <input type="hidden" name="wires_id" value="<?php echo isset($dpr_wires_data) ? $dpr_wires_data[0]['id'] : ''; ?>">
+                                <tr>
+                                    <td>
+                                        <?php echo render_input('inward_inventory_wi[]', '', $inward, 'number', [
+                                            'oninput' => 'calculateRemainingwi(this)'
+                                        ]); ?>
+                                    </td>
+
+                                    <td>
+                                        <input type="text" class="form-control" value="<?php echo $label; ?>" readonly>
+                                        <input type="hidden" name="wire_type[]" value="<?php echo $key; ?>">
+                                    </td>
+
+                                    <td>
+                                        <?php echo render_input('today_usage_wi[]', '', $usage, 'number', [
+                                            'oninput' => 'calculateRemainingwi(this)'
+                                        ]); ?>
+                                    </td>
+
+                                    <td>
+                                        <?php echo render_input('remaining_cement_wi[]', '', $remain, 'number', [
+                                            'readonly' => true
+                                        ]); ?>
+                                    </td>
+
+                                    <td>
+                                        <?php echo render_input('notes_wi[]', '', $notes, 'text'); ?>
+                                    </td>
+
+                                    <input type="hidden" name="wires_id[]" value="<?php echo $id; ?>">
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
@@ -956,76 +1009,74 @@
         document.getElementById('today_usage_ta').addEventListener('keyup', calculateRemainingta);
     });
 
-    function calculateRemainingca() {
-        // Get the values from input fields
-        let inwardInventoryca = document.getElementById('inward_inventory_ca').value;
-        let todayUsageca = document.getElementById('today_usage_ca').value;
-        let remainingFieldca = document.getElementById('remaining_cement_ca');
+    // Row-wise calculation
+    function calculateRemainingca(el) {
+        let row = el.closest('tr');
 
-        // Convert to numbers (empty values become 0)
-        inwardInventoryca = inwardInventoryca === '' ? 0 : parseFloat(inwardInventoryca);
-        todayUsageca = todayUsageca === '' ? 0 : parseFloat(todayUsageca);
+        let inwardField = row.querySelector('[name="inward_inventory_ca[]"]');
+        let usageField = row.querySelector('[name="today_usage_ca[]"]');
+        let remainingField = row.querySelector('[name="remaining_cement_ca[]"]');
 
-        // Calculate remaining
-        let remaining = inwardInventoryca - todayUsageca;
+        let inward = inwardField.value === '' ? 0 : parseFloat(inwardField.value);
+        let usage = usageField.value === '' ? 0 : parseFloat(usageField.value);
 
-        // Update the remaining field
-        remainingFieldca.value = remaining;
+        let remaining = inward - usage;
 
-        // Optional: Add visual feedback for negative values
+        remainingField.value = remaining;
+
+        // Highlight negative values
         if (remaining < 0) {
-            remainingFieldca.style.backgroundColor = '#ffebee'; // Light red for negative
-            remainingFieldca.style.color = '#c62828'; // Dark red text
+            remainingField.style.backgroundColor = '#ffebee';
+            remainingField.style.color = '#c62828';
         } else {
-            remainingFieldca.style.backgroundColor = ''; // Reset to default
-            remainingFieldca.style.color = ''; // Reset to default
+            remainingField.style.backgroundColor = '';
+            remainingField.style.color = '';
         }
     }
 
-    // Add event listeners for real-time calculation
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initial calculation if fields have values
-        calculateRemainingca();
 
-        // Optional: Add keyup event for even more responsive updates
-        document.getElementById('inward_inventory_ca').addEventListener('keyup', calculateRemainingca);
-        document.getElementById('today_usage_ca').addEventListener('keyup', calculateRemainingca);
+    // Auto calculate on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.tile_coupler_body tr').forEach(function(row) {
+            let inward = row.querySelector('[name="inward_inventory_ca[]"]');
+            if (inward) {
+                calculateRemainingca(inward);
+            }
+        });
     });
 
-    function calculateRemainingwi() {
-        // Get the values from input fields
-        let inwardInventorywi = document.getElementById('inward_inventory_wi').value;
-        let todayUsagewi = document.getElementById('today_usage_wi').value;
-        let remainingFieldwi = document.getElementById('remaining_cement_wi');
+    function calculateRemainingwi(el) {
+        let row = el.closest('tr');
 
-        // Convert to numbers (empty values become 0)
-        inwardInventorywi = inwardInventorywi === '' ? 0 : parseFloat(inwardInventorywi);
-        todayUsagewi = todayUsagewi === '' ? 0 : parseFloat(todayUsagewi);
+        let inwardField = row.querySelector('[name="inward_inventory_wi[]"]');
+        let usageField = row.querySelector('[name="today_usage_wi[]"]');
+        let remainingField = row.querySelector('[name="remaining_cement_wi[]"]');
 
-        // Calculate remaining
-        let remaining = inwardInventorywi - todayUsagewi;
+        let inward = inwardField.value === '' ? 0 : parseFloat(inwardField.value);
+        let usage = usageField.value === '' ? 0 : parseFloat(usageField.value);
 
-        // Update the remaining field
-        remainingFieldwi.value = remaining;
+        let remaining = inward - usage;
 
-        // Optional: Add visual feedback for negative values
+        remainingField.value = remaining;
+
         if (remaining < 0) {
-            remainingFieldwi.style.backgroundColor = '#ffebee'; // Light red for negative
-            remainingFieldwi.style.color = '#c62828'; // Dark red text
+            remainingField.style.backgroundColor = '#ffebee';
+            remainingField.style.color = '#c62828';
         } else {
-            remainingFieldwi.style.backgroundColor = ''; // Reset to default
-            remainingFieldwi.style.color = ''; // Reset to default
+            remainingField.style.backgroundColor = '';
+            remainingField.style.color = '';
         }
     }
 
-    // Add event listeners for real-time calculation
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initial calculation if fields have values
-        calculateRemainingwi();
 
-        // Optional: Add keyup event for even more responsive updates
-        document.getElementById('inward_inventory_wi').addEventListener('keyup', calculateRemainingwi);
-        document.getElementById('today_usage_wi').addEventListener('keyup', calculateRemainingwi);
+    // Auto calculate on load
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.tile_wires_body tr').forEach(function(row) {
+            let inward = row.querySelector('[name="inward_inventory_wi[]"]');
+            if (inward) {
+                calculateRemainingwi(inward);
+            }
+        });
     });
 
     function calculateRemainingcb() {
