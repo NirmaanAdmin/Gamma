@@ -1003,7 +1003,7 @@ class Forms extends AdminController
         add_admin_progress_reports_js_assets();
         $data['default_forms_list_statuses'] = hooks()->apply_filters('default_forms_list_statuses', [1, 2, 4]);
         $data['module'] = $module;
-        $this->load->view('admin/progress_reports/report_listing', $data);
+        $this->load->view('admin/progress_reports/report_listing', $data); 
     }
 
     public function find_dpr_design($form_id = 0)
@@ -1237,16 +1237,7 @@ class Forms extends AdminController
             blank_page(_l('form_not_found'));
         }
 
-        if (get_option('staff_access_only_assigned_departments') == 1) {
-            if (!is_admin()) {
-                $this->load->model('departments_model');
-                $staff_departments = $this->departments_model->get_staff_departments(get_staff_user_id(), true);
-                if (!in_array($data['form']->department, $staff_departments)) {
-                    set_alert('danger', _l('form_access_by_department_denied'));
-                    redirect(admin_url('access_denied'));
-                }
-            }
-        }
+        
 
         if ($this->input->post()) {
             $returnToFormList = false;
