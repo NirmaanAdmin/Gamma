@@ -14271,6 +14271,10 @@ class Purchase_model extends App_Model
             $data2['address_2'] = $data['address_2'];
             unset($data['address_2']);
         }
+        if (isset($data['driving_licence_2'])) {
+            $data2['driving_licence_2'] = $data['driving_licence_2'];
+            unset($data['driving_licence_2']);
+        }
         $bank_details = [];
         if (isset($data['bank_details'])) {
             $bank_details = $data['bank_details'];
@@ -14667,6 +14671,10 @@ class Purchase_model extends App_Model
         if (isset($data['address_2'])) {
             $data2['address_2'] = $data['address_2'];
             unset($data['address_2']);
+        }
+        if (isset($data['driving_licence_2'])) {
+            $data2['driving_licence_2'] = $data['driving_licence_2'];
+            unset($data['driving_licence_2']);
         }
 
         if (isset($data['DataTables_Table_0_length'])) {
@@ -16891,6 +16899,7 @@ class Purchase_model extends App_Model
         $CUSTOMER2_PAN_CARD = $esc($customer2->pan_card_2 ?? '');
         $CUSTOMER2_ADHAR_CARD = $esc($customer2->adhar_card_2 ?? '');
         $CUSTOMER2_ADDRESS = $esc($customer2->address_2 ?? '');
+        $CUSTOMER2_DRIVER_LICENSE = $esc($customer2->driving_licence_2 ?? '');
 
         $CUSTOMER3_COMPANY = $esc($customer3->company3 ?? '');
         $CUSTOMER3_PAN_CARD = $esc($customer3->pan_card_3 ?? '');
@@ -16931,6 +16940,9 @@ class Purchase_model extends App_Model
                 $customer2_identity .= '<span style="font-size:20px;">[ ELECTION : <strong>' . $CUSTOMER2_ELECTION_CARD . '</strong>]</span><br>';
             }
 
+            if (!empty($CUSTOMER2_DRIVER_LICENSE)) {
+                $customer2_identity .= '<span style="font-size:20px;">[ DRIVER LICENSE : <strong>' . $CUSTOMER2_DRIVER_LICENSE . '</strong>]</span><br>';
+            }
             $customer2_html = "
         <p>(2) <strong>{$CUSTOMER2_COMPANY}</strong></p>
         {$customer2_identity}
@@ -17026,7 +17038,7 @@ class Purchase_model extends App_Model
             ';
 
             foreach ($payment_details as $p) {
-                if($p['amount'] == 0){
+                if ($p['amount'] == 0) {
                     continue;
                 }
                 $dt = (!empty($p['payment_date']) && $p['payment_date'] != '0000-00-00')
@@ -17077,7 +17089,7 @@ class Purchase_model extends App_Model
         }
         $terrace = '';
         if ($customer['terrace'] == 1) {
-            $terrace = '(iii) Terrace <strong>'.$customer['terrace_val'].' sq.mtrs. </strong>';
+            $terrace = '(iii) Terrace <strong>' . $customer['terrace_val'] . ' sq.mtrs. </strong>';
         } elseif ($customer['terrace'] == 0) {
             $terrace = '';
         }
@@ -17097,7 +17109,7 @@ class Purchase_model extends App_Model
             $identity_html .= '<span style="font-size:20px;">[ ELECTION : <strong>' . $ELECTION_CARD . '</strong>]</span><br>';
         }
 
-         if (!empty($DRIVER_LICENSE)) {
+        if (!empty($DRIVER_LICENSE)) {
             $identity_html .= '<span style="font-size:20px;">[ DRIVER LICENSE : <strong>' . $DRIVER_LICENSE . '</strong>]</span><br>';
         }
 

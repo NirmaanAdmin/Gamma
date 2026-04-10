@@ -206,7 +206,9 @@
                      </div>
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->driving_licence : ''); ?>
+                        <?php $value2 = (isset($client2) ? $client2->driving_licence_2 : ''); ?>
                         <?php echo render_input('driving_licence', 'Driving Licence', $value, 'text'); ?>
+                        <?php echo render_input('driving_licence_2', '', $value2, 'text'); ?>
                      </div>
                      <div class="col-md-6">
                         <div class="form-group">
