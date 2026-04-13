@@ -464,4 +464,26 @@
          $(this).find('.btn-remove-bank-detail').attr('data-row-id', rowId);
       });
    });
+
+   $(document).on('click', '#add_new_driving_licence', function() {
+         var html = `
+            <div class="col-md-12 customer-field" style="margin:10px 0px; padding:0px !important;position:relative;">
+                <input type="text" name="driving_licence_2" class="form-control" id="driving_licence" placeholder="Driving Licence">
+               <span>
+                    <i class="fa fa-times pull-right text-danger remove_driving_licence" title="Remove" style="cursor:pointer;position:absolute;top:-4px;right:-4px;"></i>
+               </span>
+            </div>
+
+        `;
+         $('#extra_driving_licence').append(html);
+         $('#add_new_driving_licence').addClass('hide');
+      });
+
+      // Remove on click
+      $(document).on('click', '.remove_driving_licence', function() {
+         $('#driving_licence_2').val('');
+         $(this).closest('.customer-field').remove();
+
+         $('#add_new_driving_licence').removeClass('hide');
+      });
 </script>

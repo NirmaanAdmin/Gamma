@@ -206,9 +206,18 @@
                      </div>
                      <div class="col-md-6">
                         <?php $value = (isset($client) ? $client->driving_licence : ''); ?>
-                        <?php $value2 = (isset($client2) ? $client2->driving_licence_2 : ''); ?>
                         <?php echo render_input('driving_licence', 'Driving Licence', $value, 'text'); ?>
-                        <?php echo render_input('driving_licence_2', '', $value2, 'text'); ?>
+
+                        <?php
+                        if ($client2->driving_licence_2) { ?>
+                           <?php $value = (isset($client2) ? $client2->driving_licence_2 : ''); ?>
+                           <?php echo render_input('driving_licence_2', '', $value, 'text', ['placeholder' => 'Driving Licence ']); ?>
+                        <?php } else { ?>
+                           <div id="extra_driving_licence"></div>
+                           <span>
+                              <i class="fa fa-plus pull-right" title="Add Driving Licence" id="add_new_driving_licence" style="cursor:pointer;"></i>
+                           </span>
+                        <?php } ?>
                      </div>
                      <div class="col-md-6">
                         <div class="form-group">
