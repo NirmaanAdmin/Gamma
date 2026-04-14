@@ -1116,3 +1116,499 @@ function get_progress_report_machinery_listing_byid($machinery)
     }
     return '';
 }
+
+function dept_detail_added_log($form_id, $row)
+{
+    $html = "<b>New Department Detail Added</b><ul>";
+
+    foreach ($row as $key => $value) {
+        if ($key == 'form_id') continue;
+        $html .= "<li><b>{$key}</b>: {$value}</li>";
+    }
+
+    $html .= "</ul>";
+
+    dpr_activity_log($form_id, $html);
+}
+function rmc_detail_added_log($form_id, $row)
+{
+    $html = "<b>New RMC Detail Added</b><ul>";
+
+    foreach ($row as $key => $value) {
+        if ($key == 'form_id') continue;
+        $html .= "<li><b>{$key}</b>: {$value}</li>";
+    }
+
+    $html .= "</ul>";
+
+    dpr_activity_log($form_id, $html);
+}
+
+function material_detail_added_log($form_id, $row)
+{
+    $html = "<b>New Material Detail Added</b><ul>";
+
+    foreach ($row as $key => $value) {
+        if ($key == 'form_id') continue;
+        $html .= "<li><b>{$key}</b>: {$value}</li>";
+    }
+
+    $html .= "</ul>";
+
+    dpr_activity_log($form_id, $html);
+}
+function update_dept_detail_activity_log($form_id, $old_data, $new_data)
+{
+    if (empty($old_data) || empty($new_data)) {
+        return false;
+    }
+
+    $norm_old = array_map('normalize_activity_value', $old_data);
+    $norm_new = array_map('normalize_activity_value', $new_data);
+
+    $changes = array_diff_assoc($norm_new, $norm_old);
+
+    if (empty($changes)) {
+        return true;
+    }
+
+    $field_map = [
+        'staff'      => 'Staff',
+        'attendance' => 'Attendance',
+        'over_time'  => 'Over Time',
+        'kharchi'    => 'Kharchi',
+    ];
+
+    $html = "<b>Department Detail Updated</b><ul>";
+
+    foreach ($changes as $field => $v) {
+        if (!isset($field_map[$field])) {
+            continue;
+        }
+
+        $old_val = $old_data[$field] ?? 'None';
+        $new_val = $new_data[$field] ?? 'None';
+
+        if ($field == 'staff') {
+            $old_val = get_staff_members_full_name($old_val);
+            $new_val = get_staff_members_full_name($new_val);
+        }
+
+        $html .= "<li><b>{$field_map[$field]}</b>: {$old_val} → {$new_val}</li>";
+    }
+
+    $html .= "</ul>";
+
+    dpr_activity_log($form_id, $html);
+    return true;
+}
+
+function update_rmc_detail_activity_log($form_id, $old_data, $new_data)
+{
+    if (empty($old_data) || empty($new_data)) {
+        return false;
+    }
+
+    $norm_old = array_map('normalize_activity_value', $old_data);
+    $norm_new = array_map('normalize_activity_value', $new_data);
+
+    $changes = array_diff_assoc($norm_new, $norm_old);
+
+    if (empty($changes)) {
+        return true;
+    }
+
+    $field_map = [
+        'challan'    => 'Challan',
+        'grade'      => 'Grade',
+        'structure'  => 'Structure',
+        'quantity'   => 'Quantity',
+    ];
+
+    $html = "<b>RMC Detail Updated</b><ul>";
+
+    foreach ($changes as $field => $v) {
+        if (!isset($field_map[$field])) {
+            continue;
+        }
+
+        $old_val = $old_data[$field] ?? 'None';
+        $new_val = $new_data[$field] ?? 'None';
+
+        if ($field == 'grade') {
+            $old_val = get_rmc_grade_full_name($old_val);
+            $new_val = get_rmc_grade_full_name($new_val);
+        }
+
+        $html .= "<li><b>{$field_map[$field]}</b>: {$old_val} → {$new_val}</li>";
+    }
+
+    $html .= "</ul>";
+
+    dpr_activity_log($form_id, $html);
+    return true;
+}
+
+function get_staff_members_full_name($sub_type)
+{
+    $CI = &get_instance();
+    $CI->load->database();
+
+    $CI->db->select('name');
+    $CI->db->from(db_prefix() . 'progress_report_dept_labor');
+    $CI->db->where('id', $sub_type);
+    $query = $CI->db->get();
+
+    if ($query->num_rows() > 0) {
+        return $query->row()->name;
+    }
+    return '';
+}
+
+function get_rmc_grade_full_name($sub_type)
+{
+    $CI = &get_instance();
+    $CI->load->database();
+
+    $CI->db->select('name');
+    $CI->db->from(db_prefix() . 'progress_report_rmc_grade');
+    $CI->db->where('id', $sub_type);
+    $query = $CI->db->get();
+
+    if ($query->num_rows() > 0) {
+        return $query->row()->name;
+    }
+    return '';
+}
+
+function update_material_detail_activity_log($form_id, $old_data, $new_data)
+{
+    if (empty($old_data) || empty($new_data)) {
+        return false;
+    }
+
+    $norm_old = array_map('normalize_activity_value', $old_data);
+    $norm_new = array_map('normalize_activity_value', $new_data);
+
+    $changes = array_diff_assoc($norm_new, $norm_old);
+
+    if (empty($changes)) {
+        return true;
+    }
+
+    $field_map = [
+        'challan'               => 'Challan',
+        'supplier'              => 'Supplier',
+        'material_description'  => 'Material Description',
+        'total'                 => 'Total',
+    ];
+
+    $html = "<b>Material Detail Updated</b><ul>";
+
+    foreach ($changes as $field => $v) {
+        if (!isset($field_map[$field])) {
+            continue;
+        }
+
+        $old_val = $old_data[$field] ?? 'None';
+        $new_val = $new_data[$field] ?? 'None';
+
+        $html .= "<li><b>{$field_map[$field]}</b>: {$old_val} → {$new_val}</li>";
+    }
+
+    $html .= "</ul>";
+
+    dpr_activity_log($form_id, $html);
+    return true;
+}
+
+function order_cement_added_log($form_id, $row)
+{
+    $html = "<b>New Cement Detail Added</b><ul>";
+
+    foreach ($row as $key => $value) {
+        if ($key == 'form_id') continue;
+        $html .= "<li><b>{$key}</b>: {$value}</li>";
+    }
+
+    $html .= "</ul>";
+
+    dpr_activity_log($form_id, $html);
+}
+
+function update_order_cement_activity_log($form_id, $old_data, $new_data)
+{
+    if (empty($old_data) || empty($new_data)) {
+        return false;
+    }
+
+    $norm_old = array_map('normalize_activity_value', $old_data);
+    $norm_new = array_map('normalize_activity_value', $new_data);
+
+    $changes = array_diff_assoc($norm_new, $norm_old);
+
+    if (empty($changes)) {
+        return true;
+    }
+
+    $field_map = [
+        'inward_inventory'               => 'Inward Inventory',
+        'today_usage'              => 'Today Usage',
+        'remaining_cement'  => 'Remaining Cement',
+        'notes'                 => 'Notes',
+    ];
+
+    $html = "<b>Cement Detail Updated</b><ul>";
+
+    foreach ($changes as $field => $v) {
+        if (!isset($field_map[$field])) {
+            continue;
+        }
+
+        $old_val = $old_data[$field] ?? 'None';
+        $new_val = $new_data[$field] ?? 'None';
+
+        $html .= "<li><b>{$field_map[$field]}</b>: {$old_val} → {$new_val}</li>";
+    }
+
+    $html .= "</ul>";
+
+    dpr_activity_log($form_id, $html);
+    return true;
+}
+
+function order_block_added_log($form_id, $data)
+{
+    $html = "<b>Block Detail Added</b><ul>";
+    
+    foreach ($data as $key => $value) {
+        if ($key == 'form_id') continue;
+        
+        // Make field names human readable
+        $field_name = str_replace(['_bmj', '_'], [' ', ' '], $key);
+        $field_name = ucwords(str_replace('_', ' ', $field_name));
+        
+        $html .= "<li><b>{$field_name}</b>: {$value}</li>";
+    }
+    
+    $html .= "</ul>";
+    dpr_activity_log($form_id, $html);
+}
+function update_order_block_activity_log($form_id, $old_data, $new_data)
+{
+    if (empty($old_data) || empty($new_data)) {
+        return false;
+    }
+    
+    $norm_old = array_map('normalize_activity_value', $old_data);
+    $norm_new = array_map('normalize_activity_value', $new_data);
+    
+    $changes = array_diff_assoc($norm_new, $norm_old);
+    
+    if (empty($changes)) {
+        return true;
+    }
+    
+    $field_map = [
+        'inward_inventory_bmj' => 'Inward Inventory',
+        'today_usage_bmj' => 'Today Usage',
+        'remaining_cement_bmj' => 'Remaining Cement',
+        'notes_bmj' => 'Notes',
+    ];
+    
+    $html = "<b>Block/Bricks Detail Updated</b><ul>";
+    
+    foreach ($changes as $field => $v) {
+        if (!isset($field_map[$field])) {
+            continue;
+        }
+        
+        $old_val = $old_data[$field] ?? 'None';
+        $new_val = $new_data[$field] ?? 'None';
+        
+        $html .= "<li><b>{$field_map[$field]}</b>: {$old_val} → {$new_val}</li>";
+    }
+    
+    $html .= "</ul>";
+    dpr_activity_log($form_id, $html);
+    return true;
+}
+
+function order_tile_added_log($form_id, $data)
+{
+    $html = "<b>Tile Detail Added</b><ul>";
+    
+    foreach ($data as $key => $value) {
+        if ($key == 'form_id') continue;
+        
+        // Make field names human readable
+        $field_name = str_replace('_ta', '', $key);
+        $field_name = str_replace('_', ' ', $field_name);
+        $field_name = ucwords($field_name);
+        
+        $html .= "<li><b>{$field_name}</b>: {$value}</li>";
+    }
+    
+    $html .= "</ul>";
+    dpr_activity_log($form_id, $html);
+}
+
+function update_order_tile_activity_log($form_id, $old_data, $new_data)
+{
+    if (empty($old_data) || empty($new_data)) {
+        return false;
+    }
+    
+    $norm_old = array_map('normalize_activity_value', $old_data);
+    $norm_new = array_map('normalize_activity_value', $new_data);
+    
+    $changes = array_diff_assoc($norm_new, $norm_old);
+    
+    if (empty($changes)) {
+        return true;
+    }
+    
+    $field_map = [
+        'inward_inventory_ta' => 'Inward Inventory',
+        'today_usage_ta' => 'Today Usage',
+        'remaining_cement_ta' => 'Remaining Cement',
+        'notes_ta' => 'Notes',
+    ];
+    
+    $html = "<b>Tile Detail Updated</b><ul>";
+    
+    foreach ($changes as $field => $v) {
+        if (!isset($field_map[$field])) {
+            continue;
+        }
+        
+        $old_val = $old_data[$field] ?? 'None';
+        $new_val = $new_data[$field] ?? 'None';
+        
+        $html .= "<li><b>{$field_map[$field]}</b>: {$old_val} → {$new_val}</li>";
+    }
+    
+    $html .= "</ul>";
+    dpr_activity_log($form_id, $html);
+    return true;
+}
+
+function order_coupler_added_log($form_id, $data)
+{
+    $html = "<b>Coupler Detail Added</b><ul>";
+    
+    foreach ($data as $key => $value) {
+        if ($key == 'form_id') continue;
+        
+        // Make field names human readable
+        $field_name = str_replace('_ca', '', $key);
+        $field_name = str_replace('_', ' ', $field_name);
+        $field_name = ucwords($field_name);
+        
+        $html .= "<li><b>{$field_name}</b>: {$value}</li>";
+    }
+    
+    $html .= "</ul>";
+    dpr_activity_log($form_id, $html);
+}
+
+function update_order_coupler_activity_log($form_id, $old_data, $new_data)
+{
+    if (empty($old_data) || empty($new_data)) {
+        return false;
+    }
+    
+    $norm_old = array_map('normalize_activity_value', $old_data);
+    $norm_new = array_map('normalize_activity_value', $new_data);
+    
+    $changes = array_diff_assoc($norm_new, $norm_old);
+    
+    if (empty($changes)) {
+        return true;
+    }
+    
+    $field_map = [
+        'inward_inventory_ca' => 'Inward Inventory',
+        'today_usage_ca' => 'Today Usage',
+        'remaining_cement_ca' => 'Remaining Cement',
+        'notes_ca' => 'Notes',
+        'coupler_type' => 'Coupler Type',
+    ];
+    
+    $html = "<b>Coupler Detail Updated</b><ul>";
+    
+    foreach ($changes as $field => $v) {
+        if (!isset($field_map[$field])) {
+            continue;
+        }
+        
+        $old_val = $old_data[$field] ?? 'None';
+        $new_val = $new_data[$field] ?? 'None';
+        
+        $html .= "<li><b>{$field_map[$field]}</b>: {$old_val} → {$new_val}</li>";
+    }
+    
+    $html .= "</ul>";
+    dpr_activity_log($form_id, $html);
+    return true;
+}
+
+function order_wire_coupler_added_log($form_id, $data)
+{
+    $html = "<b>Wire/Coupler Detail Added</b><ul>";
+    
+    foreach ($data as $key => $value) {
+        if ($key == 'form_id') continue;
+        
+        // Make field names human readable
+        $field_name = str_replace('_wi', '', $key);
+        $field_name = str_replace('_', ' ', $field_name);
+        $field_name = ucwords($field_name);
+        
+        $html .= "<li><b>{$field_name}</b>: {$value}</li>";
+    }
+    
+    $html .= "</ul>";
+    dpr_activity_log($form_id, $html);
+}
+
+function update_order_wire_coupler_activity_log($form_id, $old_data, $new_data)
+{
+    if (empty($old_data) || empty($new_data)) {
+        return false;
+    }
+    
+    $norm_old = array_map('normalize_activity_value', $old_data);
+    $norm_new = array_map('normalize_activity_value', $new_data);
+    
+    $changes = array_diff_assoc($norm_new, $norm_old);
+    
+    if (empty($changes)) {
+        return true;
+    }
+    
+    $field_map = [
+        'inward_inventory_wi' => 'Inward Inventory',
+        'today_usage_wi' => 'Today Usage',
+        'remaining_cement_wi' => 'Remaining Cement',
+        'notes_wi' => 'Notes',
+        'wire_type' => 'Wire Type',
+    ];
+    
+    $html = "<b>Wire/Coupler Detail Updated</b><ul>";
+    
+    foreach ($changes as $field => $v) {
+        if (!isset($field_map[$field])) {
+            continue;
+        }
+        
+        $old_val = $old_data[$field] ?? 'None';
+        $new_val = $new_data[$field] ?? 'None';
+        
+        $html .= "<li><b>{$field_map[$field]}</b>: {$old_val} → {$new_val}</li>";
+    }
+    
+    $html .= "</ul>";
+    dpr_activity_log($form_id, $html);
+    return true;
+}

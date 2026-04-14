@@ -1034,186 +1034,12 @@ class Forms_model extends App_Model
                     unset($data['notes_cb']);
                     unset($data['cb_id']);
                 }
-            } elseif ($data['form_type'] == "apc") {
-                $apc_form = [];
-                $apc_form['date'] = $data['date'];
-                $apc_form['location'] = $data['location'];
-                $apc_form['inspected_by'] = $data['inspected_by'];
-                unset($data['date']);
-                unset($data['location']);
-                unset($data['inspected_by']);
-                unset($data['action']);
-                $new_order = [];
-                if (isset($data['items'])) {
-                    $new_order = $data['items'];
-                    unset($data['items']);
-                }
-            } elseif ($data['form_type'] == "wpc") {
-                $wpc_form = [];
-                $wpc_form['date'] = $data['date'];
-                $wpc_form['location'] = $data['location'];
-                $wpc_form['inspected_by'] = $data['inspected_by'];
-                unset($data['date']);
-                unset($data['location']);
-                unset($data['inspected_by']);
-                unset($data['action']);
-                $new_order = [];
-                if (isset($data['items'])) {
-                    $new_order = $data['items'];
-                    unset($data['items']);
-                }
-            } elseif ($data['form_type'] == "mfa") {
-                $mfa_form = [];
-                $mfa_form['checked_by'] = $data['checked_by'];
-                $mfa_form['designation'] = $data['designation'];
-                $mfa_form['location'] = $data['location'];
-                $mfa_form['date'] = $data['date'];
-                unset($data['checked_by']);
-                unset($data['designation']);
-                unset($data['location']);
-                unset($data['date']);
-                unset($data['action']);
-                $new_order = [];
-                if (isset($data['items'])) {
-                    $new_order = $data['items'];
-                    unset($data['items']);
-                }
-            } elseif ($data['form_type'] == "mlg") {
-                $mlg_form = [];
-                $mlg_form['trade_of_work'] = $data['trade_of_work'];
-                $mlg_form['name'] = $data['name'];
-                $mlg_form['type'] = $data['type'];
-                $mlg_form['lgno'] = $data['lgno'];
-                $mlg_form['expiry_date'] = $data['expiry_date'];
-                $mlg_form['swl'] = $data['swl'];
-                $mlg_form['remarks'] = $data['remarks'];
-                $mlg_form['date'] = $data['date'];
-                unset($data['trade_of_work']);
-                unset($data['name']);
-                unset($data['type']);
-                unset($data['lgno']);
-                unset($data['expiry_date']);
-                unset($data['swl']);
-                unset($data['remarks']);
-                unset($data['date']);
-                $new_order = [];
-                if (isset($data['items'])) {
-                    $new_order = $data['items'];
-                    unset($data['items']);
-                }
-            } elseif ($data['form_type'] == "msh") {
-                $msh_form = [];
-                $msh_form['trade_of_work'] = $data['trade_of_work'];
-                $msh_form['inspected_by'] = $data['inspected_by'];
-                $msh_form['shi'] = $data['shi'];
-                $msh_form['remarks'] = $data['remarks'];
-                $msh_form['date'] = $data['date'];
-                unset($data['trade_of_work']);
-                unset($data['inspected_by']);
-                unset($data['shi']);
-                unset($data['remarks']);
-                unset($data['date']);
-                $new_order = [];
-                if (isset($data['items'])) {
-                    $new_order = $data['items'];
-                    unset($data['items']);
-                }
-            } elseif ($data['form_type'] == "sca") {
-                $sca_form = [];
-                $sca_form['area_of_work'] = $data['area_of_work'];
-                $sca_form['scaffold_supervisor'] = $data['scaffold_supervisor'];
-                $sca_form['date'] = $data['date'];
-                unset($data['area_of_work']);
-                unset($data['scaffold_supervisor']);
-                unset($data['date']);
-                $new_order = [];
-                if (isset($data['items'])) {
-                    $new_order = $data['items'];
-                    unset($data['items']);
-                }
-            } elseif ($data['form_type'] == "esc") {
-                $esc_form = [];
-                $esc_form['date'] = $data['date'];
-                $esc_form['location'] = $data['location'];
-                $esc_form['inspected_by'] = $data['inspected_by'];
-                unset($data['date']);
-                unset($data['location']);
-                unset($data['inspected_by']);
-                unset($data['action']);
-                $new_order = [];
-                if (isset($data['items'])) {
-                    $new_order = $data['items'];
-                    unset($data['items']);
-                }
-            } elseif ($data['form_type'] == "cfwas") {
-                $cfwas_form = [];
-                $cfwas_form['date'] = $data['date'];
-                $cfwas_form['location'] = $data['location'];
-                $cfwas_form['inspected_by'] = $data['inspected_by'];
-                $cfwas_form['remarks'] = $data['remarks'];
-                unset($data['date']);
-                unset($data['location']);
-                unset($data['inspected_by']);
-                unset($data['action']);
-                unset($data['remarks']);
-                $new_order = [];
-                if (isset($data['items'])) {
-                    $new_order = $data['items'];
-                    unset($data['items']);
-                }
-            } elseif ($data['form_type'] == "cflc") {
-                $cflc_form = [];
-                $cflc_form['date'] = $data['date'];
-                $cflc_form['location'] = $data['location'];
-                $cflc_form['inspected_by'] = $data['inspected_by'];
-                $cflc_form['remarks'] = $data['remarks'];
-                unset($data['date']);
-                unset($data['location']);
-                unset($data['inspected_by']);
-                unset($data['action']);
-                unset($data['remarks']);
-                $new_order = [];
-                if (isset($data['items'])) {
-                    $new_order = $data['items'];
-                    unset($data['items']);
-                }
-            } elseif ($data['form_type'] == "facc") {
-                $facc_form = [];
-                $facc_form['date'] = $data['date'];
-                $facc_form['location'] = $data['location'];
-                $facc_form['inspected_by'] = $data['inspected_by'];
-                $facc_form['remarks'] = $data['remarks'];
-                unset($data['date']);
-                unset($data['location']);
-                unset($data['inspected_by']);
-                unset($data['action']);
-                unset($data['remarks']);
-                $new_order = [];
-                if (isset($data['items'])) {
-                    $new_order = $data['items'];
-                    unset($data['items']);
-                }
-            } elseif ($data['form_type'] == "cosc") {
-                $cosc_form = [];
-                $cosc_form['area_of_work'] = $data['area_of_work'];
-                $cosc_form['scaffold_supervisor'] = $data['scaffold_supervisor'];
-                $cosc_form['date'] = $data['date'];
-                unset($data['area_of_work']);
-                unset($data['scaffold_supervisor']);
-                unset($data['date']);
-                $new_order = [];
-                if (isset($data['items'])) {
-                    $new_order = $data['items'];
-                    unset($data['items']);
-                }
             }
         }
 
-        // $data['message'] = remove_emojis($data['message']);
+
         $data = hooks()->apply_filters('before_form_created', $data, $admin);
-        // echo '<pre>';
-        // print_r($data);
-        // die;
+
         $this->db->insert(db_prefix() . 'forms', $data);
         $formid = $this->db->insert_id();
         add_drp_activity_log($formid, true);
@@ -1365,413 +1191,6 @@ class Forms_model extends App_Model
                         }
                     }
                 }
-            } elseif ($data['form_type'] == "apc") {
-                if (isset($apc_form)) {
-                    if (!empty($apc_form)) {
-                        $apc_form['form_id'] = $formid;
-                        $this->db->insert(db_prefix() . $data['form_type'] . '_form', $apc_form);
-                    }
-                }
-                if (isset($new_order)) {
-                    if (!empty($new_order)) {
-                        $sr = 1;
-                        foreach ($new_order as $key => $value) {
-                            $dt_data = [];
-                            $dt_data['form_id'] = $formid;
-                            $dt_data['items'] = $sr;
-                            $dt_data['status'] = $value['status'];
-                            $dt_data['remarks'] = $value['remarks'];
-                            $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
-                            $insert_id = $this->db->insert_id();
-                            // Handle file attachments dynamically for items and attachments_new
-                            $iuploadedFiles = handle_ckecklist_item_attachment_array('apc_checklist', $formid, $insert_id, 'items', $sr);
-
-                            if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                                if (!empty($iuploadedFiles)) {
-                                    foreach ($iuploadedFiles as $file) {
-                                        $idata = [
-                                            'form_id' =>  $formid,
-                                            'form_detail_id' =>  $file['item_id'],
-                                            'file_name' => $file['file_name'],
-                                            'filetype' => $file['filetype'],
-                                        ];
-                                        $this->db->insert(db_prefix() . 'apcattachments', $idata);
-                                    }
-                                }
-                            }
-                            $sr++;
-                        }
-                    }
-                }
-            } elseif ($data['form_type'] == "wpc") {
-                if (isset($wpc_form)) {
-                    if (!empty($wpc_form)) {
-                        $wpc_form['form_id'] = $formid;
-                        $this->db->insert(db_prefix() . $data['form_type'] . '_form', $wpc_form);
-                    }
-                }
-                if (isset($new_order)) {
-                    if (!empty($new_order)) {
-                        $sr = 1;
-                        foreach ($new_order as $key => $value) {
-                            $dt_data = [];
-                            $dt_data['form_id'] = $formid;
-                            $dt_data['items'] = $sr;
-                            $dt_data['status'] = $value['status'];
-                            $dt_data['remarks'] = $value['remarks'];
-                            $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
-                            $insert_id = $this->db->insert_id();
-                            // Handle file attachments dynamically for items and attachments_new
-                            $iuploadedFiles = handle_ckecklist_item_attachment_array('wpc_checklist', $formid, $insert_id, 'items', $sr);
-
-                            if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                                if (!empty($iuploadedFiles)) {
-                                    foreach ($iuploadedFiles as $file) {
-                                        $idata = [
-                                            'form_id' =>  $formid,
-                                            'form_detail_id' =>  $file['item_id'],
-                                            'file_name' => $file['file_name'],
-                                            'filetype' => $file['filetype'],
-                                        ];
-                                        $this->db->insert(db_prefix() . 'wpcattachments', $idata);
-                                    }
-                                }
-                            }
-                            $sr++;
-                        }
-                    }
-                }
-            } elseif ($data['form_type'] == "mfa") {
-                if (isset($mfa_form)) {
-                    if (!empty($mfa_form)) {
-                        $mfa_form['form_id'] = $formid;
-                        $this->db->insert(db_prefix() . $data['form_type'] . '_form', $mfa_form);
-                    }
-                }
-                if (isset($new_order)) {
-                    if (!empty($new_order)) {
-                        $sr = 1;
-                        foreach ($new_order as $key => $value) {
-                            $dt_data = [];
-                            $dt_data['form_id'] = $formid;
-                            $dt_data['contents'] = $sr;
-                            $dt_data['available_amount'] = $value['available_amount'] ?? null;
-                            $dt_data['remarks'] = $value['remarks'] ?? null;
-                            $dt_data['small'] =  $value['small'] ?? null;
-                            $dt_data['medium'] = $value['medium'] ?? null;
-                            $dt_data['large'] = $value['lagar'] ?? null;
-                            $dt_data['10cm'] = $value['10cm'] ?? null;
-                            $dt_data['5cm'] = $value['5cm'] ?? null;
-
-
-                            $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
-                            $sr++;
-                        }
-                    }
-                }
-            } elseif ($data['form_type'] == "mlg") {
-                if (isset($mlg_form)) {
-                    if (!empty($mlg_form)) {
-                        $mlg_form['form_id'] = $formid;
-                        $this->db->insert(db_prefix() . $data['form_type'] . '_form', $mlg_form);
-                    }
-                }
-                if (isset($new_order)) {
-                    if (!empty($new_order)) {
-                        $sr = 1;
-                        foreach ($new_order as $key => $value) {
-                            $dt_data = [];
-                            $dt_data['form_id'] = $formid;
-                            $dt_data['description'] = $sr;
-                            $dt_data['checks'] = $value['checks'] ?? null;
-                            $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
-                            $insert_id = $this->db->insert_id();
-                            // Handle file attachments dynamically for items and attachments_new
-                            $iuploadedFiles = handle_ckecklist_item_attachment_array('mlg_checklist', $formid, $insert_id, 'items', $sr);
-
-                            if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                                if (!empty($iuploadedFiles)) {
-                                    foreach ($iuploadedFiles as $file) {
-                                        $idata = [
-                                            'form_id' =>  $formid,
-                                            'form_detail_id' =>  $file['item_id'],
-                                            'file_name' => $file['file_name'],
-                                            'filetype' => $file['filetype'],
-                                        ];
-                                        $this->db->insert(db_prefix() . 'mlgattachments', $idata);
-                                    }
-                                }
-                            }
-
-                            $sr++;
-                        }
-                    }
-                }
-            } elseif ($data['form_type'] == "msh") {
-                if (isset($msh_form)) {
-                    if (!empty($msh_form)) {
-                        $msh_form['form_id'] = $formid;
-                        $this->db->insert(db_prefix() . $data['form_type'] . '_form', $msh_form);
-                    }
-                }
-                if (isset($new_order)) {
-                    if (!empty($new_order)) {
-                        $sr = 1;
-                        foreach ($new_order as $key => $value) {
-                            $dt_data = [];
-                            $dt_data['form_id'] = $formid;
-                            $dt_data['description'] = $sr;
-                            $dt_data['checks'] = $value['checks'] ?? null;
-                            $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
-                            $insert_id = $this->db->insert_id();
-                            // Handle file attachments dynamically for items and attachments_new
-                            $iuploadedFiles = handle_ckecklist_item_attachment_array('msh_checklist', $formid, $insert_id, 'items', $sr);
-
-                            if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                                if (!empty($iuploadedFiles)) {
-                                    foreach ($iuploadedFiles as $file) {
-                                        $idata = [
-                                            'form_id' =>  $formid,
-                                            'form_detail_id' =>  $file['item_id'],
-                                            'file_name' => $file['file_name'],
-                                            'filetype' => $file['filetype'],
-                                        ];
-                                        $this->db->insert(db_prefix() . 'mshattachments', $idata);
-                                    }
-                                }
-                            }
-
-                            $sr++;
-                        }
-                    }
-                }
-            } elseif ($data['form_type'] == "sca") {
-                if (isset($sca_form)) {
-                    if (!empty($sca_form)) {
-                        $sca_form['form_id'] = $formid;
-                        $this->db->insert(db_prefix() . $data['form_type'] . '_form', $sca_form);
-                    }
-                }
-                if (isset($new_order)) {
-                    if (!empty($new_order)) {
-                        $sr = 1;
-                        foreach ($new_order as $key => $value) {
-                            $dt_data = [];
-                            $dt_data['form_id'] = $formid;
-                            $dt_data['description'] = $sr;
-                            $dt_data['checks'] = $value['checks'] ?? null;
-                            $dt_data['comments'] = $value['comments'] ?? null;
-                            $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
-                            $insert_id = $this->db->insert_id();
-                            // Handle file attachments dynamically for items and attachments_new
-                            $iuploadedFiles = handle_ckecklist_item_attachment_array('sca_checklist', $formid, $insert_id, 'items', $sr);
-
-                            if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                                if (!empty($iuploadedFiles)) {
-                                    foreach ($iuploadedFiles as $file) {
-                                        $idata = [
-                                            'form_id' =>  $formid,
-                                            'form_detail_id' =>  $file['item_id'],
-                                            'file_name' => $file['file_name'],
-                                            'filetype' => $file['filetype'],
-                                        ];
-                                        $this->db->insert(db_prefix() . 'scaattachments', $idata);
-                                    }
-                                }
-                            }
-
-                            $sr++;
-                        }
-                    }
-                }
-            } elseif ($data['form_type'] == "esc") {
-                if (isset($esc_form)) {
-                    if (!empty($esc_form)) {
-                        $esc_form['form_id'] = $formid;
-                        $this->db->insert(db_prefix() . $data['form_type'] . '_form', $esc_form);
-                    }
-                }
-                if (isset($new_order)) {
-                    if (!empty($new_order)) {
-                        $sr = 1;
-                        foreach ($new_order as $key => $value) {
-                            $dt_data = [];
-                            $dt_data['form_id'] = $formid;
-                            $dt_data['items'] = $sr;
-                            $dt_data['status'] = $value['status'];
-                            $dt_data['remarks'] = $value['remarks'];
-                            $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
-                            $insert_id = $this->db->insert_id();
-                            // Handle file attachments dynamically for items and attachments_new
-                            $iuploadedFiles = handle_ckecklist_item_attachment_array('esc_checklist', $formid, $insert_id, 'items', $sr);
-
-                            if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                                if (!empty($iuploadedFiles)) {
-                                    foreach ($iuploadedFiles as $file) {
-                                        $idata = [
-                                            'form_id' =>  $formid,
-                                            'form_detail_id' =>  $file['item_id'],
-                                            'file_name' => $file['file_name'],
-                                            'filetype' => $file['filetype'],
-                                        ];
-                                        $this->db->insert(db_prefix() . 'escattachments', $idata);
-                                    }
-                                }
-                            }
-                            $sr++;
-                        }
-                    }
-                }
-            } elseif ($data['form_type'] == "cfwas") {
-                if (isset($cfwas_form)) {
-                    if (!empty($cfwas_form)) {
-                        $cfwas_form['form_id'] = $formid;
-                        $this->db->insert(db_prefix() . $data['form_type'] . '_form', $cfwas_form);
-                    }
-                }
-                if (isset($new_order)) {
-                    if (!empty($new_order)) {
-                        $sr = 1;
-                        foreach ($new_order as $key => $value) {
-                            $dt_data = [];
-                            $dt_data['form_id'] = $formid;
-                            $dt_data['items'] = $sr;
-                            $dt_data['status'] = $value['status'];
-                            $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
-                            $insert_id = $this->db->insert_id();
-                            // Handle file attachments dynamically for items and attachments_new
-                            $iuploadedFiles = handle_ckecklist_item_attachment_array('cfwas_checklist', $formid, $insert_id, 'items', $sr);
-
-                            if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                                if (!empty($iuploadedFiles)) {
-                                    foreach ($iuploadedFiles as $file) {
-                                        $idata = [
-                                            'form_id' =>  $formid,
-                                            'form_detail_id' =>  $file['item_id'],
-                                            'file_name' => $file['file_name'],
-                                            'filetype' => $file['filetype'],
-                                        ];
-                                        $this->db->insert(db_prefix() . 'cfwasattachments', $idata);
-                                    }
-                                }
-                            }
-                            $sr++;
-                        }
-                    }
-                }
-            } elseif ($data['form_type'] == "cflc") {
-                if (isset($cflc_form)) {
-                    if (!empty($cflc_form)) {
-                        $cflc_form['form_id'] = $formid;
-                        $this->db->insert(db_prefix() . $data['form_type'] . '_form', $cflc_form);
-                    }
-                }
-                if (isset($new_order)) {
-                    if (!empty($new_order)) {
-                        $sr = 1;
-                        foreach ($new_order as $key => $value) {
-                            $dt_data = [];
-                            $dt_data['form_id'] = $formid;
-                            $dt_data['items'] = $sr;
-                            $dt_data['status'] = $value['status'];
-                            $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
-                            $insert_id = $this->db->insert_id();
-                            // Handle file attachments dynamically for items and attachments_new
-                            $iuploadedFiles = handle_ckecklist_item_attachment_array('cflc_checklist', $formid, $insert_id, 'items', $sr);
-
-                            if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                                if (!empty($iuploadedFiles)) {
-                                    foreach ($iuploadedFiles as $file) {
-                                        $idata = [
-                                            'form_id' =>  $formid,
-                                            'form_detail_id' =>  $file['item_id'],
-                                            'file_name' => $file['file_name'],
-                                            'filetype' => $file['filetype'],
-                                        ];
-                                        $this->db->insert(db_prefix() . 'cflcasattachments', $idata);
-                                    }
-                                }
-                            }
-                            $sr++;
-                        }
-                    }
-                }
-            } elseif ($data['form_type'] == "facc") {
-                if (isset($facc_form)) {
-                    if (!empty($facc_form)) {
-                        $facc_form['form_id'] = $formid;
-                        $this->db->insert(db_prefix() . $data['form_type'] . '_form', $facc_form);
-                    }
-                }
-                if (isset($new_order)) {
-                    if (!empty($new_order)) {
-                        $sr = 1;
-                        foreach ($new_order as $key => $value) {
-                            $dt_data = [];
-                            $dt_data['form_id'] = $formid;
-                            $dt_data['items'] = $sr;
-                            $dt_data['status'] = $value['status'];
-                            $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
-                            $insert_id = $this->db->insert_id();
-                            // Handle file attachments dynamically for items and attachments_new
-                            $iuploadedFiles = handle_ckecklist_item_attachment_array('facc_checklist', $formid, $insert_id, 'items', $sr);
-
-                            if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                                if (!empty($iuploadedFiles)) {
-                                    foreach ($iuploadedFiles as $file) {
-                                        $idata = [
-                                            'form_id' =>  $formid,
-                                            'form_detail_id' =>  $file['item_id'],
-                                            'file_name' => $file['file_name'],
-                                            'filetype' => $file['filetype'],
-                                        ];
-                                        $this->db->insert(db_prefix() . 'faccattachments', $idata);
-                                    }
-                                }
-                            }
-                            $sr++;
-                        }
-                    }
-                }
-            } elseif ($data['form_type'] == "cosc") {
-                if (isset($cosc_form)) {
-                    if (!empty($cosc_form)) {
-                        $cosc_form['form_id'] = $formid;
-                        $this->db->insert(db_prefix() . $data['form_type'] . '_form', $cosc_form);
-                    }
-                }
-                if (isset($new_order)) {
-                    if (!empty($new_order)) {
-                        $sr = 1;
-                        foreach ($new_order as $key => $value) {
-                            $dt_data = [];
-                            $dt_data['form_id'] = $formid;
-                            $dt_data['description'] = $sr;
-                            $dt_data['checks'] = $value['checks'] ?? null;
-                            $dt_data['comments'] = $value['comments'] ?? null;
-                            $this->db->insert(db_prefix() . $data['form_type'] . '_form_detail', $dt_data);
-                            $insert_id = $this->db->insert_id();
-                            // Handle file attachments dynamically for items and attachments_new
-                            $iuploadedFiles = handle_ckecklist_item_attachment_array('cosc_checklist', $formid, $insert_id, 'items', $sr);
-
-                            if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                                if (!empty($iuploadedFiles)) {
-                                    foreach ($iuploadedFiles as $file) {
-                                        $idata = [
-                                            'form_id' =>  $formid,
-                                            'form_detail_id' =>  $file['item_id'],
-                                            'file_name' => $file['file_name'],
-                                            'filetype' => $file['filetype'],
-                                        ];
-                                        $this->db->insert(db_prefix() . 'coscattachments', $idata);
-                                    }
-                                }
-                            }
-
-                            $sr++;
-                        }
-                    }
-                }
             }
             handle_tags_save($tags, $formid, 'form');
 
@@ -1820,28 +1239,6 @@ class Forms_model extends App_Model
 
             $template = 'form_created_to_customer';
             if ($admin == null) {
-                // $template      = 'form_autoresponse';
-                // $notifiedUsers = [];
-                // $staffToNotify = $this->getStaffMembersForFormNotification($data['department'], $data['assigned'] ?? 0);
-                // foreach ($staffToNotify as $member) {
-                //     send_mail_template('form_created_to_staff', $formid, $data['userid'], $data['contactid'], $member, $_attachments);
-                //     if (get_option('receive_notification_on_new_form') == 1) {
-                //         $notified = add_notification([
-                //             'description'     => 'not_new_form_created',
-                //             'touserid'        => $member['staffid'],
-                //             'fromcompany'     => 1,
-                //             'fromuserid'      => 0,
-                //             'link'            => 'forms/form/' . $formid,
-                //             'additional_data' => serialize([
-                //                 $data['subject'],
-                //             ]),
-                //         ]);
-                //         if ($notified) {
-                //             $notifiedUsers[] = $member['staffid'];
-                //         }
-                //     }
-                // }
-                // pusher_trigger_notification($notifiedUsers);
             } else {
                 if ($cc) {
                     $this->db->where('formid', $formid);
@@ -2294,178 +1691,6 @@ class Forms_model extends App_Model
                 $remove_order_cement = $data['removed_cement_items'];
                 unset($data['removed_cement_items']);
             }
-        } elseif ($formBeforeUpdate->form_type == "apc") {
-            $apc_form = [];
-            $apc_form['date'] = $data['date'];
-            $apc_form['location'] = $data['location'];
-            $apc_form['inspected_by'] = $data['inspected_by'];
-            unset($data['date']);
-            unset($data['location']);
-            unset($data['inspected_by']);
-            unset($data['action']);
-            $update_order = [];
-            if (isset($data['items'])) {
-                $update_order = $data['items'];
-                unset($data['items']);
-            }
-        } elseif ($formBeforeUpdate->form_type == "wpc") {
-            $wpc_form = [];
-            $wpc_form['date'] = $data['date'];
-            $wpc_form['location'] = $data['location'];
-            $wpc_form['inspected_by'] = $data['inspected_by'];
-            unset($data['date']);
-            unset($data['location']);
-            unset($data['inspected_by']);
-            unset($data['action']);
-            $update_order = [];
-            if (isset($data['items'])) {
-                $update_order = $data['items'];
-                unset($data['items']);
-            }
-        } elseif ($formBeforeUpdate->form_type == "mfa") {
-            $mfa_form = [];
-            $mfa_form['checked_by'] = $data['checked_by'];
-            $mfa_form['designation'] = $data['designation'];
-            $mfa_form['location'] = $data['location'];
-            $mfa_form['date'] = $data['date'];
-            unset($data['checked_by']);
-            unset($data['designation']);
-            unset($data['location']);
-            unset($data['date']);
-            unset($data['action']);
-            $update_order = [];
-            if (isset($data['items'])) {
-                $update_order = $data['items'];
-                unset($data['items']);
-            }
-        } elseif ($formBeforeUpdate->form_type == "mlg") {
-            $mlg_form = [];
-            $mlg_form['trade_of_work'] = $data['trade_of_work'];
-            $mlg_form['name'] = $data['name'];
-            $mlg_form['type'] = $data['type'];
-            $mlg_form['lgno'] = $data['lgno'];
-            $mlg_form['expiry_date'] = $data['expiry_date'];
-            $mlg_form['swl'] = $data['swl'];
-            $mlg_form['remarks'] = $data['remarks'];
-            $mlg_form['date'] = $data['date'];
-            unset($data['trade_of_work']);
-            unset($data['name']);
-            unset($data['type']);
-            unset($data['lgno']);
-            unset($data['expiry_date']);
-            unset($data['swl']);
-            unset($data['remarks']);
-            unset($data['date']);
-            $update_order = [];
-            if (isset($data['items'])) {
-                $update_order = $data['items'];
-                unset($data['items']);
-            }
-        } elseif ($formBeforeUpdate->form_type == "msh") {
-            $msh_form = [];
-            $msh_form['trade_of_work'] = $data['trade_of_work'];
-            $msh_form['inspected_by'] = $data['inspected_by'];
-            $msh_form['shi'] = $data['shi'];
-            $msh_form['remarks'] = $data['remarks'];
-            $msh_form['date'] = $data['date'];
-            unset($data['trade_of_work']);
-            unset($data['inspected_by']);
-            unset($data['shi']);
-            unset($data['remarks']);
-            unset($data['date']);
-            $update_order = [];
-            if (isset($data['items'])) {
-                $update_order = $data['items'];
-                unset($data['items']);
-            }
-        } elseif ($formBeforeUpdate->form_type == "sca") {
-            $sca_form = [];
-            $sca_form['area_of_work'] = $data['area_of_work'];
-            $sca_form['scaffold_supervisor'] = $data['scaffold_supervisor'];
-            $sca_form['date'] = $data['date'];
-            unset($data['area_of_work']);
-            unset($data['scaffold_supervisor']);
-            unset($data['date']);
-            $update_order = [];
-            if (isset($data['items'])) {
-                $update_order = $data['items'];
-                unset($data['items']);
-            }
-        } elseif ($formBeforeUpdate->form_type == "esc") {
-            $esc_form = [];
-            $esc_form['date'] = $data['date'];
-            $esc_form['location'] = $data['location'];
-            $esc_form['inspected_by'] = $data['inspected_by'];
-            unset($data['date']);
-            unset($data['location']);
-            unset($data['inspected_by']);
-            unset($data['action']);
-            $update_order = [];
-            if (isset($data['items'])) {
-                $update_order = $data['items'];
-                unset($data['items']);
-            }
-        } elseif ($formBeforeUpdate->form_type == "cfwas") {
-            $cfwas_form = [];
-            $cfwas_form['date'] = $data['date'];
-            $cfwas_form['location'] = $data['location'];
-            $cfwas_form['inspected_by'] = $data['inspected_by'];
-            $cfwas_form['remarks'] = $data['remarks'];
-            unset($data['date']);
-            unset($data['location']);
-            unset($data['inspected_by']);
-            unset($data['action']);
-            unset($data['remarks']);
-            $update_order = [];
-            if (isset($data['items'])) {
-                $update_order = $data['items'];
-                unset($data['items']);
-            }
-        } elseif ($formBeforeUpdate->form_type == "cflc") {
-            $cflc_form = [];
-            $cflc_form['date'] = $data['date'];
-            $cflc_form['location'] = $data['location'];
-            $cflc_form['inspected_by'] = $data['inspected_by'];
-            $cflc_form['remarks'] = $data['remarks'];
-            unset($data['date']);
-            unset($data['location']);
-            unset($data['inspected_by']);
-            unset($data['action']);
-            unset($data['remarks']);
-            $update_order = [];
-            if (isset($data['items'])) {
-                $update_order = $data['items'];
-                unset($data['items']);
-            }
-        } elseif ($formBeforeUpdate->form_type == "facc") {
-            $facc_form = [];
-            $facc_form['date'] = $data['date'];
-            $facc_form['location'] = $data['location'];
-            $facc_form['inspected_by'] = $data['inspected_by'];
-            $facc_form['remarks'] = $data['remarks'];
-            unset($data['date']);
-            unset($data['location']);
-            unset($data['inspected_by']);
-            unset($data['action']);
-            unset($data['remarks']);
-            $update_order = [];
-            if (isset($data['items'])) {
-                $update_order = $data['items'];
-                unset($data['items']);
-            }
-        } elseif ($formBeforeUpdate->form_type == "cosc") {
-            $cosc_form = [];
-            $cosc_form['area_of_work'] = $data['area_of_work'];
-            $cosc_form['scaffold_supervisor'] = $data['scaffold_supervisor'];
-            $cosc_form['date'] = $data['date'];
-            unset($data['area_of_work']);
-            unset($data['scaffold_supervisor']);
-            unset($data['date']);
-            $update_order = [];
-            if (isset($data['items'])) {
-                $update_order = $data['items'];
-                unset($data['items']);
-            }
         }
 
         $old_form = $this->db
@@ -2577,6 +1802,7 @@ class Forms_model extends App_Model
 
             if (isset($new_order_dept) && !empty($new_order_dept)) {
                 foreach ($new_order_dept as $key => $value) {
+
                     $dt_data = [
                         'form_id' => $data['formid'],
                         'staff' => $value['staff'],
@@ -2590,7 +1816,7 @@ class Forms_model extends App_Model
                     if ($new_insert_id) {
                         $affectedRows++;
                         // Consider adding logging here like other sections
-                        // dept_detail_added_log($data['formid'], $dt_data);
+                        dept_detail_added_log($data['formid'], $dt_data);
                     }
                 }
             }
@@ -2610,7 +1836,7 @@ class Forms_model extends App_Model
                     if ($new_insert_id) {
                         $affectedRows++;
                         // Consider adding logging here like other sections
-                        // rmc_detail_added_log($data['formid'], $dt_data);
+                        rmc_detail_added_log($data['formid'], $dt_data);
                     }
                 }
             }
@@ -2630,7 +1856,7 @@ class Forms_model extends App_Model
                     if ($new_insert_id) {
                         $affectedRows++;
                         // Consider adding logging here like other sections
-                        // material_detail_added_log($data['formid'], $dt_data);
+                        material_detail_added_log($data['formid'], $dt_data);
                     }
                 }
             }
@@ -2659,7 +1885,7 @@ class Forms_model extends App_Model
                     if ($this->db->affected_rows() > 0) {
                         $affectedRows++;
                         // Consider adding logging here like other sections
-                        // update_dept_detail_activity_log($data['formid'], $old_row, $dt_data);
+                        update_dept_detail_activity_log($data['formid'], $old_row, $dt_data);
                     }
                 }
             }
@@ -2688,7 +1914,7 @@ class Forms_model extends App_Model
                     if ($this->db->affected_rows() > 0) {
                         $affectedRows++;
                         // Consider adding logging here like other sections
-                        // update_rmc_detail_activity_log($data['formid'], $old_row, $dt_data);
+                        update_rmc_detail_activity_log($data['formid'], $old_row, $dt_data);
                     }
                 }
             }
@@ -2717,7 +1943,7 @@ class Forms_model extends App_Model
                     if ($this->db->affected_rows() > 0) {
                         $affectedRows++;
                         // Consider adding logging here like other sections
-                        // update_material_detail_activity_log($data['formid'], $old_row, $dt_data);
+                        update_material_detail_activity_log($data['formid'], $old_row, $dt_data);
                     }
                 }
             }
@@ -2731,27 +1957,39 @@ class Forms_model extends App_Model
                         $exists = $this->db->where('id', $value['id'])->get($table_name)->row_array();
 
                         if ($exists) {
-                            // Update
-                            $this->db->where('id', $value['id'])->update($table_name, [
+                            // Prepare update data
+                            $dt_data = [
                                 'inward_inventory' => $value['inward_inventory'],
                                 'today_usage' => $value['today_usage'],
                                 'remaining_cement' => $value['remaining_cement'],
                                 'notes' => $value['notes'],
-                            ]);
+                            ];
+
+                            // Update
+                            $this->db->where('id', $value['id'])->update($table_name, $dt_data);
+
+                            // Log the update
+                            update_order_cement_activity_log($data['formid'], $exists, $dt_data);
 
                             if ($this->db->affected_rows() > 0) $affectedRows++;
                             continue;
                         }
                     }
 
-                    // Insert new record
-                    $this->db->insert($table_name, [
+                    // Prepare insert data
+                    $dt_data = [
                         'form_id' => $formBeforeUpdate->formid,
                         'inward_inventory' => $value['inward_inventory'],
                         'today_usage' => $value['today_usage'],
                         'remaining_cement' => $value['remaining_cement'],
                         'notes' => $value['notes'],
-                    ]);
+                    ];
+
+                    // Insert new record
+                    $this->db->insert($table_name, $dt_data);
+
+                    // Log the addition
+                    order_cement_added_log($data['formid'], $dt_data);
 
                     if ($this->db->affected_rows() > 0) $affectedRows++;
                 }
@@ -2766,27 +2004,39 @@ class Forms_model extends App_Model
                         $exists = $this->db->where('id', $value['id'])->get($table_name)->row_array();
 
                         if ($exists) {
-                            // Update
-                            $this->db->where('id', $value['id'])->update($table_name, [
+                            // Prepare update data
+                            $dt_data = [
                                 'inward_inventory_bmj' => $value['inward_inventory_bmj'],
                                 'today_usage_bmj' => $value['today_usage_bmj'],
                                 'remaining_cement_bmj' => $value['remaining_cement_bmj'],
                                 'notes_bmj' => $value['notes_bmj'],
-                            ]);
+                            ];
+
+                            // Update
+                            $this->db->where('id', $value['id'])->update($table_name, $dt_data);
+
+                            // Log the update (you'll need to create this logging function)
+                            update_order_block_activity_log($data['formid'], $exists, $dt_data);
 
                             if ($this->db->affected_rows() > 0) $affectedRows++;
                             continue;
                         }
                     }
 
-                    // Insert new record
-                    $this->db->insert($table_name, [
+                    // Prepare insert data
+                    $dt_data = [
                         'form_id' => $formBeforeUpdate->formid,
                         'inward_inventory_bmj' => $value['inward_inventory_bmj'],
                         'today_usage_bmj' => $value['today_usage_bmj'],
                         'remaining_cement_bmj' => $value['remaining_cement_bmj'],
                         'notes_bmj' => $value['notes_bmj'],
-                    ]);
+                    ];
+
+                    // Insert new record
+                    $this->db->insert($table_name, $dt_data);
+
+                    // Log the addition (you'll need to create this logging function)
+                    order_block_added_log($data['formid'], $dt_data);
 
                     if ($this->db->affected_rows() > 0) $affectedRows++;
                 }
@@ -2803,27 +2053,39 @@ class Forms_model extends App_Model
                         $exists = $this->db->where('id', $value['id'])->get($table_name)->row_array();
 
                         if ($exists) {
-                            // Update
-                            $this->db->where('id', $value['id'])->update($table_name, [
+                            // Prepare update data
+                            $dt_data = [
                                 'inward_inventory_ta' => $value['inward_inventory_ta'],
                                 'today_usage_ta' => $value['today_usage_ta'],
                                 'remaining_cement_ta' => $value['remaining_cement_ta'],
                                 'notes_ta' => $value['notes_ta'],
-                            ]);
+                            ];
+
+                            // Update
+                            $this->db->where('id', $value['id'])->update($table_name, $dt_data);
+
+                            // Log the update (you'll need to create this logging function)
+                            update_order_tile_activity_log($data['formid'], $exists, $dt_data);
 
                             if ($this->db->affected_rows() > 0) $affectedRows++;
                             continue;
                         }
                     }
 
-                    // Insert new record
-                    $this->db->insert($table_name, [
+                    // Prepare insert data
+                    $dt_data = [
                         'form_id' => $formBeforeUpdate->formid,
                         'inward_inventory_ta' => $value['inward_inventory_ta'],
                         'today_usage_ta' => $value['today_usage_ta'],
                         'remaining_cement_ta' => $value['remaining_cement_ta'],
                         'notes_ta' => $value['notes_ta'],
-                    ]);
+                    ];
+
+                    // Insert new record
+                    $this->db->insert($table_name, $dt_data);
+
+                    // Log the addition (you'll need to create this logging function)
+                    order_tile_added_log($data['formid'], $dt_data);
 
                     if ($this->db->affected_rows() > 0) $affectedRows++;
                 }
@@ -2831,25 +2093,28 @@ class Forms_model extends App_Model
 
 
             if (!empty($update_order_coupler)) {
-
                 $table_name = db_prefix() . $formBeforeUpdate->form_type . '_coupler_form_detail';
 
                 foreach ($update_order_coupler as $value) {
-
-                    // ✅ UPDATE if ID exists
+                    // UPDATE if ID exists
                     if (!empty($value['id'])) {
-
                         $exists = $this->db->where('id', $value['id'])->get($table_name)->row_array();
 
                         if ($exists) {
-
-                            $this->db->where('id', $value['id'])->update($table_name, [
+                            // Prepare update data
+                            $dt_data = [
                                 'inward_inventory_ca' => $value['inward_inventory_ca'],
                                 'today_usage_ca' => $value['today_usage_ca'],
                                 'remaining_cement_ca' => $value['remaining_cement_ca'],
                                 'notes_ca' => $value['notes_ca'],
                                 'coupler_type' => $value['coupler_type'],
-                            ]);
+                            ];
+
+                            // Update
+                            $this->db->where('id', $value['id'])->update($table_name, $dt_data);
+
+                            // Log the update (you'll need to create this logging function)
+                            update_order_coupler_activity_log($data['formid'], $exists, $dt_data);
 
                             if ($this->db->affected_rows() > 0) {
                                 $affectedRows++;
@@ -2859,15 +2124,21 @@ class Forms_model extends App_Model
                         }
                     }
 
-                    // ✅ INSERT if no ID
-                    $this->db->insert($table_name, [
+                    // Prepare insert data
+                    $dt_data = [
                         'form_id' => $formBeforeUpdate->formid,
                         'inward_inventory_ca' => $value['inward_inventory_ca'],
                         'today_usage_ca' => $value['today_usage_ca'],
                         'remaining_cement_ca' => $value['remaining_cement_ca'],
                         'notes_ca' => $value['notes_ca'],
                         'coupler_type' => $value['coupler_type'],
-                    ]);
+                    ];
+
+                    // INSERT if no ID
+                    $this->db->insert($table_name, $dt_data);
+
+                    // Log the addition (you'll need to create this logging function)
+                    order_coupler_added_log($data['formid'], $dt_data);
 
                     if ($this->db->affected_rows() > 0) {
                         $affectedRows++;
@@ -2878,25 +2149,28 @@ class Forms_model extends App_Model
 
 
             if (!empty($update_wire_coupler)) {
-
                 $table_name = db_prefix() . $formBeforeUpdate->form_type . '_wires_form_detail';
 
                 foreach ($update_wire_coupler as $value) {
-
-                    // ✅ UPDATE if ID exists
+                    // UPDATE if ID exists
                     if (!empty($value['id'])) {
-
                         $exists = $this->db->where('id', $value['id'])->get($table_name)->row_array();
 
                         if ($exists) {
-
-                            $this->db->where('id', $value['id'])->update($table_name, [
+                            // Prepare update data
+                            $dt_data = [
                                 'inward_inventory_wi' => $value['inward_inventory_wi'],
                                 'today_usage_wi' => $value['today_usage_wi'],
                                 'remaining_cement_wi' => $value['remaining_cement_wi'],
                                 'notes_wi' => $value['notes_wi'],
                                 'wire_type' => $value['wire_type'],
-                            ]);
+                            ];
+
+                            // Update
+                            $this->db->where('id', $value['id'])->update($table_name, $dt_data);
+
+                            // Log the update (you'll need to create this logging function)
+                            update_order_wire_coupler_activity_log($data['formid'], $exists, $dt_data);
 
                             if ($this->db->affected_rows() > 0) {
                                 $affectedRows++;
@@ -2906,22 +2180,27 @@ class Forms_model extends App_Model
                         }
                     }
 
-                    // ✅ INSERT if no ID
-                    $this->db->insert($table_name, [
+                    // Prepare insert data
+                    $dt_data = [
                         'form_id' => $formBeforeUpdate->formid,
                         'inward_inventory_wi' => $value['inward_inventory_wi'],
                         'today_usage_wi' => $value['today_usage_wi'],
                         'remaining_cement_wi' => $value['remaining_cement_wi'],
                         'notes_wi' => $value['notes_wi'],
                         'wire_type' => $value['wire_type'],
-                    ]);
+                    ];
+
+                    // INSERT if no ID
+                    $this->db->insert($table_name, $dt_data);
+
+                    // Log the addition (you'll need to create this logging function)
+                    order_wire_coupler_added_log($data['formid'], $dt_data);
 
                     if ($this->db->affected_rows() > 0) {
                         $affectedRows++;
                     }
                 }
             }
-
 
             if (isset($update_cb_coupler) && !empty($update_cb_coupler)) {
                 foreach ($update_cb_coupler as $key => $value) {
@@ -3012,554 +2291,6 @@ class Forms_model extends App_Model
                     if ($this->db->delete(db_prefix() . $formBeforeUpdate->form_type . '_cement_form_detail')) {
                         $affectedRows++;
                         // Consider adding logging here like other sections
-                    }
-                }
-            }
-        } elseif ($formBeforeUpdate->form_type == "apc") {
-            if (isset($apc_form)) {
-                if (!empty($apc_form)) {
-                    $this->db->where('form_id', $data['formid']);
-                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form', $apc_form);
-                    if ($this->db->affected_rows() > 0) {
-                        $affectedRows++;
-                    }
-                }
-            }
-
-
-            if (isset($update_order)) {
-                if (!empty($update_order)) {
-                    $sr = 1;
-                    foreach ($update_order as $key => $value) {
-                        $dt_data = [];
-                        $dt_data['form_id'] = $data['formid'];
-                        $dt_data['items'] = $sr;
-                        $dt_data['status'] = $value['status'];
-                        $dt_data['remarks'] = $value['remarks'];
-                        $this->db->where('id', $value['id']);
-                        $this->db->update(db_prefix() .  $formBeforeUpdate->form_type . '_form_detail', $dt_data);
-                        if ($this->db->affected_rows() > 0) {
-                            $affectedRows++;
-                        }
-                        // $insert_id = $this->db->insert_id();
-                        // Handle file attachments dynamically for items and attachments_new
-
-                        $iuploadedFiles = handle_ckecklist_item_attachment_array('apc_checklist', $data['formid'], $value['id'], 'items', $sr);
-                        if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                            if (!empty($iuploadedFiles)) {
-                                foreach ($iuploadedFiles as $file) {
-                                    $idata = [
-                                        'form_id' =>  $data['formid'],
-                                        'form_detail_id' =>  $file['item_id'],
-                                        'file_name' => $file['file_name'],
-                                        'filetype' => $file['filetype'],
-                                    ];
-                                    $this->db->insert(db_prefix() . 'apcattachments', $idata);
-                                    $last_insert_id = $this->db->insert_id();
-
-                                    if ($last_insert_id) {
-                                        $affectedRows++;
-                                    }
-                                }
-                            }
-                        }
-
-                        $sr++;
-                    }
-                }
-            }
-        } elseif ($formBeforeUpdate->form_type == "wpc") {
-            if (isset($wpc_form)) {
-                if (!empty($wpc_form)) {
-                    $this->db->where('form_id', $data['formid']);
-                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form', $wpc_form);
-                    if ($this->db->affected_rows() > 0) {
-                        $affectedRows++;
-                    }
-                }
-            }
-
-            if (isset($update_order)) {
-                if (!empty($update_order)) {
-                    $sr = 1;
-                    foreach ($update_order as $key => $value) {
-                        $dt_data = [];
-                        $dt_data['form_id'] = $data['formid'];
-                        $dt_data['items'] = $sr;
-                        $dt_data['status'] = $value['status'];
-                        $dt_data['remarks'] = $value['remarks'];
-                        $this->db->where('id', $value['id']);
-                        $this->db->update(db_prefix() .  $formBeforeUpdate->form_type . '_form_detail', $dt_data);
-                        if ($this->db->affected_rows() > 0) {
-                            $affectedRows++;
-                        }
-
-                        // Handle file attachments dynamically for items and attachments_new
-                        $iuploadedFiles = handle_ckecklist_item_attachment_array('wpc_checklist', $data['formid'], $value['id'], 'items', $sr);
-
-                        if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                            if (!empty($iuploadedFiles)) {
-                                foreach ($iuploadedFiles as $file) {
-                                    $idata = [
-                                        'form_id' =>  $data['formid'],
-                                        'form_detail_id' =>  $file['item_id'],
-                                        'file_name' => $file['file_name'],
-                                        'filetype' => $file['filetype'],
-                                    ];
-                                    $this->db->insert(db_prefix() . 'wpcattachments', $idata);
-                                    $last_insert_id = $this->db->insert_id();
-
-                                    if ($last_insert_id) {
-                                        $affectedRows++;
-                                    }
-                                }
-                            }
-                        }
-                        $sr++;
-                    }
-                }
-            }
-        } elseif ($formBeforeUpdate->form_type == "mfa") {
-            if (isset($mfa_form)) {
-                if (!empty($mfa_form)) {
-                    $this->db->where('form_id', $data['formid']);
-                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form', $mfa_form);
-                    if ($this->db->affected_rows() > 0) {
-                        $affectedRows++;
-                    }
-                }
-            }
-
-            if (isset($update_order)) {
-                if (!empty($update_order)) {
-                    $sr = 1;
-                    foreach ($update_order as $key => $value) {
-                        $dt_data = [];
-                        $dt_data['form_id'] = $data['formid'];
-                        $dt_data['contents'] = $sr;
-                        $dt_data['available_amount'] = $value['available_amount'] ?? null;
-                        $dt_data['remarks'] = $value['remarks'] ?? null;
-                        $dt_data['small'] =  $value['small'] ?? null;
-                        $dt_data['medium'] = $value['medium'] ?? null;
-                        $dt_data['large'] = $value['lagar'] ?? null;
-                        $dt_data['10cm'] = $value['10cm'] ?? null;
-                        $dt_data['5cm'] = $value['5cm'] ?? null;
-                        $this->db->where('id', $value['id']);
-                        $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form_detail', $dt_data);
-                        if ($this->db->affected_rows() > 0) {
-                            $affectedRows++;
-                        }
-                        $sr++;
-                    }
-                }
-            }
-        } elseif ($formBeforeUpdate->form_type == "mlg") {
-            if (isset($mlg_form)) {
-                if (!empty($mlg_form)) {
-                    $this->db->where('form_id', $data['formid']);
-                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form', $mlg_form);
-                    if ($this->db->affected_rows() > 0) {
-                        $affectedRows++;
-                    }
-                }
-            }
-
-            if (isset($update_order)) {
-                if (!empty($update_order)) {
-                    $sr = 1;
-                    foreach ($update_order as $key => $value) {
-                        $dt_data = [];
-                        $dt_data['form_id'] = $data['formid'];
-                        $dt_data['description'] = $sr;
-                        $dt_data['checks'] = $value['checks'] ?? null;
-                        $this->db->where('id', $value['id']);
-                        $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form_detail', $dt_data);
-                        if ($this->db->affected_rows() > 0) {
-                            $affectedRows++;
-                        }
-                        // Handle file attachments dynamically for items and attachments_new
-                        $iuploadedFiles = handle_ckecklist_item_attachment_array('mlg_checklist', $data['formid'], $value['id'], 'items', $sr);
-
-                        if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                            if (!empty($iuploadedFiles)) {
-                                foreach ($iuploadedFiles as $file) {
-                                    $idata = [
-                                        'form_id' =>  $data['formid'],
-                                        'form_detail_id' =>  $file['item_id'],
-                                        'file_name' => $file['file_name'],
-                                        'filetype' => $file['filetype'],
-                                    ];
-                                    $this->db->insert(db_prefix() . 'mlgattachments', $idata);
-                                    $last_insert_id = $this->db->insert_id();
-
-                                    if ($last_insert_id) {
-                                        $affectedRows++;
-                                    }
-                                }
-                            }
-                        }
-                        $sr++;
-                    }
-                }
-            }
-        } elseif ($formBeforeUpdate->form_type == "msh") {
-
-            if (isset($msh_form)) {
-                if (!empty($msh_form)) {
-                    $this->db->where('form_id', $data['formid']);
-                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form', $msh_form);
-                    if ($this->db->affected_rows() > 0) {
-                        $affectedRows++;
-                    }
-                }
-            }
-
-            if (isset($update_order)) {
-                if (!empty($update_order)) {
-                    $sr = 1;
-                    foreach ($update_order as $key => $value) {
-                        $dt_data = [];
-                        $dt_data['form_id'] = $data['formid'];
-                        $dt_data['description'] = $sr;
-                        $dt_data['checks'] = $value['checks'] ?? null;
-                        $this->db->where('id', $value['id']);
-                        $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form_detail', $dt_data);
-                        if ($this->db->affected_rows() > 0) {
-                            $affectedRows++;
-                        }
-                        // Handle file attachments dynamically for items and attachments_new
-                        $iuploadedFiles = handle_ckecklist_item_attachment_array('msh_checklist', $data['formid'], $value['id'], 'items', $sr);
-
-                        if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                            if (!empty($iuploadedFiles)) {
-                                foreach ($iuploadedFiles as $file) {
-                                    $idata = [
-                                        'form_id' =>  $data['formid'],
-                                        'form_detail_id' =>  $file['item_id'],
-                                        'file_name' => $file['file_name'],
-                                        'filetype' => $file['filetype'],
-                                    ];
-                                    $this->db->insert(db_prefix() . 'mshattachments', $idata);
-                                    $last_insert_id = $this->db->insert_id();
-
-                                    if ($last_insert_id) {
-                                        $affectedRows++;
-                                    }
-                                }
-                            }
-                        }
-                        $sr++;
-                    }
-                }
-            }
-        } elseif ($formBeforeUpdate->form_type == "sca") {
-
-            if (isset($sca_form)) {
-                if (!empty($sca_form)) {
-                    $this->db->where('form_id', $data['formid']);
-                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form', $sca_form);
-                    if ($this->db->affected_rows() > 0) {
-                        $affectedRows++;
-                    }
-                }
-            }
-
-            if (isset($update_order)) {
-                if (!empty($update_order)) {
-                    $sr = 1;
-                    foreach ($update_order as $key => $value) {
-                        $dt_data = [];
-                        $dt_data['form_id'] = $data['formid'];
-                        $dt_data['description'] = $sr;
-                        $dt_data['checks'] = $value['checks'] ?? null;
-                        $dt_data['comments'] = $value['comments'] ?? null;
-                        $this->db->where('id', $value['id']);
-                        $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form_detail', $dt_data);
-                        if ($this->db->affected_rows() > 0) {
-                            $affectedRows++;
-                        }
-                        // Handle file attachments dynamically for items and attachments_new
-                        $iuploadedFiles = handle_ckecklist_item_attachment_array('sca_checklist', $data['formid'], $value['id'], 'items', $sr);
-
-                        if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                            if (!empty($iuploadedFiles)) {
-                                foreach ($iuploadedFiles as $file) {
-                                    $idata = [
-                                        'form_id' =>  $data['formid'],
-                                        'form_detail_id' =>  $file['item_id'],
-                                        'file_name' => $file['file_name'],
-                                        'filetype' => $file['filetype'],
-                                    ];
-                                    $this->db->insert(db_prefix() . 'scaattachments', $idata);
-                                    $last_insert_id = $this->db->insert_id();
-
-                                    if ($last_insert_id) {
-                                        $affectedRows++;
-                                    }
-                                }
-                            }
-                        }
-                        $sr++;
-                    }
-                }
-            }
-        } elseif ($formBeforeUpdate->form_type == "esc") {
-            if (isset($esc_form)) {
-                if (!empty($esc_form)) {
-                    $this->db->where('form_id', $data['formid']);
-                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form', $esc_form);
-                    if ($this->db->affected_rows() > 0) {
-                        $affectedRows++;
-                    }
-                }
-            }
-
-
-            if (isset($update_order)) {
-                if (!empty($update_order)) {
-                    $sr = 1;
-                    foreach ($update_order as $key => $value) {
-                        $dt_data = [];
-                        $dt_data['form_id'] = $data['formid'];
-                        $dt_data['items'] = $sr;
-                        $dt_data['status'] = $value['status'];
-                        $dt_data['remarks'] = $value['remarks'];
-                        $this->db->where('id', $value['id']);
-                        $this->db->update(db_prefix() .  $formBeforeUpdate->form_type . '_form_detail', $dt_data);
-                        if ($this->db->affected_rows() > 0) {
-                            $affectedRows++;
-                        }
-                        // $insert_id = $this->db->insert_id();
-                        // Handle file attachments dynamically for items and attachments_new
-
-                        $iuploadedFiles = handle_ckecklist_item_attachment_array('esc_checklist', $data['formid'], $value['id'], 'items', $sr);
-                        if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                            if (!empty($iuploadedFiles)) {
-                                foreach ($iuploadedFiles as $file) {
-                                    $idata = [
-                                        'form_id' =>  $data['formid'],
-                                        'form_detail_id' =>  $file['item_id'],
-                                        'file_name' => $file['file_name'],
-                                        'filetype' => $file['filetype'],
-                                    ];
-                                    $this->db->insert(db_prefix() . 'escattachments', $idata);
-                                    $last_insert_id = $this->db->insert_id();
-
-                                    if ($last_insert_id) {
-                                        $affectedRows++;
-                                    }
-                                }
-                            }
-                        }
-
-                        $sr++;
-                    }
-                }
-            }
-        } elseif ($formBeforeUpdate->form_type == "cfwas") {
-            if (isset($cfwas_form)) {
-                if (!empty($cfwas_form)) {
-                    $this->db->where('form_id', $data['formid']);
-                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form', $cfwas_form);
-                    if ($this->db->affected_rows() > 0) {
-                        $affectedRows++;
-                    }
-                }
-            }
-
-
-            if (isset($update_order)) {
-                if (!empty($update_order)) {
-                    $sr = 1;
-                    foreach ($update_order as $key => $value) {
-                        $dt_data = [];
-                        $dt_data['form_id'] = $data['formid'];
-                        $dt_data['items'] = $sr;
-                        $dt_data['status'] = $value['status'];
-                        $this->db->where('id', $value['id']);
-                        $this->db->update(db_prefix() .  $formBeforeUpdate->form_type . '_form_detail', $dt_data);
-                        if ($this->db->affected_rows() > 0) {
-                            $affectedRows++;
-                        }
-                        // $insert_id = $this->db->insert_id();
-                        // Handle file attachments dynamically for items and attachments_new
-
-                        $iuploadedFiles = handle_ckecklist_item_attachment_array('cfwas_checklist', $data['formid'], $value['id'], 'items', $sr);
-                        if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                            if (!empty($iuploadedFiles)) {
-                                foreach ($iuploadedFiles as $file) {
-                                    $idata = [
-                                        'form_id' =>  $data['formid'],
-                                        'form_detail_id' =>  $file['item_id'],
-                                        'file_name' => $file['file_name'],
-                                        'filetype' => $file['filetype'],
-                                    ];
-                                    $this->db->insert(db_prefix() . 'cfwasattachments', $idata);
-                                    $last_insert_id = $this->db->insert_id();
-
-                                    if ($last_insert_id) {
-                                        $affectedRows++;
-                                    }
-                                }
-                            }
-                        }
-
-                        $sr++;
-                    }
-                }
-            }
-        } elseif ($formBeforeUpdate->form_type == "cflc") {
-            if (isset($cflc_form)) {
-                if (!empty($cflc_form)) {
-                    $this->db->where('form_id', $data['formid']);
-                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form', $cflc_form);
-                    if ($this->db->affected_rows() > 0) {
-                        $affectedRows++;
-                    }
-                }
-            }
-
-
-            if (isset($update_order)) {
-                if (!empty($update_order)) {
-                    $sr = 1;
-                    foreach ($update_order as $key => $value) {
-                        $dt_data = [];
-                        $dt_data['form_id'] = $data['formid'];
-                        $dt_data['items'] = $sr;
-                        $dt_data['status'] = $value['status'];
-                        $this->db->where('id', $value['id']);
-                        $this->db->update(db_prefix() .  $formBeforeUpdate->form_type . '_form_detail', $dt_data);
-                        if ($this->db->affected_rows() > 0) {
-                            $affectedRows++;
-                        }
-                        // $insert_id = $this->db->insert_id();
-                        // Handle file attachments dynamically for items and attachments_new
-
-                        $iuploadedFiles = handle_ckecklist_item_attachment_array('cflc_checklist', $data['formid'], $value['id'], 'items', $sr);
-                        if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                            if (!empty($iuploadedFiles)) {
-                                foreach ($iuploadedFiles as $file) {
-                                    $idata = [
-                                        'form_id' =>  $data['formid'],
-                                        'form_detail_id' =>  $file['item_id'],
-                                        'file_name' => $file['file_name'],
-                                        'filetype' => $file['filetype'],
-                                    ];
-                                    $this->db->insert(db_prefix() . 'cflcattachments', $idata);
-                                    $last_insert_id = $this->db->insert_id();
-
-                                    if ($last_insert_id) {
-                                        $affectedRows++;
-                                    }
-                                }
-                            }
-                        }
-
-                        $sr++;
-                    }
-                }
-            }
-        } elseif ($formBeforeUpdate->form_type == "facc") {
-            if (isset($facc_form)) {
-                if (!empty($facc_form)) {
-                    $this->db->where('form_id', $data['formid']);
-                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form', $facc_form);
-                    if ($this->db->affected_rows() > 0) {
-                        $affectedRows++;
-                    }
-                }
-            }
-
-
-            if (isset($update_order)) {
-                if (!empty($update_order)) {
-                    $sr = 1;
-                    foreach ($update_order as $key => $value) {
-                        $dt_data = [];
-                        $dt_data['form_id'] = $data['formid'];
-                        $dt_data['items'] = $sr;
-                        $dt_data['status'] = $value['status'];
-                        $this->db->where('id', $value['id']);
-                        $this->db->update(db_prefix() .  $formBeforeUpdate->form_type . '_form_detail', $dt_data);
-                        if ($this->db->affected_rows() > 0) {
-                            $affectedRows++;
-                        }
-                        // $insert_id = $this->db->insert_id();
-                        // Handle file attachments dynamically for items and attachments_new
-
-                        $iuploadedFiles = handle_ckecklist_item_attachment_array('facc_checklist', $data['formid'], $value['id'], 'items', $sr);
-                        if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                            if (!empty($iuploadedFiles)) {
-                                foreach ($iuploadedFiles as $file) {
-                                    $idata = [
-                                        'form_id' =>  $data['formid'],
-                                        'form_detail_id' =>  $file['item_id'],
-                                        'file_name' => $file['file_name'],
-                                        'filetype' => $file['filetype'],
-                                    ];
-                                    $this->db->insert(db_prefix() . 'faccattachments', $idata);
-                                    $last_insert_id = $this->db->insert_id();
-
-                                    if ($last_insert_id) {
-                                        $affectedRows++;
-                                    }
-                                }
-                            }
-                        }
-
-                        $sr++;
-                    }
-                }
-            }
-        } elseif ($formBeforeUpdate->form_type == "cosc") {
-
-            if (isset($cosc_form)) {
-                if (!empty($cosc_form)) {
-                    $this->db->where('form_id', $data['formid']);
-                    $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form', $cosc_form);
-                    if ($this->db->affected_rows() > 0) {
-                        $affectedRows++;
-                    }
-                }
-            }
-
-            if (isset($update_order)) {
-                if (!empty($update_order)) {
-                    $sr = 1;
-                    foreach ($update_order as $key => $value) {
-                        $dt_data = [];
-                        $dt_data['form_id'] = $data['formid'];
-                        $dt_data['description'] = $sr;
-                        $dt_data['checks'] = $value['checks'] ?? null;
-                        $dt_data['comments'] = $value['comments'] ?? null;
-                        $this->db->where('id', $value['id']);
-                        $this->db->update(db_prefix() . $formBeforeUpdate->form_type . '_form_detail', $dt_data);
-                        if ($this->db->affected_rows() > 0) {
-                            $affectedRows++;
-                        }
-                        // Handle file attachments dynamically for items and attachments_new
-                        $iuploadedFiles = handle_ckecklist_item_attachment_array('cosc_checklist', $data['formid'], $value['id'], 'items', $sr);
-
-                        if ($iuploadedFiles && is_array($iuploadedFiles)) {
-                            if (!empty($iuploadedFiles)) {
-                                foreach ($iuploadedFiles as $file) {
-                                    $idata = [
-                                        'form_id' =>  $data['formid'],
-                                        'form_detail_id' =>  $file['item_id'],
-                                        'file_name' => $file['file_name'],
-                                        'filetype' => $file['filetype'],
-                                    ];
-                                    $this->db->insert(db_prefix() . 'coscattachments', $idata);
-                                    $last_insert_id = $this->db->insert_id();
-
-                                    if ($last_insert_id) {
-                                        $affectedRows++;
-                                    }
-                                }
-                            }
-                        }
-                        $sr++;
                     }
                 }
             }
