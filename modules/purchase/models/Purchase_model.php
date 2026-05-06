@@ -17074,6 +17074,12 @@ class Purchase_model extends App_Model
             ';
         }
 
+        $PAYMENT_NOTE = '';
+
+        if($sale_agreement_id == 49){
+            $PAYMENT_NOTE = '<p>Note: The Purchaser No.1 has paid and discharged the entire sale consideration from his own independent and explained sources. The Purchaser No.2, being the spouse of Purchaser No.1, is being joined as a co-owner in the Schedule Property by the Purchaser No.1 voluntarily, out of natural love and affection, without any separate monetary contribution from Purchaser No.2. The Vendor hereby confirms and acknowledges that the entire sale consideration has been received from Purchaser No.1 alone, and Purchaser No.2 has not made any independent payment towards the consideration. The tax deducted at source under Section 194-IA, wherever applicable, has accordingly been deducted and deposited by Purchaser No.1.</p>';
+        }
+
         $BU_HTML = '';
 
         if ($customer['bu_permissions'] == 1) {
@@ -17420,6 +17426,7 @@ class Purchase_model extends App_Model
 
             {$PAGE_BREAK_PYMENT}
             {$PAYMENT_HTML}
+            {$PAYMENT_NOTE}
             <p>There is no other any type of consideration for sale deed of the said Premises not appearing on record, paid or agreed to be paid by THE PURCHASER to THE SELLER.
             </p>
 
