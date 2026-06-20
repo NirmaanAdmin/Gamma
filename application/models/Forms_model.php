@@ -4116,13 +4116,20 @@ class Forms_model extends App_Model
                     $match = array_values(array_filter($deprt_array, function ($x) use ($date, $staff) {
                         return $x['date'] == $date && $x['staff'] == $staff['id'];
                     }));
-                    $attendance = !empty($match) ? $match[0]['attendance'] : 0;
+
+                    $attendance = !empty($match) ? (float)$match[0]['attendance'] : 0;
+
+                    // Initialize if not set
+                    if (!isset($staff_sums[$staff['id']])) {
+                        $staff_sums[$staff['id']] = 0;
+                    }
 
                     // Add to the sum for this staff
-                    $staff_sums[$staff['id']] += $attendance;
+                    $staff_sums[$staff['id']] = (float)$staff_sums[$staff['id']] + $attendance;
 
                     $preport_deprt_html .= '<td align="right">' . $attendance . '</td>';
                 }
+
                 $preport_deprt_html .= '</tr>';
             }
 
