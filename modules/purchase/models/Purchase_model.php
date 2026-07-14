@@ -17084,6 +17084,8 @@ class Purchase_model extends App_Model
 
         if ($customer['bu_permissions'] == 1) {
             $BU_HTML = '<p>[f] Thereafter the First Party and Second Party have not executed Agreement for Sale of said because B.U. Permission of the said unit has been already received.</p>';
+        } elseif ($sale_agreement_id == 153) {
+            $BU_HTML = "<p>[f] Thereafter the First Party and Second Party have executed notarized agreement for sale dated <strong>{$SRDATE}</strong>";
         } elseif ($customer['bu_permissions'] == 0) {
             $BU_HTML = "<p>[f] Thereafter the First Party and Second Party have executed Agreement for Sale of said Unit which was registered before Sub-Registrar of {$SUBREGISTER} under Sr. No. <strong>{$SRNO}</strong>, dated <strong>{$SRDATE}</strong>, herein after referred to as ' The said Agreement '.</p>";
         }
