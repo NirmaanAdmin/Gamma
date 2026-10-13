@@ -178,12 +178,13 @@ $module_name = 'leads'; ?>
                                         echo render_select('duplicate[]', $duplicate, array('id', 'name'), '', $duplicate_type_filter_val, array('data-width' => '100%', 'data-none-selected-text' => _l('Duplicate'), 'multiple' => true, 'data-actions-box' => true), array(), 'no-mbot', '', false);
                                         ?>
                                     </div>
-                                    <div class="col-md-1 form-group pull-right">
+                                    <div class="col-md-1 form-group">
                                         <a href="javascript:void(0)" class="btn btn-info btn-icon reset_all_ot_filters">
                                             <?php echo _l('reset_filter'); ?>
                                         </a>
                                     </div>
                                 </div>
+                                <hr>
 
                                 <div class="row" id="leads-table">
                                     <div class="col-md-12">
