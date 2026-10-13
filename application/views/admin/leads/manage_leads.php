@@ -13,6 +13,19 @@ $module_name = 'leads'; ?>
         z-index: 999;
         left: 272px;
     }
+
+    .n_width {
+      width: 33.33% !important;
+    }
+
+    .dashboard_stat_title {
+      font-size: 19px;
+      font-weight: bold;
+    }
+
+    .dashboard_stat_value {
+      font-size: 19px;
+    }
 </style>
 <div id="wrapper">
     <div class="content">
@@ -50,33 +63,85 @@ $module_name = 'leads'; ?>
 
                     </div>
                     <div class="clearfix"></div>
-                    <div class="hide leads-overview tw-mt-2 sm:tw-mt-4 tw-mb-4 sm:tw-mb-0">
-                        <h4 class="tw-mt-0 tw-font-semibold tw-text-lg">
-                            <?php echo _l('leads_summary'); ?>
-                        </h4>
-                        <div class="tw-flex tw-flex-wrap tw-flex-col lg:tw-flex-row tw-w-full tw-gap-3 lg:tw-gap-6">
-                            <?php
-                            foreach ($summary as $status) { ?>
-                                <div
-                                    class="lg:tw-border-r lg:tw-border-solid lg:tw-border-neutral-300 tw-flex-1 tw-flex tw-items-center last:tw-border-r-0">
-                                    <span class="tw-font-semibold tw-mr-3 rtl:tw-ml-3 tw-text-lg">
-                                        <?php
-                                        if (isset($status['percent'])) {
-                                            echo '<span data-toggle="tooltip" data-title="' . $status['total'] . '">' . $status['percent'] . '%</span>';
-                                        } else {
-                                            // Is regular status
-                                            echo $status['total'];
-                                        }
-                                        ?>
-                                    </span>
-                                    <span style="color:<?php echo e($status['color']); ?>"
-                                        class="<?php echo isset($status['junk']) || isset($status['lost']) ? 'text-danger' : ''; ?>">
-                                        <?php echo e($status['name']); ?>
-                                    </span>
+                    <div class="hide leads-overview">
+                        <div class="row">
+                            <div class="col-md-12 mtop20">
+                                <div class="panel_s">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="quick-stats-invoices col-md-3 tw-mb-2 sm:tw-mb-0 n_width">
+                                               <div class="top_stats_wrapper">
+                                                 <div class="tw-text-neutral-800 mtop5 tw-flex tw-items-center tw-justify-between">
+                                                   <div class="tw-font-medium tw-inline-flex text-neutral-600 tw-items-center tw-truncate">
+                                                     <span class="tw-truncate dashboard_stat_title">Total Leads</span>
+                                                   </div>
+                                                   <span class="tw-font-semibold tw-text-neutral-600 tw-shrink-0"></span>
+                                                 </div>
+                                                 <div class="tw-text-neutral-800 mtop15 tw-flex tw-items-center tw-justify-between">
+                                                   <div class="tw-font-medium tw-inline-flex text-neutral-600 tw-items-center tw-truncate">
+                                                     <span class="tw-truncate dashboard_stat_value total_leads"></span>
+                                                   </div>
+                                                   <span class="tw-font-semibold tw-text-neutral-600 tw-shrink-0"></span>
+                                                 </div>
+                                               </div>
+                                            </div>
+                                            <div class="quick-stats-invoices col-md-3 tw-mb-2 sm:tw-mb-0 n_width">
+                                               <div class="top_stats_wrapper">
+                                                 <div class="tw-text-neutral-800 mtop5 tw-flex tw-items-center tw-justify-between">
+                                                   <div class="tw-font-medium tw-inline-flex text-neutral-600 tw-items-center tw-truncate">
+                                                     <span class="tw-truncate dashboard_stat_title">Duplicate Entry Alert</span>
+                                                   </div>
+                                                   <span class="tw-font-semibold tw-text-neutral-600 tw-shrink-0"></span>
+                                                 </div>
+                                                 <div class="tw-text-neutral-800 mtop15 tw-flex tw-items-center tw-justify-between">
+                                                   <div class="tw-font-medium tw-inline-flex text-neutral-600 tw-items-center tw-truncate">
+                                                     <span class="tw-truncate dashboard_stat_value duplicate_entry_alert"></span>
+                                                   </div>
+                                                   <span class="tw-font-semibold tw-text-neutral-600 tw-shrink-0"></span>
+                                                 </div>
+                                               </div>
+                                            </div>
+                                            <div class="quick-stats-invoices col-md-3 tw-mb-2 sm:tw-mb-0 n_width">
+                                               <div class="top_stats_wrapper">
+                                                 <div class="tw-text-neutral-800 mtop5 tw-flex tw-items-center tw-justify-between">
+                                                   <div class="tw-font-medium tw-inline-flex text-neutral-600 tw-items-center tw-truncate">
+                                                     <span class="tw-truncate dashboard_stat_title">Fresh Leads This Month</span>
+                                                   </div>
+                                                   <span class="tw-font-semibold tw-text-neutral-600 tw-shrink-0"></span>
+                                                 </div>
+                                                 <div class="tw-text-neutral-800 mtop15 tw-flex tw-items-center tw-justify-between">
+                                                   <div class="tw-font-medium tw-inline-flex text-neutral-600 tw-items-center tw-truncate">
+                                                     <span class="tw-truncate dashboard_stat_value fresh_leads_this_month"></span>
+                                                   </div>
+                                                   <span class="tw-font-semibold tw-text-neutral-600 tw-shrink-0"></span>
+                                                 </div>
+                                               </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mtop20">
+                                            <div class="col-md-4">
+                                                <p class="mbot15 dashboard_stat_title">Pie Chart for Lead per Status</p>
+                                                <div style="width: 100%; height: 450px; display: flex; justify-content: left;">
+                                                   <canvas id="pieChartForStatus"></canvas>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="mbot15 dashboard_stat_title">Top 10 Leads by Assigned</p>
+                                                <div style="width: 100%; height: 500px;">
+                                                   <canvas id="barChartAssigned"></canvas>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <p class="mbot15 dashboard_stat_title">Top 10 Leads by Source</p>
+                                                <div style="width: 100%; height: 500px;">
+                                                    <canvas id="barChartSource"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            <?php } ?>
+                            </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -553,6 +618,170 @@ $module_name = 'leads'; ?>
         });
     });
 </script>
+<script>
+    $(document).ready(function() {
+        get_leads_dashboard();
+
+        var pieChartForStatus;
+        var barChartAssigned;
+        var barChartSource;
+        function get_leads_dashboard() {
+            "use strict";
+            var data = {}
+            $.post(admin_url + 'leads/get_leads_dashboard', data).done(function(response){
+                response = JSON.parse(response);
+                $('.total_leads').text(response.total_leads);
+                $('.duplicate_entry_alert').text(response.duplicate_entry_alert);
+                $('.fresh_leads_this_month').text(response.fresh_leads_this_month);
+
+                // Pie Chart for Lead per Status
+                var statusPieCtx = document.getElementById('pieChartForStatus').getContext('2d');
+                var statusData = response.pie_status_value;
+                var statusLabels = response.pie_status_name;
+
+                if (pieChartForStatus) {
+                  pieChartForStatus.data.labels = statusLabels;
+                  pieChartForStatus.data.datasets[0].data = statusData;
+                  pieChartForStatus.update();
+                } else {
+                  pieChartForStatus = new Chart(statusPieCtx, {
+                    type: 'pie',
+                    data: {
+                      labels: statusLabels,
+                      datasets: [{
+                        data: statusData,
+                        backgroundColor: statusLabels.map((_, i) => `hsl(${i * 35 % 360}, 70%, 60%)`),
+                        borderColor: '#fff',
+                        borderWidth: 1
+                      }]
+                    },
+                    options: {
+                      responsive: true,
+                      plugins: {
+                        legend: {
+                          position: 'bottom'
+                        },
+                        tooltip: {
+                          callbacks: {
+                            label: function(context) {
+                              return context.label + ': ' + context.formattedValue;
+                            }
+                          }
+                        }
+                      }
+                    }
+                  });
+                }
+
+                // Top 10 Leads by Assigned
+                var AssignBarCtx = document.getElementById('barChartAssigned').getContext('2d');
+                var assignLabels = response.bar_assign_name;
+                var assignData = response.bar_assign_value;
+
+                if (barChartAssigned) {
+                  barChartAssigned.data.labels = assignLabels;
+                  barChartAssigned.data.datasets[0].data = assignData;
+                  barChartAssigned.update();
+                } else {
+                  barChartAssigned = new Chart(AssignBarCtx, {
+                    type: 'bar',
+                    data: {
+                      labels: assignLabels,
+                      datasets: [{
+                        label: 'Value',
+                        data: assignData,
+                        backgroundColor: '#1E90FF',
+                        borderColor: '#1E90FF',
+                        borderWidth: 1
+                      }]
+                    },
+                    options: {
+                      indexAxis: 'y',
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          display: false
+                        }
+                      },
+                      scales: {
+                        x: {
+                          beginAtZero: true,
+                          title: {
+                            display: true,
+                            text: 'Value'
+                          }
+                        },
+                        y: {
+                          ticks: {
+                            autoSkip: false
+                          },
+                          title: {
+                            display: true,
+                            text: 'Assigned'
+                          }
+                        }
+                      }
+                    }
+                  });
+               }
+
+               // Top 10 Leads by Source
+                var sourceBarCtx = document.getElementById('barChartSource').getContext('2d');
+                var sourceLabels = response.bar_source_name;
+                var sourceData = response.bar_source_value;
+
+                if (barChartSource) {
+                  barChartSource.data.labels = sourceLabels;
+                  barChartSource.data.datasets[0].data = sourceData;
+                  barChartSource.update();
+                } else {
+                    barChartSource = new Chart(sourceBarCtx, {
+                      type: 'bar',
+                      data: {
+                          labels: sourceLabels,
+                          datasets: [{
+                              label: 'Value',
+                              data: sourceData,
+                              backgroundColor: '#1E90FF',
+                              borderColor: '#1E90FF',
+                              borderWidth: 1
+                          }]
+                      },
+                      options: {
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                              legend: {
+                                  display: false
+                              }
+                          },
+                          scales: {
+                              x: {
+                                  ticks: {
+                                      autoSkip: false
+                                  },
+                                  title: {
+                                      display: true,
+                                      text: 'Source'
+                                  }
+                              },
+                              y: {
+                                  beginAtZero: true,
+                                  title: {
+                                      display: true,
+                                      text: 'Value'
+                                  }
+                              }
+                          }
+                      }
+                  });
+                }
+            });
+        }
+    });
+</script>
+<script src="<?php echo module_dir_url(PURCHASE_MODULE_NAME, 'assets/plugins/charts/chart.js'); ?>?v=<?php echo PURCHASE_REVISION; ?>"></script>
 </body>
 
 </html>

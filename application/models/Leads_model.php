@@ -1591,4 +1591,159 @@ class Leads_model extends App_Model
 
         return $CI->db->query($baseSql)->result_array();
     }
+
+    /**
+     * Get leads dashboard
+     *
+     * @param  array  $data  Dashboard filter data
+     * @return array
+     */
+    public function get_leads_dashboard($data = array())
+    {
+        $response = array();
+        $response['total_leads'] = 0;
+        $response['duplicate_entry_alert'] = 0;
+        $response['fresh_leads_this_month'] = 0;
+        $response['pie_status_name'] = array();
+        $response['pie_status_value'] = array();
+        $response['bar_assign_name'] = array();
+        $response['bar_assign_value'] = array();
+        $response['bar_source_name'] = array();
+        $response['bar_source_value'] = array();
+        $leads_table  = db_prefix() . 'leads';
+        $status_table = db_prefix() . 'leads_status';
+        $staff_table  = db_prefix() . 'staff';
+        $source_table = db_prefix() . 'leads_sources';
+        $this->db->select("
+            COUNT(*) AS total_leads,
+            SUM(
+                CASE
+                    WHEN l.duplicate > 0 THEN 1
+                    ELSE 0
+                END
+            ) AS duplicate_entry_alert,
+            SUM(
+                CASE
+                    WHEN l.status = 16
+                    AND l.dateadded >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+                    AND l.dateadded < DATE_FORMAT(
+                        DATE_ADD(CURDATE(), INTERVAL 1 MONTH),
+                        '%Y-%m-01'
+                    )
+                    THEN 1
+                    ELSE 0
+                END
+            ) AS fresh_leads_this_month
+        ", false);
+        $this->db->from($leads_table . ' l');
+        $this->db->join(
+            $source_table . ' ls',
+            'ls.id = l.source',
+            'inner'
+        );
+        $this->db->where('l.source >', 0);
+        $counts = $this->db->get()->row_array();
+        if (!empty($counts)) {
+            $response['total_leads'] = (int) $counts['total_leads'];
+            $response['duplicate_entry_alert'] = (int) $counts['duplicate_entry_alert'];
+            $response['fresh_leads_this_month'] = (int) $counts['fresh_leads_this_month'];
+        }
+
+        $this->db->select("
+            l.status,
+            ls_status.name AS status_name,
+            COUNT(*) AS total
+        ", false);
+        $this->db->from($leads_table . ' l');
+        $this->db->join(
+            $source_table . ' src',
+            'src.id = l.source',
+            'inner'
+        );
+        $this->db->join(
+            $status_table . ' ls_status',
+            'ls_status.id = l.status',
+            'left'
+        );
+        $this->db->where('l.source >', 0);
+        $this->db->where('l.status >', 0);
+        $this->db->group_by(array(
+            'l.status',
+            'ls_status.name'
+        ));
+        $this->db->order_by('total', 'DESC');
+        $status_rows = $this->db->get()->result_array();
+        foreach ($status_rows as $row) {
+            if (empty($row['status_name'])) {
+                continue;
+            }
+            $response['pie_status_name'][] = $row['status_name'];
+            $response['pie_status_value'][] = (int) $row['total'];
+        }
+
+        $this->db->select("
+            l.assigned,
+            CASE
+                WHEN l.assigned > 0
+                THEN CONCAT(
+                    s.firstname,
+                    ' ',
+                    s.lastname
+                )
+                ELSE 'None'
+            END AS assign_name,
+            COUNT(*) AS total
+        ", false);
+        $this->db->from($leads_table . ' l');
+        $this->db->join(
+            $source_table . ' src',
+            'src.id = l.source',
+            'inner'
+        );
+        $this->db->join(
+            $staff_table . ' s',
+            's.staffid = l.assigned',
+            'left'
+        );
+        $this->db->where('l.source >', 0);
+        $this->db->group_by('l.assigned');
+        $this->db->order_by('total', 'DESC');
+        $this->db->limit(10);
+        $assign_rows = $this->db->get()->result_array();
+        foreach ($assign_rows as $row) {
+            $response['bar_assign_name'][] = !empty($row['assign_name'])
+                ? $row['assign_name']
+                : 'None';
+            $response['bar_assign_value'][] = (int) $row['total'];
+        }
+
+        $this->db->select("
+            l.source,
+            src.name AS source_name,
+            COUNT(*) AS total
+        ", false);
+        $this->db->from($leads_table . ' l');
+        $this->db->join(
+            $source_table . ' src',
+            'src.id = l.source',
+            'inner'
+        );
+        $this->db->where('l.source >', 0);
+        $this->db->group_by(array(
+            'l.source',
+            'src.name'
+        ));
+        $this->db->order_by('total', 'DESC');
+        $this->db->limit(10);
+        $source_rows = $this->db->get()->result_array();
+        foreach ($source_rows as $row) {
+            if (empty($row['source_name'])) {
+                continue;
+            }
+            $response['bar_source_name'][] = $row['source_name'];
+            $response['bar_source_value'][] = (int) $row['total'];
+        }
+        
+        return $response;
+    }
 }

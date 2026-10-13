@@ -40,7 +40,6 @@ class Leads extends AdminController
             $this->load->model('gdpr_model');
             $data['consent_purposes'] = $this->gdpr_model->get_consent_purposes();
         }
-        $data['summary']  = get_leads_summary();
         $data['statuses'] = $this->leads_model->get_status();
         $data['sources']  = $this->leads_model->get_source();
         $data['title']    = _l('leads');
@@ -1478,5 +1477,13 @@ class Leads extends AdminController
         // Close output stream
         fclose($output);
         exit;
+    }
+
+    public function get_leads_dashboard()
+    {
+        $data = $this->input->post();
+        $result = $this->leads_model->get_leads_dashboard($data);
+        echo json_encode($result);
+        die;
     }
 }
