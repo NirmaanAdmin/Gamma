@@ -112,6 +112,7 @@ class Import_leads extends App_import
 
                     if ($id) {
                         handle_tags_save($tags, $id, 'lead');
+                        add_lead_activity_log($id, true);
                     }
                 } else {
                     $this->simulationData[$rowNumber] = $this->formatValuesForSimulation($insert);

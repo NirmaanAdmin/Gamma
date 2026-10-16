@@ -298,3 +298,153 @@ function get_assgined_projects($staff_id)
 
     return $CI->db->get()->result_array();
 }
+
+function get_leads_status_name_by_id($id)
+{
+    if (!empty($id)) {
+        $CI = &get_instance();
+        $CI->db->select('name');
+        $CI->db->from(db_prefix() . 'leads_status');
+        $CI->db->where('id', $id);
+        $result = $CI->db->get()->row();
+        if (!empty($result)) {
+            return $result->name;
+        }
+    }
+    return '';
+}
+
+function get_leads_source_name_by_id($id)
+{
+    if (!empty($id)) {
+        $CI = &get_instance();
+        $CI->db->select('name');
+        $CI->db->from(db_prefix() . 'leads_sources');
+        $CI->db->where('id', $id);
+        $result = $CI->db->get()->row();
+        if (!empty($result)) {
+            return $result->name;
+        }
+    }
+    return '';
+}
+
+function add_lead_activity_log($id, $is_create = true)
+{
+    $CI = &get_instance();
+    if (!empty($id)) {
+        $CI->db->where('id', $id);
+        $lead = $CI->db->get(db_prefix() . 'leads')->row();
+        if (!empty($lead)) {
+            $is_create_value = $is_create ? 'created' : 'deleted';
+            $description = "Lead <b>" . $lead->name . "</b> has been " . $is_create_value . ".";
+            $CI->db->insert(db_prefix() . 'module_activity_log', [
+                'module_name' => 'lead',
+                'rel_id' => $id,
+                'description' => $description,
+                'date' => date('Y-m-d H:i:s'),
+                'staffid' => get_staff_user_id()
+            ]);
+        }
+    }
+    return true;
+}
+
+function update_all_lead_fields_activity_log($id, $new_data)
+{
+    $CI = &get_instance();
+    $CI->load->model('staff_model');
+    if (empty($id)) {
+        return false;
+    }
+    $lead = $CI->db->where('id', $id)
+        ->get(db_prefix() . 'leads')
+        ->row();
+    if (!$lead) {
+        return false;
+    }
+    $old_data = (array)$lead;
+    $normalize = function ($value) {
+        $value = trim((string)$value);
+        if (in_array(strtolower($value), ['null', 'none', 'nil', 'n/a', '-', '--'])) {
+            return '';
+        }
+        if ($value === '0000-00-00') {
+            return '';
+        }
+        if (is_numeric($value)) {
+            $num = (float)$value;
+            return ($num == 0.0) ? '' : $num;
+        }
+        return strtolower($value);
+    };
+    $norm_old = array_map($normalize, $old_data);
+    $norm_new = array_map($normalize, $new_data);
+    $changes = array_diff_assoc($norm_new, $norm_old);
+    if (empty($changes)) {
+        return true;
+    }
+    $field_map = [
+        'status' => _l('lead_add_edit_status'),
+        'source' => _l('lead_add_edit_source'),
+        'assigned' => _l('lead_add_edit_assigned'),
+        'name' => _l('lead_add_edit_name'),
+        'projects' => _l('Projects'),
+        'phonenumber' => _l('lead_add_edit_phonenumber'),
+        'alt_phonenumber' => _l('Alt PhoneNumber'),
+        'lead_value' => _l('lead_value'),
+        'email' => _l('lead_add_edit_email'),
+        'broker' => _l('Broker Name'),
+        'firm' => _l('Firm Name'),
+        'contact_details' => _l('Broker Contact Details'),
+        'call_time' => _l('Call Time'),
+    ];
+    foreach ($changes as $field => $dummy) {
+        if (!isset($field_map[$field])) {
+            continue;
+        }
+        $old_value = $old_data[$field] ?? '';
+        $new_value = $new_data[$field] ?? '';
+        if ($field === 'status') {
+            $old_value = !empty($old_value) ? get_leads_status_name_by_id($old_value) : '';
+            $new_value = !empty($new_value) ? get_leads_status_name_by_id($new_value) : '';
+        }
+        if ($field === 'source') {
+            $old_value = !empty($old_value) ? get_leads_source_name_by_id($old_value) : '';
+            $new_value = !empty($new_value) ? get_leads_source_name_by_id($new_value) : '';
+        }
+        if ($field === 'assigned') {
+            $staff_list = $CI->staff_model->get('', ['active' => 1]);
+            $opts = array_combine(
+                array_column($staff_list, 'staffid'),
+                array_map(fn($a) => $a['firstname'] . ' ' . $a['lastname'], $staff_list)
+            );
+            $old_value = $opts[$old_value] ?? '';
+            $new_value = $opts[$new_value] ?? '';
+        }
+        update_lead_activity_log($id, $field_map[$field], $old_value, $new_value);
+    }
+    return true;
+}
+
+function update_lead_activity_log($id, $field, $old_value, $new_value)
+{
+    $CI = &get_instance();
+    if (!empty($id)) {
+        $CI->db->where('id', $id);
+        $lead = $CI->db->get(db_prefix() . 'leads')->row();
+        if (!empty($lead)) {
+            $old_value = !empty($old_value) ? $old_value : 'None';
+            $new_value = !empty($new_value) ? $new_value : 'None';
+            $description = "" . $field . " field is updated from <b>" . $old_value . "</b> to <b>" . $new_value . "</b> in Lead <b>" . $lead->name . "</b>.";
+            $CI->db->insert(db_prefix() . 'module_activity_log', [
+                'module_name' => 'lead',
+                'rel_id' => $lead->id,
+                'description' => $description,
+                'date' => date('Y-m-d H:i:s'),
+                'staffid' => get_staff_user_id()
+            ]);
+        }
+    }
+    return true;
+}

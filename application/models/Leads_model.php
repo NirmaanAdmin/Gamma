@@ -309,6 +309,8 @@ class Leads_model extends App_Model
             $this->lead_assigned_member_notification($insert_id, $data['assigned']);
             hooks()->do_action('lead_created', $insert_id);
 
+            add_lead_activity_log($insert_id, true);
+
             return $insert_id;
         }
 
@@ -489,7 +491,7 @@ class Leads_model extends App_Model
         // echo '</pre>'; // Debugging line to check data before insertion
         // exit;
 
-
+        update_all_lead_fields_activity_log($id, $data);
         $this->db->where('id', $id);
         $this->db->update(db_prefix() . 'leads', $data);
 
@@ -562,6 +564,7 @@ class Leads_model extends App_Model
      */
     public function delete($id)
     {
+        add_lead_activity_log($id, false);
         $affectedRows = 0;
 
         hooks()->do_action('before_lead_deleted', $id);
