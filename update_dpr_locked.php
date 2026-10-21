@@ -41,28 +41,11 @@ writeLog("Transaction started");
 try {
     $today_date = date('Y-m-d');
 
-    $today_date  = date('Y-m-d');
-    $today_start = $today_date . ' 00:00:00';
-    $today_end = $today_date . ' 23:59:59';
-    
-    // 1) Update records for today to locked status
-    // Fixed: Added proper quotes around date values in SQL query
-    // Fixed: Used prepared statement to prevent SQL injection
-    $today_end   = $today_date . ' 23:59:59';
-
-    writeLog("Today Range: $today_start to $today_end");
-
     // SQL
-    $sql = "UPDATE `tblforms` 
-            SET `locked` = 1 
-            WHERE `date` BETWEEN ? AND ?";
-    
+    $sql = "UPDATE `tblforms` SET `locked` = 1 WHERE DATE(`date`) = '$today_date'";
 
     $stmt = $conn->prepare($sql);
     writeLog("SQL Prepared");
-
-    $stmt->bind_param("ss", $today_start, $today_end);
-    writeLog("Parameters bound");
 
     $stmt->execute();
     writeLog("Query executed");
@@ -92,7 +75,6 @@ try {
     writeLog("ERROR: " . $e->getMessage());
 }
 
-$conn->close();
 $conn->close();
 writeLog("Database connection closed");
 
